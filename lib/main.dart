@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/bloc_provider.dart';
 import 'package:flutter_app/pages/about/about_us.dart';
@@ -9,8 +11,19 @@ import 'package:flutter_app/pages/projects/project_widget.dart';
 import 'package:flutter_app/pages/tasks/add_task.dart';
 import 'package:flutter_app/pages/tasks/task_completed/task_complted.dart';
 import 'package:flutter_app/utils/extension.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common/sqlite_api.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  if (Platform.isWindows) {
+    sqfliteFfiInit();
+
+    // Initialize FFI
+    databaseFactory = databaseFactoryFfi;
+  }
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
