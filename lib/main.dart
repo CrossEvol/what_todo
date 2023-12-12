@@ -1,5 +1,6 @@
-import 'dart:io';
+import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/bloc_provider.dart';
 import 'package:flutter_app/pages/about/about_us.dart';
@@ -12,17 +13,41 @@ import 'package:flutter_app/pages/tasks/add_task.dart';
 import 'package:flutter_app/pages/tasks/task_completed/task_complted.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:window_manager/window_manager.dart';
 
 void main() {
   if (Platform.isWindows) {
-    sqfliteFfiInit();
-
     // Initialize FFI
+    sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
+
+    setupWindow();
   }
   runApp(MyApp());
+}
+
+const double windowWidth = 400;
+const double windowHeight = 760;
+
+void setupWindow()async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Must add this line.
+  await windowManager.ensureInitialized();
+
+  WindowOptions windowOptions = WindowOptions(
+    title: 'WhatTodo',
+    size: Size(windowWidth, windowHeight),
+    minimumSize: Size(windowWidth, windowHeight),
+    center: false,
+    backgroundColor: Colors.transparent,
+    skipTaskbar: false,
+    titleBarStyle: TitleBarStyle.normal,
+  );
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
 }
 
 class MyApp extends StatelessWidget {
