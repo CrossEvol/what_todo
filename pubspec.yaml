@@ -27,6 +27,7 @@ dev_dependencies:
   test: ^1.19.5
   mockito: ^5.1.0
   build_runner: ^2.4.5
+  sqflite_common_ffi:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
