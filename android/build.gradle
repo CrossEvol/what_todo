@@ -1,0 +1,41 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        maven { name "Alibaba" ; url "https://maven.aliyun.com/repository/public" }
+        maven { name "Bstek" ; url "https://nexus.bsdn.org/content/groups/public/" }
+        maven { name "gradlePlugin" ; url "https://maven.aliyun.com/repository/gradle-plugin" }
+        maven { name "M2" ; url 'https://plugins.gradle.org/m2/' }
+        mavenCentral()
+        google()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.3.0'
+    }
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        maven { name "Alibaba" ; url "https://maven.aliyun.com/repository/public" }
+        maven { name "Bstek" ; url "https://nexus.bsdn.org/content/groups/public/" }
+        maven { name "gradlePlugin" ; url "https://maven.aliyun.com/repository/gradle-plugin" }
+        maven { name "M2" ; url 'https://plugins.gradle.org/m2/' }
+        mavenCentral()
+        google()
+        jcenter()
+    }
+}
+
+rootProject.buildDir = '../build'
+subprojects {
+    project.buildDir = "${rootProject.buildDir}/${project.name}"
+}
+subprojects {
+    project.evaluationDependsOn(':app')
+}
+
+tasks.register("clean", Delete) {
+    delete rootProject.buildDir
+}
