@@ -1,6 +1,5 @@
 import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/bloc_provider.dart';
 import 'package:flutter_app/pages/about/about_us.dart';
@@ -12,7 +11,6 @@ import 'package:flutter_app/pages/projects/project_widget.dart';
 import 'package:flutter_app/pages/tasks/add_task.dart';
 import 'package:flutter_app/pages/tasks/task_completed/task_complted.dart';
 import 'package:flutter_app/utils/extension.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -53,7 +51,7 @@ void setupWindow()async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFFDE4435);
+    const primaryColor = Color(0xFF3543DE);
     final theme = ThemeData(
       primaryColor: primaryColor,
       visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -62,7 +60,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: theme.copyWith(
         colorScheme: theme.colorScheme.copyWith(
-          secondary: Colors.orange,
+          secondary: Colors.purple,
           primary: primaryColor,
         ),
       ),

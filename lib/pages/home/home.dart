@@ -56,7 +56,7 @@ class HomePage extends StatelessWidget {
           Icons.add,
           color: Colors.white,
         ),
-        backgroundColor: Colors.orange,
+        backgroundColor: Colors.purple,
         onPressed: () async {
           await context.adaptiveNavigate(SCREEN.ADD_TASK, AddTaskProvider());
           _taskBloc.refresh();
