@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/utils/app_constant.dart';
-import 'package:flutter_app/utils/keys.dart';
+import 'package:flutter_app/constants/app_constant.dart';
+import 'package:flutter_app/constants/keys.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 showSnackbar(context, String message, {MaterialColor? materialColor}) {

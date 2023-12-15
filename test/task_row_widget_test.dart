@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/models/priority.dart';
 import 'package:flutter_app/pages/tasks/models/tasks.dart';
 import 'package:flutter_app/pages/tasks/row_task.dart';
-import 'package:flutter_app/utils/color_utils.dart';
+import 'package:flutter_app/constants/color_utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'test_helpers.dart';
 

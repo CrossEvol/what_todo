@@ -6,7 +6,7 @@ import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/home/home_bloc.dart';
 import 'package:flutter_app/pages/labels/add_label.dart';
 import 'package:flutter_app/pages/labels/label_bloc.dart';
-import 'package:flutter_app/utils/keys.dart';
+import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 
 class LabelPage extends StatelessWidget {

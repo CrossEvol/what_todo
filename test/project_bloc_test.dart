@@ -1,7 +1,7 @@
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_bloc.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
-import 'package:flutter_app/utils/color_utils.dart';
+import 'package:flutter_app/constants/color_utils.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 

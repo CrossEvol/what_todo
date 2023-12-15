@@ -1,6 +1,6 @@
 
 import 'package:flutter_app/main.dart' as app;
-import 'package:flutter_app/utils/keys.dart';
+import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 

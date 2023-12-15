@@ -10,7 +10,7 @@ import 'package:flutter_app/pages/labels/label_bloc.dart';
 import 'package:flutter_app/pages/labels/label_widget.dart';
 import 'package:flutter_app/pages/projects/project_bloc.dart';
 import 'package:flutter_app/pages/projects/project_widget.dart';
-import 'package:flutter_app/utils/keys.dart';
+import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 
 class SideDrawer extends StatelessWidget {
