@@ -116,6 +116,8 @@ class WiderHomePage extends StatelessWidget {
                       return AddLabelPage();
                     case SCREEN.HOME:
                       return HomePage();
+                    case null:
+                      // TODO: Handle this case.
                   }
                 }
                 return HomePage();
