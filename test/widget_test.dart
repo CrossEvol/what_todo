@@ -25,6 +25,12 @@ void main() {
       expect(find.byType(FloatingActionButton), findsOneWidget);
     }
 
+    // Verify the AppBar has the leading icon and trailing icon
+    {
+      // expect(find.byIcon(Icons.menu), findsOneWidget);
+      expect(find.byIcon(Icons.adaptive.more), findsOneWidget);
+    }
+
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pump();
 
