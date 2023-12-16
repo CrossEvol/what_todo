@@ -109,7 +109,11 @@ class AboutUsScreen extends StatelessWidget {
                           IconButton(
                             icon: Image.asset("assets/facebook_logo.png"),
                             onPressed: () => launchURL(FACEBOOK_URL),
-                          )
+                          ),
+                          IconButton(
+                            icon: Image.asset("assets/stack_overflow.png"),
+                            onPressed: () => launchURL(STACK_OVERFLOW_URL),
+                          ),
                         ],
                       ),
                     ),

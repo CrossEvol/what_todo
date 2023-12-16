@@ -49,6 +49,7 @@ flutter:
   assets:
       - assets/twitter_logo.png
       - assets/facebook_logo.png
+      - assets/stack_overflow.png
       - assets/Agnimon.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see

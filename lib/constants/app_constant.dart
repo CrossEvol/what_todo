@@ -18,6 +18,7 @@ const double FONT_SIZE_DATE = 12.0;
 
 const String TWITTER_URL = "https://twitter.com/burhanrashid52";
 const String FACEBOOK_URL = "https://www.facebook.com/Bursid";
+const String STACK_OVERFLOW_URL = "https://stackoverflow.com/questions/tagged/flutter";
 const String GITHUB_URL = "https://github.com/burhanrashid52";
 const String PROJECT_URL = "https://github.com/burhanrashid52/WhatTodo";
 const String ISSUE_URL = "https://github.com/burhanrashid52/WhatTodo/issues";
