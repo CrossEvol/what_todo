@@ -46,4 +46,5 @@ class HomePageKeys {
 class CompletedTaskPageKeys {
   static const POPUP_ACTION = 'popup_action';
   static const COMPLETED_TASKS = 'completed_tasks';
+  static const UNCOMPLETED_TASKS = 'uncompleted_tasks';
 }

@@ -7,6 +7,7 @@ import 'package:flutter_app/pages/home/side_drawer.dart';
 import 'package:flutter_app/pages/tasks/add_task.dart';
 import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
 import 'package:flutter_app/pages/tasks/task_completed/task_complted.dart';
+import 'package:flutter_app/pages/tasks/task_completed/task_uncompleted.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_app/pages/tasks/task_widgets.dart';
 import 'package:flutter_app/constants/keys.dart';
@@ -14,7 +15,7 @@ import 'package:flutter_app/utils/extension.dart';
 
 class HomePage extends StatelessWidget {
   final TaskBloc _taskBloc = TaskBloc(TaskDB.get());
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +84,11 @@ class HomePage extends StatelessWidget {
                 SCREEN.COMPLETED_TASK, TaskCompletedPage());
             _taskBloc.refresh();
             break;
+          case MenuItem.TASK_UNCOMPLETED:
+            await context.adaptiveNavigate(
+                SCREEN.UNCOMPLETED_TASK, TaskUnCompletedPage());
+            _taskBloc.refresh();
+            break;
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuItem>>[
@@ -92,6 +98,13 @@ class HomePage extends StatelessWidget {
             'Completed Tasks',
             key: ValueKey(CompletedTaskPageKeys.COMPLETED_TASKS),
           ),
+        ),
+        const PopupMenuItem<MenuItem>(
+          value: MenuItem.TASK_UNCOMPLETED,
+          child: const Text(
+            'Uncompleted Tasks',
+            key: ValueKey(CompletedTaskPageKeys.UNCOMPLETED_TASKS),
+          ),
         )
       ],
     );
@@ -99,4 +112,4 @@ class HomePage extends StatelessWidget {
 }
 
 // This is the type used by the popup menu below.
-enum MenuItem { TASK_COMPLETED }
+enum MenuItem { TASK_COMPLETED, TASK_UNCOMPLETED }
