@@ -22,8 +22,8 @@ class SideDrawer extends StatelessWidget {
         padding: EdgeInsets.all(0.0),
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountName: Text("Burhanuddin Rashid"),
-            accountEmail: Text("burhanrashid5253@gmail.com"),
+            accountName: Text("Agnimon Frontier"),
+            accountEmail: Text("AgnimonFrontier@gmail.com"),
             otherAccountsPictures: <Widget>[
               IconButton(
                   icon: Icon(
@@ -38,7 +38,7 @@ class SideDrawer extends StatelessWidget {
             ],
             currentAccountPicture: CircleAvatar(
               backgroundColor: Theme.of(context).colorScheme.primary,
-              backgroundImage: AssetImage("assets/profile_pic.jpg"),
+              backgroundImage: AssetImage("assets/Agnimon.jpg"),
             ),
           ),
           ListTile(
