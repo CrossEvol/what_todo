@@ -11,6 +11,7 @@ import 'package:flutter_app/pages/labels/label_widget.dart';
 import 'package:flutter_app/pages/projects/project_bloc.dart';
 import 'package:flutter_app/pages/projects/project_widget.dart';
 import 'package:flutter_app/constants/keys.dart';
+import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/extension.dart';
 
 class SideDrawer extends StatelessWidget {
@@ -81,6 +82,16 @@ class SideDrawer extends StatelessWidget {
           BlocProvider(
             bloc: LabelBloc(LabelDB.get()),
             child: LabelPage(),
+          ),
+          ListTile(
+            onTap: () {
+              showSnackbar(context, 'Unknown has not implemented.',materialColor: Colors.teal);
+            },
+            leading: Icon(Icons.unarchive_sharp),
+            title: Text(
+              'UNKNOWN',
+              key: ValueKey(SideDrawerKeys.UNKNOWN),
+            ),
           )
         ],
       ),
