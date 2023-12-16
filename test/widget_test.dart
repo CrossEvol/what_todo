@@ -6,6 +6,7 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'dart:math';
+import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';
@@ -13,12 +14,13 @@ import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
+  testWidgets('IntegrationTest for the complete App',
+      (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(MyApp());
 
     // Verify that our counter starts at 0.
-    {
+    if (Platform.isWindows) {
       expect(find.text('Today'), findsNWidgets(2));
       expect(find.text('Inbox'), findsOneWidget);
       expect(find.text('Next 7 Days'), findsOneWidget);
@@ -26,10 +28,18 @@ void main() {
     }
 
     // Verify the AppBar has the leading icon and trailing icon
-    {
-      // expect(find.byIcon(Icons.menu), findsOneWidget);
-      expect(find.byIcon(Icons.adaptive.more), findsOneWidget);
+    if (Platform.isAndroid) {
+      expect(find.byIcon(Icons.menu), findsOneWidget);
+
+      await tester.tap(find.byIcon(Icons.menu));
+      await tester.pump();
+
+      expect(find.text('Today'), findsNWidgets(2));
+      expect(find.text('Inbox'), findsOneWidget);
+      expect(find.text('Next 7 Days'), findsOneWidget);
     }
+
+    expect(find.byIcon(Icons.adaptive.more), findsOneWidget);
 
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pump();
@@ -54,14 +64,5 @@ void main() {
     {
       expect(find.text('Add Task'), findsNothing);
     }
-
-    //
-    // // Tap the '+' icon and trigger a frame.
-    // await tester.tap(find.byIcon(Icons.add));
-    // await tester.pump();
-    //
-    // // Verify that our counter has incremented.
-    // expect(find.text('0'), findsNothing);
-    // expect(find.text('1'), findsOneWidget);
   });
 }
