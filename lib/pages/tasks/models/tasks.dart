@@ -10,10 +10,13 @@ class Tasks {
   static final dbStatus = "status";
   static final dbProjectID = "projectId";
 
-  String title, comment;
+  String title;
+  String comment;
   String? projectName;
-  int? id, projectColor;
-  int dueDate, projectId;
+  int? id;
+  int? projectColor;
+  int dueDate;
+  int projectId;
   Status priority;
   TaskStatus? tasksStatus;
   List<String> labelList = [];

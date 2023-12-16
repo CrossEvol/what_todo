@@ -7,7 +7,8 @@ class Label {
 
   int? id;
   late int colorValue;
-  late String name, colorName;
+  late String name;
+  late String colorName;
 
   Label.create(this.name, this.colorValue, this.colorName);
 

@@ -4,7 +4,9 @@ class TaskLabels {
   static final dbTaskId = "taskId";
   static final dbLabelId = "labelId";
 
-  int? id, taskId, labelId;
+  int? id;
+  int? taskId;
+  int? labelId;
 
   TaskLabels.create(this.taskId, this.labelId);
 

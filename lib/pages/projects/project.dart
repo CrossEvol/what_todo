@@ -9,7 +9,8 @@ class Project {
 
   int? id;
   late int colorValue;
-  late String name, colorName;
+  late String name;
+  late String colorName;
 
   Project.create(this.name, this.colorValue, this.colorName);
 
