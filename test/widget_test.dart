@@ -5,13 +5,14 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-import 'dart:math';
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/main.dart';
-import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import '../integration_test/test_helper.dart';
 
 void main() {
   testWidgets('IntegrationTest for the complete App',
@@ -24,7 +25,7 @@ void main() {
       expect(find.text('Today'), findsNWidgets(2));
       expect(find.text('Inbox'), findsOneWidget);
       expect(find.text('Next 7 Days'), findsOneWidget);
-      expect(find.byType(FloatingActionButton), findsOneWidget);
+      expect(find.byValueKey(HomePageKeys.ADD_NEW_TASK_BUTTON), findsOneWidget);
     }
 
     // Verify the AppBar has the leading icon and trailing icon
@@ -41,7 +42,7 @@ void main() {
 
     expect(find.byIcon(Icons.adaptive.more), findsOneWidget);
 
-    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byValueKey(HomePageKeys.ADD_NEW_TASK_BUTTON));
     await tester.pump();
 
     {
@@ -52,13 +53,13 @@ void main() {
       expect(find.text('Labels'), findsOneWidget);
       expect(find.text('Comments'), findsOneWidget);
       expect(find.text('Reminder'), findsOneWidget);
-      expect(find.byType(FloatingActionButton), findsOneWidget);
+      expect(find.byValueKey(AddTaskKeys.ADD_TASK), findsOneWidget);
       expect(find.byType(TextFormField), findsOneWidget);
     }
 
     await tester.enterText(find.byType(TextFormField), 'test');
     await tester.pump();
-    await tester.tap(find.byType(FloatingActionButton));
+    await tester.tap(find.byValueKey(AddTaskKeys.ADD_TASK));
     await tester.pump();
 
     {
