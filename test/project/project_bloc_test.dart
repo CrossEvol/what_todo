@@ -5,7 +5,7 @@ import 'package:flutter_app/constants/color_constant.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
-import 'test_data.dart';
+import '../test_data.dart';
 
 class MockProjectDb extends Mock implements ProjectDB {}
 

@@ -7,9 +7,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
+import '../../integration_test/test_data.dart';
+import '../test_helpers.dart';
 import 'task_list_dissmissble_widget_test.mocks.dart';
-import 'test_data.dart';
-import 'test_helpers.dart';
 
 @GenerateMocks([TaskDB])
 void main() {

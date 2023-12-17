@@ -4,7 +4,8 @@ import 'package:flutter_app/pages/tasks/models/tasks.dart';
 import 'package:flutter_app/pages/tasks/row_task.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'test_helpers.dart';
+
+import '../test_helpers.dart';
 
 void main() {
   Future<void> verifyPriorityColor(WidgetTester tester, Status priority) async {
