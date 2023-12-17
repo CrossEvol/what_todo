@@ -14,7 +14,7 @@ class AddTaskBloc implements BlocBase {
   final TaskDB _taskDB;
   final ProjectDB _projectDB;
   final LabelDB _labelDB;
-  Status lastPrioritySelection = Status.PRIORITY_4;
+  PriorityStatus lastPrioritySelection = PriorityStatus.PRIORITY_4;
 
   AddTaskBloc(this._taskDB, this._projectDB, this._labelDB) {
     _loadProjects();
@@ -46,9 +46,9 @@ class AddTaskBloc implements BlocBase {
 
   List<Label> get selectedLabels => _selectedLabelList;
 
-  BehaviorSubject<Status> _prioritySelected = BehaviorSubject<Status>();
+  BehaviorSubject<PriorityStatus> _prioritySelected = BehaviorSubject<PriorityStatus>();
 
-  Stream<Status> get prioritySelected => _prioritySelected.stream;
+  Stream<PriorityStatus> get prioritySelected => _prioritySelected.stream;
 
   BehaviorSubject<int> _dueDateSelected = BehaviorSubject<int>();
 
@@ -102,14 +102,14 @@ class AddTaskBloc implements BlocBase {
     _labelSelected.add(displayLabels);
   }
 
-  void updatePriority(Status priority) {
+  void updatePriority(PriorityStatus priority) {
     _prioritySelected.add(priority);
     lastPrioritySelection = priority;
   }
 
   Stream createTask() {
     return ZipStream.zip3(selectedProject, dueDateSelected, prioritySelected,
-        (Project project, int dueDateSelected, Status status) {
+        (Project project, int dueDateSelected, PriorityStatus status) {
       List<int> labelIds = [];
       _selectedLabelList.forEach((label) {
         labelIds.add(label.id!);

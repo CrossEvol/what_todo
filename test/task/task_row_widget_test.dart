@@ -8,7 +8,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../test_helpers.dart';
 
 void main() {
-  Future<void> verifyPriorityColor(WidgetTester tester, Status priority) async {
+  Future<void> verifyPriorityColor(WidgetTester tester, PriorityStatus priority) async {
     var testTask = Tasks.update(
         id: 1, title: "Task One", projectId: 1, priority: priority);
 
@@ -32,7 +32,7 @@ void main() {
         id: 1,
         title: "Task One",
         projectId: 1,
-        priority: Status.PRIORITY_3,
+        priority: PriorityStatus.PRIORITY_3,
         dueDate: dueDate.millisecondsSinceEpoch);
 
     testTask1.projectName = "Inbox";
@@ -61,7 +61,7 @@ void main() {
         id: 1,
         title: "Task One",
         projectId: 1,
-        priority: Status.PRIORITY_3,
+        priority: PriorityStatus.PRIORITY_3,
         dueDate: dueDate.millisecondsSinceEpoch);
 
     testTask1.projectName = "Inbox";
@@ -82,9 +82,9 @@ void main() {
 
   testWidgets("Task row smoke test with priorities color",
       (WidgetTester tester) async {
-    await verifyPriorityColor(tester, Status.PRIORITY_1);
-    await verifyPriorityColor(tester, Status.PRIORITY_2);
-    await verifyPriorityColor(tester, Status.PRIORITY_3);
-    await verifyPriorityColor(tester, Status.PRIORITY_4);
+    await verifyPriorityColor(tester, PriorityStatus.PRIORITY_1);
+    await verifyPriorityColor(tester, PriorityStatus.PRIORITY_2);
+    await verifyPriorityColor(tester, PriorityStatus.PRIORITY_3);
+    await verifyPriorityColor(tester, PriorityStatus.PRIORITY_4);
   });
 }

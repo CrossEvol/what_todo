@@ -90,7 +90,7 @@ void main() {
       await tester.pump();
 
       expect(fakeTaskDb.task!.title, "My Task");
-      expect(fakeTaskDb.task!.priority, Status.PRIORITY_4);
+      expect(fakeTaskDb.task!.priority, PriorityStatus.PRIORITY_4);
       expect(fakeTaskDb.task!.projectId, Project.getInbox().id);
       expect(fakeTaskDb.labelIds, []);
     });

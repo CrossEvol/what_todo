@@ -53,7 +53,7 @@ var testTask1 = Tasks.update(
   id: 1,
   title: "Task One",
   projectId: 1,
-  priority: Status.PRIORITY_3,
+  priority: PriorityStatus.PRIORITY_3,
   dueDate: DateTime.now().millisecondsSinceEpoch,
 );
 
@@ -61,7 +61,7 @@ var testTask2 = Tasks.update(
   id: 2,
   title: "Task Two",
   projectId: 2,
-  priority: Status.PRIORITY_2,
+  priority: PriorityStatus.PRIORITY_2,
   dueDate: DateTime.now().millisecondsSinceEpoch,
 );
 
@@ -69,6 +69,6 @@ var testTask3 = Tasks.update(
   id: 3,
   title: "Task Three",
   projectId: 3,
-  priority: Status.PRIORITY_1,
+  priority: PriorityStatus.PRIORITY_1,
   dueDate: DateTime.now().add(new Duration(days: 7)).millisecondsSinceEpoch,
 );

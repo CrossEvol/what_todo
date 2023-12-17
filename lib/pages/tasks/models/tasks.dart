@@ -17,7 +17,7 @@ class Tasks {
   int? projectColor;
   int dueDate;
   int projectId;
-  Status priority;
+  PriorityStatus priority;
   TaskStatus? tasksStatus;
   List<String> labelList = [];
 
@@ -26,7 +26,7 @@ class Tasks {
     required this.projectId,
     this.comment = "",
     this.dueDate = -1,
-    this.priority = Status.PRIORITY_4,
+    this.priority = PriorityStatus.PRIORITY_4,
   }) {
     if (this.dueDate == -1) {
       this.dueDate = DateTime.now().millisecondsSinceEpoch;
@@ -42,7 +42,7 @@ class Tasks {
     required this.projectId,
     this.comment = "",
     this.dueDate = -1,
-    this.priority = Status.PRIORITY_4,
+    this.priority = PriorityStatus.PRIORITY_4,
     this.tasksStatus = TaskStatus.PENDING,
   }) {
     if (this.dueDate == -1) {
@@ -57,7 +57,7 @@ class Tasks {
           projectId: map[dbProjectID],
           comment: map[dbComment],
           dueDate: map[dbDueDate],
-          priority: Status.values[map[dbPriority]],
+          priority: PriorityStatus.values[map[dbPriority]],
           tasksStatus: TaskStatus.values[map[dbStatus]],
         );
 

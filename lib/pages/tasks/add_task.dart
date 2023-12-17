@@ -80,9 +80,9 @@ class AddTaskScreen extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.flag),
             title: Text("Priority"),
-            subtitle: StreamBuilder<Status>(
+            subtitle: StreamBuilder<PriorityStatus>(
               stream: createTaskBloc.prioritySelected,
-              initialData: Status.PRIORITY_4,
+              initialData: PriorityStatus.PRIORITY_4,
               builder: (context, snapshot) =>
                   Text(priorityText[snapshot.data!.index]),
             ),
@@ -152,26 +152,26 @@ class AddTaskScreen extends StatelessWidget {
     }
   }
 
-  Future<Status?> _showPriorityDialog(
+  Future<PriorityStatus?> _showPriorityDialog(
       AddTaskBloc createTaskBloc, BuildContext context) async {
-    return await showDialog<Status>(
+    return await showDialog<PriorityStatus>(
         context: context,
         builder: (BuildContext dialogContext) {
           return SimpleDialog(
             title: const Text('Select Priority'),
             children: <Widget>[
-              buildContainer(context, Status.PRIORITY_1),
-              buildContainer(context, Status.PRIORITY_2),
-              buildContainer(context, Status.PRIORITY_3),
-              buildContainer(context, Status.PRIORITY_4),
+              buildContainer(context, PriorityStatus.PRIORITY_1),
+              buildContainer(context, PriorityStatus.PRIORITY_2),
+              buildContainer(context, PriorityStatus.PRIORITY_3),
+              buildContainer(context, PriorityStatus.PRIORITY_4),
             ],
           );
         });
   }
 
-  Future<Status?> _showProjectsDialog(
+  Future<PriorityStatus?> _showProjectsDialog(
       AddTaskBloc createTaskBloc, BuildContext context) async {
-    return showDialog<Status>(
+    return showDialog<PriorityStatus>(
         context: context,
         builder: (BuildContext dialogContext) {
           return StreamBuilder<List<Project>>(
@@ -187,9 +187,9 @@ class AddTaskScreen extends StatelessWidget {
         });
   }
 
-  Future<Status?> _showLabelsDialog(BuildContext context) async {
+  Future<PriorityStatus?> _showLabelsDialog(BuildContext context) async {
     AddTaskBloc createTaskBloc = BlocProvider.of(context);
-    return showDialog<Status>(
+    return showDialog<PriorityStatus>(
         context: context,
         builder: (BuildContext context) {
           return StreamBuilder<List<Label>>(
@@ -252,7 +252,7 @@ class AddTaskScreen extends StatelessWidget {
     return labels;
   }
 
-  GestureDetector buildContainer(BuildContext context, Status status) {
+  GestureDetector buildContainer(BuildContext context, PriorityStatus status) {
     AddTaskBloc createTaskBloc = BlocProvider.of(context);
     return GestureDetector(
         onTap: () {

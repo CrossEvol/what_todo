@@ -2,7 +2,7 @@ class Priority {
   final String dbPriority = "priority";
 }
 
-enum Status {
+enum PriorityStatus {
   PRIORITY_1,
   PRIORITY_2,
   PRIORITY_3,
