@@ -53,6 +53,7 @@ class AddLabel extends StatelessWidget {
                   labelName,
                   currentSelectedPalette.colorValue,
                   currentSelectedPalette.colorName);
+              //TODO should this method split into check and update ?
               labelBloc.checkIfLabelExist(label);
             }
           }),
