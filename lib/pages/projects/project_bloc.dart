@@ -6,10 +6,10 @@ import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 
 class ProjectBloc implements BlocBase {
-  StreamController<List<Project>> _projectController =
+  StreamController<List<Project>> _projectsController =
       StreamController<List<Project>>.broadcast();
 
-  Stream<List<Project>> get projects => _projectController.stream;
+  Stream<List<Project>> get projects => _projectsController.stream;
 
   StreamController<ColorPalette> _colorController =
       StreamController<ColorPalette>.broadcast();
@@ -25,14 +25,14 @@ class ProjectBloc implements BlocBase {
 
   @override
   void dispose() {
-    _projectController.close();
+    _projectsController.close();
     _colorController.close();
   }
 
   void _loadProjects(bool isInboxVisible) {
     _projectDB.getProjects(isInboxVisible: isInboxVisible).then((projects) {
-      if (!_projectController.isClosed) {
-        _projectController.sink.add(projects);
+      if (!_projectsController.isClosed) {
+        _projectsController.sink.add(projects);
       }
     });
   }
