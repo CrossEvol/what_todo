@@ -7,10 +7,10 @@ import 'package:flutter_app/constants/color_constant.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LabelBloc implements BlocBase {
-  StreamController<List<Label>> _labelController =
+  StreamController<List<Label>> _labelsController =
       BehaviorSubject<List<Label>>();
 
-  Stream<List<Label>> get labels => _labelController.stream;
+  Stream<List<Label>> get labels => _labelsController.stream;
 
   StreamController<bool> _labelExistController =
       StreamController<bool>.broadcast();
@@ -30,15 +30,15 @@ class LabelBloc implements BlocBase {
 
   @override
   void dispose() {
-    _labelController.close();
+    _labelsController.close();
     _labelExistController.close();
     _colorController.close();
   }
 
   void _loadLabels() {
     _labelDB.getLabels().then((labels) {
-      if (!_labelController.isClosed) {
-        _labelController.sink.add(List.unmodifiable(labels));
+      if (!_labelsController.isClosed) {
+        _labelsController.sink.add(List.unmodifiable(labels));
       }
     });
   }
