@@ -60,6 +60,18 @@ class Tasks {
           priority: Status.values[map[dbPriority]],
           tasksStatus: TaskStatus.values[map[dbStatus]],
         );
+
+  Map<String, dynamic> toMap() {
+    return {
+      Tasks.dbId: id,
+      Tasks.dbTitle: title,
+      Tasks.dbComment: comment,
+      Tasks.dbDueDate: dueDate,
+      Tasks.dbPriority: priority.index, // convert enum to value index
+      Tasks.dbStatus: tasksStatus?.index, // convert enum to value index (nullable)
+      Tasks.dbProjectID: projectId,
+    };
+  }
 }
 
 enum TaskStatus {
