@@ -16,6 +16,15 @@ class ProjectDB {
 
   Future<List<Project>> getProjects({bool isInboxVisible = true}) async {
     var db = await _appDatabase.getDb();
+
+    // var result = await db.query(
+    //   Project.tblProject,
+    // );
+    // var list = result.map((projectMap) => Project.fromMap(projectMap)).toList();
+    // if (isInboxVisible) {
+    //   list.removeWhere((project) => project.id == 1);
+    // }
+
     var whereClause = isInboxVisible ? ";" : " WHERE ${Project.dbId}!=1;";
     var result =
         await db.rawQuery('SELECT * FROM ${Project.tblProject} $whereClause');
@@ -33,12 +42,16 @@ class ProjectDB {
       await txn.rawInsert('INSERT OR REPLACE INTO '
           '${Project.tblProject}(${Project.dbId},${Project.dbName},${Project.dbColorCode},${Project.dbColorName})'
           ' VALUES(${project.id},"${project.name}", ${project.colorValue}, "${project.colorName}")');
+      // await txn.update(Project.tblProject, project.toMap(),
+      //     where: "${Project.dbId} = ?", whereArgs: [project.id]);
     });
   }
 
   Future deleteProject(int projectID) async {
     var db = await _appDatabase.getDb();
     await db.transaction((Transaction txn) async {
+      // await txn.delete(Project.tblProject,
+      //     where: "${Project.dbId} = ?", whereArgs: [projectID]);
       await txn.rawDelete(
           'DELETE FROM ${Project.tblProject} WHERE ${Project.dbId}==$projectID;');
     });

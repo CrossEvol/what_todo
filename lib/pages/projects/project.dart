@@ -39,4 +39,13 @@ class Project {
             name: map[dbName],
             colorCode: map[dbColorCode],
             colorName: map[dbColorName]);
+
+  Map<String, dynamic> toMap() {
+    return {
+      Project.dbId: id,
+      Project.dbName: name,
+      Project.dbColorCode: colorValue,
+      Project.dbColorName: colorName,
+    };
+  }
 }
