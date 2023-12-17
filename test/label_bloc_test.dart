@@ -1,7 +1,7 @@
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/labels/label_bloc.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
-import 'package:flutter_app/constants/color_utils.dart';
+import 'package:flutter_app/constants/color_constant.dart';
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_app/bloc/bloc_provider.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
-import 'package:flutter_app/constants/color_utils.dart';
+import 'package:flutter_app/constants/color_constant.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LabelBloc implements BlocBase {

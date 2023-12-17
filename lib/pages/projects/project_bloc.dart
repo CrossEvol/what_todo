@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_app/bloc/bloc_provider.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
-import 'package:flutter_app/constants/color_utils.dart';
+import 'package:flutter_app/constants/color_constant.dart';
 
 class ProjectBloc implements BlocBase {
   StreamController<List<Project>> _projectController =

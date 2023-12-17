@@ -7,7 +7,7 @@ import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/labels/label_bloc.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/collapsable_expand_tile.dart';
-import 'package:flutter_app/constants/color_utils.dart';
+import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 
