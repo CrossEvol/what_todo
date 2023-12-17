@@ -32,4 +32,13 @@ class Label {
             name: map[dbName],
             colorCode: map[dbColorCode],
             colorName: map[dbColorName]);
+
+  Map<String, dynamic> toMap() {
+    return {
+      Label.dbId: id,
+      Label.dbName: name,
+      Label.dbColorCode: colorValue,
+      Label.dbColorName: colorName,
+    };
+  }
 }

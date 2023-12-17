@@ -35,15 +35,8 @@ class LabelDB {
       await txn.rawInsert('INSERT OR REPLACE INTO '
           '${Label.tblLabel}(${Label.dbName},${Label.dbColorCode},${Label.dbColorName})'
           ' VALUES("${label.name}", ${label.colorValue}, "${label.colorName}")');
-      // await txn.update(
-      //     Label.tblLabel,
-      //     {
-      //       Label.dbName: label.name,
-      //       Label.dbColorCode: label.colorValue,
-      //       Label.dbColorName: label.colorName
-      //     },
-      //     where: "${label.id} = ?",
-      //     whereArgs: [label.id]);
+      // await txn.update(Label.tblLabel, label.toMap(),
+      //     where: "${label.id} = ?", whereArgs: [label.id]);
     });
   }
 
