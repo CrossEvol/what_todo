@@ -70,6 +70,12 @@ class TaskDB {
         'LEFT JOIN ${Label.tblLabel} ON ${Label.tblLabel}.${Label.dbId}=${TaskLabels.tblTaskLabel}.${TaskLabels.dbLabelId} '
         'INNER JOIN ${Project.tblProject} ON ${Tasks.tblTask}.${Tasks.dbProjectID} = ${Project.tblProject}.${Project.dbId} WHERE ${Tasks.tblTask}.${Tasks.dbProjectID}=$projectId $whereStatus GROUP BY ${Tasks.tblTask}.${Tasks.dbId} ORDER BY ${Tasks.tblTask}.${Tasks.dbDueDate} ASC;');
 
+    // var tasks = await db.query(Tasks.tblTask);
+    // var taskLabels = (await Future.wait(tasks
+    //         .map((t) async => (await (db.query(TaskLabels.tblTaskLabel,
+    //             where: "${TaskLabels.dbTaskId} = ?", whereArgs: [t["id"]]))))
+    //         .toList())
+    //     .then((value) => value))[0];
     return _bindData(result);
   }
 
@@ -80,7 +86,8 @@ class TaskDB {
         ? "AND ${Tasks.tblTask}.${Tasks.dbStatus}=${TaskStatus.PENDING.index}"
         : "";
     var result = await db.rawQuery(
-        'SELECT ${Tasks.tblTask}.*,${Project.tblProject}.${Project.dbName},${Project.tblProject}.${Project.dbColorCode},group_concat(${Label.tblLabel}.${Label.dbName}) as labelNames FROM ${Tasks.tblTask} LEFT JOIN ${TaskLabels.tblTaskLabel} ON ${TaskLabels.tblTaskLabel}.${TaskLabels.dbTaskId}=${Tasks.tblTask}.${Tasks.dbId} '
+        'SELECT ${Tasks.tblTask}.*,${Project.tblProject}.${Project.dbName},${Project.tblProject}.${Project.dbColorCode},group_concat(${Label.tblLabel}.${Label.dbName}) as labelNames '
+        'FROM ${Tasks.tblTask} LEFT JOIN ${TaskLabels.tblTaskLabel} ON ${TaskLabels.tblTaskLabel}.${TaskLabels.dbTaskId}=${Tasks.tblTask}.${Tasks.dbId} '
         'LEFT JOIN ${Label.tblLabel} ON ${Label.tblLabel}.${Label.dbId}=${TaskLabels.tblTaskLabel}.${TaskLabels.dbLabelId} '
         'INNER JOIN ${Project.tblProject} ON ${Tasks.tblTask}.${Tasks.dbProjectID} = ${Project.tblProject}.${Project.dbId} WHERE ${Tasks.tblTask}.${Tasks.dbProjectID}=${Project.tblProject}.${Project.dbId} $whereStatus GROUP BY ${Tasks.tblTask}.${Tasks.dbId} having labelNames LIKE "%$labelName%" ORDER BY ${Tasks.tblTask}.${Tasks.dbDueDate} ASC;');
 
@@ -90,6 +97,8 @@ class TaskDB {
   Future deleteTask(int taskID) async {
     var db = await _appDatabase.getDb();
     await db.transaction((Transaction txn) async {
+      // await txn.delete(Tasks.tblTask,
+      //     where: "${Tasks.dbId} = ?", whereArgs: [taskID]);
       await txn.rawDelete(
           'DELETE FROM ${Tasks.tblTask} WHERE ${Tasks.dbId}=$taskID;');
     });
@@ -98,6 +107,8 @@ class TaskDB {
   Future updateTaskStatus(int taskID, TaskStatus status) async {
     var db = await _appDatabase.getDb();
     await db.transaction((Transaction txn) async {
+      // await txn.update(Tasks.tblTask, {Tasks.dbStatus: status.index},
+      //     where: "${Tasks.dbId} = ?", whereArgs: [taskID]);
       await txn.rawQuery(
           "UPDATE ${Tasks.tblTask} SET ${Tasks.dbStatus} = '${status.index}' WHERE ${Tasks.dbId} = '$taskID'");
     });
@@ -118,5 +129,15 @@ class TaskDB {
         });
       }
     });
+
+    // await db.transaction((Transaction txn) async {
+    //   int id = await txn.insert(Tasks.tblTask, task.toMap());
+    //   if (id > 0 && labelIDs != null && labelIDs.length > 0) {
+    //     labelIDs.forEach((labelId) {
+    //       txn.insert(
+    //           TaskLabels.tblTaskLabel, TaskLabels.create(id, labelId).toMap());
+    //     });
+    //   }
+    // });
   }
 }
