@@ -21,6 +21,11 @@ class Tasks {
   TaskStatus? tasksStatus;
   List<String> labelList = [];
 
+  @override
+  String toString() {
+    return 'Tasks{title: $title, comment: $comment, projectName: $projectName, id: $id, projectColor: $projectColor, dueDate: $dueDate, projectId: $projectId, priority: $priority, tasksStatus: $tasksStatus, labelList: $labelList}';
+  }
+
   Tasks.create({
     required this.title,
     required this.projectId,
@@ -67,8 +72,10 @@ class Tasks {
       Tasks.dbTitle: title,
       Tasks.dbComment: comment,
       Tasks.dbDueDate: dueDate,
-      Tasks.dbPriority: priority.index, // convert enum to value index
-      Tasks.dbStatus: tasksStatus?.index, // convert enum to value index (nullable)
+      Tasks.dbPriority: priority.index,
+      // convert enum to value index
+      Tasks.dbStatus: tasksStatus?.index,
+      // convert enum to value index (nullable)
       Tasks.dbProjectID: projectId,
     };
   }
