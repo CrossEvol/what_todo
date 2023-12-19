@@ -9,10 +9,10 @@ class TaskBloc implements BlocBase {
   ///
   /// Synchronous Stream to handle the provision of the movie genres
   ///
-  StreamController<List<Tasks>> _taskController =
+  StreamController<List<Tasks>> _tasksController =
       StreamController<List<Tasks>>.broadcast();
 
-  Stream<List<Tasks>> get tasks => _taskController.stream;
+  Stream<List<Tasks>> get tasks => _tasksController.stream;
 
   ///
   StreamController<int> _cmdController = StreamController<int>.broadcast();
@@ -39,13 +39,13 @@ class TaskBloc implements BlocBase {
 
   void _updateTaskStream(List<Tasks> tasks) {
     _tasksList = tasks;
-    if (!_taskController.isClosed) {
-      _taskController.sink.add(UnmodifiableListView<Tasks>(_tasksList));
+    if (!_tasksController.isClosed) {
+      _tasksController.sink.add(UnmodifiableListView<Tasks>(_tasksList));
     }
   }
 
   void dispose() {
-    _taskController.close();
+    _tasksController.close();
     _cmdController.close();
   }
 
