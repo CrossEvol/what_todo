@@ -10,7 +10,7 @@ import 'package:flutter_app/pages/labels/label_widget.dart';
 import 'package:flutter_app/pages/projects/project_widget.dart';
 import 'package:flutter_app/pages/tasks/add_task.dart';
 import 'package:flutter_app/pages/tasks/task_completed/task_completed.dart';
-import 'package:flutter_app/pages/tasks/task_completed/task_uncompleted.dart';
+import 'package:flutter_app/pages/tasks/task_uncompleted/task_uncompleted.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:window_manager/window_manager.dart';

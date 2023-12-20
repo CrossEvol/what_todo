@@ -7,7 +7,7 @@ import 'package:flutter_app/pages/home/side_drawer.dart';
 import 'package:flutter_app/pages/tasks/add_task.dart';
 import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
 import 'package:flutter_app/pages/tasks/task_completed/task_completed.dart';
-import 'package:flutter_app/pages/tasks/task_completed/task_uncompleted.dart';
+import 'package:flutter_app/pages/tasks/task_uncompleted/task_uncompleted.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_app/pages/tasks/task_widgets.dart';
 import 'package:flutter_app/constants/keys.dart';
