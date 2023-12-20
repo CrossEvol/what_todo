@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
 import 'package:flutter_app/pages/tasks/row_task.dart';
@@ -18,9 +20,9 @@ void main() {
 
     //Return empty task list
     when(mockTaskDb.getTasks(
-        startDate: anyNamed("startDate"),
-        endDate: anyNamed("endDate"),
-        taskStatus: anyNamed("taskStatus")))
+            startDate: anyNamed("startDate"),
+            endDate: anyNamed("endDate"),
+            taskStatus: anyNamed("taskStatus")))
         .thenAnswer((_) => Future.value(List.empty()));
 
     var taskBloc = TaskBloc(mockTaskDb);
@@ -51,9 +53,9 @@ void main() {
 
     //Return empty task list
     when(mockTaskDb.getTasks(
-        startDate: anyNamed("startDate"),
-        endDate: anyNamed("endDate"),
-        taskStatus: anyNamed("taskStatus")))
+            startDate: anyNamed("startDate"),
+            endDate: anyNamed("endDate"),
+            taskStatus: anyNamed("taskStatus")))
         .thenAnswer((_) => Future.value([testTask1, testTask2, testTask3]));
 
     var taskBloc = TaskBloc(mockTaskDb);
@@ -85,9 +87,9 @@ void main() {
 
     //Return empty task list
     when(mockTaskDb.getTasks(
-        startDate: anyNamed("startDate"),
-        endDate: anyNamed("endDate"),
-        taskStatus: anyNamed("taskStatus")))
+            startDate: anyNamed("startDate"),
+            endDate: anyNamed("endDate"),
+            taskStatus: anyNamed("taskStatus")))
         .thenAnswer((_) => Future.value([testTask1, testTask2]));
 
     when(mockTaskDb.deleteTask(any)).thenAnswer((_) => Future.value());
@@ -102,9 +104,9 @@ void main() {
 
     //Return task list after delete
     when(mockTaskDb.getTasks(
-        startDate: anyNamed("startDate"),
-        endDate: anyNamed("endDate"),
-        taskStatus: anyNamed("taskStatus")))
+            startDate: anyNamed("startDate"),
+            endDate: anyNamed("endDate"),
+            taskStatus: anyNamed("taskStatus")))
         .thenAnswer((_) => Future.value([testTask2]));
 
     // Swipe the item to dismiss it.
@@ -118,5 +120,14 @@ void main() {
     expect(find.text(testTask2.title), findsOneWidget);
     expect(verify(mockTaskDb.deleteTask(captureAny)).captured.single,
         testTask1.id);
+
+    //TODO task dismiss failure
+    when(mockTaskDb.updateTaskStatus(any, any))
+        .thenAnswer((_) => Future.value());
+    await tester.fling(
+        find.byKey(ValueKey("swipe_2_0")), Offset(0.0, -1000.0), 1000.0);
+    await tester.pumpAndSettle();
+    expect(find.text(testTask2.title), findsOneWidget);
+    expect(find.byKey(ValueKey("swipe_2_0")), findsOneWidget);
   });
 }
