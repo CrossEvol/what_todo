@@ -37,21 +37,25 @@ class TasksPage extends StatelessWidget {
                           key: ValueKey("swipe_${list[index].id}_$index"),
                           onDismissed: (DismissDirection direction) {
                             var taskID = list[index].id!;
-                            final TaskBloc _tasksBloc =
+                            final TaskBloc taskBloc =
                                 BlocProvider.of<TaskBloc>(context);
-                            String message = "";
+                            String message =
+                                direction == DismissDirection.endToStart
+                                    ? "Task completed"
+                                    : "Task deleted";
                             if (direction == DismissDirection.endToStart) {
-                              _tasksBloc.updateStatus(
+                              taskBloc.updateStatus(
                                   taskID, TaskStatus.COMPLETE);
-                              message = "Task completed";
                             } else {
-                              _tasksBloc.delete(taskID);
-                              message = "Task deleted";
+                              taskBloc.delete(taskID);
                             }
-                            SnackBar snackbar =
-                                SnackBar(content: Text(message));
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackbar);
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Text(message),
+                              backgroundColor:
+                                  direction == DismissDirection.endToStart
+                                      ? Colors.green
+                                      : Colors.red,
+                            ));
                           },
                           background: Container(
                             color: Colors.red,
