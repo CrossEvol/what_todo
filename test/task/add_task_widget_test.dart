@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_app/models/priority.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
@@ -57,14 +58,13 @@ class FakeTaskDb implements TaskDB {
   }
 }
 
-
 @GenerateMocks([ProjectDB, LabelDB])
 void main() {
   group("Add Task", () {
     testWidgets("Add Task", (tester) async {
       final mockProjectDb = MockProjectDB();
-      when(mockProjectDb.getProjects(isInboxVisible: true)).thenAnswer(
-          (_) async => [testProject1, testProject2, testProject3]);
+      when(mockProjectDb.getProjects(isInboxVisible: true))
+          .thenAnswer((_) async => [testProject1, testProject2, testProject3]);
 
       final mockLabelDb = MockLabelDB();
       when(mockLabelDb.getLabels()).thenAnswer(
@@ -85,12 +85,16 @@ void main() {
       await tester.enterText(taskTitleKey, "My Task");
       await tester.pump();
 
-      var addTaskButtonFinder = find.byKey(ValueKey("addTask"));
-      await tester.tap(addTaskButtonFinder);
+      await tester.tap(find.text('Priority'));
+      await tester.pump();
+      await tester.tap(find.text('Priority 1'));
+      await tester.pump();
+
+      await tester.tap(find.byKey(ValueKey("addTask")));
       await tester.pump();
 
       expect(fakeTaskDb.task!.title, "My Task");
-      expect(fakeTaskDb.task!.priority, PriorityStatus.PRIORITY_4);
+      expect(fakeTaskDb.task!.priority, PriorityStatus.PRIORITY_1);
       expect(fakeTaskDb.task!.projectId, Project.getInbox().id);
       expect(fakeTaskDb.labelIds, []);
     });

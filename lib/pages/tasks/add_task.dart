@@ -37,17 +37,25 @@ class AddTaskScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
-                  key: ValueKey(AddTaskKeys.ADD_TITLE),
-                  validator: (value) {
-                    var msg = value!.isEmpty ? "Title Cannot be Empty" : null;
-                    return msg;
-                  },
-                  onSaved: (value) {
-                    createTaskBloc.updateTitle = value!;
-                  },
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
-                  decoration: InputDecoration(hintText: "Title")),
+                key: ValueKey(AddTaskKeys.ADD_TITLE),
+                validator: (value) {
+                  var msg = value!.isEmpty ? "Title Cannot be Empty" : null;
+                  return msg;
+                },
+                onSaved: (value) {
+                  createTaskBloc.updateTitle = value!;
+                },
+                maxLines: null,
+                keyboardType: TextInputType.multiline,
+                decoration: InputDecoration(
+                  hintText: "",
+                  labelText: "Title",
+                  focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).primaryColor)),
+                  floatingLabelBehavior: FloatingLabelBehavior.auto,
+                ),
+              ),
             ),
             key: _formState,
           ),
@@ -60,6 +68,7 @@ class AddTaskScreen extends StatelessWidget {
               initialData: Project.getInbox(),
               builder: (context, snapshot) => Text(snapshot.data!.name),
             ),
+            hoverColor: _grey,
             onTap: () {
               _showProjectsDialog(createTaskBloc, context);
             },
@@ -73,8 +82,9 @@ class AddTaskScreen extends StatelessWidget {
               builder: (context, snapshot) =>
                   Text(getFormattedDate(snapshot.data!)),
             ),
+            hoverColor: _grey,
             onTap: () {
-              _selectDate(context);
+              _showDatePicker(context);
             },
           ),
           ListTile(
@@ -86,6 +96,7 @@ class AddTaskScreen extends StatelessWidget {
               builder: (context, snapshot) =>
                   Text(priorityText[snapshot.data!.index]),
             ),
+            hoverColor: _grey,
             onTap: () {
               _showPriorityDialog(createTaskBloc, context);
             },
@@ -98,6 +109,7 @@ class AddTaskScreen extends StatelessWidget {
                 initialData: "No Labels",
                 builder: (context, snapshot) => Text(snapshot.data!),
               ),
+              hoverColor: _grey,
               onTap: () {
                 _showLabelsDialog(context);
               }),
@@ -105,6 +117,7 @@ class AddTaskScreen extends StatelessWidget {
             leading: Icon(Icons.mode_comment),
             title: Text("Comments"),
             subtitle: Text("No Comments"),
+            hoverColor: _grey,
             onTap: () {
               showSnackbar(context, "Coming Soon");
             },
@@ -113,6 +126,7 @@ class AddTaskScreen extends StatelessWidget {
             leading: Icon(Icons.timer),
             title: Text("Reminder"),
             subtitle: Text("No Reminder"),
+            hoverColor: _grey,
             onTap: () {
               showSnackbar(context, "Coming Soon");
             },
@@ -139,7 +153,9 @@ class AddTaskScreen extends StatelessWidget {
     );
   }
 
-  Future<Null> _selectDate(BuildContext context) async {
+  Color? get _grey => Colors.grey[300];
+
+  Future<Null> _showDatePicker(BuildContext context) async {
     AddTaskBloc createTaskBloc = BlocProvider.of(context);
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -210,23 +226,22 @@ class AddTaskScreen extends StatelessWidget {
     BuildContext context,
     List<Project> projectList,
   ) {
-    List<Widget> projects = [];
-    projectList.forEach((project) {
-      projects.add(ListTile(
-        leading: Container(
-          width: 12.0,
-          height: 12.0,
-          child: CircleAvatar(
-            backgroundColor: Color(project.colorValue),
-          ),
-        ),
-        title: Text(project.name),
-        onTap: () {
-          createTaskBloc.projectSelected(project);
-          Navigator.pop(context);
-        },
-      ));
-    });
+    List<Widget> projects = projectList
+        .map((Project project) => ListTile(
+              leading: Container(
+                width: 12.0,
+                height: 12.0,
+                child: CircleAvatar(
+                  backgroundColor: Color(project.colorValue),
+                ),
+              ),
+              title: Text(project.name),
+              onTap: () {
+                createTaskBloc.projectSelected(project);
+                Navigator.pop(context);
+              },
+            ))
+        .toList();
     return projects;
   }
 
@@ -235,20 +250,20 @@ class AddTaskScreen extends StatelessWidget {
     BuildContext context,
     List<Label> labelList,
   ) {
-    List<Widget> labels = [];
-    labelList.forEach((label) {
-      labels.add(ListTile(
-        leading: Icon(Icons.label, color: Color(label.colorValue), size: 18.0),
-        title: Text(label.name),
-        trailing: createTaskBloc.selectedLabels.contains(label)
-            ? Icon(Icons.close)
-            : Container(width: 18.0, height: 18.0),
-        onTap: () {
-          createTaskBloc.labelAddOrRemove(label);
-          Navigator.pop(context);
-        },
-      ));
-    });
+    List<Widget> labels = labelList
+        .map((Label label) => ListTile(
+              leading:
+                  Icon(Icons.label, color: Color(label.colorValue), size: 18.0),
+              title: Text(label.name),
+              trailing: createTaskBloc.selectedLabels.contains(label)
+                  ? Icon(Icons.close)
+                  : Container(width: 18.0, height: 18.0),
+              onTap: () {
+                createTaskBloc.labelAddOrRemove(label);
+                Navigator.pop(context);
+              },
+            ))
+        .toList();
     return labels;
   }
 
