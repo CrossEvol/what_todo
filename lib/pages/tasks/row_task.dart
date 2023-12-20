@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/tasks/models/tasks.dart';
 import 'package:flutter_app/constants/color_constant.dart';
+import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_app/constants/app_constant.dart';
 
@@ -15,7 +16,7 @@ class TaskRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        //TODO to click something
+        showSnackbar(context, 'Todo Details not implemented.');
       },
       child: Column(
         children: <Widget>[
@@ -37,12 +38,17 @@ class TaskRow extends StatelessWidget {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.only(
-                        left: PADDING_SMALL, bottom: PADDING_VERY_SMALL),
-                    child: Text(tasks.title,
-                        key: ValueKey("taskTitle_${tasks.id}"),
-                        style: TextStyle(
-                            fontSize: FONT_SIZE_TITLE,
-                            fontWeight: FontWeight.bold)),
+                      left: PADDING_SMALL,
+                      bottom: PADDING_VERY_SMALL,
+                    ),
+                    child: Text(
+                      tasks.title,
+                      key: ValueKey("taskTitle_${tasks.id}"),
+                      style: TextStyle(
+                        fontSize: FONT_SIZE_TITLE,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                   getLabels(tasks.labelList),
                   Padding(
@@ -92,14 +98,15 @@ class TaskRow extends StatelessWidget {
             ),
           ),
           Container(
-              decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                width: 0.5,
-                color: Colors.grey,
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  width: 0.5,
+                  color: Colors.grey,
+                ),
               ),
             ),
-          ))
+          ),
         ],
       ),
     );
