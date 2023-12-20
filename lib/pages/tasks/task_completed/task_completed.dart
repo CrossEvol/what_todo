@@ -35,13 +35,12 @@ class TaskCompletedPage extends StatelessWidget {
                                 final taskID = snapshot.data![index].id!;
                                 _taskBloc.updateStatus(
                                     taskID, TaskStatus.PENDING);
-                                SnackBar snackbar =
-                                    SnackBar(content: Text("Task Undo"));
-                                ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text("Task Undo")));
                               }
                             },
                             secondaryBackground: Container(
-                              color: Colors.grey,
+                              color: Colors.grey[500],
                               child: Align(
                                 alignment: Alignment(0.95, 0.0),
                                 child: Text("UNDO",

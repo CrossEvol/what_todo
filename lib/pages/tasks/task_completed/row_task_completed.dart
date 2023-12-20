@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/tasks/models/tasks.dart';
 import 'package:flutter_app/constants/color_constant.dart';
+import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_app/constants/app_constant.dart';
 
@@ -15,7 +16,7 @@ class TaskCompletedRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        //TODO to click something
+        showSnackbar(context, 'Task Details not implemented.');
       },
       child: Column(
         children: <Widget>[
@@ -90,14 +91,15 @@ class TaskCompletedRow extends StatelessWidget {
             ),
           ),
           Container(
-              decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                width: 0.5,
-                color: Colors.grey,
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  width: 0.5,
+                  color: Colors.grey,
+                ),
               ),
             ),
-          ))
+          ),
         ],
       ),
     );
