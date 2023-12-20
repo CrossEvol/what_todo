@@ -81,7 +81,7 @@ class AddTaskScreen extends StatelessWidget {
             leading: Icon(Icons.flag),
             title: Text("Priority"),
             subtitle: StreamBuilder<PriorityStatus>(
-              stream: createTaskBloc.prioritySelected,
+              stream: createTaskBloc.prioritySelection,
               initialData: PriorityStatus.PRIORITY_4,
               builder: (context, snapshot) =>
                   Text(priorityText[snapshot.data!.index]),

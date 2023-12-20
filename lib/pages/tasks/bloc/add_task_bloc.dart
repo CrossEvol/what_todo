@@ -20,23 +20,23 @@ class AddTaskBloc implements BlocBase {
     _loadProjects();
     _loadLabels();
     updateDueDate(DateTime.now().millisecondsSinceEpoch);
-    _projectSelection.add(Project.getInbox());
+    _projectSelected.add(Project.getInbox());
     _prioritySelected.add(lastPrioritySelection);
   }
 
-  BehaviorSubject<List<Project>> _projectController =
+  BehaviorSubject<List<Project>> _projectsController =
       BehaviorSubject<List<Project>>();
 
-  Stream<List<Project>> get projects => _projectController.stream;
+  Stream<List<Project>> get projects => _projectsController.stream;
 
-  BehaviorSubject<List<Label>> _labelController =
+  BehaviorSubject<List<Label>> _labelsController =
       BehaviorSubject<List<Label>>();
 
-  Stream<List<Label>> get labels => _labelController.stream;
+  Stream<List<Label>> get labels => _labelsController.stream;
 
-  BehaviorSubject<Project> _projectSelection = BehaviorSubject<Project>();
+  BehaviorSubject<Project> _projectSelected = BehaviorSubject<Project>();
 
-  Stream<Project> get selectedProject => _projectSelection.stream;
+  Stream<Project> get selectedProject => _projectSelected.stream;
 
   BehaviorSubject<String> _labelSelected = BehaviorSubject<String>();
 
@@ -46,9 +46,10 @@ class AddTaskBloc implements BlocBase {
 
   List<Label> get selectedLabels => _selectedLabelList;
 
-  BehaviorSubject<PriorityStatus> _prioritySelected = BehaviorSubject<PriorityStatus>();
+  BehaviorSubject<PriorityStatus> _prioritySelected =
+      BehaviorSubject<PriorityStatus>();
 
-  Stream<PriorityStatus> get prioritySelected => _prioritySelected.stream;
+  Stream<PriorityStatus> get prioritySelection => _prioritySelected.stream;
 
   BehaviorSubject<int> _dueDateSelected = BehaviorSubject<int>();
 
@@ -58,9 +59,9 @@ class AddTaskBloc implements BlocBase {
 
   @override
   void dispose() {
-    _projectController.close();
-    _labelController.close();
-    _projectSelection.close();
+    _projectsController.close();
+    _labelsController.close();
+    _projectSelected.close();
     _labelSelected.close();
     _prioritySelected.close();
     _dueDateSelected.close();
@@ -68,18 +69,18 @@ class AddTaskBloc implements BlocBase {
 
   void _loadProjects() {
     _projectDB.getProjects(isInboxVisible: true).then((projects) {
-      _projectController.add(List.unmodifiable(projects));
+      _projectsController.add(List.unmodifiable(projects));
     });
   }
 
   void _loadLabels() {
     _labelDB.getLabels().then((labels) {
-      _labelController.add(List.unmodifiable(labels));
+      _labelsController.add(List.unmodifiable(labels));
     });
   }
 
   void projectSelected(Project project) {
-    _projectSelection.add(project);
+    _projectSelected.add(project);
   }
 
   void labelAddOrRemove(Label label) {
@@ -92,11 +93,8 @@ class AddTaskBloc implements BlocBase {
   }
 
   void _buildLabelsString() {
-    List<String> selectedLabelNameList = [];
-    _selectedLabelList.forEach((label) {
-      selectedLabelNameList.add("@${label.name}");
-    });
-    String labelJoinString = selectedLabelNameList.join("  ");
+    String labelJoinString =
+        _selectedLabelList.map((label) => "@${label.name}").toList().join("  ");
     String displayLabels =
         labelJoinString.length == 0 ? "No Labels" : labelJoinString;
     _labelSelected.add(displayLabels);
@@ -108,12 +106,10 @@ class AddTaskBloc implements BlocBase {
   }
 
   Stream createTask() {
-    return ZipStream.zip3(selectedProject, dueDateSelected, prioritySelected,
+    return ZipStream.zip3(selectedProject, dueDateSelected, prioritySelection,
         (Project project, int dueDateSelected, PriorityStatus status) {
-      List<int> labelIds = [];
-      _selectedLabelList.forEach((label) {
-        labelIds.add(label.id!);
-      });
+      List<int> labelIds =
+          _selectedLabelList.map((label) => label.id!).toList();
 
       var task = Tasks.create(
         title: updateTitle,
