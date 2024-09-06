@@ -4,7 +4,6 @@ version: 0.0.1
 
 environment:
   sdk: '>=3.1.0 <4.0.0'
-#  sdk: '>=2.14.0 <3.0.0'
 
 dependencies:
   flutter:
@@ -19,6 +18,8 @@ dependencies:
   rxdart: ^0.26.0
   window_manager: ^0.3.7
 
+  path: any
+  sqflite_common_ffi: any
 dev_dependencies:
   flutter_driver:
     sdk: flutter
@@ -29,7 +30,6 @@ dev_dependencies:
   test: ^1.19.5
   mockito: ^5.1.0
   build_runner: ^2.4.5
-  sqflite_common_ffi:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

@@ -79,7 +79,6 @@ class TaskBloc implements BlocBase {
     _taskDb
         .getTasksByProject(projectId, status: TaskStatus.PENDING)
         .then((tasks) {
-      if (tasks == null) return;
       _lastFilterStatus = Filter.byProject(projectId);
       _updateTaskStream(tasks);
     });
@@ -89,7 +88,6 @@ class TaskBloc implements BlocBase {
     _taskDb
         .getTasksByLabel(labelName, status: TaskStatus.COMPLETE)
         .then((tasks) {
-      if (tasks == null) return;
       _lastFilterStatus = Filter.byLabel(labelName);
       _updateTaskStream(tasks);
     });
@@ -97,7 +95,6 @@ class TaskBloc implements BlocBase {
 
   void filterByStatus(TaskStatus status) {
     _taskDb.getTasks(taskStatus: status).then((tasks) {
-      if (tasks == null) return;
       _lastFilterStatus = Filter.byStatus(status);
       _updateTaskStream(tasks);
     });

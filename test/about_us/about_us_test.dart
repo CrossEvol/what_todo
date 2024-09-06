@@ -1,5 +1,4 @@
 import 'dart:io' show Platform;
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/main.dart';

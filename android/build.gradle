@@ -1,13 +1,9 @@
 buildscript {
     repositories {
         mavenLocal()
-        maven { name "Alibaba" ; url "https://maven.aliyun.com/repository/public" }
-        maven { name "Bstek" ; url "https://nexus.bsdn.org/content/groups/public/" }
-        maven { name "gradlePlugin" ; url "https://maven.aliyun.com/repository/gradle-plugin" }
-        maven { name "M2" ; url 'https://plugins.gradle.org/m2/' }
         mavenCentral()
         google()
-        jcenter()
+        gradlePluginPortal()
     }
 
     dependencies {
@@ -18,13 +14,9 @@ buildscript {
 allprojects {
     repositories {
         mavenLocal()
-        maven { name "Alibaba" ; url "https://maven.aliyun.com/repository/public" }
-        maven { name "Bstek" ; url "https://nexus.bsdn.org/content/groups/public/" }
-        maven { name "gradlePlugin" ; url "https://maven.aliyun.com/repository/gradle-plugin" }
-        maven { name "M2" ; url 'https://plugins.gradle.org/m2/' }
         mavenCentral()
         google()
-        jcenter()
+        gradlePluginPortal()
     }
 }
 
