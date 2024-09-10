@@ -4,7 +4,7 @@ import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
-import 'package:flutter_app/pages/tasks/models/tasks.dart';
+import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -55,7 +55,7 @@ cleanDb() async {
   });
 
   var taskDb = TaskDB.get();
-  List<Tasks> tasks = await taskDb.getTasks();
+  List<Task> tasks = await taskDb.getTasks();
   tasks.forEach((task) {
     taskDb.deleteTask(task.id!);
   });

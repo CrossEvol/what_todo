@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/bloc_provider.dart';
 import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
-import 'package:flutter_app/pages/tasks/models/tasks.dart';
+import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_app/pages/tasks/task_completed/row_task_completed.dart';
 
@@ -17,7 +17,7 @@ class TaskCompletedPage extends StatelessWidget {
         appBar: AppBar(
           title: Text("Task Completed"),
         ),
-        body: StreamBuilder<List<Tasks>>(
+        body: StreamBuilder<List<Task>>(
             stream: _taskBloc.tasks,
             builder: (context, snapshot) {
               if (snapshot.hasData) {

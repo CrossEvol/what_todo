@@ -1,5 +1,5 @@
 class Label {
-  static final tblLabel = "labels";
+  static final tblLabel = "label"; // Changed from "labels" to "label"
   static final dbId = "id";
   static final dbName = "name";
   static final dbColorCode = "colorCode";

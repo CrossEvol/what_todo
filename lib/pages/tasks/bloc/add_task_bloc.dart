@@ -6,7 +6,7 @@ import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
-import 'package:flutter_app/pages/tasks/models/tasks.dart';
+import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -111,7 +111,7 @@ class AddTaskBloc implements BlocBase {
       List<int> labelIds =
           _selectedLabelList.map((label) => label.id!).toList();
 
-      var task = Tasks.create(
+      var task = Task.create(
         title: updateTitle,
         dueDate: dueDateSelected,
         priority: status,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Project {
-  static final tblProject = "projects";
+  static final tblProject = "project";
   static final dbId = "id";
   static final dbName = "name";
   static final dbColorCode = "colorCode";

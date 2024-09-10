@@ -1,5 +1,5 @@
 import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
-import 'package:flutter_app/pages/tasks/models/tasks.dart';
+import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:test/test.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:mockito/mockito.dart';
@@ -80,10 +80,10 @@ void main() {
 }
 
 class FakeTaskDb extends Fake implements TaskDB {
-  List<Tasks> taskList = List.empty(growable: true);
+  List<Task> taskList = List.empty(growable: true);
 
   @override
-  Future<List<Tasks>> getTasks(
+  Future<List<Task>> getTasks(
       {int startDate = 0, int endDate = 0, TaskStatus? taskStatus}) async {
     if (!taskList.contains(testTask1)) {
       taskList.add(testTask1);
@@ -110,7 +110,7 @@ class FakeTaskDb extends Fake implements TaskDB {
   }
 
   @override
-  Future<List<Tasks>> getTasksByProject(int projectId,
+  Future<List<Task>> getTasksByProject(int projectId,
       {TaskStatus? status}) async {
     if (!taskList.contains(testTask1)) {
       taskList.add(testTask1);
@@ -126,7 +126,7 @@ class FakeTaskDb extends Fake implements TaskDB {
   }
 
   @override
-  Future<List<Tasks>> getTasksByLabel(String labelName,
+  Future<List<Task>> getTasksByLabel(String labelName,
       {TaskStatus? status}) async {
     testTask1.labelList.addAll(['Android', 'Flutter']);
     if (!taskList.contains(testTask1)) {
@@ -158,7 +158,7 @@ class FakeTaskDb extends Fake implements TaskDB {
   }
 
   @override
-  Future updateTask(Tasks task, {List<int>? labelIDs}) async {
+  Future updateTask(Task task, {List<int>? labelIDs}) async {
     throw UnimplementedError();
   }
 }

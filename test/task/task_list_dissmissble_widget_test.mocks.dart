@@ -4,7 +4,7 @@
 
 import 'dart:async' as _i3;
 
-import 'package:flutter_app/pages/tasks/models/tasks.dart' as _i4;
+import 'package:flutter_app/pages/tasks/models/task.dart' as _i4;
 import 'package:flutter_app/pages/tasks/task_db.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
@@ -20,7 +20,7 @@ class MockTaskDB extends _i1.Mock implements _i2.TaskDB {
   }
 
   @override
-  _i3.Future<List<_i4.Tasks>> getTasks(
+  _i3.Future<List<_i4.Task>> getTasks(
           {int? startDate = 0, int? endDate = 0, _i4.TaskStatus? taskStatus}) =>
       (super.noSuchMethod(
               Invocation.method(#getTasks, [], {
@@ -28,22 +28,22 @@ class MockTaskDB extends _i1.Mock implements _i2.TaskDB {
                 #endDate: endDate,
                 #taskStatus: taskStatus
               }),
-              returnValue: Future.value(<_i4.Tasks>[]))
-          as _i3.Future<List<_i4.Tasks>>);
+              returnValue: Future.value(<_i4.Task>[]))
+          as _i3.Future<List<_i4.Task>>);
   @override
-  _i3.Future<List<_i4.Tasks>> getTasksByProject(int? projectId,
+  _i3.Future<List<_i4.Task>> getTasksByProject(int? projectId,
           {_i4.TaskStatus? status}) =>
       (super.noSuchMethod(
           Invocation.method(#getTasksByProject, [projectId], {#status: status}),
           returnValue:
-              Future.value(<_i4.Tasks>[])) as _i3.Future<List<_i4.Tasks>>);
+              Future.value(<_i4.Task>[])) as _i3.Future<List<_i4.Task>>);
   @override
-  _i3.Future<List<_i4.Tasks>> getTasksByLabel(String? labelName,
+  _i3.Future<List<_i4.Task>> getTasksByLabel(String? labelName,
           {_i4.TaskStatus? status}) =>
       (super.noSuchMethod(
           Invocation.method(#getTasksByLabel, [labelName], {#status: status}),
           returnValue:
-              Future.value(<_i4.Tasks>[])) as _i3.Future<List<_i4.Tasks>>);
+              Future.value(<_i4.Task>[])) as _i3.Future<List<_i4.Task>>);
   @override
   _i3.Future<dynamic> deleteTask(int? taskID) =>
       (super.noSuchMethod(Invocation.method(#deleteTask, [taskID]),
@@ -54,7 +54,7 @@ class MockTaskDB extends _i1.Mock implements _i2.TaskDB {
           Invocation.method(#updateTaskStatus, [taskID, status]),
           returnValue: Future.value(null)) as _i3.Future<dynamic>);
   @override
-  _i3.Future<dynamic> updateTask(_i4.Tasks? task, {List<int>? labelIDs}) =>
+  _i3.Future<dynamic> updateTask(_i4.Task? task, {List<int>? labelIDs}) =>
       (super.noSuchMethod(
           Invocation.method(#updateTask, [task], {#labelIDs: labelIDs}),
           returnValue: Future.value(null)) as _i3.Future<dynamic>);

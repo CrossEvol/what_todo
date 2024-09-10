@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/priority.dart';
-import 'package:flutter_app/pages/tasks/models/tasks.dart';
+import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/row_task.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,7 +9,7 @@ import '../test_helpers.dart';
 
 void main() {
   Future<void> verifyPriorityColor(WidgetTester tester, PriorityStatus priority) async {
-    var testTask = Tasks.update(
+    var testTask = Task.update(
         id: 1, title: "Task One", projectId: 1, priority: priority);
 
     testTask.projectName = "Inbox";
@@ -28,7 +28,7 @@ void main() {
     //Set 15 august 2020 date for testing i.e Aug  15 in UI
     var dueDate = DateTime(2020, 8, 15);
 
-    var testTask1 = Tasks.update(
+    var testTask1 = Task.update(
         id: 1,
         title: "Task One",
         projectId: 1,
@@ -57,7 +57,7 @@ void main() {
     //Set 15 august 2020 date for testing i.e Aug  15 in UI
     var dueDate = DateTime(2020, 8, 15);
 
-    var testTask1 = Tasks.update(
+    var testTask1 = Task.update(
         id: 1,
         title: "Task One",
         projectId: 1,

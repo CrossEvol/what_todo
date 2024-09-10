@@ -17,9 +17,7 @@ class LabelDB {
   Future<bool> isLabelExits(Label label) async {
     var db = await _appDatabase.getDb();
     var result = await db.rawQuery(
-        "SELECT * FROM ${Label.tblLabel} WHERE ${Label.dbName} LIKE '${label.name}'");
-    // await db.query(Label.tblLabel,
-    //     where: "${Label.dbName} LIKE '?'", whereArgs: [label.name]);
+        "SELECT * FROM label WHERE name LIKE '${label.name}'");
     if (result.length == 0) {
       return await updateLabels(label).then((value) {
         return false;
@@ -33,35 +31,27 @@ class LabelDB {
     var db = await _appDatabase.getDb();
     await db.transaction((Transaction txn) async {
       await txn.rawInsert('INSERT OR REPLACE INTO '
-          '${Label.tblLabel}(${Label.dbName},${Label.dbColorCode},${Label.dbColorName})'
+          'label(name,colorCode,colorName)'
           ' VALUES("${label.name}", ${label.colorValue}, "${label.colorName}")');
-      // await txn.update(Label.tblLabel, label.toMap(),
-      //     where: "${label.id} = ?", whereArgs: [label.id]);
     });
   }
 
   Future<List<Label>> getLabels() async {
     var db = await _appDatabase.getDb();
-    var result = await db.rawQuery('SELECT * FROM ${Label.tblLabel}');
+    var result = await db.rawQuery('SELECT * FROM label');
     List<Label> labels = [];
     for (Map<String, dynamic> item in result) {
       var myLabels = Label.fromMap(item);
       labels.add(myLabels);
     }
     return labels;
-
-    // var result = await db.query(Label.tblLabel);
-    // var labels = result.map((e) => Label.fromMap(e)).toList();
-    // return labels;
   }
 
   Future deleteLabel(int labelId) async {
     var db = await _appDatabase.getDb();
     await db.transaction((Transaction txn) async {
       await txn.rawDelete(
-          'DELETE FROM ${Label.tblLabel} WHERE ${Label.dbId}==$labelId;');
-      // await txn
-      //     .delete(Label.tblLabel, where: "${Label.dbId} = ?", whereArgs: [labelId]);
+          'DELETE FROM label WHERE id==$labelId;');
     });
   }
 }

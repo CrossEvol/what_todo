@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/models/priority.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/projects/project.dart';
-import 'package:flutter_app/pages/tasks/models/tasks.dart';
+import 'package:flutter_app/pages/tasks/models/task.dart';
 
 //Project Test data
 var testProject1 = Project.getInbox();
@@ -49,7 +49,7 @@ var testLabel3 = Label.update(
 
 
 //Task Test data
-var testTask1 = Tasks.update(
+var testTask1 = Task.update(
   id: 1,
   title: "Task One",
   projectId: 1,
@@ -57,7 +57,7 @@ var testTask1 = Tasks.update(
   dueDate: DateTime.now().millisecondsSinceEpoch,
 );
 
-var testTask2 = Tasks.update(
+var testTask2 = Task.update(
   id: 2,
   title: "Task Two",
   projectId: 2,
@@ -65,7 +65,7 @@ var testTask2 = Tasks.update(
   dueDate: DateTime.now().millisecondsSinceEpoch,
 );
 
-var testTask3 = Tasks.update(
+var testTask3 = Task.update(
   id: 3,
   title: "Task Three",
   projectId: 3,

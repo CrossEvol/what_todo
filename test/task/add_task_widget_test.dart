@@ -6,7 +6,7 @@ import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/tasks/add_task.dart';
 import 'package:flutter_app/pages/tasks/bloc/add_task_bloc.dart';
-import 'package:flutter_app/pages/tasks/models/tasks.dart';
+import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
@@ -17,10 +17,10 @@ import '../test_helpers.dart';
 import 'add_task_widget_test.mocks.dart';
 
 class FakeTaskDb implements TaskDB {
-  Tasks? task;
+  Task? task;
   List<int>? labelIds;
 
-  Future updateTask(Tasks task, {List<int>? labelIDs}) async {
+  Future updateTask(Task task, {List<int>? labelIDs}) async {
     this.task = task;
     this.labelIds = labelIDs!;
     return Future.value();
@@ -33,20 +33,20 @@ class FakeTaskDb implements TaskDB {
   }
 
   @override
-  Future<List<Tasks>> getTasks(
+  Future<List<Task>> getTasks(
       {int startDate = 0, int endDate = 0, TaskStatus? taskStatus}) {
     // TODO: implement getTasks
     throw UnimplementedError();
   }
 
   @override
-  Future<List<Tasks>> getTasksByLabel(String labelName, {TaskStatus? status}) {
+  Future<List<Task>> getTasksByLabel(String labelName, {TaskStatus? status}) {
     // TODO: implement getTasksByLabel
     throw UnimplementedError();
   }
 
   @override
-  Future<List<Tasks>> getTasksByProject(int projectId, {TaskStatus? status}) {
+  Future<List<Task>> getTasksByProject(int projectId, {TaskStatus? status}) {
     // TODO: implement getTasksByProject
     throw UnimplementedError();
   }

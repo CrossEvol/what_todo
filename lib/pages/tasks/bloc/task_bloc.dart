@@ -3,22 +3,22 @@ import 'dart:collection';
 
 import 'package:flutter_app/bloc/bloc_provider.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
-import 'package:flutter_app/pages/tasks/models/tasks.dart';
+import 'package:flutter_app/pages/tasks/models/task.dart';
 
 class TaskBloc implements BlocBase {
   ///
   /// Synchronous Stream to handle the provision of the movie genres
   ///
-  StreamController<List<Tasks>> _tasksController =
-      StreamController<List<Tasks>>.broadcast();
+  StreamController<List<Task>> _tasksController =
+      StreamController<List<Task>>.broadcast();
 
-  Stream<List<Tasks>> get tasks => _tasksController.stream;
+  Stream<List<Task>> get tasks => _tasksController.stream;
 
   ///
   StreamController<int> _cmdController = StreamController<int>.broadcast();
 
   TaskDB _taskDb;
-  late List<Tasks> _tasksList;
+  late List<Task> _tasksList;
   late Filter _lastFilterStatus;
 
   TaskBloc(this._taskDb) {
@@ -37,10 +37,10 @@ class TaskBloc implements BlocBase {
     });
   }
 
-  void _updateTaskStream(List<Tasks> tasks) {
+  void _updateTaskStream(List<Task> tasks) {
     _tasksList = tasks;
     if (!_tasksController.isClosed) {
-      _tasksController.sink.add(UnmodifiableListView<Tasks>(_tasksList));
+      _tasksController.sink.add(UnmodifiableListView<Task>(_tasksList));
     }
   }
 

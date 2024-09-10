@@ -1,7 +1,7 @@
 import 'package:flutter_app/models/priority.dart';
 
-class Tasks {
-  static final tblTask = "Tasks";
+class Task {
+  static final tblTask = "Task"; // Changed from "Tasks" to "Task"
   static final dbId = "id";
   static final dbTitle = "title";
   static final dbComment = "comment";
@@ -23,10 +23,10 @@ class Tasks {
 
   @override
   String toString() {
-    return 'Tasks{title: $title, comment: $comment, projectName: $projectName, id: $id, projectColor: $projectColor, dueDate: $dueDate, projectId: $projectId, priority: $priority, tasksStatus: $tasksStatus, labelList: $labelList}';
+    return 'Task{title: $title, comment: $comment, projectName: $projectName, id: $id, projectColor: $projectColor, dueDate: $dueDate, projectId: $projectId, priority: $priority, tasksStatus: $tasksStatus, labelList: $labelList}';
   }
 
-  Tasks.create({
+  Task.create({
     required this.title,
     required this.projectId,
     this.comment = "",
@@ -39,9 +39,9 @@ class Tasks {
     this.tasksStatus = TaskStatus.PENDING;
   }
 
-  bool operator ==(o) => o is Tasks && o.id == id;
+  bool operator ==(o) => o is Task && o.id == id;
 
-  Tasks.update({
+  Task.update({
     required this.id,
     required this.title,
     required this.projectId,
@@ -55,7 +55,7 @@ class Tasks {
     }
   }
 
-  Tasks.fromMap(Map<String, dynamic> map)
+  Task.fromMap(Map<String, dynamic> map)
       : this.update(
           id: map[dbId],
           title: map[dbTitle],
@@ -68,15 +68,15 @@ class Tasks {
 
   Map<String, dynamic> toMap() {
     return {
-      Tasks.dbId: id,
-      Tasks.dbTitle: title,
-      Tasks.dbComment: comment,
-      Tasks.dbDueDate: dueDate,
-      Tasks.dbPriority: priority.index,
+      Task.dbId: id,
+      Task.dbTitle: title,
+      Task.dbComment: comment,
+      Task.dbDueDate: dueDate,
+      Task.dbPriority: priority.index,
       // convert enum to value index
-      Tasks.dbStatus: tasksStatus?.index,
+      Task.dbStatus: tasksStatus?.index,
       // convert enum to value index (nullable)
-      Tasks.dbProjectID: projectId,
+      Task.dbProjectID: projectId,
     };
   }
 }

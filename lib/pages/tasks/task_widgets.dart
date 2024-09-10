@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
 import 'package:flutter_app/bloc/bloc_provider.dart';
-import 'package:flutter_app/pages/tasks/models/tasks.dart';
+import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/row_task.dart';
 import 'package:flutter_app/utils/app_util.dart';
 
@@ -9,7 +9,7 @@ class TasksPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TaskBloc _tasksBloc = BlocProvider.of(context);
-    return StreamBuilder<List<Tasks>>(
+    return StreamBuilder<List<Task>>(
       stream: _tasksBloc.tasks,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
@@ -23,7 +23,7 @@ class TasksPage extends StatelessWidget {
     );
   }
 
-  Widget _buildTaskList(List<Tasks> list) {
+  Widget _buildTaskList(List<Task> list) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: list.length == 0
