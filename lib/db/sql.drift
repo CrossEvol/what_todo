@@ -1,0 +1,32 @@
+import 'tables.dart';
+
+CREATE VIRTUAL TABLE text_entries USING fts5 (
+    description,
+    content=task,
+    content_rowid=id
+);
+
+CREATE TRIGGER task_insert AFTER INSERT ON task BEGIN
+  INSERT INTO text_entries(rowid, description) VALUES (new.id, new.title);
+END;
+
+CREATE TRIGGER task_delete AFTER DELETE ON task BEGIN
+  INSERT INTO text_entries(text_entries, rowid, description) VALUES ('delete', old.id, old.title);
+END;
+
+CREATE TRIGGER task_update AFTER UPDATE ON task BEGIN
+  INSERT INTO text_entries(text_entries, rowid, description) VALUES ('delete', new.id, new.title);
+  INSERT INTO text_entries(rowid, description) VALUES (new.id, new.title);
+END;
+
+_categoriesWithCount: SELECT p.*,
+  (SELECT COUNT(*) FROM task WHERE projectId = p.id) AS amount
+  FROM project p
+UNION ALL
+  SELECT null, null, null, (SELECT COUNT(*) FROM task WHERE projectId IS NULL);
+
+_search: SELECT t.**, p.** FROM text_entries
+    INNER JOIN task t ON t.id = text_entries.rowid
+    LEFT OUTER JOIN project p ON p.id = t.projectId
+    WHERE text_entries MATCH :query
+    ORDER BY rank;

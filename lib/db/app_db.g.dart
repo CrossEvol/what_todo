@@ -1,0 +1,2002 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'app_db.dart';
+
+// ignore_for_file: type=lint
+class $ProjectTable extends Project with TableInfo<$ProjectTable, ProjectData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProjectTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _colorNameMeta =
+      const VerificationMeta('colorName');
+  @override
+  late final GeneratedColumn<String> colorName = GeneratedColumn<String>(
+      'color_name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _colorCodeMeta =
+      const VerificationMeta('colorCode');
+  @override
+  late final GeneratedColumn<int> colorCode = GeneratedColumn<int>(
+      'color_code', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, name, colorName, colorCode];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'project';
+  @override
+  VerificationContext validateIntegrity(Insertable<ProjectData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('color_name')) {
+      context.handle(_colorNameMeta,
+          colorName.isAcceptableOrUnknown(data['color_name']!, _colorNameMeta));
+    } else if (isInserting) {
+      context.missing(_colorNameMeta);
+    }
+    if (data.containsKey('color_code')) {
+      context.handle(_colorCodeMeta,
+          colorCode.isAcceptableOrUnknown(data['color_code']!, _colorCodeMeta));
+    } else if (isInserting) {
+      context.missing(_colorCodeMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProjectData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProjectData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      colorName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}color_name'])!,
+      colorCode: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}color_code'])!,
+    );
+  }
+
+  @override
+  $ProjectTable createAlias(String alias) {
+    return $ProjectTable(attachedDatabase, alias);
+  }
+}
+
+class ProjectData extends DataClass implements Insertable<ProjectData> {
+  final int id;
+  final String name;
+  final String colorName;
+  final int colorCode;
+  const ProjectData(
+      {required this.id,
+      required this.name,
+      required this.colorName,
+      required this.colorCode});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['color_name'] = Variable<String>(colorName);
+    map['color_code'] = Variable<int>(colorCode);
+    return map;
+  }
+
+  ProjectCompanion toCompanion(bool nullToAbsent) {
+    return ProjectCompanion(
+      id: Value(id),
+      name: Value(name),
+      colorName: Value(colorName),
+      colorCode: Value(colorCode),
+    );
+  }
+
+  factory ProjectData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProjectData(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      colorName: serializer.fromJson<String>(json['colorName']),
+      colorCode: serializer.fromJson<int>(json['colorCode']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'colorName': serializer.toJson<String>(colorName),
+      'colorCode': serializer.toJson<int>(colorCode),
+    };
+  }
+
+  ProjectData copyWith(
+          {int? id, String? name, String? colorName, int? colorCode}) =>
+      ProjectData(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        colorName: colorName ?? this.colorName,
+        colorCode: colorCode ?? this.colorCode,
+      );
+  ProjectData copyWithCompanion(ProjectCompanion data) {
+    return ProjectData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      colorName: data.colorName.present ? data.colorName.value : this.colorName,
+      colorCode: data.colorCode.present ? data.colorCode.value : this.colorCode,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProjectData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('colorName: $colorName, ')
+          ..write('colorCode: $colorCode')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, colorName, colorCode);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProjectData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.colorName == this.colorName &&
+          other.colorCode == this.colorCode);
+}
+
+class ProjectCompanion extends UpdateCompanion<ProjectData> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> colorName;
+  final Value<int> colorCode;
+  const ProjectCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.colorName = const Value.absent(),
+    this.colorCode = const Value.absent(),
+  });
+  ProjectCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required String colorName,
+    required int colorCode,
+  })  : name = Value(name),
+        colorName = Value(colorName),
+        colorCode = Value(colorCode);
+  static Insertable<ProjectData> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? colorName,
+    Expression<int>? colorCode,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (colorName != null) 'color_name': colorName,
+      if (colorCode != null) 'color_code': colorCode,
+    });
+  }
+
+  ProjectCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<String>? colorName,
+      Value<int>? colorCode}) {
+    return ProjectCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      colorName: colorName ?? this.colorName,
+      colorCode: colorCode ?? this.colorCode,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (colorName.present) {
+      map['color_name'] = Variable<String>(colorName.value);
+    }
+    if (colorCode.present) {
+      map['color_code'] = Variable<int>(colorCode.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProjectCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('colorName: $colorName, ')
+          ..write('colorCode: $colorCode')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TaskTable extends Task with TableInfo<$TaskTable, TaskData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TaskTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+      'title', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _commentMeta =
+      const VerificationMeta('comment');
+  @override
+  late final GeneratedColumn<String> comment = GeneratedColumn<String>(
+      'comment', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _dueDateMeta =
+      const VerificationMeta('dueDate');
+  @override
+  late final GeneratedColumn<int> dueDate = GeneratedColumn<int>(
+      'due_date', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _priorityMeta =
+      const VerificationMeta('priority');
+  @override
+  late final GeneratedColumn<int> priority = GeneratedColumn<int>(
+      'priority', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  static const VerificationMeta _projectIdMeta =
+      const VerificationMeta('projectId');
+  @override
+  late final GeneratedColumn<int> projectId = GeneratedColumn<int>(
+      'project_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'REFERENCES project(id) ON DELETE CASCADE');
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<int> status = GeneratedColumn<int>(
+      'status', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, title, comment, dueDate, priority, projectId, status];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'task';
+  @override
+  VerificationContext validateIntegrity(Insertable<TaskData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+          _titleMeta, title.isAcceptableOrUnknown(data['title']!, _titleMeta));
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('comment')) {
+      context.handle(_commentMeta,
+          comment.isAcceptableOrUnknown(data['comment']!, _commentMeta));
+    }
+    if (data.containsKey('due_date')) {
+      context.handle(_dueDateMeta,
+          dueDate.isAcceptableOrUnknown(data['due_date']!, _dueDateMeta));
+    }
+    if (data.containsKey('priority')) {
+      context.handle(_priorityMeta,
+          priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta));
+    }
+    if (data.containsKey('project_id')) {
+      context.handle(_projectIdMeta,
+          projectId.isAcceptableOrUnknown(data['project_id']!, _projectIdMeta));
+    } else if (isInserting) {
+      context.missing(_projectIdMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(_statusMeta,
+          status.isAcceptableOrUnknown(data['status']!, _statusMeta));
+    } else if (isInserting) {
+      context.missing(_statusMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TaskData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TaskData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      title: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}title'])!,
+      comment: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}comment']),
+      dueDate: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}due_date']),
+      priority: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}priority']),
+      projectId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}project_id'])!,
+      status: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}status'])!,
+    );
+  }
+
+  @override
+  $TaskTable createAlias(String alias) {
+    return $TaskTable(attachedDatabase, alias);
+  }
+}
+
+class TaskData extends DataClass implements Insertable<TaskData> {
+  final int id;
+  final String title;
+  final String? comment;
+  final int? dueDate;
+  final int? priority;
+  final int projectId;
+  final int status;
+  const TaskData(
+      {required this.id,
+      required this.title,
+      this.comment,
+      this.dueDate,
+      this.priority,
+      required this.projectId,
+      required this.status});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['title'] = Variable<String>(title);
+    if (!nullToAbsent || comment != null) {
+      map['comment'] = Variable<String>(comment);
+    }
+    if (!nullToAbsent || dueDate != null) {
+      map['due_date'] = Variable<int>(dueDate);
+    }
+    if (!nullToAbsent || priority != null) {
+      map['priority'] = Variable<int>(priority);
+    }
+    map['project_id'] = Variable<int>(projectId);
+    map['status'] = Variable<int>(status);
+    return map;
+  }
+
+  TaskCompanion toCompanion(bool nullToAbsent) {
+    return TaskCompanion(
+      id: Value(id),
+      title: Value(title),
+      comment: comment == null && nullToAbsent
+          ? const Value.absent()
+          : Value(comment),
+      dueDate: dueDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dueDate),
+      priority: priority == null && nullToAbsent
+          ? const Value.absent()
+          : Value(priority),
+      projectId: Value(projectId),
+      status: Value(status),
+    );
+  }
+
+  factory TaskData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TaskData(
+      id: serializer.fromJson<int>(json['id']),
+      title: serializer.fromJson<String>(json['title']),
+      comment: serializer.fromJson<String?>(json['comment']),
+      dueDate: serializer.fromJson<int?>(json['dueDate']),
+      priority: serializer.fromJson<int?>(json['priority']),
+      projectId: serializer.fromJson<int>(json['projectId']),
+      status: serializer.fromJson<int>(json['status']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'title': serializer.toJson<String>(title),
+      'comment': serializer.toJson<String?>(comment),
+      'dueDate': serializer.toJson<int?>(dueDate),
+      'priority': serializer.toJson<int?>(priority),
+      'projectId': serializer.toJson<int>(projectId),
+      'status': serializer.toJson<int>(status),
+    };
+  }
+
+  TaskData copyWith(
+          {int? id,
+          String? title,
+          Value<String?> comment = const Value.absent(),
+          Value<int?> dueDate = const Value.absent(),
+          Value<int?> priority = const Value.absent(),
+          int? projectId,
+          int? status}) =>
+      TaskData(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        comment: comment.present ? comment.value : this.comment,
+        dueDate: dueDate.present ? dueDate.value : this.dueDate,
+        priority: priority.present ? priority.value : this.priority,
+        projectId: projectId ?? this.projectId,
+        status: status ?? this.status,
+      );
+  TaskData copyWithCompanion(TaskCompanion data) {
+    return TaskData(
+      id: data.id.present ? data.id.value : this.id,
+      title: data.title.present ? data.title.value : this.title,
+      comment: data.comment.present ? data.comment.value : this.comment,
+      dueDate: data.dueDate.present ? data.dueDate.value : this.dueDate,
+      priority: data.priority.present ? data.priority.value : this.priority,
+      projectId: data.projectId.present ? data.projectId.value : this.projectId,
+      status: data.status.present ? data.status.value : this.status,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskData(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('comment: $comment, ')
+          ..write('dueDate: $dueDate, ')
+          ..write('priority: $priority, ')
+          ..write('projectId: $projectId, ')
+          ..write('status: $status')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, title, comment, dueDate, priority, projectId, status);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TaskData &&
+          other.id == this.id &&
+          other.title == this.title &&
+          other.comment == this.comment &&
+          other.dueDate == this.dueDate &&
+          other.priority == this.priority &&
+          other.projectId == this.projectId &&
+          other.status == this.status);
+}
+
+class TaskCompanion extends UpdateCompanion<TaskData> {
+  final Value<int> id;
+  final Value<String> title;
+  final Value<String?> comment;
+  final Value<int?> dueDate;
+  final Value<int?> priority;
+  final Value<int> projectId;
+  final Value<int> status;
+  const TaskCompanion({
+    this.id = const Value.absent(),
+    this.title = const Value.absent(),
+    this.comment = const Value.absent(),
+    this.dueDate = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.projectId = const Value.absent(),
+    this.status = const Value.absent(),
+  });
+  TaskCompanion.insert({
+    this.id = const Value.absent(),
+    required String title,
+    this.comment = const Value.absent(),
+    this.dueDate = const Value.absent(),
+    this.priority = const Value.absent(),
+    required int projectId,
+    required int status,
+  })  : title = Value(title),
+        projectId = Value(projectId),
+        status = Value(status);
+  static Insertable<TaskData> custom({
+    Expression<int>? id,
+    Expression<String>? title,
+    Expression<String>? comment,
+    Expression<int>? dueDate,
+    Expression<int>? priority,
+    Expression<int>? projectId,
+    Expression<int>? status,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (title != null) 'title': title,
+      if (comment != null) 'comment': comment,
+      if (dueDate != null) 'due_date': dueDate,
+      if (priority != null) 'priority': priority,
+      if (projectId != null) 'project_id': projectId,
+      if (status != null) 'status': status,
+    });
+  }
+
+  TaskCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? title,
+      Value<String?>? comment,
+      Value<int?>? dueDate,
+      Value<int?>? priority,
+      Value<int>? projectId,
+      Value<int>? status}) {
+    return TaskCompanion(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      comment: comment ?? this.comment,
+      dueDate: dueDate ?? this.dueDate,
+      priority: priority ?? this.priority,
+      projectId: projectId ?? this.projectId,
+      status: status ?? this.status,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (comment.present) {
+      map['comment'] = Variable<String>(comment.value);
+    }
+    if (dueDate.present) {
+      map['due_date'] = Variable<int>(dueDate.value);
+    }
+    if (priority.present) {
+      map['priority'] = Variable<int>(priority.value);
+    }
+    if (projectId.present) {
+      map['project_id'] = Variable<int>(projectId.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<int>(status.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskCompanion(')
+          ..write('id: $id, ')
+          ..write('title: $title, ')
+          ..write('comment: $comment, ')
+          ..write('dueDate: $dueDate, ')
+          ..write('priority: $priority, ')
+          ..write('projectId: $projectId, ')
+          ..write('status: $status')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $LabelTable extends Label with TableInfo<$LabelTable, LabelData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $LabelTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _colorNameMeta =
+      const VerificationMeta('colorName');
+  @override
+  late final GeneratedColumn<String> colorName = GeneratedColumn<String>(
+      'color_name', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _colorCodeMeta =
+      const VerificationMeta('colorCode');
+  @override
+  late final GeneratedColumn<int> colorCode = GeneratedColumn<int>(
+      'color_code', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
+  @override
+  List<GeneratedColumn> get $columns => [id, name, colorName, colorCode];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'label';
+  @override
+  VerificationContext validateIntegrity(Insertable<LabelData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('color_name')) {
+      context.handle(_colorNameMeta,
+          colorName.isAcceptableOrUnknown(data['color_name']!, _colorNameMeta));
+    } else if (isInserting) {
+      context.missing(_colorNameMeta);
+    }
+    if (data.containsKey('color_code')) {
+      context.handle(_colorCodeMeta,
+          colorCode.isAcceptableOrUnknown(data['color_code']!, _colorCodeMeta));
+    } else if (isInserting) {
+      context.missing(_colorCodeMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  LabelData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return LabelData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      colorName: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}color_name'])!,
+      colorCode: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}color_code'])!,
+    );
+  }
+
+  @override
+  $LabelTable createAlias(String alias) {
+    return $LabelTable(attachedDatabase, alias);
+  }
+}
+
+class LabelData extends DataClass implements Insertable<LabelData> {
+  final int id;
+  final String name;
+  final String colorName;
+  final int colorCode;
+  const LabelData(
+      {required this.id,
+      required this.name,
+      required this.colorName,
+      required this.colorCode});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['color_name'] = Variable<String>(colorName);
+    map['color_code'] = Variable<int>(colorCode);
+    return map;
+  }
+
+  LabelCompanion toCompanion(bool nullToAbsent) {
+    return LabelCompanion(
+      id: Value(id),
+      name: Value(name),
+      colorName: Value(colorName),
+      colorCode: Value(colorCode),
+    );
+  }
+
+  factory LabelData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return LabelData(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      colorName: serializer.fromJson<String>(json['colorName']),
+      colorCode: serializer.fromJson<int>(json['colorCode']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'colorName': serializer.toJson<String>(colorName),
+      'colorCode': serializer.toJson<int>(colorCode),
+    };
+  }
+
+  LabelData copyWith(
+          {int? id, String? name, String? colorName, int? colorCode}) =>
+      LabelData(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        colorName: colorName ?? this.colorName,
+        colorCode: colorCode ?? this.colorCode,
+      );
+  LabelData copyWithCompanion(LabelCompanion data) {
+    return LabelData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      colorName: data.colorName.present ? data.colorName.value : this.colorName,
+      colorCode: data.colorCode.present ? data.colorCode.value : this.colorCode,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LabelData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('colorName: $colorName, ')
+          ..write('colorCode: $colorCode')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, colorName, colorCode);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is LabelData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.colorName == this.colorName &&
+          other.colorCode == this.colorCode);
+}
+
+class LabelCompanion extends UpdateCompanion<LabelData> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> colorName;
+  final Value<int> colorCode;
+  const LabelCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.colorName = const Value.absent(),
+    this.colorCode = const Value.absent(),
+  });
+  LabelCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required String colorName,
+    required int colorCode,
+  })  : name = Value(name),
+        colorName = Value(colorName),
+        colorCode = Value(colorCode);
+  static Insertable<LabelData> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? colorName,
+    Expression<int>? colorCode,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (colorName != null) 'color_name': colorName,
+      if (colorCode != null) 'color_code': colorCode,
+    });
+  }
+
+  LabelCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<String>? colorName,
+      Value<int>? colorCode}) {
+    return LabelCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      colorName: colorName ?? this.colorName,
+      colorCode: colorCode ?? this.colorCode,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (colorName.present) {
+      map['color_name'] = Variable<String>(colorName.value);
+    }
+    if (colorCode.present) {
+      map['color_code'] = Variable<int>(colorCode.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('LabelCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('colorName: $colorName, ')
+          ..write('colorCode: $colorCode')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TaskLabelTable extends TaskLabel
+    with TableInfo<$TaskLabelTable, TaskLabelData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TaskLabelTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _taskIdMeta = const VerificationMeta('taskId');
+  @override
+  late final GeneratedColumn<int> taskId = GeneratedColumn<int>(
+      'task_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'REFERENCES task(id) ON DELETE CASCADE');
+  static const VerificationMeta _labelIdMeta =
+      const VerificationMeta('labelId');
+  @override
+  late final GeneratedColumn<int> labelId = GeneratedColumn<int>(
+      'label_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'REFERENCES label(id) ON DELETE CASCADE');
+  @override
+  List<GeneratedColumn> get $columns => [id, taskId, labelId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'task_label';
+  @override
+  VerificationContext validateIntegrity(Insertable<TaskLabelData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('task_id')) {
+      context.handle(_taskIdMeta,
+          taskId.isAcceptableOrUnknown(data['task_id']!, _taskIdMeta));
+    } else if (isInserting) {
+      context.missing(_taskIdMeta);
+    }
+    if (data.containsKey('label_id')) {
+      context.handle(_labelIdMeta,
+          labelId.isAcceptableOrUnknown(data['label_id']!, _labelIdMeta));
+    } else if (isInserting) {
+      context.missing(_labelIdMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TaskLabelData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TaskLabelData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      taskId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}task_id'])!,
+      labelId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}label_id'])!,
+    );
+  }
+
+  @override
+  $TaskLabelTable createAlias(String alias) {
+    return $TaskLabelTable(attachedDatabase, alias);
+  }
+}
+
+class TaskLabelData extends DataClass implements Insertable<TaskLabelData> {
+  final int id;
+  final int taskId;
+  final int labelId;
+  const TaskLabelData(
+      {required this.id, required this.taskId, required this.labelId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['task_id'] = Variable<int>(taskId);
+    map['label_id'] = Variable<int>(labelId);
+    return map;
+  }
+
+  TaskLabelCompanion toCompanion(bool nullToAbsent) {
+    return TaskLabelCompanion(
+      id: Value(id),
+      taskId: Value(taskId),
+      labelId: Value(labelId),
+    );
+  }
+
+  factory TaskLabelData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TaskLabelData(
+      id: serializer.fromJson<int>(json['id']),
+      taskId: serializer.fromJson<int>(json['taskId']),
+      labelId: serializer.fromJson<int>(json['labelId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'taskId': serializer.toJson<int>(taskId),
+      'labelId': serializer.toJson<int>(labelId),
+    };
+  }
+
+  TaskLabelData copyWith({int? id, int? taskId, int? labelId}) => TaskLabelData(
+        id: id ?? this.id,
+        taskId: taskId ?? this.taskId,
+        labelId: labelId ?? this.labelId,
+      );
+  TaskLabelData copyWithCompanion(TaskLabelCompanion data) {
+    return TaskLabelData(
+      id: data.id.present ? data.id.value : this.id,
+      taskId: data.taskId.present ? data.taskId.value : this.taskId,
+      labelId: data.labelId.present ? data.labelId.value : this.labelId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskLabelData(')
+          ..write('id: $id, ')
+          ..write('taskId: $taskId, ')
+          ..write('labelId: $labelId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, taskId, labelId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TaskLabelData &&
+          other.id == this.id &&
+          other.taskId == this.taskId &&
+          other.labelId == this.labelId);
+}
+
+class TaskLabelCompanion extends UpdateCompanion<TaskLabelData> {
+  final Value<int> id;
+  final Value<int> taskId;
+  final Value<int> labelId;
+  const TaskLabelCompanion({
+    this.id = const Value.absent(),
+    this.taskId = const Value.absent(),
+    this.labelId = const Value.absent(),
+  });
+  TaskLabelCompanion.insert({
+    this.id = const Value.absent(),
+    required int taskId,
+    required int labelId,
+  })  : taskId = Value(taskId),
+        labelId = Value(labelId);
+  static Insertable<TaskLabelData> custom({
+    Expression<int>? id,
+    Expression<int>? taskId,
+    Expression<int>? labelId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (taskId != null) 'task_id': taskId,
+      if (labelId != null) 'label_id': labelId,
+    });
+  }
+
+  TaskLabelCompanion copyWith(
+      {Value<int>? id, Value<int>? taskId, Value<int>? labelId}) {
+    return TaskLabelCompanion(
+      id: id ?? this.id,
+      taskId: taskId ?? this.taskId,
+      labelId: labelId ?? this.labelId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (taskId.present) {
+      map['task_id'] = Variable<int>(taskId.value);
+    }
+    if (labelId.present) {
+      map['label_id'] = Variable<int>(labelId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskLabelCompanion(')
+          ..write('id: $id, ')
+          ..write('taskId: $taskId, ')
+          ..write('labelId: $labelId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+abstract class _$AppDatabase extends GeneratedDatabase {
+  _$AppDatabase(QueryExecutor e) : super(e);
+  $AppDatabaseManager get managers => $AppDatabaseManager(this);
+  late final $ProjectTable project = $ProjectTable(this);
+  late final $TaskTable task = $TaskTable(this);
+  late final $LabelTable label = $LabelTable(this);
+  late final $TaskLabelTable taskLabel = $TaskLabelTable(this);
+  @override
+  Iterable<TableInfo<Table, Object?>> get allTables =>
+      allSchemaEntities.whereType<TableInfo<Table, Object?>>();
+  @override
+  List<DatabaseSchemaEntity> get allSchemaEntities =>
+      [project, task, label, taskLabel];
+  @override
+  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
+        [
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('project',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('task', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('task',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('task_label', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('label',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('task_label', kind: UpdateKind.delete),
+            ],
+          ),
+        ],
+      );
+}
+
+typedef $$ProjectTableCreateCompanionBuilder = ProjectCompanion Function({
+  Value<int> id,
+  required String name,
+  required String colorName,
+  required int colorCode,
+});
+typedef $$ProjectTableUpdateCompanionBuilder = ProjectCompanion Function({
+  Value<int> id,
+  Value<String> name,
+  Value<String> colorName,
+  Value<int> colorCode,
+});
+
+final class $$ProjectTableReferences
+    extends BaseReferences<_$AppDatabase, $ProjectTable, ProjectData> {
+  $$ProjectTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$TaskTable, List<TaskData>> _taskRefsTable(
+          _$AppDatabase db) =>
+      MultiTypedResultKey.fromTable(db.task,
+          aliasName: $_aliasNameGenerator(db.project.id, db.task.projectId));
+
+  $$TaskTableProcessedTableManager get taskRefs {
+    final manager = $$TaskTableTableManager($_db, $_db.task)
+        .filter((f) => f.projectId.id($_item.id));
+
+    final cache = $_typedResult.readTableOrNull(_taskRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$ProjectTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $ProjectTable> {
+  $$ProjectTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get colorName => $state.composableBuilder(
+      column: $state.table.colorName,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get colorCode => $state.composableBuilder(
+      column: $state.table.colorCode,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ComposableFilter taskRefs(
+      ComposableFilter Function($$TaskTableFilterComposer f) f) {
+    final $$TaskTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $state.db.task,
+        getReferencedColumn: (t) => t.projectId,
+        builder: (joinBuilder, parentComposers) => $$TaskTableFilterComposer(
+            ComposerState(
+                $state.db, $state.db.task, joinBuilder, parentComposers)));
+    return f(composer);
+  }
+}
+
+class $$ProjectTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $ProjectTable> {
+  $$ProjectTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get colorName => $state.composableBuilder(
+      column: $state.table.colorName,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get colorCode => $state.composableBuilder(
+      column: $state.table.colorCode,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $$ProjectTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ProjectTable,
+    ProjectData,
+    $$ProjectTableFilterComposer,
+    $$ProjectTableOrderingComposer,
+    $$ProjectTableCreateCompanionBuilder,
+    $$ProjectTableUpdateCompanionBuilder,
+    (ProjectData, $$ProjectTableReferences),
+    ProjectData,
+    PrefetchHooks Function({bool taskRefs})> {
+  $$ProjectTableTableManager(_$AppDatabase db, $ProjectTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$ProjectTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$ProjectTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> colorName = const Value.absent(),
+            Value<int> colorCode = const Value.absent(),
+          }) =>
+              ProjectCompanion(
+            id: id,
+            name: name,
+            colorName: colorName,
+            colorCode: colorCode,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            required String colorName,
+            required int colorCode,
+          }) =>
+              ProjectCompanion.insert(
+            id: id,
+            name: name,
+            colorName: colorName,
+            colorCode: colorCode,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) =>
+                  (e.readTable(table), $$ProjectTableReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: ({taskRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (taskRefs) db.task],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (taskRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable:
+                            $$ProjectTableReferences._taskRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$ProjectTableReferences(db, table, p0).taskRefs,
+                        referencedItemsForCurrentItem:
+                            (item, referencedItems) => referencedItems
+                                .where((e) => e.projectId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$ProjectTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $ProjectTable,
+    ProjectData,
+    $$ProjectTableFilterComposer,
+    $$ProjectTableOrderingComposer,
+    $$ProjectTableCreateCompanionBuilder,
+    $$ProjectTableUpdateCompanionBuilder,
+    (ProjectData, $$ProjectTableReferences),
+    ProjectData,
+    PrefetchHooks Function({bool taskRefs})>;
+typedef $$TaskTableCreateCompanionBuilder = TaskCompanion Function({
+  Value<int> id,
+  required String title,
+  Value<String?> comment,
+  Value<int?> dueDate,
+  Value<int?> priority,
+  required int projectId,
+  required int status,
+});
+typedef $$TaskTableUpdateCompanionBuilder = TaskCompanion Function({
+  Value<int> id,
+  Value<String> title,
+  Value<String?> comment,
+  Value<int?> dueDate,
+  Value<int?> priority,
+  Value<int> projectId,
+  Value<int> status,
+});
+
+final class $$TaskTableReferences
+    extends BaseReferences<_$AppDatabase, $TaskTable, TaskData> {
+  $$TaskTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $ProjectTable _projectIdTable(_$AppDatabase db) => db.project
+      .createAlias($_aliasNameGenerator(db.task.projectId, db.project.id));
+
+  $$ProjectTableProcessedTableManager? get projectId {
+    if ($_item.projectId == null) return null;
+    final manager = $$ProjectTableTableManager($_db, $_db.project)
+        .filter((f) => f.id($_item.projectId!));
+    final item = $_typedResult.readTableOrNull(_projectIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static MultiTypedResultKey<$TaskLabelTable, List<TaskLabelData>>
+      _taskLabelRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.taskLabel,
+              aliasName: $_aliasNameGenerator(db.task.id, db.taskLabel.taskId));
+
+  $$TaskLabelTableProcessedTableManager get taskLabelRefs {
+    final manager = $$TaskLabelTableTableManager($_db, $_db.taskLabel)
+        .filter((f) => f.taskId.id($_item.id));
+
+    final cache = $_typedResult.readTableOrNull(_taskLabelRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$TaskTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $TaskTable> {
+  $$TaskTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get title => $state.composableBuilder(
+      column: $state.table.title,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get comment => $state.composableBuilder(
+      column: $state.table.comment,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get dueDate => $state.composableBuilder(
+      column: $state.table.dueDate,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get priority => $state.composableBuilder(
+      column: $state.table.priority,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get status => $state.composableBuilder(
+      column: $state.table.status,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  $$ProjectTableFilterComposer get projectId {
+    final $$ProjectTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.projectId,
+        referencedTable: $state.db.project,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) => $$ProjectTableFilterComposer(
+            ComposerState(
+                $state.db, $state.db.project, joinBuilder, parentComposers)));
+    return composer;
+  }
+
+  ComposableFilter taskLabelRefs(
+      ComposableFilter Function($$TaskLabelTableFilterComposer f) f) {
+    final $$TaskLabelTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $state.db.taskLabel,
+        getReferencedColumn: (t) => t.taskId,
+        builder: (joinBuilder, parentComposers) =>
+            $$TaskLabelTableFilterComposer(ComposerState(
+                $state.db, $state.db.taskLabel, joinBuilder, parentComposers)));
+    return f(composer);
+  }
+}
+
+class $$TaskTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $TaskTable> {
+  $$TaskTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get title => $state.composableBuilder(
+      column: $state.table.title,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get comment => $state.composableBuilder(
+      column: $state.table.comment,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get dueDate => $state.composableBuilder(
+      column: $state.table.dueDate,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get priority => $state.composableBuilder(
+      column: $state.table.priority,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get status => $state.composableBuilder(
+      column: $state.table.status,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  $$ProjectTableOrderingComposer get projectId {
+    final $$ProjectTableOrderingComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.projectId,
+        referencedTable: $state.db.project,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) =>
+            $$ProjectTableOrderingComposer(ComposerState(
+                $state.db, $state.db.project, joinBuilder, parentComposers)));
+    return composer;
+  }
+}
+
+class $$TaskTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $TaskTable,
+    TaskData,
+    $$TaskTableFilterComposer,
+    $$TaskTableOrderingComposer,
+    $$TaskTableCreateCompanionBuilder,
+    $$TaskTableUpdateCompanionBuilder,
+    (TaskData, $$TaskTableReferences),
+    TaskData,
+    PrefetchHooks Function({bool projectId, bool taskLabelRefs})> {
+  $$TaskTableTableManager(_$AppDatabase db, $TaskTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$TaskTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$TaskTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> title = const Value.absent(),
+            Value<String?> comment = const Value.absent(),
+            Value<int?> dueDate = const Value.absent(),
+            Value<int?> priority = const Value.absent(),
+            Value<int> projectId = const Value.absent(),
+            Value<int> status = const Value.absent(),
+          }) =>
+              TaskCompanion(
+            id: id,
+            title: title,
+            comment: comment,
+            dueDate: dueDate,
+            priority: priority,
+            projectId: projectId,
+            status: status,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String title,
+            Value<String?> comment = const Value.absent(),
+            Value<int?> dueDate = const Value.absent(),
+            Value<int?> priority = const Value.absent(),
+            required int projectId,
+            required int status,
+          }) =>
+              TaskCompanion.insert(
+            id: id,
+            title: title,
+            comment: comment,
+            dueDate: dueDate,
+            priority: priority,
+            projectId: projectId,
+            status: status,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) =>
+                  (e.readTable(table), $$TaskTableReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: ({projectId = false, taskLabelRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (taskLabelRefs) db.taskLabel],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (projectId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.projectId,
+                    referencedTable: $$TaskTableReferences._projectIdTable(db),
+                    referencedColumn:
+                        $$TaskTableReferences._projectIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (taskLabelRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable:
+                            $$TaskTableReferences._taskLabelRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$TaskTableReferences(db, table, p0).taskLabelRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.taskId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$TaskTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $TaskTable,
+    TaskData,
+    $$TaskTableFilterComposer,
+    $$TaskTableOrderingComposer,
+    $$TaskTableCreateCompanionBuilder,
+    $$TaskTableUpdateCompanionBuilder,
+    (TaskData, $$TaskTableReferences),
+    TaskData,
+    PrefetchHooks Function({bool projectId, bool taskLabelRefs})>;
+typedef $$LabelTableCreateCompanionBuilder = LabelCompanion Function({
+  Value<int> id,
+  required String name,
+  required String colorName,
+  required int colorCode,
+});
+typedef $$LabelTableUpdateCompanionBuilder = LabelCompanion Function({
+  Value<int> id,
+  Value<String> name,
+  Value<String> colorName,
+  Value<int> colorCode,
+});
+
+final class $$LabelTableReferences
+    extends BaseReferences<_$AppDatabase, $LabelTable, LabelData> {
+  $$LabelTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static MultiTypedResultKey<$TaskLabelTable, List<TaskLabelData>>
+      _taskLabelRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+          db.taskLabel,
+          aliasName: $_aliasNameGenerator(db.label.id, db.taskLabel.labelId));
+
+  $$TaskLabelTableProcessedTableManager get taskLabelRefs {
+    final manager = $$TaskLabelTableTableManager($_db, $_db.taskLabel)
+        .filter((f) => f.labelId.id($_item.id));
+
+    final cache = $_typedResult.readTableOrNull(_taskLabelRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
+}
+
+class $$LabelTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $LabelTable> {
+  $$LabelTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get colorName => $state.composableBuilder(
+      column: $state.table.colorName,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get colorCode => $state.composableBuilder(
+      column: $state.table.colorCode,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ComposableFilter taskLabelRefs(
+      ComposableFilter Function($$TaskLabelTableFilterComposer f) f) {
+    final $$TaskLabelTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $state.db.taskLabel,
+        getReferencedColumn: (t) => t.labelId,
+        builder: (joinBuilder, parentComposers) =>
+            $$TaskLabelTableFilterComposer(ComposerState(
+                $state.db, $state.db.taskLabel, joinBuilder, parentComposers)));
+    return f(composer);
+  }
+}
+
+class $$LabelTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $LabelTable> {
+  $$LabelTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get colorName => $state.composableBuilder(
+      column: $state.table.colorName,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get colorCode => $state.composableBuilder(
+      column: $state.table.colorCode,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $$LabelTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $LabelTable,
+    LabelData,
+    $$LabelTableFilterComposer,
+    $$LabelTableOrderingComposer,
+    $$LabelTableCreateCompanionBuilder,
+    $$LabelTableUpdateCompanionBuilder,
+    (LabelData, $$LabelTableReferences),
+    LabelData,
+    PrefetchHooks Function({bool taskLabelRefs})> {
+  $$LabelTableTableManager(_$AppDatabase db, $LabelTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$LabelTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$LabelTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> colorName = const Value.absent(),
+            Value<int> colorCode = const Value.absent(),
+          }) =>
+              LabelCompanion(
+            id: id,
+            name: name,
+            colorName: colorName,
+            colorCode: colorCode,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            required String colorName,
+            required int colorCode,
+          }) =>
+              LabelCompanion.insert(
+            id: id,
+            name: name,
+            colorName: colorName,
+            colorCode: colorCode,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) =>
+                  (e.readTable(table), $$LabelTableReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: ({taskLabelRefs = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [if (taskLabelRefs) db.taskLabel],
+              addJoins: null,
+              getPrefetchedDataCallback: (items) async {
+                return [
+                  if (taskLabelRefs)
+                    await $_getPrefetchedData(
+                        currentTable: table,
+                        referencedTable:
+                            $$LabelTableReferences._taskLabelRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$LabelTableReferences(db, table, p0).taskLabelRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.labelId == item.id),
+                        typedResults: items)
+                ];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$LabelTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $LabelTable,
+    LabelData,
+    $$LabelTableFilterComposer,
+    $$LabelTableOrderingComposer,
+    $$LabelTableCreateCompanionBuilder,
+    $$LabelTableUpdateCompanionBuilder,
+    (LabelData, $$LabelTableReferences),
+    LabelData,
+    PrefetchHooks Function({bool taskLabelRefs})>;
+typedef $$TaskLabelTableCreateCompanionBuilder = TaskLabelCompanion Function({
+  Value<int> id,
+  required int taskId,
+  required int labelId,
+});
+typedef $$TaskLabelTableUpdateCompanionBuilder = TaskLabelCompanion Function({
+  Value<int> id,
+  Value<int> taskId,
+  Value<int> labelId,
+});
+
+final class $$TaskLabelTableReferences
+    extends BaseReferences<_$AppDatabase, $TaskLabelTable, TaskLabelData> {
+  $$TaskLabelTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $TaskTable _taskIdTable(_$AppDatabase db) => db.task
+      .createAlias($_aliasNameGenerator(db.taskLabel.taskId, db.task.id));
+
+  $$TaskTableProcessedTableManager? get taskId {
+    if ($_item.taskId == null) return null;
+    final manager = $$TaskTableTableManager($_db, $_db.task)
+        .filter((f) => f.id($_item.taskId!));
+    final item = $_typedResult.readTableOrNull(_taskIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+
+  static $LabelTable _labelIdTable(_$AppDatabase db) => db.label
+      .createAlias($_aliasNameGenerator(db.taskLabel.labelId, db.label.id));
+
+  $$LabelTableProcessedTableManager? get labelId {
+    if ($_item.labelId == null) return null;
+    final manager = $$LabelTableTableManager($_db, $_db.label)
+        .filter((f) => f.id($_item.labelId!));
+    final item = $_typedResult.readTableOrNull(_labelIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$TaskLabelTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $TaskLabelTable> {
+  $$TaskLabelTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  $$TaskTableFilterComposer get taskId {
+    final $$TaskTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.taskId,
+        referencedTable: $state.db.task,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) => $$TaskTableFilterComposer(
+            ComposerState(
+                $state.db, $state.db.task, joinBuilder, parentComposers)));
+    return composer;
+  }
+
+  $$LabelTableFilterComposer get labelId {
+    final $$LabelTableFilterComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.labelId,
+        referencedTable: $state.db.label,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) => $$LabelTableFilterComposer(
+            ComposerState(
+                $state.db, $state.db.label, joinBuilder, parentComposers)));
+    return composer;
+  }
+}
+
+class $$TaskLabelTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $TaskLabelTable> {
+  $$TaskLabelTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  $$TaskTableOrderingComposer get taskId {
+    final $$TaskTableOrderingComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.taskId,
+        referencedTable: $state.db.task,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) => $$TaskTableOrderingComposer(
+            ComposerState(
+                $state.db, $state.db.task, joinBuilder, parentComposers)));
+    return composer;
+  }
+
+  $$LabelTableOrderingComposer get labelId {
+    final $$LabelTableOrderingComposer composer = $state.composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.labelId,
+        referencedTable: $state.db.label,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder, parentComposers) => $$LabelTableOrderingComposer(
+            ComposerState(
+                $state.db, $state.db.label, joinBuilder, parentComposers)));
+    return composer;
+  }
+}
+
+class $$TaskLabelTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $TaskLabelTable,
+    TaskLabelData,
+    $$TaskLabelTableFilterComposer,
+    $$TaskLabelTableOrderingComposer,
+    $$TaskLabelTableCreateCompanionBuilder,
+    $$TaskLabelTableUpdateCompanionBuilder,
+    (TaskLabelData, $$TaskLabelTableReferences),
+    TaskLabelData,
+    PrefetchHooks Function({bool taskId, bool labelId})> {
+  $$TaskLabelTableTableManager(_$AppDatabase db, $TaskLabelTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$TaskLabelTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$TaskLabelTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> taskId = const Value.absent(),
+            Value<int> labelId = const Value.absent(),
+          }) =>
+              TaskLabelCompanion(
+            id: id,
+            taskId: taskId,
+            labelId: labelId,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required int taskId,
+            required int labelId,
+          }) =>
+              TaskLabelCompanion.insert(
+            id: id,
+            taskId: taskId,
+            labelId: labelId,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (
+                    e.readTable(table),
+                    $$TaskLabelTableReferences(db, table, e)
+                  ))
+              .toList(),
+          prefetchHooksCallback: ({taskId = false, labelId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (taskId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.taskId,
+                    referencedTable:
+                        $$TaskLabelTableReferences._taskIdTable(db),
+                    referencedColumn:
+                        $$TaskLabelTableReferences._taskIdTable(db).id,
+                  ) as T;
+                }
+                if (labelId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.labelId,
+                    referencedTable:
+                        $$TaskLabelTableReferences._labelIdTable(db),
+                    referencedColumn:
+                        $$TaskLabelTableReferences._labelIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$TaskLabelTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $TaskLabelTable,
+    TaskLabelData,
+    $$TaskLabelTableFilterComposer,
+    $$TaskLabelTableOrderingComposer,
+    $$TaskLabelTableCreateCompanionBuilder,
+    $$TaskLabelTableUpdateCompanionBuilder,
+    (TaskLabelData, $$TaskLabelTableReferences),
+    TaskLabelData,
+    PrefetchHooks Function({bool taskId, bool labelId})>;
+
+class $AppDatabaseManager {
+  final _$AppDatabase _db;
+  $AppDatabaseManager(this._db);
+  $$ProjectTableTableManager get project =>
+      $$ProjectTableTableManager(_db, _db.project);
+  $$TaskTableTableManager get task => $$TaskTableTableManager(_db, _db.task);
+  $$LabelTableTableManager get label =>
+      $$LabelTableTableManager(_db, _db.label);
+  $$TaskLabelTableTableManager get taskLabel =>
+      $$TaskLabelTableTableManager(_db, _db.taskLabel);
+}

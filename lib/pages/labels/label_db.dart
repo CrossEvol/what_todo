@@ -1,9 +1,9 @@
+import 'package:drift/drift.dart';
 import 'package:flutter_app/db/app_db.dart';
 import 'package:flutter_app/pages/labels/label.dart';
-import 'package:sqflite/sqflite.dart';
 
 class LabelDB {
-  static final LabelDB _labelDb = LabelDB._internal(AppDatabase.get());
+  static final LabelDB _labelDb = LabelDB._internal(AppDatabase());
 
   AppDatabase _appDatabase;
 
@@ -15,43 +15,35 @@ class LabelDB {
   }
 
   Future<bool> isLabelExits(Label label) async {
-    var db = await _appDatabase.getDb();
-    var result = await db.rawQuery(
-        "SELECT * FROM label WHERE name LIKE '${label.name}'");
-    if (result.length == 0) {
-      return await updateLabels(label).then((value) {
-        return false;
-      });
+    var result = await (_appDatabase.select(_appDatabase.label)
+          ..where((tbl) => tbl.name.equals(label.name)))
+        .get();
+    if (result.isEmpty) {
+      await updateLabels(label);
+      return false;
     } else {
       return true;
     }
   }
 
   Future updateLabels(Label label) async {
-    var db = await _appDatabase.getDb();
-    await db.transaction((Transaction txn) async {
-      await txn.rawInsert('INSERT OR REPLACE INTO '
-          'label(name,colorCode,colorName)'
-          ' VALUES("${label.name}", ${label.colorValue}, "${label.colorName}")');
-    });
+    await _appDatabase.into(_appDatabase.label).insertOnConflictUpdate(
+          LabelCompanion(
+            name: Value(label.name),
+            colorCode: Value(label.colorValue),
+            colorName: Value(label.colorName),
+          ),
+        );
   }
 
   Future<List<Label>> getLabels() async {
-    var db = await _appDatabase.getDb();
-    var result = await db.rawQuery('SELECT * FROM label');
-    List<Label> labels = [];
-    for (Map<String, dynamic> item in result) {
-      var myLabels = Label.fromMap(item);
-      labels.add(myLabels);
-    }
-    return labels;
+    var result = await _appDatabase.select(_appDatabase.label).get();
+    return result.map((item) => Label.fromMap(item.toJson())).toList();
   }
 
   Future deleteLabel(int labelId) async {
-    var db = await _appDatabase.getDb();
-    await db.transaction((Transaction txn) async {
-      await txn.rawDelete(
-          'DELETE FROM label WHERE id==$labelId;');
-    });
+    await (_appDatabase.delete(_appDatabase.label)
+          ..where((tbl) => tbl.id.equals(labelId)))
+        .go();
   }
 }

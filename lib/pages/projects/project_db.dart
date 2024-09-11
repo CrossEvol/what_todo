@@ -1,10 +1,9 @@
+import 'package:drift/drift.dart';
 import 'package:flutter_app/db/app_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 
-import 'package:sqflite/sqflite.dart';
-
 class ProjectDB {
-  static final ProjectDB _projectDb = ProjectDB._internal(AppDatabase.get());
+  static final ProjectDB _projectDb = ProjectDB._internal(AppDatabase());
 
   AppDatabase _appDatabase;
 
@@ -16,33 +15,28 @@ class ProjectDB {
   }
 
   Future<List<Project>> getProjects({bool isInboxVisible = true}) async {
-    var db = await _appDatabase.getDb();
-
-    var whereClause = isInboxVisible ? ";" : " WHERE id!=1;";
-    var result =
-        await db.rawQuery('SELECT * FROM project $whereClause');
-    List<Project> projects = [];
-    for (Map<String, dynamic> item in result) {
-      var myProject = Project.fromMap(item);
-      projects.add(myProject);
+    var query = _appDatabase.select(_appDatabase.project);
+    if (!isInboxVisible) {
+      query.where((tbl) => tbl.id.isNotIn([1]));
     }
-    return projects;
+    var result = await query.get();
+    return result.map((item) => Project.fromMap(item.toJson())).toList();
   }
 
   Future insertOrReplace(Project project) async {
-    var db = await _appDatabase.getDb();
-    await db.transaction((Transaction txn) async {
-      await txn.rawInsert('INSERT OR REPLACE INTO '
-          'project(id,name,colorCode,colorName)'
-          ' VALUES(${project.id},"${project.name}", ${project.colorValue}, "${project.colorName}")');
-    });
+    await _appDatabase.into(_appDatabase.project).insertOnConflictUpdate(
+          ProjectCompanion(
+            id: project.id != null ? Value(project.id!) : Value.absent(),
+            name: Value(project.name),
+            colorCode: Value(project.colorValue),
+            colorName: Value(project.colorName),
+          ),
+        );
   }
 
   Future deleteProject(int projectID) async {
-    var db = await _appDatabase.getDb();
-    await db.transaction((Transaction txn) async {
-      await txn.rawDelete(
-          'DELETE FROM project WHERE id==$projectID;');
-    });
+    await (_appDatabase.delete(_appDatabase.project)
+          ..where((tbl) => tbl.id.equals(projectID)))
+        .go();
   }
 }

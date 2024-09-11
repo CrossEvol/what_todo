@@ -1,12 +1,12 @@
+import 'package:drift/drift.dart';
 import 'package:flutter_app/db/app_db.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/tasks/models/task_label.dart';
-import 'package:sqflite/sqflite.dart';
 
 class TaskDB {
-  static final TaskDB _taskDb = TaskDB._internal(AppDatabase.get());
+  static final TaskDB _taskDb = TaskDB._internal(AppDatabase());
 
   AppDatabase _appDatabase;
 
@@ -17,39 +17,41 @@ class TaskDB {
     return _taskDb;
   }
 
-  Future<List<Task>> getTasks(
-      {int startDate = 0, int endDate = 0, TaskStatus? taskStatus}) async {
-    var db = await _appDatabase.getDb();
-    var whereClause = startDate > 0 && endDate > 0
-        ? "WHERE Task.dueDate BETWEEN $startDate AND $endDate"
-        : "";
+  Future<List<Task>> getTasks({int startDate = 0, int endDate = 0, TaskStatus? taskStatus}) async {
+    var query = _appDatabase.select(_appDatabase.task).join([
+      leftOuterJoin(_appDatabase.taskLabel,
+          _appDatabase.taskLabel.taskId.equalsExp(_appDatabase.task.id)),
+      leftOuterJoin(_appDatabase.label,
+          _appDatabase.label.id.equalsExp(_appDatabase.taskLabel.labelId)),
+      innerJoin(_appDatabase.project,
+          _appDatabase.project.id.equalsExp(_appDatabase.task.projectId)),
+    ]);
 
-    if (taskStatus != null) {
-      var taskWhereClause =
-          "Task.status = ${taskStatus.index}";
-      whereClause = whereClause.isEmpty
-          ? "WHERE $taskWhereClause"
-          : "$whereClause AND $taskWhereClause";
+    if (startDate > 0 && endDate > 0) {
+      query
+          .where(_appDatabase.task.dueDate.isBetweenValues(startDate, endDate));
     }
 
-    var result = await db.rawQuery(
-        'SELECT Task.*,project.name,project.colorCode,group_concat(label.name) as labelNames '
-        'FROM Task LEFT JOIN taskLabel ON taskLabel.taskId=Task.id '
-        'LEFT JOIN label ON label.id=taskLabel.labelId '
-        'INNER JOIN project ON Task.projectId = project.id $whereClause GROUP BY Task.id ORDER BY Task.dueDate ASC;');
+    if (taskStatus != null) {
+      query.where(_appDatabase.task.status.equals(taskStatus.index));
+    }
 
+    var result = await query.get();
     return _bindData(result);
   }
 
-  List<Task> _bindData(List<Map<String, dynamic>> result) {
+  List<Task> _bindData(List<TypedResult> result) {
     List<Task> tasks = [];
-    for (Map<String, dynamic> item in result) {
-      var myTask = Task.fromMap(item);
-      myTask.projectName = item["name"];
-      myTask.projectColor = item["colorCode"];
-      var labelComma = item["labelNames"];
-      if (labelComma != null) {
-        myTask.labelList = labelComma.toString().split(",");
+    for (var item in result) {
+      var task = item.readTable(_appDatabase.task);
+      var project = item.readTable(_appDatabase.project);
+      var labelNames = item.readTableOrNull(_appDatabase.label)?.name;
+
+      var myTask = Task.fromMap(task.toJson());
+      myTask.projectName = project.name;
+      myTask.projectColor = project.colorCode;
+      if (labelNames != null) {
+        myTask.labelList = [labelNames];
       }
       tasks.add(myTask);
     }
@@ -58,63 +60,82 @@ class TaskDB {
 
   Future<List<Task>> getTasksByProject(int projectId,
       {TaskStatus? status}) async {
-    var db = await _appDatabase.getDb();
-    String whereStatus = status != null
-        ? "AND Task.status=${status.index}"
-        : "";
-    var result = await db.rawQuery(
-        'SELECT Task.*,project.name,project.colorCode,group_concat(label.name) as labelNames '
-        'FROM Task LEFT JOIN taskLabel ON taskLabel.taskId=Task.id '
-        'LEFT JOIN label ON label.id=taskLabel.labelId '
-        'INNER JOIN project ON Task.projectId = project.id WHERE Task.projectId=$projectId $whereStatus GROUP BY Task.id ORDER BY Task.dueDate ASC;');
+    var query = _appDatabase.select(_appDatabase.task).join([
+      leftOuterJoin(_appDatabase.taskLabel,
+          _appDatabase.taskLabel.taskId.equalsExp(_appDatabase.task.id)),
+      leftOuterJoin(_appDatabase.label,
+          _appDatabase.label.id.equalsExp(_appDatabase.taskLabel.labelId)),
+      innerJoin(_appDatabase.project,
+          _appDatabase.project.id.equalsExp(_appDatabase.task.projectId)),
+    ]);
 
+    query.where(_appDatabase.task.projectId.equals(projectId));
+
+    if (status != null) {
+      query.where(_appDatabase.task.status.equals(status.index));
+    }
+
+    var result = await query.get();
     return _bindData(result);
   }
 
   Future<List<Task>> getTasksByLabel(String labelName,
       {TaskStatus? status}) async {
-    var db = await _appDatabase.getDb();
-    String whereStatus = status != null
-        ? "AND Task.status=${TaskStatus.PENDING.index}"
-        : "";
-    var result = await db.rawQuery(
-        'SELECT Task.*,project.name,project.colorCode,group_concat(label.name) as labelNames '
-        'FROM Task LEFT JOIN taskLabel ON taskLabel.taskId=Task.id '
-        'LEFT JOIN label ON label.id=taskLabel.labelId '
-        'INNER JOIN project ON Task.projectId = project.id $whereStatus GROUP BY Task.id having labelNames LIKE "%$labelName%" ORDER BY Task.dueDate ASC;');
+    var query = _appDatabase.select(_appDatabase.task).join([
+      leftOuterJoin(_appDatabase.taskLabel,
+          _appDatabase.taskLabel.taskId.equalsExp(_appDatabase.task.id)),
+      leftOuterJoin(_appDatabase.label,
+          _appDatabase.label.id.equalsExp(_appDatabase.taskLabel.labelId)),
+      innerJoin(_appDatabase.project,
+          _appDatabase.project.id.equalsExp(_appDatabase.task.projectId)),
+    ]);
 
+    if (status != null) {
+      query.where(_appDatabase.task.status.equals(status.index));
+    }
+
+    query.where(_appDatabase.label.name.like('%$labelName%'));
+
+    var result = await query.get();
     return _bindData(result);
   }
 
   Future deleteTask(int taskID) async {
-    var db = await _appDatabase.getDb();
-    await db.transaction((Transaction txn) async {
-      await txn.rawDelete(
-          'DELETE FROM Task WHERE id=$taskID;');
-    });
+    await (_appDatabase.delete(_appDatabase.task)
+          ..where((tbl) => tbl.id.equals(taskID)))
+        .go();
   }
 
   Future updateTaskStatus(int taskID, TaskStatus status) async {
-    var db = await _appDatabase.getDb();
-    await db.transaction((Transaction txn) async {
-      await txn.rawQuery(
-          "UPDATE Task SET status = '${status.index}' WHERE id = '$taskID'");
-    });
+    await (_appDatabase.update(_appDatabase.task)
+          ..where((tbl) => tbl.id.equals(taskID)))
+        .write(TaskCompanion(status: Value(status.index)));
   }
 
   /// Inserts or replaces the task.
   Future updateTask(Task task, {List<int>? labelIDs}) async {
-    var db = await _appDatabase.getDb();
-    await db.transaction((Transaction txn) async {
-      int id = await txn.rawInsert('INSERT OR REPLACE INTO '
-          'Task(id,title,projectId,comment,dueDate,priority,status)'
-          ' VALUES(${task.id}, "${task.title}", ${task.projectId},"${task.comment}", ${task.dueDate},${task.priority.index},${task.tasksStatus!.index})');
-      if (id > 0 && labelIDs != null && labelIDs.length > 0) {
-        labelIDs.forEach((labelId) {
-          txn.rawInsert('INSERT OR REPLACE INTO '
-              'taskLabel(id,taskId,labelId)'
-              ' VALUES(null, $id, $labelId)');
-        });
+    await _appDatabase.transaction(() async {
+      int id = await _appDatabase.into(_appDatabase.task).insertOnConflictUpdate(
+        TaskCompanion(
+          id: task.id != null ? Value(task.id!) : Value.absent(),
+          title: Value(task.title),
+          projectId: Value(task.projectId),
+          comment: Value(task.comment),
+          dueDate: Value(task.dueDate),
+          priority: Value(task.priority.index),
+          status: Value(task.tasksStatus!.index),
+        ),
+      );
+
+      if (id > 0 && labelIDs != null && labelIDs.isNotEmpty) {
+        for (var labelId in labelIDs) {
+          await _appDatabase.into(_appDatabase.taskLabel).insertOnConflictUpdate(
+            TaskLabelCompanion(
+              taskId: Value(id),
+              labelId: Value(labelId),
+            ),
+          );
+        }
       }
     });
   }

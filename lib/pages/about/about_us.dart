@@ -99,20 +99,26 @@ class AboutUsScreen extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
-                          IconButton(
-                            icon: Image.asset(
-                              "assets/twitter_logo.png",
-                              scale: 8.75,
+                          Expanded(
+                            child: IconButton(
+                              icon: Image.asset(
+                                "assets/twitter_logo.png",
+                                scale: 8.75,
+                              ),
+                              onPressed: () => launchURL(TWITTER_URL),
                             ),
-                            onPressed: () => launchURL(TWITTER_URL),
                           ),
-                          IconButton(
-                            icon: Image.asset("assets/facebook_logo.png"),
-                            onPressed: () => launchURL(FACEBOOK_URL),
+                          Expanded(
+                            child: IconButton(
+                              icon: Image.asset("assets/facebook_logo.png"),
+                              onPressed: () => launchURL(FACEBOOK_URL),
+                            ),
                           ),
-                          IconButton(
-                            icon: Image.asset("assets/stack_overflow.png"),
-                            onPressed: () => launchURL(STACK_OVERFLOW_URL),
+                          Expanded(
+                            child: IconButton(
+                              icon: Image.asset("assets/stack_overflow.png"),
+                              onPressed: () => launchURL(STACK_OVERFLOW_URL),
+                            ),
                           ),
                         ],
                       ),
