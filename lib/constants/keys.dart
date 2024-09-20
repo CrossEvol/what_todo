@@ -38,6 +38,12 @@ class AddTaskKeys {
   static const ADD_TASK = 'addTask';
 }
 
+class EditTaskKeys {
+  static const Edit_TASK_TITLE = 'edit_task_title';
+  static const Edit_TITLE = 'editTitle';
+  static const Edit_TASK = 'editTask';
+}
+
 class HomePageKeys {
   static const ADD_NEW_TASK_BUTTON = 'add_new_task_button';
   static const HOME_TITLE = 'home_title';

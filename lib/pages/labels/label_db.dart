@@ -41,9 +41,14 @@ class LabelDB {
     return result.map((item) => Label.fromMap(item.toJson())).toList();
   }
 
+  Future<List<Label>> getLabelsByNames(List<String> labelNames) async {
+    var query = _db.select(_db.label);
+    query.where((tbl) => tbl.name.isIn(labelNames));
+    var result = await query.get();
+    return result.map((item) => Label.fromMap(item.toJson())).toList();
+  }
+
   Future deleteLabel(int labelId) async {
-    await (_db.delete(_db.label)
-          ..where((tbl) => tbl.id.equals(labelId)))
-        .go();
+    await (_db.delete(_db.label)..where((tbl) => tbl.id.equals(labelId))).go();
   }
 }

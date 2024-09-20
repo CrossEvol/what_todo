@@ -1,33 +1,46 @@
+
 import 'package:flutter/material.dart';
+import 'package:flutter_app/pages/home/home_bloc.dart';
+import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
+import 'package:flutter_app/pages/tasks/edit_task.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/constants/color_constant.dart';
-import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_app/constants/app_constant.dart';
+import 'package:flutter_app/utils/extension.dart';
+
+import 'task_db.dart';
 
 class TaskRow extends StatelessWidget {
-  final Task tasks;
+  final TaskBloc _taskBloc = TaskBloc(TaskDB.get());
+  final Task task;
   static final dateLabel = "Date";
   final List<String> labelNames = [];
 
-  TaskRow(this.tasks);
+  TaskRow(this.task);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        showSnackbar(context, 'Todo Details not implemented.');
+      onTap: () async {
+        await context.adaptiveNavigate(
+            SCREEN.EDIT_TASK,
+            EditTaskProvider(
+              task: this.task,
+            ));
+        _taskBloc.refresh();
+        // showSnackbar(context, 'Todo Details not implemented.');
       },
       child: Column(
         children: <Widget>[
           Container(
-            key: ValueKey("taskPriority_${tasks.id}"),
+            key: ValueKey("taskPriority_${task.id}"),
             margin: const EdgeInsets.symmetric(vertical: PADDING_TINY),
             decoration: BoxDecoration(
               border: Border(
                 left: BorderSide(
                   width: 4.0,
-                  color: priorityColor[tasks.priority.index],
+                  color: priorityColor[task.priority.index],
                 ),
               ),
             ),
@@ -42,25 +55,25 @@ class TaskRow extends StatelessWidget {
                       bottom: PADDING_VERY_SMALL,
                     ),
                     child: Text(
-                      tasks.title,
-                      key: ValueKey("taskTitle_${tasks.id}"),
+                      task.title,
+                      key: ValueKey("taskTitle_${task.id}"),
                       style: TextStyle(
                         fontSize: FONT_SIZE_TITLE,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  getLabels(tasks.labelList),
+                  getLabels(task.labelList),
                   Padding(
                     padding: const EdgeInsets.only(
                         left: PADDING_SMALL, bottom: PADDING_VERY_SMALL),
                     child: Row(
                       children: <Widget>[
                         Text(
-                          getFormattedDate(tasks.dueDate),
+                          getFormattedDate(task.dueDate),
                           style: TextStyle(
                               color: Colors.grey, fontSize: FONT_SIZE_DATE),
-                          key: ValueKey("taskDueDate_${tasks.id}"),
+                          key: ValueKey("taskDueDate_${task.id}"),
                         ),
                         Expanded(
                           child: Column(
@@ -69,9 +82,9 @@ class TaskRow extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
-                                  Text(tasks.projectName!,
+                                  Text(task.projectName!,
                                       key: ValueKey(
-                                          "taskProjectName_${tasks.id}"),
+                                          "taskProjectName_${task.id}"),
                                       style: TextStyle(
                                           color: Colors.grey,
                                           fontSize: FONT_SIZE_LABEL)),
@@ -82,7 +95,7 @@ class TaskRow extends StatelessWidget {
                                     height: 8.0,
                                     child: CircleAvatar(
                                       backgroundColor:
-                                          Color(tasks.projectColor!),
+                                          Color(task.projectColor!),
                                     ),
                                   )
                                 ],
@@ -119,8 +132,8 @@ class TaskRow extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.only(
             left: PADDING_SMALL, bottom: PADDING_VERY_SMALL),
-        child: Text(tasks.labelList.join("  "),
-            key: ValueKey("taskLabels_${tasks.id}"),
+        child: Text(task.labelList.join("  "),
+            key: ValueKey("taskLabels_${task.id}"),
             style: TextStyle(fontSize: FONT_SIZE_LABEL)),
       );
     }

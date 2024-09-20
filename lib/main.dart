@@ -9,6 +9,7 @@ import 'package:flutter_app/pages/home/side_drawer.dart';
 import 'package:flutter_app/pages/labels/label_widget.dart';
 import 'package:flutter_app/pages/projects/project_widget.dart';
 import 'package:flutter_app/pages/tasks/add_task.dart';
+import 'package:flutter_app/pages/tasks/edit_task.dart';
 import 'package:flutter_app/pages/tasks/task_completed/task_completed.dart';
 import 'package:flutter_app/pages/tasks/task_uncompleted/task_uncompleted.dart';
 import 'package:flutter_app/utils/extension.dart';
@@ -112,10 +113,12 @@ class WiderHomePage extends StatelessWidget {
                       return AddLabelPage();
                     case SCREEN.HOME:
                       return HomePage();
-                    case null:
-                    // TODO: Handle this case.
                     case SCREEN.UNCOMPLETED_TASK:
                       return TaskUnCompletedPage();
+                    case SCREEN.EDIT_TASK:
+                      return EditTaskProvider();
+                    case null:
+                    // TODO: Handle this case.
                   }
                 }
                 return HomePage();

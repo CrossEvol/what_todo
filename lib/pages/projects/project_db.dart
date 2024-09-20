@@ -14,6 +14,17 @@ class ProjectDB {
     return _projectDb;
   }
 
+  Future<Project> getProject(
+      {required int id, bool isInboxVisible = true}) async {
+    var query = _db.select(_db.project);
+    if (!isInboxVisible) {
+      query.where((tbl) => tbl.id.isNotIn([1]));
+    }
+    query.where((tbl) => tbl.id.equals(id));
+    var result = await query.getSingle();
+    return Project.fromMap(result.toJson());
+  }
+
   Future<List<Project>> getProjects({bool isInboxVisible = true}) async {
     var query = _db.select(_db.project);
     if (!isInboxVisible) {
@@ -35,8 +46,7 @@ class ProjectDB {
   }
 
   Future deleteProject(int projectID) async {
-    await (_db.delete(_db.project)
-          ..where((tbl) => tbl.id.equals(projectID)))
+    await (_db.delete(_db.project)..where((tbl) => tbl.id.equals(projectID)))
         .go();
   }
 }
