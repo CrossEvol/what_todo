@@ -140,6 +140,16 @@ class TaskBloc implements BlocBase {
     _lastFilterStatus = filter;
     refresh();
   }
+
+  void postponeTodayTasks() {
+    final dateTime = DateTime.now();
+    var startDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
+    final int taskStartTime = startDate.millisecondsSinceEpoch;
+
+    _taskDb.updateExpiredTasks(taskStartTime).then((_) {
+      refresh();
+    });
+  }
 }
 
 enum FilterStatus { BY_TODAY, BY_WEEK, BY_PROJECT, BY_LABEL, BY_STATUS }

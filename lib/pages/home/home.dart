@@ -40,7 +40,15 @@ class HomePage extends StatelessWidget {
                 key: ValueKey(HomePageKeys.HOME_TITLE),
               );
             }),
-        actions: <Widget>[buildPopupMenu(context)],
+        actions: <Widget>[
+          StreamBuilder<String>(
+            initialData: 'Today',
+            stream: homeBloc.title,
+            builder: (context, snapshot) {
+              return buildPopupMenu(context, snapshot.data!);
+            },
+          )
+        ],
         leading: isWiderScreen
             ? null
             : new IconButton(
@@ -73,7 +81,7 @@ class HomePage extends StatelessWidget {
 
 // This menu button widget updates a _selection field (of type WhyFarther,
 // not shown here).
-  Widget buildPopupMenu(BuildContext context) {
+  Widget buildPopupMenu(BuildContext context, String title) {
     return PopupMenuButton<MenuItem>(
       icon: Icon(Icons.adaptive.more),
       key: ValueKey(CompletedTaskPageKeys.POPUP_ACTION),
@@ -89,27 +97,40 @@ class HomePage extends StatelessWidget {
                 SCREEN.UNCOMPLETED_TASK, TaskUnCompletedPage());
             _taskBloc.refresh();
             break;
+          case MenuItem.TASK_POSTPONE:
+            _taskBloc.postponeTodayTasks();
+            _taskBloc.refresh();
+            break;
         }
       },
-      itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuItem>>[
-        const PopupMenuItem<MenuItem>(
-          value: MenuItem.TASK_COMPLETED,
-          child: const Text(
-            'Completed Tasks',
-            key: ValueKey(CompletedTaskPageKeys.COMPLETED_TASKS),
+      itemBuilder: (BuildContext context) {
+        return <PopupMenuEntry<MenuItem>>[
+          const PopupMenuItem<MenuItem>(
+            value: MenuItem.TASK_COMPLETED,
+            child: const Text(
+              'Completed Tasks',
+              key: ValueKey(CompletedTaskPageKeys.COMPLETED_TASKS),
+            ),
           ),
-        ),
-        const PopupMenuItem<MenuItem>(
-          value: MenuItem.TASK_UNCOMPLETED,
-          child: const Text(
-            'Uncompleted Tasks',
-            key: ValueKey(CompletedTaskPageKeys.UNCOMPLETED_TASKS),
+          const PopupMenuItem<MenuItem>(
+            value: MenuItem.TASK_UNCOMPLETED,
+            child: const Text(
+              'Uncompleted Tasks',
+              key: ValueKey(CompletedTaskPageKeys.UNCOMPLETED_TASKS),
+            ),
           ),
-        )
-      ],
+          if (title == 'Today')
+            const PopupMenuItem<MenuItem>(
+                value: MenuItem.TASK_POSTPONE,
+                child: const Text(
+                  'Postpone Tasks',
+                  key: ValueKey(CompletedTaskPageKeys.POSTPONE_TASKS),
+                ))
+        ];
+      },
     );
   }
 }
 
 // This is the type used by the popup menu below.
-enum MenuItem { TASK_COMPLETED, TASK_UNCOMPLETED }
+enum MenuItem { TASK_COMPLETED, TASK_UNCOMPLETED, TASK_POSTPONE }

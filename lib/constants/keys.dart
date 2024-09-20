@@ -54,4 +54,5 @@ class CompletedTaskPageKeys {
   static const POPUP_ACTION = 'popup_action';
   static const COMPLETED_TASKS = 'completed_tasks';
   static const UNCOMPLETED_TASKS = 'uncompleted_tasks';
+  static const POSTPONE_TASKS = 'postpone_tasks';
 }

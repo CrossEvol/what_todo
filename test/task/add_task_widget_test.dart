@@ -56,6 +56,12 @@ class FakeTaskDb implements TaskDB {
     // TODO: implement updateTaskStatus
     throw UnimplementedError();
   }
+
+  @override
+  Future<void> updateExpiredTasks(int todayStartTime) {
+    // TODO: implement updateExpiredTasks
+    throw UnimplementedError();
+  }
 }
 
 @GenerateMocks([ProjectDB, LabelDB])

@@ -14,19 +14,16 @@ class TaskDB {
     return _taskDb;
   }
 
-  Future<List<Task>> getTasks({int startDate = 0, int endDate = 0, TaskStatus? taskStatus}) async {
+  Future<List<Task>> getTasks(
+      {int startDate = 0, int endDate = 0, TaskStatus? taskStatus}) async {
     var query = _db.select(_db.task).join([
-      leftOuterJoin(_db.taskLabel,
-          _db.taskLabel.taskId.equalsExp(_db.task.id)),
-      leftOuterJoin(_db.label,
-          _db.label.id.equalsExp(_db.taskLabel.labelId)),
-      innerJoin(_db.project,
-          _db.project.id.equalsExp(_db.task.projectId)),
+      leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
+      leftOuterJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId)),
+      innerJoin(_db.project, _db.project.id.equalsExp(_db.task.projectId)),
     ]);
 
     if (startDate > 0 && endDate > 0) {
-      query
-          .where(_db.task.dueDate.isBetweenValues(startDate, endDate));
+      query.where(_db.task.dueDate.isBetweenValues(startDate, endDate));
     }
 
     if (taskStatus != null) {
@@ -58,12 +55,9 @@ class TaskDB {
   Future<List<Task>> getTasksByProject(int projectId,
       {TaskStatus? status}) async {
     var query = _db.select(_db.task).join([
-      leftOuterJoin(_db.taskLabel,
-          _db.taskLabel.taskId.equalsExp(_db.task.id)),
-      leftOuterJoin(_db.label,
-          _db.label.id.equalsExp(_db.taskLabel.labelId)),
-      innerJoin(_db.project,
-          _db.project.id.equalsExp(_db.task.projectId)),
+      leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
+      leftOuterJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId)),
+      innerJoin(_db.project, _db.project.id.equalsExp(_db.task.projectId)),
     ]);
 
     query.where(_db.task.projectId.equals(projectId));
@@ -79,12 +73,9 @@ class TaskDB {
   Future<List<Task>> getTasksByLabel(String labelName,
       {TaskStatus? status}) async {
     var query = _db.select(_db.task).join([
-      leftOuterJoin(_db.taskLabel,
-          _db.taskLabel.taskId.equalsExp(_db.task.id)),
-      leftOuterJoin(_db.label,
-          _db.label.id.equalsExp(_db.taskLabel.labelId)),
-      innerJoin(_db.project,
-          _db.project.id.equalsExp(_db.task.projectId)),
+      leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
+      leftOuterJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId)),
+      innerJoin(_db.project, _db.project.id.equalsExp(_db.task.projectId)),
     ]);
 
     if (status != null) {
@@ -98,14 +89,11 @@ class TaskDB {
   }
 
   Future deleteTask(int taskID) async {
-    await (_db.delete(_db.task)
-          ..where((tbl) => tbl.id.equals(taskID)))
-        .go();
+    await (_db.delete(_db.task)..where((tbl) => tbl.id.equals(taskID))).go();
   }
 
   Future updateTaskStatus(int taskID, TaskStatus status) async {
-    await (_db.update(_db.task)
-          ..where((tbl) => tbl.id.equals(taskID)))
+    await (_db.update(_db.task)..where((tbl) => tbl.id.equals(taskID)))
         .write(TaskCompanion(status: Value(status.index)));
   }
 
@@ -113,27 +101,41 @@ class TaskDB {
   Future updateTask(Task task, {List<int>? labelIDs}) async {
     await _db.transaction(() async {
       int id = await _db.into(_db.task).insertOnConflictUpdate(
-        TaskCompanion(
-          id: task.id != null ? Value(task.id!) : Value.absent(),
-          title: Value(task.title),
-          projectId: Value(task.projectId),
-          comment: Value(task.comment),
-          dueDate: Value(task.dueDate),
-          priority: Value(task.priority.index),
-          status: Value(task.tasksStatus!.index),
-        ),
-      );
+            TaskCompanion(
+              id: task.id != null ? Value(task.id!) : Value.absent(),
+              title: Value(task.title),
+              projectId: Value(task.projectId),
+              comment: Value(task.comment),
+              dueDate: Value(task.dueDate),
+              priority: Value(task.priority.index),
+              status: Value(task.tasksStatus!.index),
+            ),
+          );
 
       if (id > 0 && labelIDs != null && labelIDs.isNotEmpty) {
         for (var labelId in labelIDs) {
           await _db.into(_db.taskLabel).insertOnConflictUpdate(
-            TaskLabelCompanion(
-              taskId: Value(id),
-              labelId: Value(labelId),
-            ),
-          );
+                TaskLabelCompanion(
+                  taskId: Value(id),
+                  labelId: Value(labelId),
+                ),
+              );
         }
       }
     });
+  }
+
+  Future<void> updateExpiredTasks(int todayStartTime) async {
+    final tomorrowStartTime = todayStartTime + Duration(days: 1).inMilliseconds;
+    var query = _db.select(_db.task);
+    query.where((tbl) =>
+        tbl.dueDate.isBetweenValues(todayStartTime, tomorrowStartTime));
+    var future = await query.get();
+
+    await (_db.update(_db.task)
+          ..where((tbl) =>
+              tbl.dueDate.isBetweenValues(todayStartTime, tomorrowStartTime) &
+              tbl.status.equals(TaskStatus.PENDING.index)))
+        .write(TaskCompanion(dueDate: Value(tomorrowStartTime)));
   }
 }
