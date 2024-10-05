@@ -9,10 +9,10 @@ abstract class LabelEvent extends Equatable {
 
 class LoadLabelsEvent extends LabelEvent {}
 
-class CheckLabelExist extends LabelEvent {
+class CreateLabelEvent extends LabelEvent {
   final Label label;
 
-  const CheckLabelExist(this.label);
+  const CreateLabelEvent(this.label);
 
   @override
   List<Object> get props => [label];

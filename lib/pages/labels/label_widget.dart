@@ -11,10 +11,10 @@ import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:go_router/go_router.dart';
 
-
 class LabelPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    context.read<LabelBloc>().add(RefreshLabelsEvent());
     return BlocBuilder<LabelBloc, LabelState>(
       builder: (context, state) {
         if (state is LabelsLoaded) {
@@ -75,7 +75,9 @@ class LabelRow extends StatelessWidget {
       onTap: () {
         context.read<HomeBloc>().add(
             ApplyFilterEvent("@ ${label.name}", Filter.byLabel(label.name)));
-        context.read<TaskBloc>().add(LoadTasksByLabelEvent(labelName: label.name));
+        context
+            .read<TaskBloc>()
+            .add(LoadTasksByLabelEvent(labelName: label.name));
         context.safePop();
       },
       leading: Container(

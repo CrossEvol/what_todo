@@ -88,14 +88,8 @@ class SideDrawer extends StatelessWidget {
               key: ValueKey(SideDrawerKeys.NEXT_7_DAYS),
             ),
           ),
-          CustomBlocProvider(
-            bloc: MyProjectBloc(ProjectDB.get()),
-            child: ProjectPage(),
-          ),
-          CustomBlocProvider(
-            bloc: MyLabelBloc(LabelDB.get()),
-            child: LabelPage(),
-          ),
+          ProjectPage(),
+          LabelPage(),
           ListTile(
             onTap: () {
               showSnackbar(context, 'Unknown has not implemented.',

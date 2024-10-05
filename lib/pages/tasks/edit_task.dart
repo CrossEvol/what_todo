@@ -166,16 +166,7 @@ class EditTaskScreen extends StatelessWidget {
                       .read<HomeBloc>()
                       .add(ApplyFilterEvent("Today", Filter.byToday()));
                 } else {
-                  /*TODO did not find the better way to refresh data */
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute<bool>(
-                        builder: (context) => CustomBlocProvider(
-                              bloc: MyHomeBloc(),
-                              child: AdaptiveHomePage(),
-                            )),
-                  );
-                  // context.safePop();
+                  context.safePop();
                 }
               });
             }

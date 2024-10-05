@@ -5,6 +5,7 @@ import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 
 part 'label_event.dart';
+
 part 'label_state.dart';
 
 class LabelBloc extends Bloc<LabelEvent, LabelState> {
@@ -12,12 +13,13 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
 
   LabelBloc(this._labelDB) : super(LabelInitial()) {
     on<LoadLabelsEvent>(_onLoadLabels);
-    on<CheckLabelExist>(_onCheckLabelExist);
+    on<CreateLabelEvent>(_onCreateLabel);
     on<UpdateColorSelectionEvent>(_onUpdateColorSelection);
     on<RefreshLabelsEvent>(_onRefreshLabels);
   }
 
-  Future<void> _onLoadLabels(LoadLabelsEvent event, Emitter<LabelState> emit) async {
+  Future<void> _onLoadLabels(
+      LoadLabelsEvent event, Emitter<LabelState> emit) async {
     emit(LabelLoading());
     try {
       final labels = await _labelDB.getLabels();
@@ -27,7 +29,8 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
     }
   }
 
-  Future<void> _onCheckLabelExist(CheckLabelExist event, Emitter<LabelState> emit) async {
+  Future<void> _onCreateLabel(
+      CreateLabelEvent event, Emitter<LabelState> emit) async {
     try {
       final isExist = await _labelDB.isLabelExits(event.label);
       emit(LabelExistenceChecked(isExist));
@@ -36,11 +39,13 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
     }
   }
 
-  void _onUpdateColorSelection(UpdateColorSelectionEvent event, Emitter<LabelState> emit) {
+  void _onUpdateColorSelection(
+      UpdateColorSelectionEvent event, Emitter<LabelState> emit) {
     emit(ColorSelectionUpdated(event.colorPalette));
   }
 
-  Future<void> _onRefreshLabels(RefreshLabelsEvent event, Emitter<LabelState> emit) async {
+  Future<void> _onRefreshLabels(
+      RefreshLabelsEvent event, Emitter<LabelState> emit) async {
     await _onLoadLabels(LoadLabelsEvent(), emit);
   }
 }

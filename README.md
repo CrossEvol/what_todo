@@ -5,4 +5,6 @@ the project is not build on the [bloc](https://bloclibrary.dev/), I want to rebu
 
 # Todo:
 - mobile can not update title properly, it will commit updateTask several times, and preserve the origin at the db level
+- the desktop can update title, but the mobile will flashback 
+- ~~after update the task, it will be freeze and I can not edit again. but after I create a new task , I can edit anyone .~~
 - remove origin bloc logic which is coupled with add_task , edit_task , completed_tasks, uncompleted_tasks
