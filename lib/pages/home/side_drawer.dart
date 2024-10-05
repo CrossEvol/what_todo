@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/pages/home/home.dart';
 import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_app/pages/projects/project_widget.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/extension.dart';
+import 'package:go_router/go_router.dart';
 
 class SideDrawer extends StatelessWidget {
   @override
@@ -33,8 +35,9 @@ class SideDrawer extends StatelessWidget {
                     size: 36.0,
                   ),
                   onPressed: () async {
-                    await context.adaptiveNavigate(
-                        SCREEN.ABOUT, AboutUsScreen());
+                    context.go('/about');
+                    // await context.adaptiveNavigate(
+                    //     SCREEN.ABOUT, AboutUsScreen());
                   })
             ],
             currentAccountPicture: CircleAvatar(

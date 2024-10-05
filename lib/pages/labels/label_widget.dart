@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/pages/home/home.dart';
 import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/labels/label.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_app/pages/labels/add_label.dart';
 import 'package:flutter_app/pages/labels/my_label_bloc.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
+import 'package:go_router/go_router.dart';
 
 class LabelPage extends StatelessWidget {
   @override
@@ -55,7 +57,8 @@ class LabelExpansionTileWidget extends StatelessWidget {
           key: ValueKey(SideDrawerKeys.ADD_LABEL),
         ),
         onTap: () async {
-          await context.adaptiveNavigate(SCREEN.ADD_LABEL, AddLabelPage());
+          context.go('/label/add');
+          // await context.adaptiveNavigate(SCREEN.ADD_LABEL, AddLabelPage());
           _labelBloc.refresh();
         }));
     return projectWidgetList;

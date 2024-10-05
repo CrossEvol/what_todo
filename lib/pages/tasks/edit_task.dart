@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
-import 'package:flutter_app/main.dart';
 import 'package:flutter_app/models/priority.dart';
+import 'package:flutter_app/pages/home/home.dart';
 import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
@@ -166,7 +166,7 @@ class EditTaskScreen extends StatelessWidget {
                     MaterialPageRoute<bool>(
                         builder: (context) => CustomBlocProvider(
                               bloc: MyHomeBloc(),
-                              child: AdaptiveHome(),
+                              child: AdaptiveHomePage(),
                             )),
                   );
                   // context.safePop();

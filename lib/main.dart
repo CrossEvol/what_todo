@@ -1,18 +1,8 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/custom_bloc_provider.dart';
-import 'package:flutter_app/pages/about/about_us.dart';
 import 'package:flutter_app/pages/home/home.dart';
-import 'package:flutter_app/pages/home/my_home_bloc.dart';
-import 'package:flutter_app/pages/home/side_drawer.dart';
-import 'package:flutter_app/pages/labels/label_widget.dart';
-import 'package:flutter_app/pages/projects/project_widget.dart';
-import 'package:flutter_app/pages/tasks/add_task.dart';
-import 'package:flutter_app/pages/tasks/edit_task.dart';
-import 'package:flutter_app/pages/tasks/task_completed/task_completed.dart';
-import 'package:flutter_app/pages/tasks/task_uncompleted/task_uncompleted.dart';
-import 'package:flutter_app/utils/extension.dart';
+import 'package:flutter_app/router/router.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() {
@@ -53,7 +43,7 @@ class MyApp extends StatelessWidget {
       primaryColor: primaryColor,
       visualDensity: VisualDensity.adaptivePlatformDensity,
     );
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       theme: theme.copyWith(
         colorScheme: theme.colorScheme.copyWith(
@@ -61,71 +51,9 @@ class MyApp extends StatelessWidget {
           primary: primaryColor,
         ),
       ),
-      home: CustomBlocProvider(
-        bloc: MyHomeBloc(),
-        child: AdaptiveHome(),
-      ),
+      routerConfig: goRouter,
     );
   }
 }
 
-class AdaptiveHome extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return context.isWiderScreen() ? WiderHomePage() : HomePage();
-  }
-}
 
-class WiderHomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final homeBloc = context.bloc<MyHomeBloc>();
-    return Row(
-      children: [
-        Expanded(
-          child: StreamBuilder<SCREEN>(
-              stream: homeBloc.screens,
-              builder: (context, snapshot) {
-                //Refresh side drawer whenever screen is updated
-                return SideDrawer();
-              }),
-          flex: 2,
-        ),
-        SizedBox(
-          width: 0.5,
-        ),
-        Expanded(
-          child: StreamBuilder<SCREEN>(
-              stream: homeBloc.screens,
-              builder: (context, snapshot) {
-                if (snapshot.data != null) {
-                  // ignore: missing_enum_constant_in_switch
-                  switch (snapshot.data) {
-                    case SCREEN.ABOUT:
-                      return AboutUsScreen();
-                    case SCREEN.ADD_TASK:
-                      return AddTaskProvider();
-                    case SCREEN.COMPLETED_TASK:
-                      return TaskCompletedPage();
-                    case SCREEN.ADD_PROJECT:
-                      return AddProjectPage();
-                    case SCREEN.ADD_LABEL:
-                      return AddLabelPage();
-                    case SCREEN.HOME:
-                      return HomePage();
-                    case SCREEN.UNCOMPLETED_TASK:
-                      return TaskUnCompletedPage();
-                    case SCREEN.EDIT_TASK:
-                      return EditTaskProvider();
-                    case null:
-                    // TODO: Handle this case.
-                  }
-                }
-                return HomePage();
-              }),
-          flex: 5,
-        )
-      ],
-    );
-  }
-}

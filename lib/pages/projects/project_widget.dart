@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/pages/home/home.dart';
 import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/projects/add_project.dart';
 import 'package:flutter_app/pages/projects/project.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
+import 'package:go_router/go_router.dart';
 
 class ProjectPage extends StatelessWidget {
   @override
@@ -52,7 +54,8 @@ class ProjectExpansionTileWidget extends StatelessWidget {
       leading: Icon(Icons.add),
       title: Text("Add Project"),
       onTap: () async {
-        await context.adaptiveNavigate(SCREEN.ADD_PROJECT, AddProjectPage());
+        context.go('/project/add');
+        // await context.adaptiveNavigate(SCREEN.ADD_PROJECT, AddProjectPage());
         context.bloc<MyProjectBloc>().refresh();
       },
     ));

@@ -1,5 +1,5 @@
-
 import 'package:flutter/material.dart';
+import 'package:flutter_app/pages/home/home.dart';
 import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:flutter_app/pages/tasks/edit_task.dart';
@@ -8,6 +8,7 @@ import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_app/constants/app_constant.dart';
 import 'package:flutter_app/utils/extension.dart';
+import 'package:go_router/go_router.dart';
 
 import 'task_db.dart';
 
@@ -23,11 +24,12 @@ class TaskRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        await context.adaptiveNavigate(
-            SCREEN.EDIT_TASK,
-            EditTaskProvider(
-              task: this.task,
-            ));
+        context.go('/task/edit', extra: this.task);
+        // await context.adaptiveNavigate(
+        //     SCREEN.EDIT_TASK,
+        //     EditTaskProvider(
+        //       task: this.task,
+        //     ));
         _taskBloc.refresh();
         // showSnackbar(context, 'Todo Details not implemented.');
       },
