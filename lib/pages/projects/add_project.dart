@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/pages/home/screen_enum.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/projects/project.dart';
-import 'package:flutter_app/pages/projects/my_project_bloc.dart';
 import 'package:flutter_app/utils/collapsable_expand_tile.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
@@ -14,7 +15,6 @@ class AddProject extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MyProjectBloc _projectBloc = CustomBlocProvider.of(context);
     late ColorPalette currentSelectedPalette;
     String projectName = "";
     return Scaffold(
@@ -25,26 +25,27 @@ class AddProject extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-          key: ValueKey(AddProjectKeys.ADD_PROJECT_BUTTON),
-          child: Icon(
-            Icons.send,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            if (_formState.currentState!.validate()) {
-              _formState.currentState!.save();
-              var project = Project.create(
-                  projectName,
-                  currentSelectedPalette.colorValue,
-                  currentSelectedPalette.colorName);
-              _projectBloc.createProject(project);
-              if (context.isWiderScreen()) {
-                context.bloc<MyHomeBloc>().updateScreen(SCREEN.HOME);
-              }
-              context.safePop();
-              _projectBloc.refresh();
+        key: ValueKey(AddProjectKeys.ADD_PROJECT_BUTTON),
+        child: Icon(
+          Icons.send,
+          color: Colors.white,
+        ),
+        onPressed: () {
+          if (_formState.currentState!.validate()) {
+            _formState.currentState!.save();
+            var project = Project.create(
+              projectName,
+              currentSelectedPalette.colorValue,
+              currentSelectedPalette.colorName,
+            );
+            context.read<ProjectBloc>().add(CreateProject(project));
+            if (context.isWiderScreen()) {
+              context.bloc<MyHomeBloc>().updateScreen(SCREEN.HOME);
             }
-          }),
+            context.safePop();
+          }
+        },
+      ),
       body: ListView(
         children: <Widget>[
           Form(
@@ -66,22 +67,24 @@ class AddProject extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 4.0),
-            child: StreamBuilder<ColorPalette>(
-              stream: _projectBloc.colorSelection,
-              initialData: ColorPalette("Grey", Colors.grey.value),
-              builder: (context, snapshot) {
-                currentSelectedPalette = snapshot.data!;
+            child: BlocBuilder<ProjectBloc, ProjectState>(
+              builder: (context, state) {
+                if (state is ColorSelectionUpdated) {
+                  currentSelectedPalette = state.colorPalette;
+                } else {
+                  currentSelectedPalette = ColorPalette("Grey", Colors.grey.value);
+                }
                 return CollapsibleExpansionTile(
                   key: expansionTile,
                   leading: Container(
                     width: 12.0,
                     height: 12.0,
                     child: CircleAvatar(
-                      backgroundColor: Color(snapshot.data!.colorValue),
+                      backgroundColor: Color(currentSelectedPalette.colorValue),
                     ),
                   ),
-                  title: Text(snapshot.data!.colorName),
-                  children: buildMaterialColors(_projectBloc),
+                  title: Text(currentSelectedPalette.colorName),
+                  children: buildMaterialColors(context),
                 );
               },
             ),
@@ -91,7 +94,7 @@ class AddProject extends StatelessWidget {
     );
   }
 
-  List<Widget> buildMaterialColors(MyProjectBloc projectBloc) {
+  List<Widget> buildMaterialColors(BuildContext context) {
     List<Widget> projectWidgetList = [];
     colorsPalettes.forEach((colors) {
       projectWidgetList.add(ListTile(
@@ -105,8 +108,10 @@ class AddProject extends StatelessWidget {
         title: Text(colors.colorName),
         onTap: () {
           expansionTile.currentState!.collapse();
-          projectBloc.updateColorSelection(
-            ColorPalette(colors.colorName, colors.colorValue),
+          context.read<ProjectBloc>().add(
+            UpdateColorSelection(
+              ColorPalette(colors.colorName, colors.colorValue),
+            ),
           );
         },
       ));

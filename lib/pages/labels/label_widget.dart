@@ -1,29 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/pages/home/home.dart';
-import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/labels/add_label.dart';
-import 'package:flutter_app/pages/labels/my_label_bloc.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:go_router/go_router.dart';
 
+import '../tasks/bloc/my_task_bloc.dart';
+
 class LabelPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    MyLabelBloc labelBloc = CustomBlocProvider.of(context);
-    return StreamBuilder<List<Label>>(
-      stream: labelBloc.labels,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return LabelExpansionTileWidget(snapshot.data!);
+    return BlocBuilder<LabelBloc, LabelState>(
+      builder: (context, state) {
+        if (state is LabelsLoaded) {
+          return LabelExpansionTileWidget(state.labels);
+        } else if (state is LabelLoading) {
+          return Center(child: CircularProgressIndicator());
         } else {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
+          return Center(child: Text('Failed to load labels'));
         }
       },
     );
@@ -47,7 +46,6 @@ class LabelExpansionTileWidget extends StatelessWidget {
   }
 
   List<Widget> buildLabels(BuildContext context) {
-    final _labelBloc = context.bloc<MyLabelBloc>();
     List<Widget> projectWidgetList = [];
     _labels.forEach((label) => projectWidgetList.add(LabelRow(label)));
     projectWidgetList.add(ListTile(
@@ -58,8 +56,7 @@ class LabelExpansionTileWidget extends StatelessWidget {
         ),
         onTap: () async {
           context.go('/label/add');
-          // await context.adaptiveNavigate(SCREEN.ADD_LABEL, AddLabelPage());
-          _labelBloc.refresh();
+          context.read<LabelBloc>().add(RefreshLabels());
         }));
     return projectWidgetList;
   }
@@ -105,8 +102,8 @@ class LabelRow extends StatelessWidget {
 class AddLabelPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CustomBlocProvider(
-      bloc: MyLabelBloc(LabelDB.get()),
+    return BlocProvider(
+      create: (context) => LabelBloc(LabelDB.get()),
       child: AddLabel(),
     );
   }

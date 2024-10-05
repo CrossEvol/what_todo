@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/pages/projects/my_project_bloc.dart';
+import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/pages/home/home.dart';
 import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/projects/add_project.dart';
 import 'package:flutter_app/pages/projects/project.dart';
-import 'package:flutter_app/pages/projects/my_project_bloc.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
-import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:go_router/go_router.dart';
@@ -14,15 +16,17 @@ import 'package:go_router/go_router.dart';
 class ProjectPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    MyProjectBloc projectBloc = CustomBlocProvider.of<MyProjectBloc>(context);
-    return StreamBuilder<List<Project>>(
-      stream: projectBloc.projects,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return ProjectExpansionTileWidget(snapshot.data!);
-        } else {
+    return BlocBuilder<ProjectBloc, ProjectState>(
+      builder: (context, state) {
+        if (state is ProjectsLoaded) {
+          return ProjectExpansionTileWidget(state.projects);
+        } else if (state is ProjectLoading) {
           return Center(
             child: CircularProgressIndicator(),
+          );
+        } else {
+          return Center(
+            child: Text('Failed to load projects'),
           );
         }
       },
@@ -55,8 +59,7 @@ class ProjectExpansionTileWidget extends StatelessWidget {
       title: Text("Add Project"),
       onTap: () async {
         context.go('/project/add');
-        // await context.adaptiveNavigate(SCREEN.ADD_PROJECT, AddProjectPage());
-        context.bloc<MyProjectBloc>().refresh();
+        context.read<ProjectBloc>().add(RefreshProjects());
       },
     ));
     return projectWidgetList;

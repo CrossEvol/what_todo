@@ -1,8 +1,14 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/home/home_bloc.dart';
+import 'package:flutter_app/bloc/label/label_bloc.dart';
+import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/pages/home/home.dart';
+import 'package:flutter_app/pages/labels/label_db.dart';
+import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/router/router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() {
@@ -43,17 +49,30 @@ class MyApp extends StatelessWidget {
       primaryColor: primaryColor,
       visualDensity: VisualDensity.adaptivePlatformDensity,
     );
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      theme: theme.copyWith(
-        colorScheme: theme.colorScheme.copyWith(
-          secondary: Colors.purple,
-          primary: primaryColor,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => LabelBloc(LabelDB.get())..add(LoadLabels()),
         ),
+        BlocProvider(
+          create: (context) =>
+              ProjectBloc(ProjectDB.get())..add(LoadProjects()),
+        ),
+        BlocProvider(
+          create: (context) =>
+          HomeBloc(),
+        ),
+      ],
+      child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
+        theme: theme.copyWith(
+          colorScheme: theme.colorScheme.copyWith(
+            secondary: Colors.purple,
+            primary: primaryColor,
+          ),
+        ),
+        routerConfig: goRouter,
       ),
-      routerConfig: goRouter,
     );
   }
 }
-
-

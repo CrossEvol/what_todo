@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/pages/about/about_us.dart';
 import 'package:flutter_app/pages/home/my_home_bloc.dart';
+import 'package:flutter_app/pages/home/screen_enum.dart';
 import 'package:flutter_app/pages/home/side_drawer.dart';
 import 'package:flutter_app/pages/labels/label_widget.dart';
 import 'package:flutter_app/pages/projects/project_widget.dart';
@@ -17,6 +19,7 @@ import 'package:flutter_app/pages/tasks/task_widgets.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/router/router.dart';
 import 'package:flutter_app/utils/extension.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class AdaptiveHomePage extends StatelessWidget {
@@ -105,23 +108,36 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: StreamBuilder<String>(
-            initialData: 'Today',
-            stream: homeBloc.title,
-            builder: (context, snapshot) {
-              return Text(
-                snapshot.data!,
-                key: ValueKey(HomePageKeys.HOME_TITLE),
-              );
-            }),
+        title: BlocBuilder<HomeBloc, HomeState>(
+          builder: (context, state) {
+            return Text(
+              state.title,
+              key: ValueKey(HomePageKeys.HOME_TITLE),
+            );
+          },
+        ),
+        // title: StreamBuilder<String>(
+        //     initialData: 'Today',
+        //     stream: homeBloc.title,
+        //     builder: (context, snapshot) {
+        //       return Text(
+        //         snapshot.data!,
+        //         key: ValueKey(HomePageKeys.HOME_TITLE),
+        //       );
+        //     }),
         actions: <Widget>[
-          StreamBuilder<String>(
-            initialData: 'Today',
-            stream: homeBloc.title,
-            builder: (context, snapshot) {
-              return buildPopupMenu(context, snapshot.data!);
+          BlocBuilder<HomeBloc, HomeState>(
+            builder: (context, state) {
+              return buildPopupMenu(context, state.title);
             },
-          )
+          ),
+          // StreamBuilder<String>(
+          //   initialData: 'Today',
+          //   stream: homeBloc.title,
+          //   builder: (context, snapshot) {
+          //     return buildPopupMenu(context, snapshot.data!);
+          //   },
+          // ),
         ],
         leading: isWiderScreen
             ? null

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/pages/home/screen_enum.dart';
 import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -38,15 +39,4 @@ class MyHomeBloc implements CustomBlocBase {
   void updateScreen(SCREEN screenType) {
     _screenController.sink.add(screenType);
   }
-}
-
-enum SCREEN {
-  ABOUT,
-  ADD_TASK,
-  HOME,
-  COMPLETED_TASK,
-  UNCOMPLETED_TASK,
-  ADD_LABEL,
-  ADD_PROJECT,
-  EDIT_TASK
 }
