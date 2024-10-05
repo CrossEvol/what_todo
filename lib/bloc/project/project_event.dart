@@ -7,38 +7,38 @@ abstract class ProjectEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadProjects extends ProjectEvent {
+class LoadProjectsEvent extends ProjectEvent {
   final bool isInboxVisible;
 
-  const LoadProjects({this.isInboxVisible = false});
+  const LoadProjectsEvent({this.isInboxVisible = false});
 
   @override
   List<Object> get props => [isInboxVisible];
 }
 
-class CreateProject extends ProjectEvent {
+class CreateProjectEvent extends ProjectEvent {
   final Project project;
   final bool isInboxVisible;
 
-  const CreateProject(this.project, {this.isInboxVisible = false});
+  const CreateProjectEvent(this.project, {this.isInboxVisible = false});
 
   @override
   List<Object> get props => [project, isInboxVisible];
 }
 
-class UpdateColorSelection extends ProjectEvent {
+class UpdateColorSelectionEvent extends ProjectEvent {
   final ColorPalette colorPalette;
 
-  const UpdateColorSelection(this.colorPalette);
+  const UpdateColorSelectionEvent(this.colorPalette);
 
   @override
   List<Object> get props => [colorPalette];
 }
 
-class RefreshProjects extends ProjectEvent {
+class RefreshProjectsEvent extends ProjectEvent {
   final bool isInboxVisible;
 
-  const RefreshProjects({this.isInboxVisible = false});
+  const RefreshProjectsEvent({this.isInboxVisible = false});
 
   @override
   List<Object> get props => [isInboxVisible];

@@ -10,7 +10,6 @@ import 'package:flutter_app/pages/tasks/edit_task.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_completed/task_completed.dart';
 import 'package:flutter_app/pages/tasks/task_uncompleted/task_uncompleted.dart';
-import 'package:flutter_app/pages/tasks/task_widgets.dart';
 import 'package:go_router/go_router.dart';
 
 /// The route configuration.

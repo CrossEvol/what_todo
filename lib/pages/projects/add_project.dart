@@ -38,7 +38,7 @@ class AddProject extends StatelessWidget {
               currentSelectedPalette.colorValue,
               currentSelectedPalette.colorName,
             );
-            context.read<ProjectBloc>().add(CreateProject(project));
+            context.read<ProjectBloc>().add(CreateProjectEvent(project));
             if (context.isWiderScreen()) {
               context.bloc<MyHomeBloc>().updateScreen(SCREEN.HOME);
             }
@@ -109,7 +109,7 @@ class AddProject extends StatelessWidget {
         onTap: () {
           expansionTile.currentState!.collapse();
           context.read<ProjectBloc>().add(
-            UpdateColorSelection(
+            UpdateColorSelectionEvent(
               ColorPalette(colors.colorName, colors.colorValue),
             ),
           );

@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
-import 'package:flutter_app/main.dart';
-import 'package:flutter_app/pages/home/home.dart';
-import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
+import 'package:flutter_app/bloc/task/task_bloc.dart';
+import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
-import 'package:flutter_app/pages/about/about_us.dart';
-import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/labels/my_label_bloc.dart';
 import 'package:flutter_app/pages/labels/label_widget.dart';
 import 'package:flutter_app/pages/projects/my_project_bloc.dart';
@@ -22,7 +19,6 @@ import 'package:go_router/go_router.dart';
 class SideDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // MyHomeBloc homeBloc = CustomBlocProvider.of(context);
     return Drawer(
       child: ListView(
         padding: EdgeInsets.all(0.0),
@@ -39,8 +35,6 @@ class SideDrawer extends StatelessWidget {
                   ),
                   onPressed: () async {
                     context.go('/about');
-                    // await context.adaptiveNavigate(
-                    //     SCREEN.ABOUT, AboutUsScreen());
                   })
             ],
             currentAccountPicture: CircleAvatar(
@@ -56,15 +50,21 @@ class SideDrawer extends StatelessWidget {
               ),
               onTap: () {
                 var project = Project.getInbox();
-                context.read<HomeBloc>().add(ApplyFilterEvent(project.name, Filter.byProject(project.id!)));
-                // homeBloc.applyFilter(
-                //     project.name, Filter.byProject(project.id!));
+                context.read<HomeBloc>().add(ApplyFilterEvent(
+                    project.name, Filter.byProject(project.id!)));
+                context
+                    .read<TaskBloc>()
+                    .add(FilterTasksEvent(filter: Filter.byProject(project.id)));
                 context.safePop();
               }),
           ListTile(
               onTap: () {
-                context.read<HomeBloc>().add(ApplyFilterEvent('Today', Filter.byToday()));
-                // homeBloc.applyFilter("Today", Filter.byToday());
+                context
+                    .read<TaskBloc>()
+                    .add(FilterTasksEvent(filter: Filter.byToday()));
+                context
+                    .read<HomeBloc>()
+                    .add(ApplyFilterEvent("Today", Filter.byToday()));
                 context.safePop();
               },
               leading: Icon(Icons.calendar_today),
@@ -74,8 +74,12 @@ class SideDrawer extends StatelessWidget {
               )),
           ListTile(
             onTap: () {
-              context.read<HomeBloc>().add(ApplyFilterEvent('Next 7 Days', Filter.byNextWeek()));
-              // homeBloc.applyFilter("Next 7 Days", Filter.byNextWeek());
+              context
+                  .read<TaskBloc>()
+                  .add(FilterTasksEvent(filter: Filter.byNextWeek()));
+              context
+                  .read<HomeBloc>()
+                  .add(ApplyFilterEvent("Next 7 Days", Filter.byNextWeek()));
               context.safePop();
             },
             leading: Icon(Icons.calendar_today),
@@ -94,7 +98,8 @@ class SideDrawer extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              showSnackbar(context, 'Unknown has not implemented.',materialColor: Colors.teal);
+              showSnackbar(context, 'Unknown has not implemented.',
+                  materialColor: Colors.teal);
             },
             leading: Icon(Icons.unarchive_sharp),
             title: Text(

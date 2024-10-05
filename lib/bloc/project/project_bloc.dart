@@ -11,13 +11,13 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
   final ProjectDB _projectDB;
 
   ProjectBloc(this._projectDB) : super(ProjectInitial()) {
-    on<LoadProjects>(_onLoadProjects);
-    on<CreateProject>(_onCreateProject);
-    on<UpdateColorSelection>(_onUpdateColorSelection);
-    on<RefreshProjects>(_onRefreshProjects);
+    on<LoadProjectsEvent>(_onLoadProjects);
+    on<CreateProjectEvent>(_onCreateProject);
+    on<UpdateColorSelectionEvent>(_onUpdateColorSelection);
+    on<RefreshProjectsEvent>(_onRefreshProjects);
   }
 
-  Future<void> _onLoadProjects(LoadProjects event, Emitter<ProjectState> emit) async {
+  Future<void> _onLoadProjects(LoadProjectsEvent event, Emitter<ProjectState> emit) async {
     emit(ProjectLoading());
     try {
       final projects = await _projectDB.getProjects(isInboxVisible: event.isInboxVisible);
@@ -27,20 +27,20 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     }
   }
 
-  Future<void> _onCreateProject(CreateProject event, Emitter<ProjectState> emit) async {
+  Future<void> _onCreateProject(CreateProjectEvent event, Emitter<ProjectState> emit) async {
     try {
       await _projectDB.insertOrReplace(event.project);
-      add(RefreshProjects(isInboxVisible: event.isInboxVisible));
+      add(RefreshProjectsEvent(isInboxVisible: event.isInboxVisible));
     } catch (e) {
       emit(ProjectError('Failed to create project'));
     }
   }
 
-  void _onUpdateColorSelection(UpdateColorSelection event, Emitter<ProjectState> emit) {
+  void _onUpdateColorSelection(UpdateColorSelectionEvent event, Emitter<ProjectState> emit) {
     emit(ColorSelectionUpdated(event.colorPalette));
   }
 
-  Future<void> _onRefreshProjects(RefreshProjects event, Emitter<ProjectState> emit) async {
-    add(LoadProjects(isInboxVisible: event.isInboxVisible));
+  Future<void> _onRefreshProjects(RefreshProjectsEvent event, Emitter<ProjectState> emit) async {
+    add(LoadProjectsEvent(isInboxVisible: event.isInboxVisible));
   }
 }

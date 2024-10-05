@@ -24,7 +24,7 @@ void main() {
             taskStatus: anyNamed("taskStatus")))
         .thenAnswer((_) => Future.value(List.empty()));
 
-    var taskBloc = TaskBloc(mockTaskDb);
+    var taskBloc = MyTaskBloc(mockTaskDb);
 
     final wrapMaterialAppWithBlock = TasksPage().wrapScaffoldWithBloc(taskBloc);
     await tester.pumpWidget(wrapMaterialAppWithBlock);
@@ -57,7 +57,7 @@ void main() {
             taskStatus: anyNamed("taskStatus")))
         .thenAnswer((_) => Future.value([testTask1, testTask2, testTask3]));
 
-    var taskBloc = TaskBloc(mockTaskDb);
+    var taskBloc = MyTaskBloc(mockTaskDb);
 
     final wrapMaterialAppWithBlock = TasksPage().wrapScaffoldWithBloc(taskBloc);
     await tester.pumpWidget(wrapMaterialAppWithBlock);
@@ -93,7 +93,7 @@ void main() {
 
     when(mockTaskDb.deleteTask(any)).thenAnswer((_) => Future.value());
 
-    var taskBloc = TaskBloc(mockTaskDb);
+    var taskBloc = MyTaskBloc(mockTaskDb);
 
     final wrapMaterialAppWithBlock = TasksPage().wrapScaffoldWithBloc(taskBloc);
     await tester.pumpWidget(wrapMaterialAppWithBlock);

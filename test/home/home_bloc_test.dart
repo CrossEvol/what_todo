@@ -1,6 +1,6 @@
 import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/home/screen_enum.dart';
-import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
+import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:test/test.dart';
 
 void main() {

@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
-import 'package:flutter_app/pages/home/home.dart';
+import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
+import 'package:flutter_app/pages/tasks/bloc/filter.dart';
+import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_app/router/router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:window_manager/window_manager.dart';
@@ -52,15 +54,19 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => LabelBloc(LabelDB.get())..add(LoadLabels()),
+          create: (_) => LabelBloc(LabelDB.get())..add(LoadLabelsEvent()),
         ),
         BlocProvider(
           create: (context) =>
-              ProjectBloc(ProjectDB.get())..add(LoadProjects()),
+              ProjectBloc(ProjectDB.get())..add(LoadProjectsEvent()),
         ),
         BlocProvider(
           create: (context) =>
-          HomeBloc(),
+              HomeBloc()..add(ApplyFilterEvent("Today", Filter.byToday())),
+        ),
+        BlocProvider(
+          create: (context) => TaskBloc(TaskDB.get())
+            ..add(FilterTasksEvent(filter: Filter.byToday())),
         ),
       ],
       child: MaterialApp.router(

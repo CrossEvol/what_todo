@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/home/home_bloc.dart';
+import 'package:flutter_app/bloc/task/task_bloc.dart';
+import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
-import 'package:flutter_app/pages/home/home.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/labels/label.dart';
-import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/labels/add_label.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:go_router/go_router.dart';
 
-import '../tasks/bloc/my_task_bloc.dart';
 
 class LabelPage extends StatelessWidget {
   @override
@@ -56,7 +56,7 @@ class LabelExpansionTileWidget extends StatelessWidget {
         ),
         onTap: () async {
           context.go('/label/add');
-          context.read<LabelBloc>().add(RefreshLabels());
+          context.read<LabelBloc>().add(RefreshLabelsEvent());
         }));
     return projectWidgetList;
   }
@@ -69,11 +69,13 @@ class LabelRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeBloc = context.bloc<MyHomeBloc>();
+    // final homeBloc = context.bloc<MyHomeBloc>();
     return ListTile(
       key: ValueKey("tile_${label.name}_${label.id}"),
       onTap: () {
-        homeBloc.applyFilter("@ ${label.name}", Filter.byLabel(label.name));
+        context.read<HomeBloc>().add(
+            ApplyFilterEvent("@ ${label.name}", Filter.byLabel(label.name)));
+        context.read<TaskBloc>().add(LoadTasksByLabelEvent(labelName: label.name));
         context.safePop();
       },
       leading: Container(

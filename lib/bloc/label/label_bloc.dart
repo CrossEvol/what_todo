@@ -11,13 +11,13 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
   final LabelDB _labelDB;
 
   LabelBloc(this._labelDB) : super(LabelInitial()) {
-    on<LoadLabels>(_onLoadLabels);
+    on<LoadLabelsEvent>(_onLoadLabels);
     on<CheckLabelExist>(_onCheckLabelExist);
-    on<UpdateColorSelection>(_onUpdateColorSelection);
-    on<RefreshLabels>(_onRefreshLabels);
+    on<UpdateColorSelectionEvent>(_onUpdateColorSelection);
+    on<RefreshLabelsEvent>(_onRefreshLabels);
   }
 
-  Future<void> _onLoadLabels(LoadLabels event, Emitter<LabelState> emit) async {
+  Future<void> _onLoadLabels(LoadLabelsEvent event, Emitter<LabelState> emit) async {
     emit(LabelLoading());
     try {
       final labels = await _labelDB.getLabels();
@@ -36,11 +36,11 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
     }
   }
 
-  void _onUpdateColorSelection(UpdateColorSelection event, Emitter<LabelState> emit) {
+  void _onUpdateColorSelection(UpdateColorSelectionEvent event, Emitter<LabelState> emit) {
     emit(ColorSelectionUpdated(event.colorPalette));
   }
 
-  Future<void> _onRefreshLabels(RefreshLabels event, Emitter<LabelState> emit) async {
-    await _onLoadLabels(LoadLabels(), emit);
+  Future<void> _onRefreshLabels(RefreshLabelsEvent event, Emitter<LabelState> emit) async {
+    await _onLoadLabels(LoadLabelsEvent(), emit);
   }
 }

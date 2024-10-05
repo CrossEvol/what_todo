@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
-import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/row_task.dart';
 import 'package:flutter_app/utils/app_util.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class TasksPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final TaskBloc _tasksBloc = CustomBlocProvider.of(context);
-    return StreamBuilder<List<Task>>(
-      stream: _tasksBloc.tasks,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return _buildTaskList(snapshot.data!);
+    return BlocBuilder<TaskBloc, TaskState>(
+      builder: (context, state) {
+        if (state is TaskLoaded) {
+          return _buildTaskList(state.tasks);
         } else {
           return Center(
             child: CircularProgressIndicator(),
@@ -37,17 +35,15 @@ class TasksPage extends StatelessWidget {
                           key: ValueKey("swipe_${list[index].id}_$index"),
                           onDismissed: (DismissDirection direction) {
                             var taskID = list[index].id!;
-                            final TaskBloc taskBloc =
-                                CustomBlocProvider.of<TaskBloc>(context);
                             String message =
                                 direction == DismissDirection.endToStart
                                     ? "Task completed"
                                     : "Task deleted";
                             if (direction == DismissDirection.endToStart) {
-                              taskBloc.updateStatus(
-                                  taskID, TaskStatus.COMPLETE);
+                              context.read<TaskBloc>().add(UpdateTaskStatusEvent(
+                                  taskID, TaskStatus.COMPLETE));
                             } else {
-                              taskBloc.delete(taskID);
+                              context.read<TaskBloc>().add(DeleteTaskEvent(taskID));
                             }
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(message),

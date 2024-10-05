@@ -7,7 +7,7 @@ abstract class LabelEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadLabels extends LabelEvent {}
+class LoadLabelsEvent extends LabelEvent {}
 
 class CheckLabelExist extends LabelEvent {
   final Label label;
@@ -18,13 +18,13 @@ class CheckLabelExist extends LabelEvent {
   List<Object> get props => [label];
 }
 
-class UpdateColorSelection extends LabelEvent {
+class UpdateColorSelectionEvent extends LabelEvent {
   final ColorPalette colorPalette;
 
-  const UpdateColorSelection(this.colorPalette);
+  const UpdateColorSelectionEvent(this.colorPalette);
 
   @override
   List<Object> get props => [colorPalette];
 }
 
-class RefreshLabels extends LabelEvent {}
+class RefreshLabelsEvent extends LabelEvent {}

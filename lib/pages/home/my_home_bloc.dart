@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/pages/home/screen_enum.dart';
-import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
+import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:rxdart/rxdart.dart';
 
 @deprecated

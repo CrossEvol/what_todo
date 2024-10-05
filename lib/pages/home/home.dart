@@ -17,7 +17,6 @@ import 'package:flutter_app/pages/tasks/task_uncompleted/task_uncompleted.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_app/pages/tasks/task_widgets.dart';
 import 'package:flutter_app/constants/keys.dart';
-import 'package:flutter_app/router/router.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -91,7 +90,7 @@ class WiderHomePage extends StatelessWidget {
 }
 
 class HomePage extends StatelessWidget {
-  final TaskBloc _taskBloc = TaskBloc(TaskDB.get());
+  final MyTaskBloc _taskBloc = MyTaskBloc(TaskDB.get());
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -116,28 +115,12 @@ class HomePage extends StatelessWidget {
             );
           },
         ),
-        // title: StreamBuilder<String>(
-        //     initialData: 'Today',
-        //     stream: homeBloc.title,
-        //     builder: (context, snapshot) {
-        //       return Text(
-        //         snapshot.data!,
-        //         key: ValueKey(HomePageKeys.HOME_TITLE),
-        //       );
-        //     }),
         actions: <Widget>[
           BlocBuilder<HomeBloc, HomeState>(
             builder: (context, state) {
               return buildPopupMenu(context, state.title);
             },
           ),
-          // StreamBuilder<String>(
-          //   initialData: 'Today',
-          //   stream: homeBloc.title,
-          //   builder: (context, snapshot) {
-          //     return buildPopupMenu(context, snapshot.data!);
-          //   },
-          // ),
         ],
         leading: isWiderScreen
             ? null
@@ -180,14 +163,10 @@ class HomePage extends StatelessWidget {
         switch (result) {
           case MenuItem.TASK_COMPLETED:
             context.go('/task/completed');
-            // await context.adaptiveNavigate(
-            //     SCREEN.COMPLETED_TASK, TaskCompletedPage());
             _taskBloc.refresh();
             break;
           case MenuItem.TASK_UNCOMPLETED:
             context.go('/task/uncompleted');
-            // await context.adaptiveNavigate(
-            //     SCREEN.UNCOMPLETED_TASK, TaskUnCompletedPage());
             _taskBloc.refresh();
             break;
           case MenuItem.TASK_POSTPONE:

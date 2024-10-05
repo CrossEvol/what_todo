@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:collection';
 
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 
 @deprecated
-class TaskBloc implements CustomBlocBase {
+class MyTaskBloc implements CustomBlocBase {
   ///
   /// Synchronous Stream to handle the provision of the movie genres
   ///
@@ -22,7 +23,7 @@ class TaskBloc implements CustomBlocBase {
   late List<Task> _tasksList;
   late Filter _lastFilterStatus;
 
-  TaskBloc(this._taskDb) {
+  MyTaskBloc(this._taskDb) {
     filterTodayTasks();
     _cmdController.stream.listen((_) {
       _updateTaskStream(_tasksList);
@@ -153,38 +154,4 @@ class TaskBloc implements CustomBlocBase {
   }
 }
 
-enum FilterStatus { BY_TODAY, BY_WEEK, BY_PROJECT, BY_LABEL, BY_STATUS }
 
-class Filter {
-  String? labelName;
-  int? projectId;
-  FilterStatus? filterStatus;
-  TaskStatus? status;
-
-  Filter.byToday() {
-    filterStatus = FilterStatus.BY_TODAY;
-  }
-
-  Filter.byNextWeek() {
-    filterStatus = FilterStatus.BY_WEEK;
-  }
-
-  Filter.byProject(this.projectId) {
-    filterStatus = FilterStatus.BY_PROJECT;
-  }
-
-  Filter.byLabel(this.labelName) {
-    filterStatus = FilterStatus.BY_LABEL;
-  }
-
-  Filter.byStatus(this.status) {
-    filterStatus = FilterStatus.BY_STATUS;
-  }
-
-  bool operator ==(o) =>
-      o is Filter &&
-      o.labelName == labelName &&
-      o.projectId == projectId &&
-      o.filterStatus == filterStatus &&
-      o.status == status;
-}

@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/bloc/home/home_bloc.dart';
+import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/models/priority.dart';
-import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
+import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/pages/tasks/bloc/my_add_task_bloc.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_app/utils/app_util.dart';
@@ -15,8 +17,8 @@ import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'bloc/my_task_bloc.dart';
 
 class AddTaskScreen extends StatelessWidget {
   final GlobalKey<FormState> _formState = GlobalKey<FormState>();
@@ -140,10 +142,12 @@ class AddTaskScreen extends StatelessWidget {
             if (_formState.currentState!.validate()) {
               _formState.currentState!.save();
               createTaskBloc.createTask().listen((value) {
+                final filter = context.read<HomeBloc>().state.filter;
+                context.read<TaskBloc>().add(FilterTasksEvent(filter: filter!));
                 if (context.isWiderScreen()) {
                   context
-                      .bloc<MyHomeBloc>()
-                      .applyFilter("Today", Filter.byToday());
+                      .read<HomeBloc>()
+                      .add(ApplyFilterEvent("Today", Filter.byToday()));
                 } else {
                   context.safePop();
                 }

@@ -1,12 +1,9 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/home/screen_enum.dart';
 import 'package:flutter_app/pages/labels/label.dart';
-import 'package:flutter_app/pages/labels/my_label_bloc.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/collapsable_expand_tile.dart';
 import 'package:flutter_app/constants/color_constant.dart';
@@ -129,7 +126,7 @@ class AddLabel extends StatelessWidget {
         onTap: () {
           expansionTile.currentState!.collapse();
           context.read<LabelBloc>().add(
-            UpdateColorSelection(
+            UpdateColorSelectionEvent(
               ColorPalette(colors.colorName, colors.colorValue),
             ),
           );

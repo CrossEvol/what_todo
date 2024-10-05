@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/bloc/home/home_bloc.dart';
+import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/projects/my_project_bloc.dart';
-import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
+import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
-import 'package:flutter_app/pages/home/home.dart';
-import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/projects/add_project.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
@@ -59,7 +59,7 @@ class ProjectExpansionTileWidget extends StatelessWidget {
       title: Text("Add Project"),
       onTap: () async {
         context.go('/project/add');
-        context.read<ProjectBloc>().add(RefreshProjects());
+        context.read<ProjectBloc>().add(RefreshProjectsEvent());
       },
     ));
     return projectWidgetList;
@@ -73,11 +73,15 @@ class ProjectRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MyHomeBloc homeBloc = CustomBlocProvider.of(context);
     return ListTile(
       key: ValueKey("tile_${project.name}_${project.id}"),
       onTap: () {
-        homeBloc.applyFilter(project.name, Filter.byProject(project.id!));
+        context
+            .read<HomeBloc>()
+            .add(ApplyFilterEvent(project.name, Filter.byProject(project.id!)));
+        context
+            .read<TaskBloc>()
+            .add(LoadTasksByProjectEvent(projectId: project.id!));
         context.safePop();
       },
       leading: Container(

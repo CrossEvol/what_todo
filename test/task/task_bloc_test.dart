@@ -9,7 +9,7 @@ import '../test_data.dart';
 void main() {
   test('filterTodayTasks <- getTasks', () async {
     var fakeTaskDb = FakeTaskDb();
-    var taskBloc = TaskBloc(fakeTaskDb);
+    var taskBloc = MyTaskBloc(fakeTaskDb);
     taskBloc.tasks.forEach((tasks) {
       tasks.forEach((task) {
         print(task.toMap());
@@ -22,7 +22,7 @@ void main() {
 
   test('filterTasksForNextWeek <- getTasks', () async {
     var fakeTaskDb = FakeTaskDb();
-    var taskBloc = TaskBloc(fakeTaskDb);
+    var taskBloc = MyTaskBloc(fakeTaskDb);
     taskBloc.filterTasksForNextWeek();
     taskBloc.tasks.forEach((tasks) {
       tasks.forEach((task) {
@@ -36,7 +36,7 @@ void main() {
 
   test('filterByProject <- getTasksByProject', () async {
     var fakeTaskDb = FakeTaskDb();
-    var taskBloc = TaskBloc(fakeTaskDb);
+    var taskBloc = MyTaskBloc(fakeTaskDb);
 
     taskBloc.filterByProject(1);
     expect((await taskBloc.tasks.first), unorderedEquals([testTask1]));
@@ -50,7 +50,7 @@ void main() {
 
   test('filterByLabel <- getTasksByLabel', () async {
     var fakeTaskDb = FakeTaskDb();
-    var taskBloc = TaskBloc(fakeTaskDb);
+    var taskBloc = MyTaskBloc(fakeTaskDb);
 
     taskBloc.filterByLabel('Android');
     expectLater(
@@ -67,7 +67,7 @@ void main() {
 
   test('filterByStatus <- getTasks', () async {
     var fakeTaskDb = FakeTaskDb();
-    var taskBloc = TaskBloc(fakeTaskDb);
+    var taskBloc = MyTaskBloc(fakeTaskDb);
     taskBloc.filterByStatus(TaskStatus.PENDING);
 
     expect((await taskBloc.tasks.first),

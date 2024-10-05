@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/home/home.dart';
-import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
-import 'package:flutter_app/pages/tasks/edit_task.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_app/constants/app_constant.dart';
-import 'package:flutter_app/utils/extension.dart';
 import 'package:go_router/go_router.dart';
 
 import 'task_db.dart';
 
 class TaskRow extends StatelessWidget {
-  final TaskBloc _taskBloc = TaskBloc(TaskDB.get());
+  final MyTaskBloc _taskBloc = MyTaskBloc(TaskDB.get());
   final Task task;
   static final dateLabel = "Date";
   final List<String> labelNames = [];
@@ -25,13 +21,7 @@ class TaskRow extends StatelessWidget {
     return GestureDetector(
       onTap: () async {
         context.go('/task/edit', extra: this.task);
-        // await context.adaptiveNavigate(
-        //     SCREEN.EDIT_TASK,
-        //     EditTaskProvider(
-        //       task: this.task,
-        //     ));
         _taskBloc.refresh();
-        // showSnackbar(context, 'Todo Details not implemented.');
       },
       child: Column(
         children: <Widget>[

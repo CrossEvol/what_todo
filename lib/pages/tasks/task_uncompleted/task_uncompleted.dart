@@ -6,7 +6,7 @@ import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_app/pages/tasks/task_uncompleted/row_task_uncompleted.dart';
 
 class TaskUnCompletedPage extends StatelessWidget {
-  final TaskBloc _taskBloc = TaskBloc(TaskDB.get());
+  final MyTaskBloc _taskBloc = MyTaskBloc(TaskDB.get());
 
   @override
   Widget build(BuildContext context) {
