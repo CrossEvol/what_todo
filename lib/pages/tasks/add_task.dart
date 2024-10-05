@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/bloc_provider.dart';
+import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/models/priority.dart';
-import 'package:flutter_app/pages/home/home_bloc.dart';
+import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
-import 'package:flutter_app/pages/tasks/bloc/add_task_bloc.dart';
+import 'package:flutter_app/pages/tasks/bloc/my_add_task_bloc.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/constants/color_constant.dart';
@@ -16,14 +16,14 @@ import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 
-import 'bloc/task_bloc.dart';
+import 'bloc/my_task_bloc.dart';
 
 class AddTaskScreen extends StatelessWidget {
   final GlobalKey<FormState> _formState = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    AddTaskBloc createTaskBloc = BlocProvider.of(context);
+    MyAddTaskBloc createTaskBloc = CustomBlocProvider.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -142,7 +142,7 @@ class AddTaskScreen extends StatelessWidget {
               createTaskBloc.createTask().listen((value) {
                 if (context.isWiderScreen()) {
                   context
-                      .bloc<HomeBloc>()
+                      .bloc<MyHomeBloc>()
                       .applyFilter("Today", Filter.byToday());
                 } else {
                   context.safePop();
@@ -156,7 +156,7 @@ class AddTaskScreen extends StatelessWidget {
   Color? get _grey => Colors.grey[300];
 
   Future<Null> _showDatePicker(BuildContext context) async {
-    AddTaskBloc createTaskBloc = BlocProvider.of(context);
+    MyAddTaskBloc createTaskBloc = CustomBlocProvider.of(context);
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -169,7 +169,7 @@ class AddTaskScreen extends StatelessWidget {
   }
 
   Future<PriorityStatus?> _showPriorityDialog(
-      AddTaskBloc createTaskBloc, BuildContext context) async {
+      MyAddTaskBloc createTaskBloc, BuildContext context) async {
     return await showDialog<PriorityStatus>(
         context: context,
         builder: (BuildContext dialogContext) {
@@ -186,7 +186,7 @@ class AddTaskScreen extends StatelessWidget {
   }
 
   Future<PriorityStatus?> _showProjectsDialog(
-      AddTaskBloc createTaskBloc, BuildContext context) async {
+      MyAddTaskBloc createTaskBloc, BuildContext context) async {
     return showDialog<PriorityStatus>(
         context: context,
         builder: (BuildContext dialogContext) {
@@ -204,7 +204,7 @@ class AddTaskScreen extends StatelessWidget {
   }
 
   Future<PriorityStatus?> _showLabelsDialog(BuildContext context) async {
-    AddTaskBloc createTaskBloc = BlocProvider.of(context);
+    MyAddTaskBloc createTaskBloc = CustomBlocProvider.of(context);
     return showDialog<PriorityStatus>(
         context: context,
         builder: (BuildContext context) {
@@ -222,7 +222,7 @@ class AddTaskScreen extends StatelessWidget {
   }
 
   List<Widget> buildProjects(
-    AddTaskBloc createTaskBloc,
+    MyAddTaskBloc createTaskBloc,
     BuildContext context,
     List<Project> projectList,
   ) {
@@ -246,7 +246,7 @@ class AddTaskScreen extends StatelessWidget {
   }
 
   List<Widget> buildLabels(
-    AddTaskBloc createTaskBloc,
+    MyAddTaskBloc createTaskBloc,
     BuildContext context,
     List<Label> labelList,
   ) {
@@ -268,7 +268,7 @@ class AddTaskScreen extends StatelessWidget {
   }
 
   GestureDetector buildContainer(BuildContext context, PriorityStatus status) {
-    AddTaskBloc createTaskBloc = BlocProvider.of(context);
+    MyAddTaskBloc createTaskBloc = CustomBlocProvider.of(context);
     return GestureDetector(
         onTap: () {
           createTaskBloc.updatePriority(status);
@@ -300,8 +300,8 @@ class AddTaskScreen extends StatelessWidget {
 class AddTaskProvider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      bloc: AddTaskBloc(TaskDB.get(), ProjectDB.get(), LabelDB.get()),
+    return CustomBlocProvider(
+      bloc: MyAddTaskBloc(TaskDB.get(), ProjectDB.get(), LabelDB.get()),
       child: AddTaskScreen(),
     );
   }

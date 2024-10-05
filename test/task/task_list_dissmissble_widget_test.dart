@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
+import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:flutter_app/pages/tasks/row_task.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_app/pages/tasks/task_widgets.dart';

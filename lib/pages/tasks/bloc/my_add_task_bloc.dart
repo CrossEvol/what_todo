@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_app/bloc/bloc_provider.dart';
+import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/models/priority.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
@@ -10,18 +10,14 @@ import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:rxdart/rxdart.dart';
 
-
-class EditTaskBloc implements BlocBase {
+@deprecated
+class MyAddTaskBloc implements CustomBlocBase {
   final TaskDB _taskDB;
   final ProjectDB _projectDB;
   final LabelDB _labelDB;
   PriorityStatus lastPrioritySelection = PriorityStatus.PRIORITY_4;
 
-  EditTaskBloc(
-    this._taskDB,
-    this._projectDB,
-    this._labelDB,
-  ) {
+  MyAddTaskBloc(this._taskDB, this._projectDB, this._labelDB) {
     _loadProjects();
     _loadLabels();
     updateDueDate(DateTime.now().millisecondsSinceEpoch);
@@ -61,7 +57,6 @@ class EditTaskBloc implements BlocBase {
   Stream<int> get dueDateSelected => _dueDateSelected.stream;
 
   String updateTitle = "";
-  late int taskID;
 
   @override
   void dispose() {
@@ -89,12 +84,6 @@ class EditTaskBloc implements BlocBase {
     _projectSelected.add(project);
   }
 
-  void projectSelectedByID(int projectID) {
-    _projectDB.getProject(isInboxVisible: true, id: projectID).then((project) {
-      _projectSelected.add(project);
-    });
-  }
-
   void labelAddOrRemove(Label label) {
     if (_selectedLabelList.contains(label)) {
       _selectedLabelList.remove(label);
@@ -102,14 +91,6 @@ class EditTaskBloc implements BlocBase {
       _selectedLabelList.add(label);
     }
     _buildLabelsString();
-  }
-
-  void labelAddByNames(List<String> names) {
-    if (names.isEmpty) return;
-    _labelDB.getLabelsByNames(names).then((labels) {
-      labels.forEach((label) => _selectedLabelList.add(label));
-      _buildLabelsString();
-    });
   }
 
   void _buildLabelsString() {
@@ -125,14 +106,13 @@ class EditTaskBloc implements BlocBase {
     lastPrioritySelection = priority;
   }
 
-  Stream updateTask() {
+  Stream createTask() {
     return ZipStream.zip3(selectedProject, dueDateSelected, prioritySelection,
         (Project project, int dueDateSelected, PriorityStatus status) {
       List<int> labelIds =
           _selectedLabelList.map((label) => label.id!).toList();
 
-      var task = Task.update(
-        id: taskID,
+      var task = Task.create(
         title: updateTitle,
         dueDate: dueDateSelected,
         priority: status,

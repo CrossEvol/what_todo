@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/bloc_provider.dart';
-import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
+import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_app/pages/tasks/task_uncompleted/row_task_uncompleted.dart';
@@ -11,7 +11,7 @@ class TaskUnCompletedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _taskBloc.filterByStatus(TaskStatus.PENDING);
-    return BlocProvider(
+    return CustomBlocProvider(
       bloc: _taskBloc,
       child: Scaffold(
         appBar: AppBar(

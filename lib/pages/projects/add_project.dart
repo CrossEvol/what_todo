@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/bloc_provider.dart';
-import 'package:flutter_app/pages/home/home_bloc.dart';
+import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/projects/project.dart';
-import 'package:flutter_app/pages/projects/project_bloc.dart';
+import 'package:flutter_app/pages/projects/my_project_bloc.dart';
 import 'package:flutter_app/utils/collapsable_expand_tile.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
@@ -14,7 +14,7 @@ class AddProject extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ProjectBloc _projectBloc = BlocProvider.of(context);
+    MyProjectBloc _projectBloc = CustomBlocProvider.of(context);
     late ColorPalette currentSelectedPalette;
     String projectName = "";
     return Scaffold(
@@ -39,7 +39,7 @@ class AddProject extends StatelessWidget {
                   currentSelectedPalette.colorName);
               _projectBloc.createProject(project);
               if (context.isWiderScreen()) {
-                context.bloc<HomeBloc>().updateScreen(SCREEN.HOME);
+                context.bloc<MyHomeBloc>().updateScreen(SCREEN.HOME);
               }
               context.safePop();
               _projectBloc.refresh();
@@ -91,7 +91,7 @@ class AddProject extends StatelessWidget {
     );
   }
 
-  List<Widget> buildMaterialColors(ProjectBloc projectBloc) {
+  List<Widget> buildMaterialColors(MyProjectBloc projectBloc) {
     List<Widget> projectWidgetList = [];
     colorsPalettes.forEach((colors) {
       projectWidgetList.add(ListTile(

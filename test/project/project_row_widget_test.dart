@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/home/home_bloc.dart';
+import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_widget.dart';
-import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
+import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../test_helpers.dart';
@@ -10,7 +10,7 @@ import '../test_helpers.dart';
 main() {
 
   testWidgets("Project Row Widget", (tester) async {
-    final homeBloc = HomeBloc();
+    final homeBloc = MyHomeBloc();
     final testProject = Project.update(
         id: 1, name: "Personal", colorName: "Red", colorCode: Colors.red.value);
 
@@ -29,7 +29,7 @@ main() {
   });
 
   testWidgets("Project Row Tap", (tester) async {
-    var homeBloc = HomeBloc();
+    var homeBloc = MyHomeBloc();
     var testProject = Project.update(
         id: 1, name: "Personal", colorName: "Red", colorCode: Colors.red.value);
 

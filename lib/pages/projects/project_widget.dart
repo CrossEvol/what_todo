@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/bloc_provider.dart';
-import 'package:flutter_app/pages/home/home_bloc.dart';
+import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/projects/add_project.dart';
 import 'package:flutter_app/pages/projects/project.dart';
-import 'package:flutter_app/pages/projects/project_bloc.dart';
+import 'package:flutter_app/pages/projects/my_project_bloc.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
-import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
+import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 
 class ProjectPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    ProjectBloc projectBloc = BlocProvider.of<ProjectBloc>(context);
+    MyProjectBloc projectBloc = CustomBlocProvider.of<MyProjectBloc>(context);
     return StreamBuilder<List<Project>>(
       stream: projectBloc.projects,
       builder: (context, snapshot) {
@@ -53,7 +53,7 @@ class ProjectExpansionTileWidget extends StatelessWidget {
       title: Text("Add Project"),
       onTap: () async {
         await context.adaptiveNavigate(SCREEN.ADD_PROJECT, AddProjectPage());
-        context.bloc<ProjectBloc>().refresh();
+        context.bloc<MyProjectBloc>().refresh();
       },
     ));
     return projectWidgetList;
@@ -67,7 +67,7 @@ class ProjectRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    HomeBloc homeBloc = BlocProvider.of(context);
+    MyHomeBloc homeBloc = CustomBlocProvider.of(context);
     return ListTile(
       key: ValueKey("tile_${project.name}_${project.id}"),
       onTap: () {
@@ -98,8 +98,8 @@ class ProjectRow extends StatelessWidget {
 class AddProjectPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      bloc: ProjectBloc(ProjectDB.get()),
+    return CustomBlocProvider(
+      bloc: MyProjectBloc(ProjectDB.get()),
       child: AddProject(),
     );
   }

@@ -1,11 +1,11 @@
-import 'package:flutter_app/pages/home/home_bloc.dart';
-import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
+import 'package:flutter_app/pages/home/my_home_bloc.dart';
+import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:test/test.dart';
 
 void main() {
   group("Home Bloc Test", () {
     test("Updating title Test", () async {
-      var homeBloc = HomeBloc();
+      var homeBloc = MyHomeBloc();
       expect(
           homeBloc.title,
           emitsInOrder(
@@ -20,7 +20,7 @@ void main() {
     });
 
     test("Updating Filter Test", () async {
-      var homeBloc = HomeBloc();
+      var homeBloc = MyHomeBloc();
       expect(
           homeBloc.title,
           emitsInOrder(
@@ -50,7 +50,7 @@ void main() {
     });
 
     test('Updating SCREEN Test', () async {
-      var homeBloc = HomeBloc();
+      var homeBloc = MyHomeBloc();
       expect(
           homeBloc.screens,
           emitsInOrder(

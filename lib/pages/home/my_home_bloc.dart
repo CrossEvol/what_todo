@@ -1,10 +1,11 @@
 import 'dart:async';
 
-import 'package:flutter_app/bloc/bloc_provider.dart';
-import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
+import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
-class HomeBloc implements BlocBase {
+@deprecated
+class MyHomeBloc implements CustomBlocBase {
   StreamController<String> _titleController = BehaviorSubject<String>();
 
   Stream<String> get title => _titleController.stream;

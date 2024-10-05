@@ -1,5 +1,5 @@
 import 'package:flutter_app/pages/projects/project.dart';
-import 'package:flutter_app/pages/projects/project_bloc.dart';
+import 'package:flutter_app/pages/projects/my_project_bloc.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:mockito/mockito.dart';
@@ -47,7 +47,7 @@ void main() {
   test("Show inbox in the project list test", () async {
     final FakeProjectDb fakeProjectDb = FakeProjectDb();
 
-    final ProjectBloc projectBloc = ProjectBloc(fakeProjectDb);
+    final MyProjectBloc projectBloc = MyProjectBloc(fakeProjectDb);
     expect(fakeProjectDb.isInboxVisible, false);
     await expectLater(
         projectBloc.projects,
@@ -58,8 +58,8 @@ void main() {
 
   test("Don't show inbox in the project list test", () async {
     final FakeProjectDb fakeProjectDb = FakeProjectDb();
-    final ProjectBloc projectBlocWithInbox =
-        ProjectBloc(fakeProjectDb, isInboxVisible: true);
+    final MyProjectBloc projectBlocWithInbox =
+        MyProjectBloc(fakeProjectDb, isInboxVisible: true);
     expect(fakeProjectDb.isInboxVisible, true);
     await expectLater(
         projectBlocWithInbox.projects,
@@ -71,7 +71,7 @@ void main() {
   test("Create Project in the project db test", () async {
     final FakeProjectDb fakeProjectDb = FakeProjectDb();
 
-    final ProjectBloc projectBloc = ProjectBloc(fakeProjectDb);
+    final MyProjectBloc projectBloc = MyProjectBloc(fakeProjectDb);
     projectBloc.createProject(testProject4);
 
     expect(fakeProjectDb.lastProjectCreated, testProject4);
@@ -84,7 +84,7 @@ void main() {
 
   test("Update Project color palette  test", () async {
     final FakeProjectDb fakeProjectDb = FakeProjectDb();
-    final ProjectBloc projectBloc = ProjectBloc(fakeProjectDb);
+    final MyProjectBloc projectBloc = MyProjectBloc(fakeProjectDb);
     expect(
         projectBloc.colorSelection,
         emitsInOrder(
@@ -101,7 +101,7 @@ void main() {
 
   test("Refresh Project list test", () async {
     final FakeProjectDb fakeProjectDb = FakeProjectDb();
-    final ProjectBloc projectBloc = ProjectBloc(fakeProjectDb);
+    final MyProjectBloc projectBloc = MyProjectBloc(fakeProjectDb);
     await expectLater(
         projectBloc.projects,
         emitsInOrder([

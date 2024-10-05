@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/home/home_bloc.dart';
-import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
+import 'package:flutter_app/pages/home/my_home_bloc.dart';
+import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:flutter_app/pages/tasks/edit_task.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/constants/color_constant.dart';

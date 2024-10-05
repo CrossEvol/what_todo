@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/bloc_provider.dart';
-import 'package:flutter_app/pages/home/home_bloc.dart';
+import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 extension TestWrapMaterialApp on Widget {
@@ -10,11 +10,11 @@ extension TestWrapMaterialApp on Widget {
     );
   }
 
-  Widget wrapMaterialAppWithBloc<T extends BlocBase>(T myBloc) {
+  Widget wrapMaterialAppWithBloc<T extends CustomBlocBase>(T myBloc) {
     return MaterialApp(
-      home: BlocProvider(
-        bloc: HomeBloc(),
-        child: BlocProvider(bloc: myBloc, child: this),
+      home: CustomBlocProvider(
+        bloc: MyHomeBloc(),
+        child: CustomBlocProvider(bloc: myBloc, child: this),
       ),
     );
   }
@@ -27,10 +27,10 @@ extension TestWrapMaterialApp on Widget {
     );
   }
 
-  Widget wrapScaffoldWithBloc<T extends BlocBase>(T myBloc) {
+  Widget wrapScaffoldWithBloc<T extends CustomBlocBase>(T myBloc) {
     return MaterialApp(
       home: Scaffold(
-        body: BlocProvider(bloc: myBloc, child: this),
+        body: CustomBlocProvider(bloc: myBloc, child: this),
       ),
     );
   }

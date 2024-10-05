@@ -1,5 +1,5 @@
 import 'package:flutter_app/pages/labels/label.dart';
-import 'package:flutter_app/pages/labels/label_bloc.dart';
+import 'package:flutter_app/pages/labels/my_label_bloc.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:mockito/mockito.dart';
@@ -11,7 +11,7 @@ void main() {
   test("Show label in the label list test", () async {
     final FakeLabelDb fakeLabelDb = FakeLabelDb();
 
-    final LabelBloc labelBloc = LabelBloc(fakeLabelDb);
+    final MyLabelBloc labelBloc = MyLabelBloc(fakeLabelDb);
     await expectLater(
         labelBloc.labels,
         emitsInOrder([
@@ -21,7 +21,7 @@ void main() {
 
   test("Add label if not exist in the label db test", () async {
     final FakeLabelDb fakeLabelDb = FakeLabelDb();
-    final LabelBloc labelBloc = LabelBloc(fakeLabelDb);
+    final MyLabelBloc labelBloc = MyLabelBloc(fakeLabelDb);
 
     expect(labelBloc.labelsExist, emitsInOrder([false]));
     labelBloc.checkIfLabelExist(testLabel3);
@@ -35,7 +35,7 @@ void main() {
 
   test("Don't Add label if exist in the label db test", () async {
     final FakeLabelDb fakeLabelDb = FakeLabelDb();
-    final LabelBloc labelBloc = LabelBloc(fakeLabelDb);
+    final MyLabelBloc labelBloc = MyLabelBloc(fakeLabelDb);
 
     expect(labelBloc.labelsExist, emitsInOrder([true]));
     labelBloc.checkIfLabelExist(testLabel1);
@@ -49,7 +49,7 @@ void main() {
 
   test("Update Label color palette  test", () async {
     final FakeLabelDb fakeLabelDb = FakeLabelDb();
-    final LabelBloc labelBloc = LabelBloc(fakeLabelDb);
+    final MyLabelBloc labelBloc = MyLabelBloc(fakeLabelDb);
     expect(
         labelBloc.colorSelection,
         emitsInOrder(
@@ -66,7 +66,7 @@ void main() {
 
   test("Refresh Label list test", () async {
     final FakeLabelDb fakeLabelDb = FakeLabelDb();
-    final LabelBloc labelBloc = LabelBloc(fakeLabelDb);
+    final MyLabelBloc labelBloc = MyLabelBloc(fakeLabelDb);
     await expectLater(
         labelBloc.labels,
         emitsInOrder([

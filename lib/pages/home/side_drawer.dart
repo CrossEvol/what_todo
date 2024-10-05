@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/bloc_provider.dart';
-import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
+import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/about/about_us.dart';
-import 'package:flutter_app/pages/home/home_bloc.dart';
-import 'package:flutter_app/pages/labels/label_bloc.dart';
+import 'package:flutter_app/pages/home/my_home_bloc.dart';
+import 'package:flutter_app/pages/labels/my_label_bloc.dart';
 import 'package:flutter_app/pages/labels/label_widget.dart';
-import 'package:flutter_app/pages/projects/project_bloc.dart';
+import 'package:flutter_app/pages/projects/my_project_bloc.dart';
 import 'package:flutter_app/pages/projects/project_widget.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/app_util.dart';
@@ -17,7 +17,7 @@ import 'package:flutter_app/utils/extension.dart';
 class SideDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    HomeBloc homeBloc = BlocProvider.of(context);
+    MyHomeBloc homeBloc = CustomBlocProvider.of(context);
     return Drawer(
       child: ListView(
         padding: EdgeInsets.all(0.0),
@@ -75,12 +75,12 @@ class SideDrawer extends StatelessWidget {
               key: ValueKey(SideDrawerKeys.NEXT_7_DAYS),
             ),
           ),
-          BlocProvider(
-            bloc: ProjectBloc(ProjectDB.get()),
+          CustomBlocProvider(
+            bloc: MyProjectBloc(ProjectDB.get()),
             child: ProjectPage(),
           ),
-          BlocProvider(
-            bloc: LabelBloc(LabelDB.get()),
+          CustomBlocProvider(
+            bloc: MyLabelBloc(LabelDB.get()),
             child: LabelPage(),
           ),
           ListTile(

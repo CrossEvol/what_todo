@@ -5,7 +5,7 @@ import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/tasks/add_task.dart';
-import 'package:flutter_app/pages/tasks/bloc/add_task_bloc.dart';
+import 'package:flutter_app/pages/tasks/bloc/my_add_task_bloc.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -78,7 +78,7 @@ void main() {
 
       final fakeTaskDb = FakeTaskDb();
 
-      final addTaskBloc = AddTaskBloc(fakeTaskDb, mockProjectDb, mockLabelDb);
+      final addTaskBloc = MyAddTaskBloc(fakeTaskDb, mockProjectDb, mockLabelDb);
       var addTaskWidget = AddTaskScreen().wrapMaterialAppWithBloc(addTaskBloc);
       await tester.pumpWidget(addTaskWidget);
       // await expectLater(

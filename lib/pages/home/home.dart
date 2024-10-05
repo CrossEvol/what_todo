@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/bloc_provider.dart';
-import 'package:flutter_app/pages/home/home_bloc.dart';
+import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/home/side_drawer.dart';
 import 'package:flutter_app/pages/tasks/add_task.dart';
-import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
+import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:flutter_app/pages/tasks/task_completed/task_completed.dart';
 import 'package:flutter_app/pages/tasks/task_uncompleted/task_uncompleted.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
@@ -20,7 +20,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isWiderScreen = context.isWiderScreen();
-    final homeBloc = context.bloc<HomeBloc>();
+    final homeBloc = context.bloc<MyHomeBloc>();
     scheduleMicrotask(() {
       StreamSubscription? _filterSubscription;
       _filterSubscription = homeBloc.filter.listen((filter) {
@@ -72,7 +72,7 @@ class HomePage extends StatelessWidget {
         },
       ),
       drawer: isWiderScreen ? null : SideDrawer(),
-      body: BlocProvider(
+      body: CustomBlocProvider(
         bloc: _taskBloc,
         child: TasksPage(),
       ),

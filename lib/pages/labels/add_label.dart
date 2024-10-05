@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/bloc_provider.dart';
-import 'package:flutter_app/pages/home/home_bloc.dart';
+import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/labels/label.dart';
-import 'package:flutter_app/pages/labels/label_bloc.dart';
+import 'package:flutter_app/pages/labels/my_label_bloc.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/collapsable_expand_tile.dart';
 import 'package:flutter_app/constants/color_constant.dart';
@@ -18,7 +18,7 @@ class AddLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     late ColorPalette currentSelectedPalette;
-    LabelBloc labelBloc = BlocProvider.of(context);
+    MyLabelBloc labelBloc = CustomBlocProvider.of(context);
     String labelName = "";
     scheduleMicrotask(() {
       labelBloc.labelsExist.listen((isExist) {
@@ -27,7 +27,7 @@ class AddLabel extends StatelessWidget {
         } else {
           context.safePop();
           if (context.isWiderScreen()) {
-            context.bloc<HomeBloc>().updateScreen(SCREEN.HOME);
+            context.bloc<MyHomeBloc>().updateScreen(SCREEN.HOME);
           }
         }
       });
@@ -101,7 +101,7 @@ class AddLabel extends StatelessWidget {
     );
   }
 
-  List<Widget> buildMaterialColors(LabelBloc labelBloc) {
+  List<Widget> buildMaterialColors(MyLabelBloc labelBloc) {
     List<Widget> projectWidgetList = [];
     colorsPalettes.forEach((colors) {
       projectWidgetList.add(ListTile(

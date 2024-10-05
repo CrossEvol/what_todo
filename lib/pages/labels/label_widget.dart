@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/bloc_provider.dart';
-import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
+import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/labels/label.dart';
-import 'package:flutter_app/pages/home/home_bloc.dart';
+import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/labels/add_label.dart';
-import 'package:flutter_app/pages/labels/label_bloc.dart';
+import 'package:flutter_app/pages/labels/my_label_bloc.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 
 class LabelPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    LabelBloc labelBloc = BlocProvider.of(context);
+    MyLabelBloc labelBloc = CustomBlocProvider.of(context);
     return StreamBuilder<List<Label>>(
       stream: labelBloc.labels,
       builder: (context, snapshot) {
@@ -45,7 +45,7 @@ class LabelExpansionTileWidget extends StatelessWidget {
   }
 
   List<Widget> buildLabels(BuildContext context) {
-    final _labelBloc = context.bloc<LabelBloc>();
+    final _labelBloc = context.bloc<MyLabelBloc>();
     List<Widget> projectWidgetList = [];
     _labels.forEach((label) => projectWidgetList.add(LabelRow(label)));
     projectWidgetList.add(ListTile(
@@ -69,7 +69,7 @@ class LabelRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final homeBloc = context.bloc<HomeBloc>();
+    final homeBloc = context.bloc<MyHomeBloc>();
     return ListTile(
       key: ValueKey("tile_${label.name}_${label.id}"),
       onTap: () {
@@ -102,8 +102,8 @@ class LabelRow extends StatelessWidget {
 class AddLabelPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      bloc: LabelBloc(LabelDB.get()),
+    return CustomBlocProvider(
+      bloc: MyLabelBloc(LabelDB.get()),
       child: AddLabel(),
     );
   }

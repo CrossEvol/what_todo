@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
-import 'package:flutter_app/bloc/bloc_provider.dart';
+import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
+import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/row_task.dart';
 import 'package:flutter_app/utils/app_util.dart';
@@ -8,7 +8,7 @@ import 'package:flutter_app/utils/app_util.dart';
 class TasksPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final TaskBloc _tasksBloc = BlocProvider.of(context);
+    final TaskBloc _tasksBloc = CustomBlocProvider.of(context);
     return StreamBuilder<List<Task>>(
       stream: _tasksBloc.tasks,
       builder: (context, snapshot) {
@@ -38,7 +38,7 @@ class TasksPage extends StatelessWidget {
                           onDismissed: (DismissDirection direction) {
                             var taskID = list[index].id!;
                             final TaskBloc taskBloc =
-                                BlocProvider.of<TaskBloc>(context);
+                                CustomBlocProvider.of<TaskBloc>(context);
                             String message =
                                 direction == DismissDirection.endToStart
                                     ? "Task completed"

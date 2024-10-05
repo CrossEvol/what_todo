@@ -1,11 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter_app/bloc/bloc_provider.dart';
+import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 
-class ProjectBloc implements BlocBase {
+@deprecated
+class MyProjectBloc implements CustomBlocBase {
   StreamController<List<Project>> _projectsController =
       StreamController<List<Project>>.broadcast();
 
@@ -19,7 +20,7 @@ class ProjectBloc implements BlocBase {
   ProjectDB _projectDB;
   bool isInboxVisible;
 
-  ProjectBloc(this._projectDB, {this.isInboxVisible = false}) {
+  MyProjectBloc(this._projectDB, {this.isInboxVisible = false}) {
     _loadProjects(isInboxVisible);
   }
 

@@ -1,10 +1,10 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/bloc_provider.dart';
+import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/pages/about/about_us.dart';
 import 'package:flutter_app/pages/home/home.dart';
-import 'package:flutter_app/pages/home/home_bloc.dart';
+import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/home/side_drawer.dart';
 import 'package:flutter_app/pages/labels/label_widget.dart';
 import 'package:flutter_app/pages/projects/project_widget.dart';
@@ -61,8 +61,8 @@ class MyApp extends StatelessWidget {
           primary: primaryColor,
         ),
       ),
-      home: BlocProvider(
-        bloc: HomeBloc(),
+      home: CustomBlocProvider(
+        bloc: MyHomeBloc(),
         child: AdaptiveHome(),
       ),
     );
@@ -79,7 +79,7 @@ class AdaptiveHome extends StatelessWidget {
 class WiderHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final homeBloc = context.bloc<HomeBloc>();
+    final homeBloc = context.bloc<MyHomeBloc>();
     return Row(
       children: [
         Expanded(

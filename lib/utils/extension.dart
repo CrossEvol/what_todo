@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/bloc_provider.dart';
-import 'package:flutter_app/pages/home/home_bloc.dart';
+import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/pages/home/my_home_bloc.dart';
 
 extension NavigatorExt on BuildContext {
   void safePop() {
@@ -14,7 +14,7 @@ extension NavigatorExt on BuildContext {
   }
 
   adaptiveNavigate(SCREEN screen, Widget widget) async {
-    final homeBloc = bloc<HomeBloc>();
+    final homeBloc = bloc<MyHomeBloc>();
     if (isWiderScreen()) {
       homeBloc.updateScreen(screen);
     } else {
@@ -27,7 +27,7 @@ extension NavigatorExt on BuildContext {
 }
 
 extension BlocExt on BuildContext {
-  T bloc<T extends BlocBase>() {
-    return BlocProvider.of(this);
+  T bloc<T extends CustomBlocBase>() {
+    return CustomBlocProvider.of(this);
   }
 }

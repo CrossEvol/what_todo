@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/home/home_bloc.dart';
+import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/labels/label_widget.dart';
-import 'package:flutter_app/pages/tasks/bloc/task_bloc.dart';
+import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../test_helpers.dart';
@@ -10,7 +10,7 @@ import '../test_helpers.dart';
 main() {
 
   testWidgets("Label Row Widget", (tester) async {
-    final homeBloc = HomeBloc();
+    final homeBloc = MyHomeBloc();
     var testLabel = Label.update(
         id: 1,
         name: "Android",
@@ -31,7 +31,7 @@ main() {
   });
 
   testWidgets("Label Row Tap", (tester) async {
-    final homeBloc = HomeBloc();
+    final homeBloc = MyHomeBloc();
     var testLabel = Label.update(
         id: 1,
         name: "Android",

@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:collection';
 
-import 'package:flutter_app/bloc/bloc_provider.dart';
+import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 
-class TaskBloc implements BlocBase {
+@deprecated
+class TaskBloc implements CustomBlocBase {
   ///
   /// Synchronous Stream to handle the provision of the movie genres
   ///

@@ -1,12 +1,13 @@
 import 'dart:async';
 
-import 'package:flutter_app/bloc/bloc_provider.dart';
+import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:rxdart/rxdart.dart';
 
-class LabelBloc implements BlocBase {
+@deprecated
+class MyLabelBloc implements CustomBlocBase {
   StreamController<List<Label>> _labelsController =
       BehaviorSubject<List<Label>>();
 
@@ -24,7 +25,7 @@ class LabelBloc implements BlocBase {
 
   LabelDB _labelDB;
 
-  LabelBloc(this._labelDB) {
+  MyLabelBloc(this._labelDB) {
     _loadLabels();
   }
 
