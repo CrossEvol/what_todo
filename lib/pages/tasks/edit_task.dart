@@ -155,20 +155,24 @@ class EditTaskScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
           key: ValueKey(EditTaskKeys.Edit_TASK),
           child: Icon(Icons.send, color: Colors.white),
-          onPressed: () {
+          onPressed: ()async {
             if (_formState.currentState!.validate()) {
               _formState.currentState!.save();
-              editTaskBloc.updateTask().listen((value) async {
+              try {
+                await editTaskBloc.updateTask().first;
                 final filter = context.read<HomeBloc>().state.filter;
                 context.read<TaskBloc>().add(FilterTasksEvent(filter: filter!));
+
                 if (context.isWiderScreen()) {
-                  context
-                      .read<HomeBloc>()
-                      .add(ApplyFilterEvent("Today", Filter.byToday()));
+                  context.read<HomeBloc>().add(ApplyFilterEvent("Today", Filter.byToday()));
                 } else {
                   context.safePop();
                 }
-              });
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Failed to update task: ${e.toString()}')),
+                );
+              }
             }
           }),
     );
