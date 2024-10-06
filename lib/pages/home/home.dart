@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
+import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/about/about_us.dart';
 import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/home/screen_enum.dart';
@@ -10,8 +11,10 @@ import 'package:flutter_app/pages/home/side_drawer.dart';
 import 'package:flutter_app/pages/labels/label_widget.dart';
 import 'package:flutter_app/pages/projects/project_widget.dart';
 import 'package:flutter_app/pages/tasks/add_task.dart';
+import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:flutter_app/pages/tasks/edit_task.dart';
+import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_completed/task_completed.dart';
 import 'package:flutter_app/pages/tasks/task_uncompleted/task_uncompleted.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
@@ -162,12 +165,14 @@ class HomePage extends StatelessWidget {
       onSelected: (MenuItem result) async {
         switch (result) {
           case MenuItem.TASK_COMPLETED:
+            context.read<TaskBloc>().add(
+                FilterTasksEvent(filter: Filter.byStatus(TaskStatus.COMPLETE)));
             context.go('/task/completed');
-            _taskBloc.refresh();
             break;
           case MenuItem.TASK_UNCOMPLETED:
+            context.read<TaskBloc>().add(
+                FilterTasksEvent(filter: Filter.byStatus(TaskStatus.PENDING)));
             context.go('/task/uncompleted');
-            _taskBloc.refresh();
             break;
           case MenuItem.TASK_POSTPONE:
             _taskBloc.postponeTodayTasks();

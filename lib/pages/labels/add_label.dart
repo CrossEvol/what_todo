@@ -10,7 +10,6 @@ import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'label_db.dart';
 
 class AddLabel extends StatelessWidget {
   final GlobalKey<FormState> _formState = GlobalKey<FormState>();

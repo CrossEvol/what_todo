@@ -29,7 +29,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   void _onLoadTasks(LoadTasksEvent event, Emitter<TaskState> emit) async {
     emit(TaskLoading());
     try {
-      final tasks = await getTasks();
+      final tasks = await _getTasks();
       emit(TaskLoaded(tasks));
     } catch (e) {
       emit(TaskError(e.toString()));
@@ -39,15 +39,15 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   void _onPostponeTasks(PostponeTasksEvent event, Emitter<TaskState> emit) async {
     emit(TaskLoading());
     try {
-      await updateExpiredTasks(DateTime.now().millisecond);
-      final tasks = await getTasks();
+      await _updateExpiredTasks(DateTime.now().millisecond);
+      final tasks = await _getTasks();
       emit(TaskLoaded(tasks));
     } catch (e) {
       emit(TaskError(e.toString()));
     }
   }
 
-  Future<void> updateExpiredTasks(int todayStartTime) async {
+  Future<void> _updateExpiredTasks(int todayStartTime) async {
     final tomorrowStartTime = todayStartTime + Duration(days: 1).inMilliseconds;
     var query = _db.select(_db.task);
     query.where((tbl) =>
@@ -66,7 +66,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     emit(TaskLoading());
     try {
       final tasks =
-          await getTasksByProject(event.projectId, status: event.status);
+          await _getTasksByProject(event.projectId, status: event.status);
       emit(TaskLoaded(tasks));
     } catch (e) {
       emit(TaskError(e.toString()));
@@ -78,14 +78,14 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     emit(TaskLoading());
     try {
       final tasks =
-          await getTasksByLabel(event.labelName, status: event.status);
+          await _getTasksByLabel(event.labelName, status: event.status);
       emit(TaskLoaded(tasks));
     } catch (e) {
       emit(TaskError(e.toString()));
     }
   }
 
-  Future<List<Task>> getTasks(
+  Future<List<Task>> _getTasks(
       {int startDate = 0, int endDate = 0, TaskStatus? taskStatus}) async {
     var query = _db.select(_db.task).join([
       leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
@@ -123,7 +123,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     return tasks;
   }
 
-  Future<List<Task>> getTasksByProject(int projectId,
+  Future<List<Task>> _getTasksByProject(int projectId,
       {TaskStatus? status}) async {
     var query = _db.select(_db.task).join([
       leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
@@ -141,7 +141,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     return _bindData(result);
   }
 
-  Future<List<Task>> getTasksByLabel(String labelName,
+  Future<List<Task>> _getTasksByLabel(String labelName,
       {TaskStatus? status}) async {
     var query = _db.select(_db.task).join([
       leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
@@ -207,7 +207,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   void _onFilterTasks(FilterTasksEvent event, Emitter<TaskState> emit) async {
     emit(TaskLoading());
     try {
-      var tasks = await filterTasks(event.filter);
+      var tasks = await _filterTasks(event.filter);
       if (!emit.isDone) {
         emit(TaskLoaded(tasks));
       }
@@ -218,7 +218,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     }
   }
 
-  Future<List<Task>> filterTodayTasks() async {
+  Future<List<Task>> _filterTodayTasks() async {
     final dateTime = DateTime.now();
 
     var startDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
@@ -228,14 +228,14 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     final int taskEndTime = endDate.millisecondsSinceEpoch;
 
     // Read all today's tasks from database
-    var tasks = await getTasks(
+    var tasks = await _getTasks(
         startDate: taskStartTime,
         endDate: taskEndTime,
         taskStatus: TaskStatus.PENDING);
     return tasks;
   }
 
-  Future<List<Task>> filterTasksForNextWeek() async {
+  Future<List<Task>> _filterTasksForNextWeek() async {
     var dateTime = DateTime.now();
     var taskStartTime = DateTime(dateTime.year, dateTime.month, dateTime.day)
         .millisecondsSinceEpoch;
@@ -243,14 +243,14 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         DateTime(dateTime.year, dateTime.month, dateTime.day + 7, 23, 59)
             .millisecondsSinceEpoch;
     // Read all next week tasks from database
-    var tasks = await getTasks(
+    var tasks = await _getTasks(
         startDate: taskStartTime,
         endDate: taskEndTime,
         taskStatus: TaskStatus.PENDING);
     return tasks;
   }
 
-  Future<List<Task>> filterByProject(
+  Future<List<Task>> _filterByProject(
     int projectId,
   ) async {
     var tasks =
@@ -258,7 +258,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     return tasks;
   }
 
-  Future<List<Task>> filterByLabel(
+  Future<List<Task>> _filterByLabel(
     String labelName,
   ) async {
     var tasks =
@@ -266,25 +266,25 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     return tasks;
   }
 
-  Future<List<Task>> filterByStatus(
+  Future<List<Task>> _filterByStatus(
     TaskStatus status,
   ) async {
     var tasks = await _taskDB.getTasks(taskStatus: status);
     return tasks;
   }
 
-  Future<List<Task>> filterTasks(Filter _lastFilterStatus) async {
+  Future<List<Task>> _filterTasks(Filter _lastFilterStatus) async {
     switch (_lastFilterStatus.filterStatus!) {
       case FilterStatus.BY_TODAY:
-        return await filterTodayTasks();
+        return await _filterTodayTasks();
       case FilterStatus.BY_WEEK:
-        return await filterTasksForNextWeek();
+        return await _filterTasksForNextWeek();
       case FilterStatus.BY_LABEL:
-        return await filterByLabel(_lastFilterStatus.labelName!);
+        return await _filterByLabel(_lastFilterStatus.labelName!);
       case FilterStatus.BY_PROJECT:
-        return await filterByProject(_lastFilterStatus.projectId!);
+        return await _filterByProject(_lastFilterStatus.projectId!);
       case FilterStatus.BY_STATUS:
-        return await filterByStatus(_lastFilterStatus.status!);
+        return await _filterByStatus(_lastFilterStatus.status!);
     }
   }
 }

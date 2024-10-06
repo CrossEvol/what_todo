@@ -1,14 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
-import 'package:flutter_app/pages/labels/label_db.dart';
-import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
-import 'package:flutter_app/pages/labels/my_label_bloc.dart';
 import 'package:flutter_app/pages/labels/label_widget.dart';
-import 'package:flutter_app/pages/projects/my_project_bloc.dart';
 import 'package:flutter_app/pages/projects/project_widget.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/app_util.dart';
@@ -60,11 +55,11 @@ class SideDrawer extends StatelessWidget {
           ListTile(
               onTap: () {
                 context
-                    .read<TaskBloc>()
-                    .add(FilterTasksEvent(filter: Filter.byToday()));
-                context
                     .read<HomeBloc>()
                     .add(ApplyFilterEvent("Today", Filter.byToday()));
+                context
+                    .read<TaskBloc>()
+                    .add(FilterTasksEvent(filter: Filter.byToday()));
                 context.safePop();
               },
               leading: Icon(Icons.calendar_today),
@@ -75,11 +70,11 @@ class SideDrawer extends StatelessWidget {
           ListTile(
             onTap: () {
               context
-                  .read<TaskBloc>()
-                  .add(FilterTasksEvent(filter: Filter.byNextWeek()));
-              context
                   .read<HomeBloc>()
                   .add(ApplyFilterEvent("Next 7 Days", Filter.byNextWeek()));
+              context
+                  .read<TaskBloc>()
+                  .add(FilterTasksEvent(filter: Filter.byNextWeek()));
               context.safePop();
             },
             leading: Icon(Icons.calendar_today),

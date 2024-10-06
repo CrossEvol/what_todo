@@ -9,5 +9,6 @@ the project is not build on the [bloc](https://bloclibrary.dev/), I want to rebu
 - ~~after update the task, it will be freeze and I can not edit again. but after I create a new task , I can edit anyone .~~
 - remove origin bloc logic which is coupled with add_task
 - remove origin bloc logic which is coupled with edit_task
-- remove origin bloc logic which is coupled with completed_tasks
-- remove origin bloc logic which is coupled with uncompleted_tasks
+- ~~remove origin bloc logic which is coupled with completed_tasks~~
+- ~~remove origin bloc logic which is coupled with uncompleted_tasks~~
+- apply PopScope as more as possible
