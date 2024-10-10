@@ -98,12 +98,13 @@ class MockLabelDB extends _i1.Mock implements _i5.LabelDB {
         returnValue: _i3.Future<List<_i6.Label>>.value(<_i6.Label>[]),
       ) as _i3.Future<List<_i6.Label>>);
 
+  // TODO: manually modify here, should be care if want to run the tests
   @override
-  _i3.Future<dynamic> deleteLabel(int? labelId) => (super.noSuchMethod(
+  _i3.Future<bool> deleteLabel(int? labelId) => (super.noSuchMethod(
         Invocation.method(
           #deleteLabel,
           [labelId],
         ),
         returnValue: _i3.Future<dynamic>.value(),
-      ) as _i3.Future<dynamic>);
+      ) as _i3.Future<bool>);
 }

@@ -17,6 +17,7 @@ class SideDrawerKeys {
   static const TODAY = 'today';
   static const INBOX = 'inbox';
   static const NEXT_7_DAYS = 'next7Days';
+  static const LABEL_GRID = 'label_grid';
   static const UNKNOWN = 'unknown';
 }
 

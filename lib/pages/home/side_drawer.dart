@@ -47,9 +47,8 @@ class SideDrawer extends StatelessWidget {
                 var project = Project.getInbox();
                 context.read<HomeBloc>().add(ApplyFilterEvent(
                     project.name, Filter.byProject(project.id!)));
-                context
-                    .read<TaskBloc>()
-                    .add(FilterTasksEvent(filter: Filter.byProject(project.id)));
+                context.read<TaskBloc>().add(
+                    FilterTasksEvent(filter: Filter.byProject(project.id)));
                 context.safePop();
               }),
           ListTile(
@@ -87,6 +86,20 @@ class SideDrawer extends StatelessWidget {
           LabelPage(),
           ListTile(
             onTap: () {
+              context.go('/label/grid');
+            },
+            leading: Icon(Icons.view_comfortable_outlined),
+            title: Text(
+              'Label Grid',
+              style: TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.w500,
+              ),
+              key: ValueKey(SideDrawerKeys.LABEL_GRID),
+            ),
+          ),
+          ListTile(
+            onTap: () {
               showSnackbar(context, 'Unknown has not implemented.',
                   materialColor: Colors.teal);
             },
@@ -95,7 +108,7 @@ class SideDrawer extends StatelessWidget {
               'UNKNOWN',
               key: ValueKey(SideDrawerKeys.UNKNOWN),
             ),
-          )
+          ),
         ],
       ),
     );

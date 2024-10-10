@@ -6,12 +6,30 @@ class ColorPalette {
   final String colorName;
   final int colorValue;
 
+  ColorPalette.none()
+      : colorName = "Grey",
+        colorValue = Colors.grey.value;
+
   ColorPalette(this.colorName, this.colorValue);
 
   bool operator ==(o) =>
       o is ColorPalette &&
       o.colorValue == colorValue &&
       o.colorName == colorName;
+
+  Map<String, dynamic> toMap() {
+    return {
+      'colorName': this.colorName,
+      'colorValue': this.colorValue,
+    };
+  }
+
+  factory ColorPalette.fromMap(Map<String, dynamic> map) {
+    return ColorPalette(
+      map['colorName'] as String,
+      map['colorValue'] as int,
+    );
+  }
 }
 
 var colorsPalettes = <ColorPalette>[

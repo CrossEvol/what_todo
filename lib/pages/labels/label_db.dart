@@ -29,6 +29,7 @@ class LabelDB {
   Future updateLabels(Label label) async {
     await _db.into(_db.label).insertOnConflictUpdate(
           LabelCompanion(
+            id: Value(label.id ?? 0),
             name: Value(label.name),
             colorCode: Value(label.colorValue),
             colorName: Value(label.colorName),
@@ -41,6 +42,27 @@ class LabelDB {
     return result.map((item) => Label.fromMap(item.toJson())).toList();
   }
 
+  Future<List<LabelWithCount>> getLabelsWithCount() async {
+    final query =
+        _db.select(_db.label).addColumns([_db.taskLabel.labelId.count()]).join([
+      leftOuterJoin(
+          _db.taskLabel, _db.taskLabel.labelId.equalsExp(_db.label.id)),
+    ])
+          ..groupBy([_db.label.id]);
+
+    final result = await query.get();
+
+    return result.map((row) {
+      final labelData = row.readTable(_db.label);
+      final count = row.read(_db.taskLabel.labelId.count()) ?? 0;
+
+      return LabelWithCount.fromMap({
+        ...labelData.toJson(),
+        'count': count,
+      });
+    }).toList();
+  }
+
   Future<List<Label>> getLabelsByNames(List<String> labelNames) async {
     var query = _db.select(_db.label);
     query.where((tbl) => tbl.name.isIn(labelNames));
@@ -48,7 +70,8 @@ class LabelDB {
     return result.map((item) => Label.fromMap(item.toJson())).toList();
   }
 
-  Future deleteLabel(int labelId) async {
-    await (_db.delete(_db.label)..where((tbl) => tbl.id.equals(labelId))).go();
+  Future<bool> deleteLabel(int labelId) async {
+   final result =  await (_db.delete(_db.label)..where((tbl) => tbl.id.equals(labelId))).go();
+   return result > 0;
   }
 }

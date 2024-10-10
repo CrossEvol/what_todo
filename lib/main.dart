@@ -1,6 +1,7 @@
 import 'dart:io' show Platform;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
@@ -67,6 +68,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => TaskBloc(TaskDB.get())
             ..add(FilterTasksEvent(filter: Filter.byToday())),
+        ),
+        BlocProvider(
+          create: (_) => AdminBloc(LabelDB.get()),
         ),
       ],
       child: MaterialApp.router(
