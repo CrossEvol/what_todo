@@ -19,14 +19,14 @@ class LabelDB {
           ..where((tbl) => tbl.name.equals(label.name)))
         .get();
     if (result.isEmpty) {
-      await updateLabels(label);
+      await upsertLabel(label);
       return false;
     } else {
       return true;
     }
   }
 
-  Future updateLabels(Label label) async {
+  Future upsertLabel(Label label) async {
     await _db.into(_db.label).insertOnConflictUpdate(
           LabelCompanion(
             id: Value(label.id ?? 0),

@@ -70,7 +70,10 @@ class MyApp extends StatelessWidget {
             ..add(FilterTasksEvent(filter: Filter.byToday())),
         ),
         BlocProvider(
-          create: (_) => AdminBloc(LabelDB.get()),
+          create: (_) => AdminBloc(
+            LabelDB.get(),
+            ProjectDB.get(),
+          ),
         ),
       ],
       child: MaterialApp.router(

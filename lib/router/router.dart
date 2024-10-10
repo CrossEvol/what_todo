@@ -6,6 +6,7 @@ import 'package:flutter_app/pages/home/home.dart';
 import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/labels/label_grid.dart';
 import 'package:flutter_app/pages/labels/label_widget.dart';
+import 'package:flutter_app/pages/projects/project_grid.dart';
 import 'package:flutter_app/pages/projects/project_widget.dart';
 import 'package:flutter_app/pages/tasks/add_task.dart';
 import 'package:flutter_app/pages/tasks/edit_task.dart';
@@ -55,6 +56,13 @@ final GoRouter goRouter = GoRouter(
           path: 'label/add',
           builder: (BuildContext context, GoRouterState state) {
             return AddLabelPage();
+          },
+        ),
+        GoRoute(
+          path: 'project/grid',
+          builder: (BuildContext context, GoRouterState state) {
+            context.read<AdminBloc>().add(AdminLoadProjectsEvent());
+            return ProjectGridPage();
           },
         ),
         GoRoute(

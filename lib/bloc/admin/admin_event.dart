@@ -9,6 +9,11 @@ class AdminLoadLabelsEvent extends AdminEvent {
   List<Object?> get props => [];
 }
 
+class AdminLoadProjectsEvent extends AdminEvent {
+  @override
+  List<Object?> get props => [];
+}
+
 class AdminUpdateColorSelectionEvent extends AdminEvent {
   final ColorPalette colorPalette;
 
@@ -39,5 +44,27 @@ class AdminRemoveLabelEvent extends AdminEvent {
 
   const AdminRemoveLabelEvent({
     required this.labelID,
+  });
+}
+
+class AdminUpdateProjectEvent extends AdminEvent {
+  final Project project;
+
+  @override
+  List<Object?> get props => [project];
+
+  const AdminUpdateProjectEvent({
+    required this.project,
+  });
+}
+
+class AdminRemoveProjectEvent extends AdminEvent {
+  final int projectID;
+
+  @override
+  List<Object?> get props => [projectID];
+
+  const AdminRemoveProjectEvent({
+    required this.projectID,
   });
 }

@@ -2,32 +2,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/constants/color_constant.dart';
-import 'package:flutter_app/pages/labels/label.dart';
+import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/utils/collapsable_expand_tile.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 /// The home page of the application which hosts the datagrid.
-class LabelGridPage extends StatefulWidget {
+class ProjectGridPage extends StatefulWidget {
   /// Creates the home page.
-  const LabelGridPage({super.key});
+  const ProjectGridPage({super.key});
 
   @override
-  State<LabelGridPage> createState() => _LabelGridPageState();
+  State<ProjectGridPage> createState() => _ProjectGridPageState();
 }
 
-class _LabelGridPageState extends State<LabelGridPage> {
-  List<LabelWithCount> labels = <LabelWithCount>[];
-  late LabelDataSource labelDataSource;
+class _ProjectGridPageState extends State<ProjectGridPage> {
+  List<ProjectWithCount> projects = <ProjectWithCount>[];
+  late ProjectDataSource projectDataSource;
   int _currentID = 0;
   TextEditingController? _idController;
   TextEditingController? _nameController;
   TextEditingController? _countController;
 
-  // late ColorPalette currentSelectedPalette;
   final expansionTile = GlobalKey<CollapsibleExpansionTileState>();
 
-  /// Used to validate the forms
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -35,9 +33,9 @@ class _LabelGridPageState extends State<LabelGridPage> {
     super.initState();
     var state = context.read<AdminBloc>().state;
     if (state is AdminLoadedState) {
-      labels = state.labels;
+      projects = state.projects;
     }
-    labelDataSource = LabelDataSource(labelData: labels);
+    projectDataSource = ProjectDataSource(projectData: projects);
     _idController = TextEditingController();
     _nameController = TextEditingController();
     _countController = TextEditingController();
@@ -47,16 +45,15 @@ class _LabelGridPageState extends State<LabelGridPage> {
   Widget build(BuildContext context) {
     return BlocBuilder<AdminBloc, AdminState>(
       builder: (context, state) {
-        // did not effect
         if (state is AdminInitialState) {
           return CircularProgressIndicator();
         }
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Labels DataGrid'),
+            title: const Text('Projects DataGrid'),
           ),
           body: SfDataGrid(
-            source: labelDataSource,
+            source: projectDataSource,
             allowSwiping: true,
             swipeMaxOffset: 121.0,
             endSwipeActionsBuilder: _buildEndSwipeWidget,
@@ -354,25 +351,25 @@ class _LabelGridPageState extends State<LabelGridPage> {
   /// Updating the DataGridRows after changing the value and notify the DataGrid
   /// to refresh the view
   void _processCellUpdate(DataGridRow row, BuildContext buildContext) {
-    final int rowIndex = labelDataSource.dataGridRows.indexOf(row);
+    final int rowIndex = projectDataSource.dataGridRows.indexOf(row);
 
     final colorPalette = context.read<AdminBloc>().state.colorPalette;
     if (_formKey.currentState!.validate()) {
-      context.read<AdminBloc>().add(AdminUpdateLabelEvent(
-              label: Label.update(
+      context.read<AdminBloc>().add(AdminUpdateProjectEvent(
+              project: Project.update(
             id: _currentID,
             name: _nameController!.text,
             colorCode: colorPalette.colorValue,
             colorName: colorPalette.colorName,
           )));
-      labelDataSource.dataGridRows[rowIndex] = LabelWithCount(
+      projectDataSource.dataGridRows[rowIndex] = ProjectWithCount(
         id: _currentID,
         name: _nameController!.text,
         count: int.tryParse(_countController!.text) ?? 0,
         colorCode: colorPalette.colorValue,
         colorName: colorPalette.colorName,
-      ).mapEmployeeRow();
-      labelDataSource.updateDataSource();
+      ).mapProjectRow();
+      projectDataSource.updateDataSource();
       Navigator.pop(buildContext);
     }
   }
@@ -412,11 +409,11 @@ class _LabelGridPageState extends State<LabelGridPage> {
     if (id.isEmpty) {
       return;
     }
-    context.read<AdminBloc>().add(AdminRemoveLabelEvent(
-          labelID: int.parse(id),
+    context.read<AdminBloc>().add(AdminRemoveProjectEvent(
+          projectID: int.parse(id),
         ));
-    labelDataSource.dataGridRows.remove(row);
-    labelDataSource.updateDataSource();
+    projectDataSource.dataGridRows.remove(row);
+    projectDataSource.updateDataSource();
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -437,19 +434,19 @@ class _LabelGridPageState extends State<LabelGridPage> {
 
 /// An object to set the employee collection data source to the datagrid. This
 /// is used to map the employee data to the datagrid widget.
-class LabelDataSource extends DataGridSource {
+class ProjectDataSource extends DataGridSource {
   /// Creates the employee data source class with required details.
-  LabelDataSource({required List<LabelWithCount> labelData}) {
-    _employeeData =
-        labelData.map<DataGridRow>((e) => e.mapEmployeeRow()).toList();
+  ProjectDataSource({required List<ProjectWithCount> projectData}) {
+    _projectData =
+        projectData.map<DataGridRow>((e) => e.mapProjectRow()).toList();
   }
 
-  List<DataGridRow> _employeeData = [];
+  List<DataGridRow> _projectData = [];
 
-  List<DataGridRow> get dataGridRows => _employeeData;
+  List<DataGridRow> get dataGridRows => _projectData;
 
   @override
-  List<DataGridRow> get rows => _employeeData;
+  List<DataGridRow> get rows => _projectData;
 
   @override
   DataGridRowAdapter buildRow(DataGridRow row) {

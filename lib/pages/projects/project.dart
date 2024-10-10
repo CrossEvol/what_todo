@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 class Project {
   static final tblProject = "project";
@@ -48,4 +49,50 @@ class Project {
       Project.dbColorName: colorName,
     };
   }
+}
+
+class ProjectWithCount {
+  final int id;
+  final String name;
+  final int colorCode;
+  final String colorName;
+  final int count;
+
+  const ProjectWithCount({
+    required this.id,
+    required this.name,
+    required this.colorCode,
+    required this.colorName,
+    required this.count,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': this.id,
+      'name': this.name,
+      'colorCode': this.colorCode,
+      'colorName': this.colorName,
+      'count': this.count,
+    };
+  }
+
+  factory ProjectWithCount.fromMap(Map<String, dynamic> map) {
+    return ProjectWithCount(
+      id: map['id'] as int,
+      name: map['name'] as String,
+      colorCode: map['colorCode'] as int,
+      colorName: map['colorName'] as String,
+      count: map['count'] as int,
+    );
+  }
+}
+
+extension ProjectExt on ProjectWithCount {
+  DataGridRow mapProjectRow() => DataGridRow(cells: [
+        DataGridCell<int>(columnName: 'id', value: id),
+        DataGridCell<String>(columnName: 'name', value: name),
+        DataGridCell<int>(columnName: 'count', value: count),
+        DataGridCell<int>(columnName: 'colorCode', value: colorCode),
+        DataGridCell<String>(columnName: 'colorName', value: colorName),
+      ]);
 }

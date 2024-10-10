@@ -39,7 +39,7 @@ class MyProjectBloc implements CustomBlocBase {
   }
 
   void createProject(Project project) {
-    _projectDB.insertOrReplace(project).then((value) {
+    _projectDB.upsertProject(project).then((value) {
       if (value == null) return;
       _loadProjects(isInboxVisible);
     });

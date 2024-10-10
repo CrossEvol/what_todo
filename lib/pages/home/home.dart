@@ -31,10 +31,7 @@ class AdaptiveHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomBlocProvider(
-      bloc: MyHomeBloc(),
-      child: context.isWiderScreen() ? WiderHomePage() : HomePage(),
-    );
+    return context.isWiderScreen() ? WiderHomePage() : HomePage();
   }
 }
 

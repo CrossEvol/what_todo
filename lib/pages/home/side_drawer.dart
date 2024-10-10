@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
@@ -14,6 +15,10 @@ import 'package:go_router/go_router.dart';
 class SideDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // load some basic data
+    context.read<AdminBloc>().add(AdminLoadLabelsEvent());
+    context.read<AdminBloc>().add(AdminLoadProjectsEvent());
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.all(0.0),
@@ -76,7 +81,7 @@ class SideDrawer extends StatelessWidget {
                   .add(FilterTasksEvent(filter: Filter.byNextWeek()));
               context.safePop();
             },
-            leading: Icon(Icons.calendar_today),
+            leading: Icon(Icons.calendar_view_day_rounded),
             title: Text(
               "Next 7 Days",
               key: ValueKey(SideDrawerKeys.NEXT_7_DAYS),
@@ -84,6 +89,20 @@ class SideDrawer extends StatelessWidget {
           ),
           ProjectPage(),
           LabelPage(),
+          ListTile(
+            onTap: () {
+              context.go('/project/grid');
+            },
+            leading: Icon(Icons.grid_view_outlined),
+            title: Text(
+              'Project Grid',
+              style: TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.w500,
+              ),
+              key: ValueKey(SideDrawerKeys.PROJECT_GRID),
+            ),
+          ),
           ListTile(
             onTap: () {
               context.go('/label/grid');

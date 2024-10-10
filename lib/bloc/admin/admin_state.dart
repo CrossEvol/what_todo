@@ -2,44 +2,40 @@ part of 'admin_bloc.dart';
 
 sealed class AdminState extends Equatable {
   final List<LabelWithCount> labels;
-
+  final List<ProjectWithCount> projects;
   final ColorPalette colorPalette;
 
   const AdminState({
     required this.labels,
+    required this.projects,
     required this.colorPalette,
   });
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      super == other &&
-          other is AdminState &&
-          runtimeType == other.runtimeType &&
-          labels == other.labels &&
-          colorPalette == other.colorPalette;
+  List<Object> get props => [labels, projects, colorPalette];
 
-  @override
-  int get hashCode => super.hashCode ^ labels.hashCode ^ colorPalette.hashCode;
+  AdminLoadedState copyWith(
+      {List<LabelWithCount>? labels,
+      List<ProjectWithCount>? projects,
+      ColorPalette? colorPalette}) {
+    return AdminLoadedState(
+      labels: labels ?? this.labels,
+      projects: projects ?? this.projects,
+      colorPalette: colorPalette ?? this.colorPalette,
+    );
+  }
 }
 
 final class AdminInitialState extends AdminState {
-  AdminInitialState({required super.labels, required super.colorPalette});
-
-  @override
-  List<Object> get props => [super.labels];
+  AdminInitialState(
+      {required super.labels,
+      required super.projects,
+      required super.colorPalette});
 }
 
-final class AdminLabelsLoadedState extends AdminState {
-  AdminLabelsLoadedState({required super.labels, required super.colorPalette});
-
-  @override
-  List<Object> get props => [super.labels];
-
-  AdminLabelsLoadedState copyWith(
-      {List<LabelWithCount>? labels, ColorPalette? colorPalette}) {
-    return AdminLabelsLoadedState(
-        labels: labels ?? this.labels,
-        colorPalette: colorPalette ?? this.colorPalette);
-  }
+final class AdminLoadedState extends AdminState {
+  AdminLoadedState(
+      {required super.labels,
+      required super.projects,
+      required super.colorPalette});
 }

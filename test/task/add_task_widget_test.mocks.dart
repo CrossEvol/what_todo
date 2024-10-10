@@ -44,7 +44,7 @@ class MockProjectDB extends _i1.Mock implements _i2.ProjectDB {
       ) as _i3.Future<List<_i4.Project>>);
 
   @override
-  _i3.Future<dynamic> insertOrReplace(_i4.Project? project) =>
+  _i3.Future<dynamic> upsertProject(_i4.Project? project) =>
       (super.noSuchMethod(
         Invocation.method(
           #insertOrReplace,
@@ -54,13 +54,13 @@ class MockProjectDB extends _i1.Mock implements _i2.ProjectDB {
       ) as _i3.Future<dynamic>);
 
   @override
-  _i3.Future<dynamic> deleteProject(int? projectID) => (super.noSuchMethod(
+  _i3.Future<bool> deleteProject(int? projectID) => (super.noSuchMethod(
         Invocation.method(
           #deleteProject,
           [projectID],
         ),
         returnValue: _i3.Future<dynamic>.value(),
-      ) as _i3.Future<dynamic>);
+      ) as _i3.Future<bool>);
 }
 
 /// A class which mocks [LabelDB].
@@ -81,7 +81,7 @@ class MockLabelDB extends _i1.Mock implements _i5.LabelDB {
       ) as _i3.Future<bool>);
 
   @override
-  _i3.Future<dynamic> updateLabels(_i6.Label? label) => (super.noSuchMethod(
+  _i3.Future<dynamic> upsertLabel(_i6.Label? label) => (super.noSuchMethod(
         Invocation.method(
           #updateLabels,
           [label],

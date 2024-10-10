@@ -32,7 +32,7 @@ class FakeProjectDb extends Fake implements ProjectDB {
   }
 
   @override
-  Future insertOrReplace(Project project) async {
+  Future upsertProject(Project project) async {
     lastProjectCreated = project;
     projectList.add(project);
     return Future.value();
@@ -108,7 +108,7 @@ void main() {
           [testProject2, testProject3],
         ]));
 
-    fakeProjectDb.insertOrReplace(testProject4);
+    fakeProjectDb.upsertProject(testProject4);
     projectBloc.refresh();
     await expectLater(
         projectBloc.projects,

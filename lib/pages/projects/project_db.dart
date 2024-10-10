@@ -34,7 +34,27 @@ class ProjectDB {
     return result.map((item) => Project.fromMap(item.toJson())).toList();
   }
 
-  Future insertOrReplace(Project project) async {
+  Future<List<ProjectWithCount>> getProjectsWithCount() async {
+    final query =
+        _db.select(_db.project).addColumns([_db.task.projectId.count()]).join([
+      leftOuterJoin(_db.task, _db.task.projectId.equalsExp(_db.project.id)),
+    ])
+          ..groupBy([_db.project.id]);
+
+    final result = await query.get();
+
+    return result.map((row) {
+      final projectData = row.readTable(_db.project);
+      final count = row.read(_db.task.projectId.count()) ?? 0;
+
+      return ProjectWithCount.fromMap({
+        ...projectData.toJson(),
+        'count': count,
+      });
+    }).toList();
+  }
+
+  Future upsertProject(Project project) async {
     await _db.into(_db.project).insertOnConflictUpdate(
           ProjectCompanion(
             id: project.id != null ? Value(project.id!) : Value.absent(),
@@ -45,8 +65,17 @@ class ProjectDB {
         );
   }
 
-  Future deleteProject(int projectID) async {
-    await (_db.delete(_db.project)..where((tbl) => tbl.id.equals(projectID)))
+  Future<bool> moveTasksToInbox(int projectID) async {
+    final rows = await (_db.update(_db.task)
+          ..where((tbl) => tbl.projectId.equals(projectID)))
+        .write(TaskCompanion(projectId: const Value(1)));
+    return rows >= 0;
+  }
+
+  Future<bool> deleteProject(int projectID) async {
+    final affectedRows = await (_db.delete(_db.project)
+          ..where((tbl) => tbl.id.equals(projectID)))
         .go();
+    return affectedRows > 0;
   }
 }

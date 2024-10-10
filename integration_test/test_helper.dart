@@ -25,15 +25,15 @@ extension TestWidgetTester on WidgetTester {
 
 seedDataInDb() async {
   var projectDB = ProjectDB.get();
-  await projectDB.insertOrReplace(testProject1);
-  await projectDB.insertOrReplace(testProject2);
-  await projectDB.insertOrReplace(testProject3);
-  await projectDB.insertOrReplace(testProject4);
+  await projectDB.upsertProject(testProject1);
+  await projectDB.upsertProject(testProject2);
+  await projectDB.upsertProject(testProject3);
+  await projectDB.upsertProject(testProject4);
 
   var labelDB = LabelDB.get();
-  await labelDB.updateLabels(testLabel1);
-  await labelDB.updateLabels(testLabel2);
-  await labelDB.updateLabels(testLabel3);
+  await labelDB.upsertLabel(testLabel1);
+  await labelDB.upsertLabel(testLabel2);
+  await labelDB.upsertLabel(testLabel3);
 
   var taskDB = TaskDB.get();
   await taskDB.updateTask(testTask1);
