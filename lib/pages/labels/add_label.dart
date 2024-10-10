@@ -10,7 +10,6 @@ import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class AddLabel extends StatelessWidget {
   final GlobalKey<FormState> _formState = GlobalKey<FormState>();
   final expansionTile = GlobalKey<CollapsibleExpansionTileState>();
@@ -31,7 +30,9 @@ class AddLabel extends StatelessWidget {
               context.bloc<MyHomeBloc>().updateScreen(SCREEN.HOME);
             }
           }
-        }else{
+        } else if (state is ColorSelectionUpdated) {
+          return;
+        } else {
           context.safePop();
         }
       },
