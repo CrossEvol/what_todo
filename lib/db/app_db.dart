@@ -8,7 +8,7 @@ import 'package:flutter/material.dart' hide Table;
 
 part 'app_db.g.dart';
 
-@DriftDatabase(tables: [Project, Task, Label, TaskLabel])
+@DriftDatabase(tables: [Project, Task, Label, TaskLabel, Profile])
 class AppDatabase extends _$AppDatabase {
   AppDatabase._internal() : super(_openConnection());
 
@@ -19,7 +19,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -32,15 +32,16 @@ class AppDatabase extends _$AppDatabase {
             colorCode: Value(Colors.grey.value),
           ));
         },
-        // onUpgrade: (Migrator m, int from, int to) async {
-        //   if (from == 1) {
-        //     await m.deleteTable('task');
-        //     await m.deleteTable('project');
-        //     await m.deleteTable('taskLabel');
-        //     await m.deleteTable('label');
-        //     await m.createAll();
-        //   }
-        // },
+        onUpgrade: (Migrator m, int from, int to) async {
+          if (from == 1 && to == 2) {
+            await m.createTable(profile);
+            await into(profile).insert(ProfileCompanion(
+                name: Value('Agnimon Frontier'),
+                email: Value('AgnimonFrontier@gmail.com'),
+                avatarUrl: Value('assets/Agnimon.jpg'),
+                updatedAt: Value(DateTime.now().millisecond)));
+          }
+        },
       );
 }
 

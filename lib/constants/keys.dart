@@ -9,6 +9,7 @@ class AboutUsKeys {
 }
 
 class SideDrawerKeys {
+  static const PROFILE = 'profile';
   static const DRAWER = 'drawer';
   static const DRAWER_LABELS = 'drawerLabels';
   static const ADD_LABEL = 'addLabel';

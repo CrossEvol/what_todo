@@ -3,12 +3,12 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i3;
+import 'dart:async' as _i4;
 
 import 'package:flutter_app/pages/labels/label.dart' as _i6;
 import 'package:flutter_app/pages/labels/label_db.dart' as _i5;
-import 'package:flutter_app/pages/projects/project.dart' as _i4;
-import 'package:flutter_app/pages/projects/project_db.dart' as _i2;
+import 'package:flutter_app/pages/projects/project.dart' as _i2;
+import 'package:flutter_app/pages/projects/project_db.dart' as _i3;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -24,43 +24,100 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
+class _FakeProject_0 extends _i1.SmartFake implements _i2.Project {
+  _FakeProject_0(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [ProjectDB].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockProjectDB extends _i1.Mock implements _i2.ProjectDB {
+class MockProjectDB extends _i1.Mock implements _i3.ProjectDB {
   MockProjectDB() {
     _i1.throwOnMissingStub(this);
   }
 
   @override
-  _i3.Future<List<_i4.Project>> getProjects({bool? isInboxVisible = true}) =>
+  _i4.Future<_i2.Project> getProject({
+    required int? id,
+    bool? isInboxVisible = true,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getProject,
+          [],
+          {
+            #id: id,
+            #isInboxVisible: isInboxVisible,
+          },
+        ),
+        returnValue: _i4.Future<_i2.Project>.value(_FakeProject_0(
+          this,
+          Invocation.method(
+            #getProject,
+            [],
+            {
+              #id: id,
+              #isInboxVisible: isInboxVisible,
+            },
+          ),
+        )),
+      ) as _i4.Future<_i2.Project>);
+
+  @override
+  _i4.Future<List<_i2.Project>> getProjects({bool? isInboxVisible = true}) =>
       (super.noSuchMethod(
         Invocation.method(
           #getProjects,
           [],
           {#isInboxVisible: isInboxVisible},
         ),
-        returnValue: _i3.Future<List<_i4.Project>>.value(<_i4.Project>[]),
-      ) as _i3.Future<List<_i4.Project>>);
+        returnValue: _i4.Future<List<_i2.Project>>.value(<_i2.Project>[]),
+      ) as _i4.Future<List<_i2.Project>>);
 
   @override
-  _i3.Future<dynamic> upsertProject(_i4.Project? project) =>
+  _i4.Future<List<_i2.ProjectWithCount>> getProjectsWithCount() =>
       (super.noSuchMethod(
         Invocation.method(
-          #insertOrReplace,
-          [project],
+          #getProjectsWithCount,
+          [],
         ),
-        returnValue: _i3.Future<dynamic>.value(),
-      ) as _i3.Future<dynamic>);
+        returnValue: _i4.Future<List<_i2.ProjectWithCount>>.value(
+            <_i2.ProjectWithCount>[]),
+      ) as _i4.Future<List<_i2.ProjectWithCount>>);
 
   @override
-  _i3.Future<bool> deleteProject(int? projectID) => (super.noSuchMethod(
+  _i4.Future<dynamic> upsertProject(_i2.Project? project) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #upsertProject,
+          [project],
+        ),
+        returnValue: _i4.Future<dynamic>.value(),
+      ) as _i4.Future<dynamic>);
+
+  @override
+  _i4.Future<bool> moveTasksToInbox(int? projectID) => (super.noSuchMethod(
+        Invocation.method(
+          #moveTasksToInbox,
+          [projectID],
+        ),
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
+
+  @override
+  _i4.Future<bool> deleteProject(int? projectID) => (super.noSuchMethod(
         Invocation.method(
           #deleteProject,
           [projectID],
         ),
-        returnValue: _i3.Future<dynamic>.value(),
-      ) as _i3.Future<bool>);
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
 }
 
 /// A class which mocks [LabelDB].
@@ -72,39 +129,59 @@ class MockLabelDB extends _i1.Mock implements _i5.LabelDB {
   }
 
   @override
-  _i3.Future<bool> isLabelExits(_i6.Label? label) => (super.noSuchMethod(
+  _i4.Future<bool> isLabelExits(_i6.Label? label) => (super.noSuchMethod(
         Invocation.method(
           #isLabelExits,
           [label],
         ),
-        returnValue: _i3.Future<bool>.value(false),
-      ) as _i3.Future<bool>);
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
 
   @override
-  _i3.Future<dynamic> upsertLabel(_i6.Label? label) => (super.noSuchMethod(
+  _i4.Future<dynamic> upsertLabel(_i6.Label? label) => (super.noSuchMethod(
         Invocation.method(
-          #updateLabels,
+          #upsertLabel,
           [label],
         ),
-        returnValue: _i3.Future<dynamic>.value(),
-      ) as _i3.Future<dynamic>);
+        returnValue: _i4.Future<dynamic>.value(),
+      ) as _i4.Future<dynamic>);
 
   @override
-  _i3.Future<List<_i6.Label>> getLabels() => (super.noSuchMethod(
+  _i4.Future<List<_i6.Label>> getLabels() => (super.noSuchMethod(
         Invocation.method(
           #getLabels,
           [],
         ),
-        returnValue: _i3.Future<List<_i6.Label>>.value(<_i6.Label>[]),
-      ) as _i3.Future<List<_i6.Label>>);
+        returnValue: _i4.Future<List<_i6.Label>>.value(<_i6.Label>[]),
+      ) as _i4.Future<List<_i6.Label>>);
 
-  // TODO: manually modify here, should be care if want to run the tests
   @override
-  _i3.Future<bool> deleteLabel(int? labelId) => (super.noSuchMethod(
+  _i4.Future<List<_i6.LabelWithCount>> getLabelsWithCount() =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getLabelsWithCount,
+          [],
+        ),
+        returnValue:
+            _i4.Future<List<_i6.LabelWithCount>>.value(<_i6.LabelWithCount>[]),
+      ) as _i4.Future<List<_i6.LabelWithCount>>);
+
+  @override
+  _i4.Future<List<_i6.Label>> getLabelsByNames(List<String>? labelNames) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getLabelsByNames,
+          [labelNames],
+        ),
+        returnValue: _i4.Future<List<_i6.Label>>.value(<_i6.Label>[]),
+      ) as _i4.Future<List<_i6.Label>>);
+
+  @override
+  _i4.Future<bool> deleteLabel(int? labelId) => (super.noSuchMethod(
         Invocation.method(
           #deleteLabel,
           [labelId],
         ),
-        returnValue: _i3.Future<dynamic>.value(),
-      ) as _i3.Future<bool>);
+        returnValue: _i4.Future<bool>.value(false),
+      ) as _i4.Future<bool>);
 }

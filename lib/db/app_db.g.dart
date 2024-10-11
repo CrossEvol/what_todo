@@ -303,7 +303,7 @@ class $TaskTable extends Task with TableInfo<$TaskTable, TaskData> {
       'project_id', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
-      $customConstraints: 'REFERENCES project(id) ON DELETE CASCADE');
+      $customConstraints: 'NOT NULL REFERENCES project(id) ON DELETE CASCADE');
   static const VerificationMeta _statusMeta = const VerificationMeta('status');
   @override
   late final GeneratedColumn<int> status = GeneratedColumn<int>(
@@ -912,7 +912,7 @@ class $TaskLabelTable extends TaskLabel
       'task_id', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
-      $customConstraints: 'REFERENCES task(id) ON DELETE CASCADE');
+      $customConstraints: 'NOT NULL REFERENCES task(id) ON DELETE CASCADE');
   static const VerificationMeta _labelIdMeta =
       const VerificationMeta('labelId');
   @override
@@ -920,7 +920,7 @@ class $TaskLabelTable extends TaskLabel
       'label_id', aliasedName, false,
       type: DriftSqlType.int,
       requiredDuringInsert: true,
-      $customConstraints: 'REFERENCES label(id) ON DELETE CASCADE');
+      $customConstraints: 'NOT NULL REFERENCES label(id) ON DELETE CASCADE');
   @override
   List<GeneratedColumn> get $columns => [id, taskId, labelId];
   @override
@@ -1110,6 +1110,302 @@ class TaskLabelCompanion extends UpdateCompanion<TaskLabelData> {
   }
 }
 
+class $ProfileTable extends Profile with TableInfo<$ProfileTable, ProfileData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ProfileTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(""));
+  static const VerificationMeta _emailMeta = const VerificationMeta('email');
+  @override
+  late final GeneratedColumn<String> email = GeneratedColumn<String>(
+      'email', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+  static const VerificationMeta _avatarUrlMeta =
+      const VerificationMeta('avatarUrl');
+  @override
+  late final GeneratedColumn<String> avatarUrl = GeneratedColumn<String>(
+      'avatar_url', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(""));
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
+      'updated_at', aliasedName, true,
+      type: DriftSqlType.int, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns => [id, name, email, avatarUrl, updatedAt];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'profile';
+  @override
+  VerificationContext validateIntegrity(Insertable<ProfileData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    }
+    if (data.containsKey('email')) {
+      context.handle(
+          _emailMeta, email.isAcceptableOrUnknown(data['email']!, _emailMeta));
+    } else if (isInserting) {
+      context.missing(_emailMeta);
+    }
+    if (data.containsKey('avatar_url')) {
+      context.handle(_avatarUrlMeta,
+          avatarUrl.isAcceptableOrUnknown(data['avatar_url']!, _avatarUrlMeta));
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ProfileData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ProfileData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      email: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}email'])!,
+      avatarUrl: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}avatar_url'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}updated_at']),
+    );
+  }
+
+  @override
+  $ProfileTable createAlias(String alias) {
+    return $ProfileTable(attachedDatabase, alias);
+  }
+}
+
+class ProfileData extends DataClass implements Insertable<ProfileData> {
+  final int id;
+  final String name;
+  final String email;
+  final String avatarUrl;
+  final int? updatedAt;
+  const ProfileData(
+      {required this.id,
+      required this.name,
+      required this.email,
+      required this.avatarUrl,
+      this.updatedAt});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['email'] = Variable<String>(email);
+    map['avatar_url'] = Variable<String>(avatarUrl);
+    if (!nullToAbsent || updatedAt != null) {
+      map['updated_at'] = Variable<int>(updatedAt);
+    }
+    return map;
+  }
+
+  ProfileCompanion toCompanion(bool nullToAbsent) {
+    return ProfileCompanion(
+      id: Value(id),
+      name: Value(name),
+      email: Value(email),
+      avatarUrl: Value(avatarUrl),
+      updatedAt: updatedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updatedAt),
+    );
+  }
+
+  factory ProfileData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ProfileData(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      email: serializer.fromJson<String>(json['email']),
+      avatarUrl: serializer.fromJson<String>(json['avatarUrl']),
+      updatedAt: serializer.fromJson<int?>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'email': serializer.toJson<String>(email),
+      'avatarUrl': serializer.toJson<String>(avatarUrl),
+      'updatedAt': serializer.toJson<int?>(updatedAt),
+    };
+  }
+
+  ProfileData copyWith(
+          {int? id,
+          String? name,
+          String? email,
+          String? avatarUrl,
+          Value<int?> updatedAt = const Value.absent()}) =>
+      ProfileData(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        email: email ?? this.email,
+        avatarUrl: avatarUrl ?? this.avatarUrl,
+        updatedAt: updatedAt.present ? updatedAt.value : this.updatedAt,
+      );
+  ProfileData copyWithCompanion(ProfileCompanion data) {
+    return ProfileData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      email: data.email.present ? data.email.value : this.email,
+      avatarUrl: data.avatarUrl.present ? data.avatarUrl.value : this.avatarUrl,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProfileData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('email: $email, ')
+          ..write('avatarUrl: $avatarUrl, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, email, avatarUrl, updatedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ProfileData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.email == this.email &&
+          other.avatarUrl == this.avatarUrl &&
+          other.updatedAt == this.updatedAt);
+}
+
+class ProfileCompanion extends UpdateCompanion<ProfileData> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> email;
+  final Value<String> avatarUrl;
+  final Value<int?> updatedAt;
+  const ProfileCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.email = const Value.absent(),
+    this.avatarUrl = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  });
+  ProfileCompanion.insert({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    required String email,
+    this.avatarUrl = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+  }) : email = Value(email);
+  static Insertable<ProfileData> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? email,
+    Expression<String>? avatarUrl,
+    Expression<int>? updatedAt,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (email != null) 'email': email,
+      if (avatarUrl != null) 'avatar_url': avatarUrl,
+      if (updatedAt != null) 'updated_at': updatedAt,
+    });
+  }
+
+  ProfileCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<String>? email,
+      Value<String>? avatarUrl,
+      Value<int?>? updatedAt}) {
+    return ProfileCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      email: email ?? this.email,
+      avatarUrl: avatarUrl ?? this.avatarUrl,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (email.present) {
+      map['email'] = Variable<String>(email.value);
+    }
+    if (avatarUrl.present) {
+      map['avatar_url'] = Variable<String>(avatarUrl.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(updatedAt.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ProfileCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('email: $email, ')
+          ..write('avatarUrl: $avatarUrl, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -1117,12 +1413,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TaskTable task = $TaskTable(this);
   late final $LabelTable label = $LabelTable(this);
   late final $TaskLabelTable taskLabel = $TaskLabelTable(this);
+  late final $ProfileTable profile = $ProfileTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [project, task, label, taskLabel];
+      [project, task, label, taskLabel, profile];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
         [
@@ -1988,6 +2285,144 @@ typedef $$TaskLabelTableProcessedTableManager = ProcessedTableManager<
     (TaskLabelData, $$TaskLabelTableReferences),
     TaskLabelData,
     PrefetchHooks Function({bool taskId, bool labelId})>;
+typedef $$ProfileTableCreateCompanionBuilder = ProfileCompanion Function({
+  Value<int> id,
+  Value<String> name,
+  required String email,
+  Value<String> avatarUrl,
+  Value<int?> updatedAt,
+});
+typedef $$ProfileTableUpdateCompanionBuilder = ProfileCompanion Function({
+  Value<int> id,
+  Value<String> name,
+  Value<String> email,
+  Value<String> avatarUrl,
+  Value<int?> updatedAt,
+});
+
+class $$ProfileTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $ProfileTable> {
+  $$ProfileTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get email => $state.composableBuilder(
+      column: $state.table.email,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get avatarUrl => $state.composableBuilder(
+      column: $state.table.avatarUrl,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<int> get updatedAt => $state.composableBuilder(
+      column: $state.table.updatedAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+}
+
+class $$ProfileTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $ProfileTable> {
+  $$ProfileTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get name => $state.composableBuilder(
+      column: $state.table.name,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get email => $state.composableBuilder(
+      column: $state.table.email,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get avatarUrl => $state.composableBuilder(
+      column: $state.table.avatarUrl,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<int> get updatedAt => $state.composableBuilder(
+      column: $state.table.updatedAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $$ProfileTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ProfileTable,
+    ProfileData,
+    $$ProfileTableFilterComposer,
+    $$ProfileTableOrderingComposer,
+    $$ProfileTableCreateCompanionBuilder,
+    $$ProfileTableUpdateCompanionBuilder,
+    (ProfileData, BaseReferences<_$AppDatabase, $ProfileTable, ProfileData>),
+    ProfileData,
+    PrefetchHooks Function()> {
+  $$ProfileTableTableManager(_$AppDatabase db, $ProfileTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$ProfileTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$ProfileTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> email = const Value.absent(),
+            Value<String> avatarUrl = const Value.absent(),
+            Value<int?> updatedAt = const Value.absent(),
+          }) =>
+              ProfileCompanion(
+            id: id,
+            name: name,
+            email: email,
+            avatarUrl: avatarUrl,
+            updatedAt: updatedAt,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            required String email,
+            Value<String> avatarUrl = const Value.absent(),
+            Value<int?> updatedAt = const Value.absent(),
+          }) =>
+              ProfileCompanion.insert(
+            id: id,
+            name: name,
+            email: email,
+            avatarUrl: avatarUrl,
+            updatedAt: updatedAt,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$ProfileTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $ProfileTable,
+    ProfileData,
+    $$ProfileTableFilterComposer,
+    $$ProfileTableOrderingComposer,
+    $$ProfileTableCreateCompanionBuilder,
+    $$ProfileTableUpdateCompanionBuilder,
+    (ProfileData, BaseReferences<_$AppDatabase, $ProfileTable, ProfileData>),
+    ProfileData,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -1999,4 +2434,6 @@ class $AppDatabaseManager {
       $$LabelTableTableManager(_db, _db.label);
   $$TaskLabelTableTableManager get taskLabel =>
       $$TaskLabelTableTableManager(_db, _db.taskLabel);
+  $$ProfileTableTableManager get profile =>
+      $$ProfileTableTableManager(_db, _db.profile);
 }

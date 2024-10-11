@@ -23,23 +23,32 @@ class SideDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.all(0.0),
         children: <Widget>[
-          UserAccountsDrawerHeader(
-            accountName: Text("Agnimon Frontier"),
-            accountEmail: Text("AgnimonFrontier@gmail.com"),
-            otherAccountsPictures: <Widget>[
-              IconButton(
-                  icon: Icon(
-                    Icons.info,
-                    color: Colors.white,
-                    size: 36.0,
-                  ),
-                  onPressed: () async {
-                    context.go('/about');
-                  })
-            ],
-            currentAccountPicture: CircleAvatar(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              backgroundImage: AssetImage("assets/Agnimon.jpg"),
+          GestureDetector(
+            key: ValueKey(SideDrawerKeys.PROFILE),
+            onTap: () {
+              context.go('/profile');
+            },
+            child: UserAccountsDrawerHeader(
+              accountName: Text("Agnimon Frontier"),
+              accountEmail: Text("AgnimonFrontier@gmail.com"),
+              otherAccountsPictures: <Widget>[
+                IconButton(
+                    icon: Icon(
+                      Icons.info,
+                      color: Colors.white,
+                      size: 36.0,
+                    ),
+                    onPressed: () async {
+                      context.go('/about');
+                    })
+              ],
+              currentAccountPicture: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  backgroundImage: AssetImage("assets/Agnimon.jpg"),
+                ),
+              ),
             ),
           ),
           ListTile(
