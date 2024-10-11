@@ -11,10 +11,12 @@ import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_app/router/router.dart';
+import 'package:flutter_app/utils/logger_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() {
+  setupLogger();
   if (Platform.isWindows) {
     setupWindow();
   }

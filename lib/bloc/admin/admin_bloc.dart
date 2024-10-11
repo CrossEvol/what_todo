@@ -8,6 +8,7 @@ import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
+import 'package:flutter_app/utils/logger_util.dart';
 
 part 'admin_event.dart';
 
@@ -75,7 +76,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       await _projectDB.upsertProject(event.project);
       add(AdminLoadProjectsEvent());
     } catch (e) {
-      print(e);
+      logger.error(e);
     }
   }
 
@@ -89,7 +90,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       if (!hasRemoved) return;
       add(AdminLoadProjectsEvent());
     } catch (e) {
-      print(e);
+      logger.error(e);
     }
   }
 
