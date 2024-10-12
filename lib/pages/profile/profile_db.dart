@@ -18,7 +18,14 @@ class ProfileDB {
     final query = _db.select(_db.profile)
       ..where((tbl) => tbl.id.equals(profileId));
     final result = await query.getSingleOrNull();
-    return result == null ? null : UserProfile.fromMap(result.toJson());
+    if (result == null) {
+      return null;
+    }
+    final map = result.toJson();
+    return UserProfile.fromMap({
+      ...map,
+      'updatedAt': DateTime.fromMillisecondsSinceEpoch(map['updatedAt'])
+    });
   }
 
   Future<bool> updateOne(UserProfile profile) async {

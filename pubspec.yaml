@@ -26,6 +26,8 @@ dependencies:
   flutter_bloc: ^8.1.6
   syncfusion_flutter_datagrid: ^27.1.51
   logger: ^2.4.0
+  video_player: ^2.9.2
+  image_picker: ^1.0.0
 dev_dependencies:
   flutter_driver:
     sdk: flutter

@@ -39,7 +39,7 @@ class AppDatabase extends _$AppDatabase {
                 name: Value('Agnimon Frontier'),
                 email: Value('AgnimonFrontier@gmail.com'),
                 avatarUrl: Value('assets/Agnimon.jpg'),
-                updatedAt: Value(DateTime.now().millisecond)));
+                updatedAt: Value(DateTime.now().millisecondsSinceEpoch)));
           }
         },
       );

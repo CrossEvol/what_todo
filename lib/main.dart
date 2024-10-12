@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
+import 'package:flutter_app/bloc/profile/profile_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
+import 'package:flutter_app/pages/profile/profile_db.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
@@ -76,6 +78,11 @@ class MyApp extends StatelessWidget {
             LabelDB.get(),
             ProjectDB.get(),
           ),
+        ),
+        BlocProvider(
+          create: (_) => ProfileBloc(
+            ProfileDB.get(),
+          )..add(ProfileLoadEvent()),
         ),
       ],
       child: MaterialApp.router(

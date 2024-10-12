@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
+import 'package:flutter_app/bloc/profile/profile_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/pages/projects/project.dart';
@@ -12,13 +15,52 @@ import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class SideDrawer extends StatelessWidget {
+class SideDrawer extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    // load some basic data
+  _SideDrawerState createState() => _SideDrawerState();
+}
+
+class _SideDrawerState extends State<SideDrawer> {
+  Widget _buildAvatarWidget(String avatarUrl) {
+    if (avatarUrl.startsWith('http://') || avatarUrl.startsWith('https://')) {
+      return Container(
+        width: 150,
+        height: 150,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            image: NetworkImage(avatarUrl),
+          ),
+        ),
+      );
+    } else if (avatarUrl.startsWith("assets/")) {
+      return CircleAvatar(
+        radius: 75,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundImage: AssetImage(avatarUrl),
+      );
+    } else {
+      var file = File(avatarUrl);
+      var fileImage = FileImage(file);
+      return CircleAvatar(
+        radius: 75,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundImage: fileImage,
+      );
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Load basic data when the widget is initialized
     context.read<AdminBloc>().add(AdminLoadLabelsEvent());
     context.read<AdminBloc>().add(AdminLoadProjectsEvent());
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.all(0.0),
@@ -28,27 +70,52 @@ class SideDrawer extends StatelessWidget {
             onTap: () {
               context.go('/profile');
             },
-            child: UserAccountsDrawerHeader(
-              accountName: Text("Agnimon Frontier"),
-              accountEmail: Text("AgnimonFrontier@gmail.com"),
-              otherAccountsPictures: <Widget>[
-                IconButton(
-                    icon: Icon(
-                      Icons.info,
-                      color: Colors.white,
-                      size: 36.0,
+            child: BlocBuilder<ProfileBloc, ProfileState>(
+              builder: (context, state) {
+                if (state is ProfileLoaded) {
+                  return UserAccountsDrawerHeader(
+                    accountName: Text(state.profile.name),
+                    accountEmail: Text(state.profile.email),
+                    otherAccountsPictures: <Widget>[
+                      IconButton(
+                          icon: Icon(
+                            Icons.info,
+                            color: Colors.white,
+                            size: 36.0,
+                          ),
+                          onPressed: () async {
+                            context.go('/about');
+                          })
+                    ],
+                    currentAccountPicture: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: _buildAvatarWidget(state.profile.avatarUrl),
                     ),
-                    onPressed: () async {
-                      context.go('/about');
-                    })
-              ],
-              currentAccountPicture: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: CircleAvatar(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  backgroundImage: AssetImage("assets/Agnimon.jpg"),
-                ),
-              ),
+                  );
+                }
+                return UserAccountsDrawerHeader(
+                  accountName: Text("Agnimon Frontier"),
+                  accountEmail: Text("AgnimonFrontier@gmail.com"),
+                  otherAccountsPictures: <Widget>[
+                    IconButton(
+                        icon: Icon(
+                          Icons.info,
+                          color: Colors.white,
+                          size: 36.0,
+                        ),
+                        onPressed: () async {
+                          context.go('/about');
+                        })
+                  ],
+                  currentAccountPicture: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: CircleAvatar(
+                      backgroundColor: Theme.of(context).colorScheme.primary,
+                      backgroundImage: AssetImage("assets/Agnimon.jpg"),
+                    ),
+                  ),
+                );
+              },
             ),
           ),
           ListTile(
