@@ -14,6 +14,18 @@ class TaskDB {
     return _taskDb;
   }
 
+  Future<int> countToday() async {
+    var lastDay = DateTime.now().subtract(Duration(days: 1));
+    var today = DateTime.now().add(Duration(days: 1));
+    var query = _db.selectOnly(_db.task);
+    query.addColumns([_db.task.id.count()]);
+    query.where(_db.task.dueDate.isBetweenValues(
+        lastDay.millisecondsSinceEpoch, today.millisecondsSinceEpoch));
+    var single = await query.getSingle();
+    var count = single.read(_db.task.id.count()) ?? 0;
+    return count;
+  }
+
   Future<List<Task>> getTasks(
       {int startDate = 0, int endDate = 0, TaskStatus? taskStatus}) async {
     var query = _db.select(_db.task).join([

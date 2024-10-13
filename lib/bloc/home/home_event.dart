@@ -7,6 +7,8 @@ abstract class HomeEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class LoadTodayCountEvent extends HomeEvent {}
+
 class UpdateTitleEvent extends HomeEvent {
   final String title;
 

@@ -38,18 +38,18 @@ class ILogger {
 
   l.Logger get logger => _logger;
 
-  void trace(String message) => _logger.t(message);
+  void trace(dynamic message) => _logger.t(message);
 
-  void debug(String message) => _logger.d(message);
+  void debug(dynamic message) => _logger.d(message);
 
-  void info(String message) => _logger.i(message);
+  void info(dynamic message) => _logger.i(message);
 
-  void warn(String message) => _logger.w(message);
+  void warn(dynamic message) => _logger.w(message);
 
-  void error(dynamic error, {String? message}) =>
+  void error(dynamic error, {dynamic message}) =>
       _logger.e(message ?? error.runtimeType.toString(), error: error);
 
-  void fatal(dynamic error, {StackTrace? stackTrace, String? message}) =>
+  void fatal(dynamic error, {StackTrace? stackTrace, dynamic message}) =>
       _logger.f(message ?? error.runtimeType.toString(),
           error: error, stackTrace: stackTrace);
 }

@@ -19,7 +19,6 @@ import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 class AddTaskScreen extends StatelessWidget {
   final GlobalKey<FormState> _formState = GlobalKey<FormState>();
 
@@ -142,6 +141,7 @@ class AddTaskScreen extends StatelessWidget {
             if (_formState.currentState!.validate()) {
               _formState.currentState!.save();
               createTaskBloc.createTask().listen((value) {
+                context.read<HomeBloc>().add(LoadTodayCountEvent());
                 final filter = context.read<HomeBloc>().state.filter;
                 context.read<TaskBloc>().add(FilterTasksEvent(filter: filter!));
                 if (context.isWiderScreen()) {

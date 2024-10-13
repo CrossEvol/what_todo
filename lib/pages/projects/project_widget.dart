@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:go_router/go_router.dart';
+import 'package:badges/badges.dart' as badges;
 
 class ProjectPage extends StatelessWidget {
   @override
@@ -73,6 +75,8 @@ class ProjectRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.read<AdminBloc>().state;
+    final count = state.getProjectCount(project.id);
     return ListTile(
       key: ValueKey("tile_${project.name}_${project.id}"),
       onTap: () {
@@ -89,10 +93,28 @@ class ProjectRow extends StatelessWidget {
         width: 24.0,
         height: 24.0,
       ),
-      title: Text(
-        project.name,
-        key: ValueKey("${project.name}_${project.id}"),
+      title: badges.Badge(
+        badgeStyle: badges.BadgeStyle(
+          shape: badges.BadgeShape.square,
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: Colors.white, width: 2),
+          badgeColor: Colors.grey,
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+        ),
+        badgeContent: Text('$count', style: TextStyle(color: Colors.white)),
+        position: badges.BadgePosition.topEnd(top: 0),
+        badgeAnimation: const badges.BadgeAnimation.size(toAnimate: true),
+        onTap: () {},
+        child: Text(
+          project.name,
+          key: ValueKey("${project.name}_${project.id}"),
+        ),
       ),
+      // title: Text(
+      //   project.name,
+      //   key: ValueKey("${project.name}_${project.id}"),
+      // ),
       trailing: Container(
         height: 10.0,
         width: 10.0,

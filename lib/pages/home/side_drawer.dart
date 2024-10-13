@@ -14,6 +14,7 @@ import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:badges/badges.dart' as badges;
 
 class SideDrawer extends StatefulWidget {
   @override
@@ -21,6 +22,8 @@ class SideDrawer extends StatefulWidget {
 }
 
 class _SideDrawerState extends State<SideDrawer> {
+  final bool _isLooped = true;
+
   Widget _buildAvatarWidget(String avatarUrl) {
     if (avatarUrl.startsWith('http://') || avatarUrl.startsWith('https://')) {
       return Container(
@@ -61,6 +64,7 @@ class _SideDrawerState extends State<SideDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    var todayCount = context.read<HomeBloc>().state.todayCount;
     return Drawer(
       child: ListView(
         padding: EdgeInsets.all(0.0),
@@ -132,21 +136,77 @@ class _SideDrawerState extends State<SideDrawer> {
                     FilterTasksEvent(filter: Filter.byProject(project.id)));
                 context.safePop();
               }),
-          ListTile(
-              onTap: () {
-                context
-                    .read<HomeBloc>()
-                    .add(ApplyFilterEvent("Today", Filter.byToday()));
-                context
-                    .read<TaskBloc>()
-                    .add(FilterTasksEvent(filter: Filter.byToday()));
-                context.safePop();
-              },
-              leading: Icon(Icons.calendar_today),
-              title: Text(
-                "Today",
-                key: ValueKey(SideDrawerKeys.TODAY),
-              )),
+          todayCount == 0
+              ? ListTile(
+                  onTap: () {
+                    context
+                        .read<HomeBloc>()
+                        .add(ApplyFilterEvent("Today", Filter.byToday()));
+                    context
+                        .read<TaskBloc>()
+                        .add(FilterTasksEvent(filter: Filter.byToday()));
+                    context.safePop();
+                  },
+                  leading: Icon(Icons.calendar_today),
+                  title: Text(
+                    "Today",
+                    key: ValueKey(SideDrawerKeys.TODAY),
+                  ))
+              : ListTile(
+                  onTap: () {
+                    context
+                        .read<HomeBloc>()
+                        .add(ApplyFilterEvent("Today", Filter.byToday()));
+                    context
+                        .read<TaskBloc>()
+                        .add(FilterTasksEvent(filter: Filter.byToday()));
+                    context.safePop();
+                  },
+                  leading: badges.Badge(
+                    position: badges.BadgePosition.topEnd(end: -5, top: -5),
+                    badgeStyle: const badges.BadgeStyle(
+                      padding: EdgeInsets.all(4),
+                    ),
+                    badgeAnimation: badges.BadgeAnimation.fade(
+                      animationDuration: const Duration(seconds: 1),
+                      loopAnimation: _isLooped,
+                    ),
+                    badgeContent: Container(
+                      height: 2,
+                      width: 2,
+                      decoration: const BoxDecoration(
+                          shape: BoxShape.circle, color: Colors.white),
+                    ),
+                    child: const Icon(Icons.calendar_today),
+                  ),
+                  title: badges.Badge(
+                    badgeStyle: badges.BadgeStyle(
+                      shape: badges.BadgeShape.square,
+                      borderRadius: BorderRadius.circular(5),
+                      padding: const EdgeInsets.all(2),
+                      badgeGradient: const badges.BadgeGradient.linear(
+                        colors: [
+                          Colors.purple,
+                          Colors.blue,
+                        ],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                    position: badges.BadgePosition.topStart(top: 5, start: 50),
+                    badgeContent: Text(
+                      '$todayCount',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    child: Text(
+                      "Today",
+                      key: ValueKey(SideDrawerKeys.TODAY),
+                    ),
+                  ),
+                ),
           ListTile(
             onTap: () {
               context

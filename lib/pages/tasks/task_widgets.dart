@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/row_task.dart';
@@ -40,10 +41,16 @@ class TasksPage extends StatelessWidget {
                                     ? "Task completed"
                                     : "Task deleted";
                             if (direction == DismissDirection.endToStart) {
-                              context.read<TaskBloc>().add(UpdateTaskStatusEvent(
-                                  taskID, TaskStatus.COMPLETE));
+                              context.read<TaskBloc>().add(
+                                  UpdateTaskStatusEvent(
+                                      taskID, TaskStatus.COMPLETE));
                             } else {
-                              context.read<TaskBloc>().add(DeleteTaskEvent(taskID));
+                              context
+                                  .read<TaskBloc>()
+                                  .add(DeleteTaskEvent(taskID));
+                              context
+                                  .read<HomeBloc>()
+                                  .add(LoadTodayCountEvent());
                             }
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text(message),

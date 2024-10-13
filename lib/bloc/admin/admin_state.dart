@@ -11,6 +11,9 @@ sealed class AdminState extends Equatable {
     required this.colorPalette,
   });
 
+  int getProjectCount(projectID) =>
+      projects.where((p) => p.id == projectID).toList()[0].count;
+
   @override
   List<Object> get props => [labels, projects, colorPalette];
 

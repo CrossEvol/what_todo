@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
+import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/pages/about/about_us.dart';
 import 'package:flutter_app/pages/home/home.dart';
 import 'package:flutter_app/pages/home/my_home_bloc.dart';
@@ -23,6 +24,7 @@ final GoRouter goRouter = GoRouter(
     GoRoute(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
+        context.read<HomeBloc>().add(LoadTodayCountEvent());
         return CustomBlocProvider(
           bloc: MyHomeBloc(),
           child: AdaptiveHomePage(),
