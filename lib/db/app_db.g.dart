@@ -1406,6 +1406,307 @@ class ProfileCompanion extends UpdateCompanion<ProfileData> {
   }
 }
 
+class $SettingTable extends Setting with TableInfo<$SettingTable, SettingData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SettingTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _keyMeta = const VerificationMeta('key');
+  @override
+  late final GeneratedColumn<String> key = GeneratedColumn<String>(
+      'key', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: true,
+      defaultConstraints: GeneratedColumn.constraintIsAlways('UNIQUE'));
+  static const VerificationMeta _valueMeta = const VerificationMeta('value');
+  @override
+  late final GeneratedColumn<String> value = GeneratedColumn<String>(
+      'value', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(""));
+  static const VerificationMeta _updatedAtMeta =
+      const VerificationMeta('updatedAt');
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+      'updated_at', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: true,
+      $customConstraints: 'DEFAULT CURRENT_TIMESTAMP');
+  static const VerificationMeta _typeMeta = const VerificationMeta('type');
+  @override
+  late final GeneratedColumnWithTypeConverter<SettingType, String> type =
+      GeneratedColumn<String>('type', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<SettingType>($SettingTable.$convertertype);
+  @override
+  List<GeneratedColumn> get $columns => [id, key, value, updatedAt, type];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'setting';
+  @override
+  VerificationContext validateIntegrity(Insertable<SettingData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('key')) {
+      context.handle(
+          _keyMeta, key.isAcceptableOrUnknown(data['key']!, _keyMeta));
+    } else if (isInserting) {
+      context.missing(_keyMeta);
+    }
+    if (data.containsKey('value')) {
+      context.handle(
+          _valueMeta, value.isAcceptableOrUnknown(data['value']!, _valueMeta));
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(_updatedAtMeta,
+          updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    context.handle(_typeMeta, const VerificationResult.success());
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SettingData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SettingData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      key: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}key'])!,
+      value: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}value'])!,
+      updatedAt: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}updated_at'])!,
+      type: $SettingTable.$convertertype.fromSql(attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}type'])!),
+    );
+  }
+
+  @override
+  $SettingTable createAlias(String alias) {
+    return $SettingTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<SettingType, String, String> $convertertype =
+      const EnumNameConverter<SettingType>(SettingType.values);
+}
+
+class SettingData extends DataClass implements Insertable<SettingData> {
+  final int id;
+  final String key;
+  final String value;
+  final DateTime updatedAt;
+  final SettingType type;
+  const SettingData(
+      {required this.id,
+      required this.key,
+      required this.value,
+      required this.updatedAt,
+      required this.type});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['key'] = Variable<String>(key);
+    map['value'] = Variable<String>(value);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    {
+      map['type'] = Variable<String>($SettingTable.$convertertype.toSql(type));
+    }
+    return map;
+  }
+
+  SettingCompanion toCompanion(bool nullToAbsent) {
+    return SettingCompanion(
+      id: Value(id),
+      key: Value(key),
+      value: Value(value),
+      updatedAt: Value(updatedAt),
+      type: Value(type),
+    );
+  }
+
+  factory SettingData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SettingData(
+      id: serializer.fromJson<int>(json['id']),
+      key: serializer.fromJson<String>(json['key']),
+      value: serializer.fromJson<String>(json['value']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      type: $SettingTable.$convertertype
+          .fromJson(serializer.fromJson<String>(json['type'])),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'key': serializer.toJson<String>(key),
+      'value': serializer.toJson<String>(value),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'type':
+          serializer.toJson<String>($SettingTable.$convertertype.toJson(type)),
+    };
+  }
+
+  SettingData copyWith(
+          {int? id,
+          String? key,
+          String? value,
+          DateTime? updatedAt,
+          SettingType? type}) =>
+      SettingData(
+        id: id ?? this.id,
+        key: key ?? this.key,
+        value: value ?? this.value,
+        updatedAt: updatedAt ?? this.updatedAt,
+        type: type ?? this.type,
+      );
+  SettingData copyWithCompanion(SettingCompanion data) {
+    return SettingData(
+      id: data.id.present ? data.id.value : this.id,
+      key: data.key.present ? data.key.value : this.key,
+      value: data.value.present ? data.value.value : this.value,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      type: data.type.present ? data.type.value : this.type,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SettingData(')
+          ..write('id: $id, ')
+          ..write('key: $key, ')
+          ..write('value: $value, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('type: $type')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, key, value, updatedAt, type);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SettingData &&
+          other.id == this.id &&
+          other.key == this.key &&
+          other.value == this.value &&
+          other.updatedAt == this.updatedAt &&
+          other.type == this.type);
+}
+
+class SettingCompanion extends UpdateCompanion<SettingData> {
+  final Value<int> id;
+  final Value<String> key;
+  final Value<String> value;
+  final Value<DateTime> updatedAt;
+  final Value<SettingType> type;
+  const SettingCompanion({
+    this.id = const Value.absent(),
+    this.key = const Value.absent(),
+    this.value = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.type = const Value.absent(),
+  });
+  SettingCompanion.insert({
+    this.id = const Value.absent(),
+    required String key,
+    this.value = const Value.absent(),
+    required DateTime updatedAt,
+    required SettingType type,
+  })  : key = Value(key),
+        updatedAt = Value(updatedAt),
+        type = Value(type);
+  static Insertable<SettingData> custom({
+    Expression<int>? id,
+    Expression<String>? key,
+    Expression<String>? value,
+    Expression<DateTime>? updatedAt,
+    Expression<String>? type,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (key != null) 'key': key,
+      if (value != null) 'value': value,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (type != null) 'type': type,
+    });
+  }
+
+  SettingCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? key,
+      Value<String>? value,
+      Value<DateTime>? updatedAt,
+      Value<SettingType>? type}) {
+    return SettingCompanion(
+      id: id ?? this.id,
+      key: key ?? this.key,
+      value: value ?? this.value,
+      updatedAt: updatedAt ?? this.updatedAt,
+      type: type ?? this.type,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (key.present) {
+      map['key'] = Variable<String>(key.value);
+    }
+    if (value.present) {
+      map['value'] = Variable<String>(value.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (type.present) {
+      map['type'] =
+          Variable<String>($SettingTable.$convertertype.toSql(type.value));
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SettingCompanion(')
+          ..write('id: $id, ')
+          ..write('key: $key, ')
+          ..write('value: $value, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('type: $type')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -1414,12 +1715,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $LabelTable label = $LabelTable(this);
   late final $TaskLabelTable taskLabel = $TaskLabelTable(this);
   late final $ProfileTable profile = $ProfileTable(this);
+  late final $SettingTable setting = $SettingTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [project, task, label, taskLabel, profile];
+      [project, task, label, taskLabel, profile, setting];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
         [
@@ -1446,6 +1748,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
           ),
         ],
       );
+  @override
+  DriftDatabaseOptions get options =>
+      const DriftDatabaseOptions(storeDateTimeAsText: true);
 }
 
 typedef $$ProjectTableCreateCompanionBuilder = ProjectCompanion Function({
@@ -2423,6 +2728,146 @@ typedef $$ProfileTableProcessedTableManager = ProcessedTableManager<
     (ProfileData, BaseReferences<_$AppDatabase, $ProfileTable, ProfileData>),
     ProfileData,
     PrefetchHooks Function()>;
+typedef $$SettingTableCreateCompanionBuilder = SettingCompanion Function({
+  Value<int> id,
+  required String key,
+  Value<String> value,
+  required DateTime updatedAt,
+  required SettingType type,
+});
+typedef $$SettingTableUpdateCompanionBuilder = SettingCompanion Function({
+  Value<int> id,
+  Value<String> key,
+  Value<String> value,
+  Value<DateTime> updatedAt,
+  Value<SettingType> type,
+});
+
+class $$SettingTableFilterComposer
+    extends FilterComposer<_$AppDatabase, $SettingTable> {
+  $$SettingTableFilterComposer(super.$state);
+  ColumnFilters<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get key => $state.composableBuilder(
+      column: $state.table.key,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<String> get value => $state.composableBuilder(
+      column: $state.table.value,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnFilters<DateTime> get updatedAt => $state.composableBuilder(
+      column: $state.table.updatedAt,
+      builder: (column, joinBuilders) =>
+          ColumnFilters(column, joinBuilders: joinBuilders));
+
+  ColumnWithTypeConverterFilters<SettingType, SettingType, String> get type =>
+      $state.composableBuilder(
+          column: $state.table.type,
+          builder: (column, joinBuilders) => ColumnWithTypeConverterFilters(
+              column,
+              joinBuilders: joinBuilders));
+}
+
+class $$SettingTableOrderingComposer
+    extends OrderingComposer<_$AppDatabase, $SettingTable> {
+  $$SettingTableOrderingComposer(super.$state);
+  ColumnOrderings<int> get id => $state.composableBuilder(
+      column: $state.table.id,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get key => $state.composableBuilder(
+      column: $state.table.key,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get value => $state.composableBuilder(
+      column: $state.table.value,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<DateTime> get updatedAt => $state.composableBuilder(
+      column: $state.table.updatedAt,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+
+  ColumnOrderings<String> get type => $state.composableBuilder(
+      column: $state.table.type,
+      builder: (column, joinBuilders) =>
+          ColumnOrderings(column, joinBuilders: joinBuilders));
+}
+
+class $$SettingTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $SettingTable,
+    SettingData,
+    $$SettingTableFilterComposer,
+    $$SettingTableOrderingComposer,
+    $$SettingTableCreateCompanionBuilder,
+    $$SettingTableUpdateCompanionBuilder,
+    (SettingData, BaseReferences<_$AppDatabase, $SettingTable, SettingData>),
+    SettingData,
+    PrefetchHooks Function()> {
+  $$SettingTableTableManager(_$AppDatabase db, $SettingTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          filteringComposer:
+              $$SettingTableFilterComposer(ComposerState(db, table)),
+          orderingComposer:
+              $$SettingTableOrderingComposer(ComposerState(db, table)),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> key = const Value.absent(),
+            Value<String> value = const Value.absent(),
+            Value<DateTime> updatedAt = const Value.absent(),
+            Value<SettingType> type = const Value.absent(),
+          }) =>
+              SettingCompanion(
+            id: id,
+            key: key,
+            value: value,
+            updatedAt: updatedAt,
+            type: type,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String key,
+            Value<String> value = const Value.absent(),
+            required DateTime updatedAt,
+            required SettingType type,
+          }) =>
+              SettingCompanion.insert(
+            id: id,
+            key: key,
+            value: value,
+            updatedAt: updatedAt,
+            type: type,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$SettingTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $SettingTable,
+    SettingData,
+    $$SettingTableFilterComposer,
+    $$SettingTableOrderingComposer,
+    $$SettingTableCreateCompanionBuilder,
+    $$SettingTableUpdateCompanionBuilder,
+    (SettingData, BaseReferences<_$AppDatabase, $SettingTable, SettingData>),
+    SettingData,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -2436,4 +2881,6 @@ class $AppDatabaseManager {
       $$TaskLabelTableTableManager(_db, _db.taskLabel);
   $$ProfileTableTableManager get profile =>
       $$ProfileTableTableManager(_db, _db.profile);
+  $$SettingTableTableManager get setting =>
+      $$SettingTableTableManager(_db, _db.setting);
 }

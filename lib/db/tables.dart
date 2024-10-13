@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:flutter_app/models/setting_type.dart';
 
 class Project extends Table {
   IntColumn get id => integer().autoIncrement()();
@@ -21,8 +22,8 @@ class Task extends Table {
 
   IntColumn get priority => integer().nullable()();
 
-  IntColumn get projectId =>
-      integer().customConstraint('NOT NULL REFERENCES project(id) ON DELETE CASCADE')();
+  IntColumn get projectId => integer()
+      .customConstraint('NOT NULL REFERENCES project(id) ON DELETE CASCADE')();
 
   IntColumn get status => integer()();
 }
@@ -40,11 +41,11 @@ class Label extends Table {
 class TaskLabel extends Table {
   IntColumn get id => integer().autoIncrement()();
 
-  IntColumn get taskId =>
-      integer().customConstraint('NOT NULL REFERENCES task(id) ON DELETE CASCADE')();
+  IntColumn get taskId => integer()
+      .customConstraint('NOT NULL REFERENCES task(id) ON DELETE CASCADE')();
 
-  IntColumn get labelId =>
-      integer().customConstraint('NOT NULL REFERENCES label(id) ON DELETE CASCADE')();
+  IntColumn get labelId => integer()
+      .customConstraint('NOT NULL REFERENCES label(id) ON DELETE CASCADE')();
 }
 
 class Profile extends Table {
@@ -57,4 +58,18 @@ class Profile extends Table {
   TextColumn get avatarUrl => text().withDefault(
       const Constant(""))(); // Assuming the picture URL might be optional
   IntColumn get updatedAt => integer().nullable()();
+}
+
+class Setting extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  TextColumn get key => text().unique()();
+
+  TextColumn get value => text().withDefault(const Constant(""))();
+
+  DateTimeColumn get updatedAt =>
+      dateTime().customConstraint("DEFAULT CURRENT_TIMESTAMP")();
+
+  TextColumn get type => textEnum<SettingType>()
+      .customConstraint('DEFAULT ${SettingType.Text.name}')();
 }

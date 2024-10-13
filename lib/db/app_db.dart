@@ -3,12 +3,13 @@ import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'dart:io';
+import '../models/setting_type.dart';
 import 'tables.dart';
 import 'package:flutter/material.dart' hide Table;
 
 part 'app_db.g.dart';
 
-@DriftDatabase(tables: [Project, Task, Label, TaskLabel, Profile])
+@DriftDatabase(tables: [Project, Task, Label, TaskLabel, Profile, Setting])
 class AppDatabase extends _$AppDatabase {
   AppDatabase._internal() : super(_openConnection());
 
@@ -19,7 +20,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -41,6 +42,9 @@ class AppDatabase extends _$AppDatabase {
                 avatarUrl: Value('assets/Agnimon.jpg'),
                 updatedAt: Value(DateTime.now().millisecondsSinceEpoch)));
           }
+          if (from == 2 && to == 3) {
+            await m.createTable(setting);
+          }
         },
       );
 }
@@ -49,6 +53,9 @@ LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(p.join(dbFolder.path, 'tasks.db'));
-    return NativeDatabase(file);
+    return NativeDatabase(
+      file,
+      logStatements: true,
+    );
   });
 }

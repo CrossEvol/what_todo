@@ -23,6 +23,10 @@ class SideDrawerKeys {
   static const UNKNOWN = 'unknown';
 }
 
+class SettingKeys {
+  static const USE_COUNT_BADGES = 'use_count_badges';
+}
+
 class AddProjectKeys {
   static const TITLE_ADD_PROJECT = 'titleAddProject';
   static const TEXT_FORM_PROJECT_NAME = 'textFormProjectName';

@@ -1,11 +1,13 @@
 import 'dart:io' show Platform;
 
+import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/profile/profile_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
+import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/profile/profile_db.dart';
@@ -22,6 +24,9 @@ void main() {
   if (Platform.isWindows) {
     setupWindow();
   }
+  // https://drift.simonbinder.eu/docs/getting-started/advanced_dart_tables/#datetime-options
+  driftRuntimeOptions.defaultSerializer =
+      ValueSerializer.defaults(serializeDateTimeValuesAsString: true);
   runApp(MyApp());
 }
 
@@ -83,6 +88,12 @@ class MyApp extends StatelessWidget {
           create: (_) => ProfileBloc(
             ProfileDB.get(),
           )..add(ProfileLoadEvent()),
+        ),
+        BlocProvider(
+          create: (_) => SettingsBloc()
+            ..add(
+              LoadSettingsEvent(),
+            ),
         ),
       ],
       child: MaterialApp.router(

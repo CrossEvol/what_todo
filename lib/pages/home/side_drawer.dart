@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/profile/profile_bloc.dart';
+import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/pages/projects/project.dart';
@@ -65,6 +66,7 @@ class _SideDrawerState extends State<SideDrawer> {
   @override
   Widget build(BuildContext context) {
     var todayCount = context.read<HomeBloc>().state.todayCount;
+    bool useCountBadges = context.read<SettingsBloc>().state.useCountBadges;
     return Drawer(
       child: ListView(
         padding: EdgeInsets.all(0.0),
@@ -162,50 +164,59 @@ class _SideDrawerState extends State<SideDrawer> {
                         .add(FilterTasksEvent(filter: Filter.byToday()));
                     context.safePop();
                   },
-                  leading: badges.Badge(
-                    position: badges.BadgePosition.topEnd(end: -5, top: -5),
-                    badgeStyle: const badges.BadgeStyle(
-                      padding: EdgeInsets.all(4),
-                    ),
-                    badgeAnimation: badges.BadgeAnimation.fade(
-                      animationDuration: const Duration(seconds: 1),
-                      loopAnimation: _isLooped,
-                    ),
-                    badgeContent: Container(
-                      height: 2,
-                      width: 2,
-                      decoration: const BoxDecoration(
-                          shape: BoxShape.circle, color: Colors.white),
-                    ),
-                    child: const Icon(Icons.calendar_today),
-                  ),
-                  title: badges.Badge(
-                    badgeStyle: badges.BadgeStyle(
-                      shape: badges.BadgeShape.square,
-                      borderRadius: BorderRadius.circular(5),
-                      padding: const EdgeInsets.all(2),
-                      badgeGradient: const badges.BadgeGradient.linear(
-                        colors: [
-                          Colors.purple,
-                          Colors.blue,
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                    ),
-                    position: badges.BadgePosition.topStart(top: 5, start: 50),
-                    badgeContent: Text(
-                      '$todayCount',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    child: Text(
-                      "Today",
-                      key: ValueKey(SideDrawerKeys.TODAY),
-                    ),
-                  ),
+                  leading: useCountBadges
+                      ? badges.Badge(
+                          position:
+                              badges.BadgePosition.topEnd(end: -5, top: -5),
+                          badgeStyle: const badges.BadgeStyle(
+                            padding: EdgeInsets.all(4),
+                          ),
+                          badgeAnimation: badges.BadgeAnimation.fade(
+                            animationDuration: const Duration(seconds: 1),
+                            loopAnimation: _isLooped,
+                          ),
+                          badgeContent: Container(
+                            height: 2,
+                            width: 2,
+                            decoration: const BoxDecoration(
+                                shape: BoxShape.circle, color: Colors.white),
+                          ),
+                          child: const Icon(Icons.calendar_today),
+                        )
+                      : const Icon(Icons.calendar_today),
+                  title: useCountBadges
+                      ? badges.Badge(
+                          badgeStyle: badges.BadgeStyle(
+                            shape: badges.BadgeShape.square,
+                            borderRadius: BorderRadius.circular(5),
+                            padding: const EdgeInsets.all(2),
+                            badgeGradient: const badges.BadgeGradient.linear(
+                              colors: [
+                                Colors.purple,
+                                Colors.blue,
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                          ),
+                          position:
+                              badges.BadgePosition.topStart(top: 5, start: 50),
+                          badgeContent: Text(
+                            '$todayCount',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          child: Text(
+                            "Today",
+                            key: ValueKey(SideDrawerKeys.TODAY),
+                          ),
+                        )
+                      : Text(
+                          "Today",
+                          key: ValueKey(SideDrawerKeys.TODAY),
+                        ),
                 ),
           ListTile(
             onTap: () {
@@ -251,6 +262,16 @@ class _SideDrawerState extends State<SideDrawer> {
                 fontWeight: FontWeight.w500,
               ),
               key: ValueKey(SideDrawerKeys.LABEL_GRID),
+            ),
+          ),
+          ListTile(
+            onTap: () {
+              context.go('/settings');
+            },
+            leading: Icon(Icons.settings_sharp),
+            title: Text(
+              'Settings',
+              key: ValueKey(SideDrawerKeys.UNKNOWN),
             ),
           ),
           ListTile(

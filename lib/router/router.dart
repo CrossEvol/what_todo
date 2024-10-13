@@ -10,6 +10,7 @@ import 'package:flutter_app/pages/labels/label_widget.dart';
 import 'package:flutter_app/pages/profile/profile_page.dart';
 import 'package:flutter_app/pages/projects/project_grid.dart';
 import 'package:flutter_app/pages/projects/project_widget.dart';
+import 'package:flutter_app/pages/settings/settings_screen.dart';
 import 'package:flutter_app/pages/tasks/add_task.dart';
 import 'package:flutter_app/pages/tasks/edit_task.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
@@ -35,6 +36,12 @@ final GoRouter goRouter = GoRouter(
           path: 'about',
           builder: (BuildContext context, GoRouterState state) {
             return AboutUsScreen();
+          },
+        ),
+        GoRoute(
+          path: 'settings',
+          builder: (BuildContext context, GoRouterState state) {
+            return SettingsScreen();
           },
         ),
         GoRoute(
