@@ -20,7 +20,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 1;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -32,19 +32,14 @@ class AppDatabase extends _$AppDatabase {
             colorName: Value('Grey'),
             colorCode: Value(Colors.grey.value),
           ));
+          await into(profile).insert(ProfileCompanion(
+              name: Value('Agnimon Frontier'),
+              email: Value('AgnimonFrontier@gmail.com'),
+              avatarUrl: Value('assets/Agnimon.jpg'),
+              updatedAt: Value(DateTime.now().millisecondsSinceEpoch)));
         },
         onUpgrade: (Migrator m, int from, int to) async {
-          if (from == 1 && to == 2) {
-            await m.createTable(profile);
-            await into(profile).insert(ProfileCompanion(
-                name: Value('Agnimon Frontier'),
-                email: Value('AgnimonFrontier@gmail.com'),
-                avatarUrl: Value('assets/Agnimon.jpg'),
-                updatedAt: Value(DateTime.now().millisecondsSinceEpoch)));
-          }
-          if (from == 2 && to == 3) {
-            await m.createTable(setting);
-          }
+          if (from == 1 && to == 2) {}
         },
       );
 }
