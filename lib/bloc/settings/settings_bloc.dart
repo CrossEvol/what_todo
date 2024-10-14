@@ -13,7 +13,12 @@ part 'settings_event.dart';
 part 'settings_state.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
-  SettingsBloc() : super(SettingsState(useCountBadges: false)) {
+  SettingsBloc()
+      : super(SettingsState(
+          useCountBadges: false,
+          status: ResultStatus.none,
+          updatedKey: '',
+        )) {
     on<LoadSettingsEvent>(_loadSettings);
     on<ToggleUseCountBadgesEvent>(_toggleUseCountBadges);
     on<SettingsEvent>((event, emit) {
@@ -32,7 +37,11 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         value: '${!bool.parse(setting.value)}',
         updatedAt: DateTime.now(),
         type: setting.type));
-    emit(state.copyWith(useCountBadges: !state.useCountBadges));
+    emit(state.copyWith(
+      useCountBadges: !state.useCountBadges,
+      updatedKey: SettingKeys.USE_COUNT_BADGES,
+      status: ResultStatus.success,
+    ));
   }
 
   FutureOr<void> _loadSettings(
@@ -59,10 +68,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           return useCountBadges;
         }
         useCountBadges = bool.parse(newSetting.value);
-        // emit(state.copyWith(useCountBadges: bool.parse(newSetting.value)));
       }
     } else {
-      // emit(state.copyWith(useCountBadges: bool.parse(setting.value)));
       useCountBadges = bool.parse(setting.value);
     }
     return useCountBadges;

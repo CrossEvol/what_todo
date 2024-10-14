@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
+import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:settings_ui/settings_ui.dart';
 
@@ -29,7 +30,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SettingsBloc, SettingsState>(
+    return BlocConsumer<SettingsBloc, SettingsState>(
+      listener: (context, state) {
+        if (state.status == ResultStatus.success) {
+          showSnackbar(
+              context, 'Update ${state.updatedKey} ${state.status.toString()}.',
+              materialColor: Colors.green);
+        } else if (state.status == ResultStatus.failure) {
+          showSnackbar(
+              context, 'Update ${state.updatedKey} ${state.status.toString()}.',
+              materialColor: Colors.red);
+        }
+      },
       builder: (context, state) {
         bool useCountBadges = state.useCountBadges;
         return Scaffold(

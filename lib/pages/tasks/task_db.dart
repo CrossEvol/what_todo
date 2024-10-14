@@ -15,12 +15,14 @@ class TaskDB {
   }
 
   Future<int> countToday() async {
-    var lastDay = DateTime.now().subtract(Duration(days: 1));
-    var today = DateTime.now().add(Duration(days: 1));
+    final dateTime = DateTime.now();
+    var yesterday = DateTime(dateTime.year, dateTime.month, dateTime.day);
+    var today = DateTime(dateTime.year, dateTime.month, dateTime.day, 23, 59);
+
     var query = _db.selectOnly(_db.task);
     query.addColumns([_db.task.id.count()]);
     query.where(_db.task.dueDate.isBetweenValues(
-        lastDay.millisecondsSinceEpoch, today.millisecondsSinceEpoch));
+        yesterday.millisecondsSinceEpoch, today.millisecondsSinceEpoch));
     var single = await query.getSingle();
     var count = single.read(_db.task.id.count()) ?? 0;
     return count;
