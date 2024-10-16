@@ -126,7 +126,7 @@ class MockTaskDB extends _i1.Mock implements _i2.TaskDB {
       ) as _i3.Future<dynamic>);
 
   @override
-  _i3.Future<void> updateExpiredTasks(int? todayStartTime) =>
+  _i3.Future<bool> updateExpiredTasks(int? todayStartTime) =>
       (super.noSuchMethod(
         Invocation.method(
           #updateExpiredTasks,
@@ -134,5 +134,5 @@ class MockTaskDB extends _i1.Mock implements _i2.TaskDB {
         ),
         returnValue: _i3.Future<void>.value(),
         returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>);
+      ) as _i3.Future<bool>);
 }

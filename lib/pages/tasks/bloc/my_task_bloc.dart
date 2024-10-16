@@ -153,5 +153,3 @@ class MyTaskBloc implements CustomBlocBase {
     });
   }
 }
-
-

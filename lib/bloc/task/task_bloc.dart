@@ -36,29 +36,21 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     }
   }
 
-  void _onPostponeTasks(PostponeTasksEvent event, Emitter<TaskState> emit) async {
+  void _onPostponeTasks(
+      PostponeTasksEvent event, Emitter<TaskState> emit) async {
     emit(TaskLoading());
     try {
-      await _updateExpiredTasks(DateTime.now().millisecond);
-      final tasks = await _getTasks();
-      emit(TaskLoaded(tasks));
+      final dateTime = DateTime.now();
+      var flag = await _taskDB.updateExpiredTasks(
+          DateTime(dateTime.year, dateTime.month, dateTime.day)
+              .millisecondsSinceEpoch);
+      if (flag) {
+        final tasks = await _filterTodayTasks();
+        emit(TaskLoaded(tasks));
+      }
     } catch (e) {
       emit(TaskError(e.toString()));
     }
-  }
-
-  Future<void> _updateExpiredTasks(int todayStartTime) async {
-    final tomorrowStartTime = todayStartTime + Duration(days: 1).inMilliseconds;
-    var query = _db.select(_db.task);
-    query.where((tbl) =>
-        tbl.dueDate.isBetweenValues(todayStartTime, tomorrowStartTime));
-    var future = await query.get();
-
-    await (_db.update(_db.task)
-          ..where((tbl) =>
-              tbl.dueDate.isBetweenValues(todayStartTime, tomorrowStartTime) &
-              tbl.status.equals(TaskStatus.PENDING.index)))
-        .write(TaskCompanion(dueDate: Value(tomorrowStartTime)));
   }
 
   void _onLoadTasksByProject(
@@ -237,8 +229,9 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
   Future<List<Task>> _filterTasksForNextWeek() async {
     var dateTime = DateTime.now();
-    var taskStartTime = DateTime(dateTime.year, dateTime.month, dateTime.day)
-        .millisecondsSinceEpoch;
+    var taskStartTime =
+        DateTime(dateTime.year, dateTime.month, dateTime.day, 23, 59)
+            .millisecondsSinceEpoch;
     var taskEndTime =
         DateTime(dateTime.year, dateTime.month, dateTime.day + 7, 23, 59)
             .millisecondsSinceEpoch;

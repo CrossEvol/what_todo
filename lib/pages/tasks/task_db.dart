@@ -139,17 +139,19 @@ class TaskDB {
     });
   }
 
-  Future<void> updateExpiredTasks(int todayStartTime) async {
+  Future<bool> updateExpiredTasks(int todayStartTime) async {
     final tomorrowStartTime = todayStartTime + Duration(days: 1).inMilliseconds;
     var query = _db.select(_db.task);
     query.where((tbl) =>
         tbl.dueDate.isBetweenValues(todayStartTime, tomorrowStartTime));
     var future = await query.get();
+    if (future.length == 0) return true;
 
-    await (_db.update(_db.task)
+    var result = await (_db.update(_db.task)
           ..where((tbl) =>
               tbl.dueDate.isBetweenValues(todayStartTime, tomorrowStartTime) &
               tbl.status.equals(TaskStatus.PENDING.index)))
         .write(TaskCompanion(dueDate: Value(tomorrowStartTime)));
+    return result > 0;
   }
 }

@@ -172,8 +172,7 @@ class HomePage extends StatelessWidget {
             context.go('/task/uncompleted');
             break;
           case MenuItem.TASK_POSTPONE:
-            _taskBloc.postponeTodayTasks();
-            _taskBloc.refresh();
+            context.read<TaskBloc>().add(PostponeTasksEvent());
             break;
         }
       },

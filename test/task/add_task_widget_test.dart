@@ -58,7 +58,7 @@ class FakeTaskDb implements TaskDB {
   }
 
   @override
-  Future<void> updateExpiredTasks(int todayStartTime) {
+  Future<bool> updateExpiredTasks(int todayStartTime) {
     // TODO: implement updateExpiredTasks
     throw UnimplementedError();
   }

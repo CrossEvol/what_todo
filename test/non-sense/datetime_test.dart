@@ -8,5 +8,10 @@ void main() {
     print(DateTime.now().microsecond);
     print(DateTime.now().microsecondsSinceEpoch);
     print(DateTime.fromMillisecondsSinceEpoch(1728656569209));
+    var now = DateTime.now();
+    print(DateTime(now.year, now.month, now.day));
+    print(DateTime(now.year, now.month, now.day, 23, 59));
+    print(DateTime(now.year, now.month, now.day, 23, 59).millisecondsSinceEpoch);
+    print(DateTime(now.year, now.month, now.day + 1));
   });
 }
