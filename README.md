@@ -11,9 +11,16 @@ to `flutter_bloc`
 - ~~the desktop can update title, but the mobile will flashback~~
 - ~~after update the task, it will be freeze and I can not edit again. but after I create a new
   task , I can edit anyone .~~
-- remove origin bloc logic which is coupled with add_task
-- remove origin bloc logic which is coupled with edit_task
+- ~~remove origin bloc logic which is coupled with add_task~~
+- ~~remove origin bloc logic which is coupled with edit_task~~
 - ~~remove origin bloc logic which is coupled with completed_tasks~~
 - ~~remove origin bloc logic which is coupled with uncompleted_tasks~~
 - ~~apply PopScope as more as possible~~
 - migrate database properly. I do not want to delete data again. maybe I can export the data.
+- switch theme mode 
+- i18n
+- send email 
+- export data
+- import data
+- dateTime in db from int -> string
+- tidy up tests 
