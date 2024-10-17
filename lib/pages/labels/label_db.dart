@@ -29,7 +29,7 @@ class LabelDB {
   Future upsertLabel(Label label) async {
     await _db.into(_db.label).insertOnConflictUpdate(
           LabelCompanion(
-            id: Value(label.id ?? 0),
+            id: label.id != null ? Value(label.id ?? 0) : Value.absent(),
             name: Value(label.name),
             colorCode: Value(label.colorValue),
             colorName: Value(label.colorName),
@@ -71,7 +71,9 @@ class LabelDB {
   }
 
   Future<bool> deleteLabel(int labelId) async {
-   final result =  await (_db.delete(_db.label)..where((tbl) => tbl.id.equals(labelId))).go();
-   return result > 0;
+    final result = await (_db.delete(_db.label)
+          ..where((tbl) => tbl.id.equals(labelId)))
+        .go();
+    return result > 0;
   }
 }

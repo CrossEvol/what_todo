@@ -1,10 +1,12 @@
 part of 'label_bloc.dart';
 
 abstract class LabelState extends Equatable {
+  final List<Label> labels = const [];
+
   const LabelState();
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [labels];
 }
 
 class LabelInitial extends LabelState {}

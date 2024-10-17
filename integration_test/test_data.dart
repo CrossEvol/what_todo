@@ -6,7 +6,7 @@ import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 
 //Project Test data
-var testProject1 = Project.getInbox();
+var testProject1 = Project.inbox();
 var testProject2 = Project.update(
   id: 2,
   name: "Personal",

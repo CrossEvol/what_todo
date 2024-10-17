@@ -33,11 +33,17 @@ class PostponeTasksEvent extends TaskEvent {}
 
 class AddTaskEvent extends TaskEvent {
   final Task task;
+  final List<int> labelIds;
 
-  const AddTaskEvent(this.task);
+  const AddTaskEvent({
+    required this.task,
+    required this.labelIds,
+  });
 
   @override
   List<Object> get props => [task];
+
+
 }
 
 class UpdateTaskEvent extends TaskEvent {

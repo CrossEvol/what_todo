@@ -42,7 +42,7 @@ class _SideDrawerState extends State<SideDrawer> {
                 key: ValueKey(SideDrawerKeys.INBOX),
               ),
               onTap: () {
-                var project = Project.getInbox();
+                var project = Project.inbox();
                 context.read<HomeBloc>().add(ApplyFilterEvent(
                     project.name, Filter.byProject(project.id!)));
                 context.read<TaskBloc>().add(

@@ -21,7 +21,7 @@ class MyAddTaskBloc implements CustomBlocBase {
     _loadProjects();
     _loadLabels();
     updateDueDate(DateTime.now().millisecondsSinceEpoch);
-    _projectSelected.add(Project.getInbox());
+    _projectSelected.add(Project.inbox());
     _prioritySelected.add(lastPrioritySelection);
   }
 

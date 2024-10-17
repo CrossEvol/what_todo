@@ -53,7 +53,7 @@ final GoRouter goRouter = GoRouter(
         GoRoute(
           path: 'task/add',
           builder: (BuildContext context, GoRouterState state) {
-            return AddTaskProvider();
+            return AddTaskScreen();
           },
         ),
         GoRoute(

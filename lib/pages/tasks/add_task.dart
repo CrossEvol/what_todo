@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
+import 'package:flutter_app/bloc/label/label_bloc.dart';
+import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/models/priority.dart';
 import 'package:flutter_app/pages/labels/label.dart';
@@ -19,12 +21,45 @@ import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class AddTaskScreen extends StatelessWidget {
+import 'models/task.dart';
+
+class AddTaskScreen extends StatefulWidget {
+  const AddTaskScreen({super.key});
+
+  @override
+  State<AddTaskScreen> createState() => _AddTaskScreenState();
+}
+
+class _AddTaskScreenState extends State<AddTaskScreen> {
+  _AddTaskScreenState();
+
   final GlobalKey<FormState> _formState = GlobalKey<FormState>();
+
+  TextEditingController _titleController = TextEditingController();
+  PriorityStatus selectedPriority = PriorityStatus.PRIORITY_4;
+  PriorityStatus lastPrioritySelection = PriorityStatus.PRIORITY_4;
+  Project selectedProject = Project.inbox();
+  List<Label> selectedLabels = [];
+  int selectedDueDate = DateTime.now().millisecondsSinceEpoch;
+
+  List<int> get labelIds => selectedLabels.map((label) => label.id!).toList();
+
+  String get labelNames => selectedLabels.isNotEmpty
+      ? selectedLabels.map((label) => label.name).join(", ")
+      : "No Labels";
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    MyAddTaskBloc createTaskBloc = CustomBlocProvider.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -43,10 +78,8 @@ class AddTaskScreen extends StatelessWidget {
                   var msg = value!.isEmpty ? "Title Cannot be Empty" : null;
                   return msg;
                 },
-                onSaved: (value) {
-                  createTaskBloc.updateTitle = value!;
-                },
-                maxLines: null,
+                controller: _titleController,
+                onSaved: (value) {},
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
                   hintText: "",
@@ -64,25 +97,16 @@ class AddTaskScreen extends StatelessWidget {
             key: ValueKey("addProject"),
             leading: Icon(Icons.book),
             title: Text("Project"),
-            subtitle: StreamBuilder<Project>(
-              stream: createTaskBloc.selectedProject,
-              initialData: Project.getInbox(),
-              builder: (context, snapshot) => Text(snapshot.data!.name),
-            ),
+            subtitle: Text(selectedProject.name),
             hoverColor: _grey,
             onTap: () {
-              _showProjectsDialog(createTaskBloc, context);
+              _showProjectsDialog(context);
             },
           ),
           ListTile(
             leading: Icon(Icons.calendar_today),
             title: Text("Due Date"),
-            subtitle: StreamBuilder<int>(
-              stream: createTaskBloc.dueDateSelected,
-              initialData: DateTime.now().millisecondsSinceEpoch,
-              builder: (context, snapshot) =>
-                  Text(getFormattedDate(snapshot.data!)),
-            ),
+            subtitle: Text(getFormattedDate(selectedDueDate)),
             hoverColor: _grey,
             onTap: () {
               _showDatePicker(context);
@@ -91,25 +115,16 @@ class AddTaskScreen extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.flag),
             title: Text("Priority"),
-            subtitle: StreamBuilder<PriorityStatus>(
-              stream: createTaskBloc.prioritySelection,
-              initialData: PriorityStatus.PRIORITY_4,
-              builder: (context, snapshot) =>
-                  Text(priorityText[snapshot.data!.index]),
-            ),
+            subtitle: Text(priorityText[selectedPriority.index]),
             hoverColor: _grey,
             onTap: () {
-              _showPriorityDialog(createTaskBloc, context);
+              _showPriorityDialog(context);
             },
           ),
           ListTile(
               leading: Icon(Icons.label),
               title: Text("Labels"),
-              subtitle: StreamBuilder<String>(
-                stream: createTaskBloc.labelSelection,
-                initialData: "No Labels",
-                builder: (context, snapshot) => Text(snapshot.data!),
-              ),
+              subtitle: Text(labelNames),
               hoverColor: _grey,
               onTap: () {
                 _showLabelsDialog(context);
@@ -140,18 +155,26 @@ class AddTaskScreen extends StatelessWidget {
           onPressed: () {
             if (_formState.currentState!.validate()) {
               _formState.currentState!.save();
-              createTaskBloc.createTask().listen((value) {
-                context.read<HomeBloc>().add(LoadTodayCountEvent());
-                final filter = context.read<HomeBloc>().state.filter;
-                context.read<TaskBloc>().add(FilterTasksEvent(filter: filter!));
-                if (context.isWiderScreen()) {
-                  context
-                      .read<HomeBloc>()
-                      .add(ApplyFilterEvent("Today", Filter.byToday()));
-                } else {
-                  context.safePop();
-                }
-              });
+              context.read<TaskBloc>().add(AddTaskEvent(
+                  task: Task.create(
+                    title: _titleController.text,
+                    projectId: selectedProject.id ?? 0,
+                    priority: selectedPriority,
+                  ),
+                  labelIds: labelIds));
+
+              /// if add task success
+              context.read<HomeBloc>().add(LoadTodayCountEvent());
+              final filter = context.read<HomeBloc>().state.filter;
+              context.read<TaskBloc>().add(FilterTasksEvent(filter: filter!));
+
+              if (context.isWiderScreen()) {
+                context
+                    .read<HomeBloc>()
+                    .add(ApplyFilterEvent("Today", Filter.byToday()));
+              } else {
+                context.safePop();
+              }
             }
           }),
     );
@@ -160,7 +183,6 @@ class AddTaskScreen extends StatelessWidget {
   Color? get _grey => Colors.grey[300];
 
   Future<Null> _showDatePicker(BuildContext context) async {
-    MyAddTaskBloc createTaskBloc = CustomBlocProvider.of(context);
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -168,12 +190,13 @@ class AddTaskScreen extends StatelessWidget {
       lastDate: DateTime(2101),
     );
     if (picked != null) {
-      createTaskBloc.updateDueDate(picked.millisecondsSinceEpoch);
+      setState(() {
+        selectedDueDate = picked.millisecondsSinceEpoch;
+      });
     }
   }
 
-  Future<PriorityStatus?> _showPriorityDialog(
-      MyAddTaskBloc createTaskBloc, BuildContext context) async {
+  Future<PriorityStatus?> _showPriorityDialog(BuildContext context) async {
     return await showDialog<PriorityStatus>(
         context: context,
         builder: (BuildContext dialogContext) {
@@ -189,44 +212,37 @@ class AddTaskScreen extends StatelessWidget {
         });
   }
 
-  Future<PriorityStatus?> _showProjectsDialog(
-      MyAddTaskBloc createTaskBloc, BuildContext context) async {
+  Future<PriorityStatus?> _showProjectsDialog(BuildContext context) async {
     return showDialog<PriorityStatus>(
         context: context,
         builder: (BuildContext dialogContext) {
-          return StreamBuilder<List<Project>>(
-              stream: createTaskBloc.projects,
-              initialData: <Project>[],
-              builder: (context, snapshot) {
-                return SimpleDialog(
-                  title: const Text('Select Project'),
-                  children:
-                      buildProjects(createTaskBloc, context, snapshot.data!),
-                );
-              });
+          return BlocBuilder<ProjectBloc, ProjectState>(
+            builder: (context, state) {
+              return SimpleDialog(
+                title: const Text('Select Project'),
+                children: buildProjects(context, state.projects),
+              );
+            },
+          );
         });
   }
 
   Future<PriorityStatus?> _showLabelsDialog(BuildContext context) async {
-    MyAddTaskBloc createTaskBloc = CustomBlocProvider.of(context);
     return showDialog<PriorityStatus>(
         context: context,
         builder: (BuildContext context) {
-          return StreamBuilder<List<Label>>(
-              stream: createTaskBloc.labels,
-              initialData: <Label>[],
-              builder: (context, snapshot) {
-                return SimpleDialog(
-                  title: const Text('Select Labels'),
-                  children:
-                      buildLabels(createTaskBloc, context, snapshot.data!),
-                );
-              });
+          return BlocBuilder<LabelBloc, LabelState>(
+            builder: (context, state) {
+              return SimpleDialog(
+                title: const Text('Select Labels'),
+                children: buildLabels(context, state.labels),
+              );
+            },
+          );
         });
   }
 
   List<Widget> buildProjects(
-    MyAddTaskBloc createTaskBloc,
     BuildContext context,
     List<Project> projectList,
   ) {
@@ -241,8 +257,10 @@ class AddTaskScreen extends StatelessWidget {
               ),
               title: Text(project.name),
               onTap: () {
-                createTaskBloc.projectSelected(project);
-                Navigator.pop(context);
+                setState(() {
+                  selectedProject = project;
+                  Navigator.pop(context);
+                });
               },
             ))
         .toList();
@@ -250,7 +268,6 @@ class AddTaskScreen extends StatelessWidget {
   }
 
   List<Widget> buildLabels(
-    MyAddTaskBloc createTaskBloc,
     BuildContext context,
     List<Label> labelList,
   ) {
@@ -259,11 +276,17 @@ class AddTaskScreen extends StatelessWidget {
               leading:
                   Icon(Icons.label, color: Color(label.colorValue), size: 18.0),
               title: Text(label.name),
-              trailing: createTaskBloc.selectedLabels.contains(label)
+              trailing: selectedLabels.contains(label)
                   ? Icon(Icons.close)
                   : Container(width: 18.0, height: 18.0),
               onTap: () {
-                createTaskBloc.labelAddOrRemove(label);
+                setState(() {
+                  if (selectedLabels.contains(label)) {
+                    selectedLabels.remove(label);
+                  } else {
+                    selectedLabels.add(label);
+                  }
+                });
                 Navigator.pop(context);
               },
             ))
@@ -272,16 +295,16 @@ class AddTaskScreen extends StatelessWidget {
   }
 
   GestureDetector buildContainer(BuildContext context, PriorityStatus status) {
-    MyAddTaskBloc createTaskBloc = CustomBlocProvider.of(context);
     return GestureDetector(
         onTap: () {
-          createTaskBloc.updatePriority(status);
-          Navigator.pop(context, status);
+          setState(() {
+            lastPrioritySelection = selectedPriority;
+            selectedPriority = status;
+            Navigator.pop(context, status);
+          });
         },
         child: Container(
-            color: status == createTaskBloc.lastPrioritySelection
-                ? Colors.grey
-                : Colors.white,
+            color: status == lastPrioritySelection ? Colors.grey : Colors.white,
             child: Container(
               margin: const EdgeInsets.symmetric(vertical: 2.0),
               decoration: BoxDecoration(

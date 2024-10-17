@@ -107,7 +107,7 @@ void main() {
 
       expect(fakeTaskDb.task!.title, "My Task");
       expect(fakeTaskDb.task!.priority, PriorityStatus.PRIORITY_1);
-      expect(fakeTaskDb.task!.projectId, Project.getInbox().id);
+      expect(fakeTaskDb.task!.projectId, Project.inbox().id);
       expect(fakeTaskDb.labelIds, []);
     });
   });

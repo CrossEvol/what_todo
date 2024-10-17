@@ -82,7 +82,7 @@ class EditTaskScreen extends StatelessWidget {
             title: Text("Project"),
             subtitle: StreamBuilder<Project>(
               stream: editTaskBloc.selectedProject,
-              initialData: Project.getInbox(),
+              initialData: Project.inbox(),
               builder: (context, snapshot) => Text(snapshot.data!.name),
             ),
             hoverColor: _grey,

@@ -54,21 +54,27 @@ class TaskDB {
   }
 
   List<Task> _bindData(List<TypedResult> result) {
-    List<Task> tasks = [];
+    Map<int, Task> taskMap = {};
+
     for (var item in result) {
       var task = item.readTable(_db.task);
       var project = item.readTable(_db.project);
-      var labelNames = item.readTableOrNull(_db.label)?.name;
+      var label = item.readTableOrNull(_db.label);
 
-      var myTask = Task.fromMap(task.toJson());
-      myTask.projectName = project.name;
-      myTask.projectColor = project.colorCode;
-      if (labelNames != null) {
-        myTask.labelList = [labelNames];
+      if (!taskMap.containsKey(task.id)) {
+        var myTask = Task.fromMap(task.toJson());
+        myTask.projectName = project.name;
+        myTask.projectColor = project.colorCode;
+        myTask.labelList = [];
+        taskMap[task.id] = myTask;
       }
-      tasks.add(myTask);
+
+      if (label != null) {
+        taskMap[task.id]!.labelList.add(label.name);
+      }
     }
-    return tasks;
+
+    return taskMap.values.toList();
   }
 
   Future<List<Task>> getTasksByProject(int projectId,

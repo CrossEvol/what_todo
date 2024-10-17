@@ -1,6 +1,8 @@
 part of 'project_bloc.dart';
 
 abstract class ProjectState extends Equatable {
+  final List<Project> projects = const [];
+
   const ProjectState();
 
   @override

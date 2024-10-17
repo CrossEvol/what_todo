@@ -27,7 +27,7 @@ class Project {
     }
   }
 
-  Project.getInbox()
+  Project.inbox()
       : this.update(
             id: 1,
             name: "Inbox",
