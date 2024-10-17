@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
-import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/models/priority.dart';
 import 'package:flutter_app/pages/labels/label.dart';
@@ -42,10 +42,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   List<Label> selectedLabels = [];
   int selectedDueDate = DateTime.now().millisecondsSinceEpoch;
 
-  List<int> get labelIds => selectedLabels.map((label) => label.id!).toList();
+  List<int> get labelIds => (selectedLabels..sort((a, b) => a.id! - b.id!))
+      .map((label) => label.id!)
+      .toList();
 
   String get labelNames => selectedLabels.isNotEmpty
-      ? selectedLabels.map((label) => label.name).join(", ")
+      ? (selectedLabels..sort((a, b) => a.id! - b.id!)).map((label) => label.name).join(", ")
       : "No Labels";
 
   @override
@@ -216,11 +218,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     return showDialog<PriorityStatus>(
         context: context,
         builder: (BuildContext dialogContext) {
-          return BlocBuilder<ProjectBloc, ProjectState>(
+          return BlocBuilder<AdminBloc, AdminState>(
             builder: (context, state) {
               return SimpleDialog(
                 title: const Text('Select Project'),
-                children: buildProjects(context, state.projects),
+                children: buildProjects(
+                    context, state.projects.map((p) => p.trimCount()).toList()),
               );
             },
           );

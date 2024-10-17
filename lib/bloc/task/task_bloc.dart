@@ -82,7 +82,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     final currentState = state;
     if (currentState is TaskLoaded) {
       try {
-        await _taskDB.updateTask(
+        await _taskDB.createTask(
           event.task,
           labelIDs: event.labelIds,
         );
@@ -96,7 +96,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     final currentState = state;
     if (currentState is TaskLoaded) {
       try {
-        await _taskDB.updateTask(event.task);
+        await _taskDB.updateTask(event.task, labelIDs: event.labelIds);
       } catch (e) {
         emit(TaskError(e.toString()));
       }

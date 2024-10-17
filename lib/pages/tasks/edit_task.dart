@@ -1,17 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
+import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/models/priority.dart';
 import 'package:flutter_app/pages/labels/label.dart';
-import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
-import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/pages/tasks/bloc/my_edit_task_bloc.dart';
-import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/utils/date_util.dart';
@@ -19,27 +18,67 @@ import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../labels/label_db.dart';
+import '../projects/project_db.dart';
 import 'models/task.dart';
+import 'task_db.dart';
 
-class EditTaskScreen extends StatelessWidget {
-  final Task? task;
+class EditTaskScreen extends StatefulWidget {
+  final Task task;
 
-  EditTaskScreen({this.task});
+  EditTaskScreen({required this.task});
 
+  @override
+  State<EditTaskScreen> createState() => _EditTaskScreenState();
+}
+
+class _EditTaskScreenState extends State<EditTaskScreen> {
   final GlobalKey<FormState> _formState = GlobalKey<FormState>();
+
+  TextEditingController _titleController = TextEditingController();
+  PriorityStatus selectedPriority = PriorityStatus.PRIORITY_4;
+  Project selectedProject = Project.inbox();
+  List<Label> selectedLabels = [];
+  int selectedDueDate = DateTime.now().millisecondsSinceEpoch;
+
+  List<int> get labelIds => (selectedLabels..sort((a, b) => a.id! - b.id!))
+      .map((label) => label.id!)
+      .toList();
+
+  String get labelNames => selectedLabels.isNotEmpty
+      ? (selectedLabels..sort((a, b) => a.id! - b.id!))
+          .map((label) => label.name)
+          .join(", ")
+      : "No Labels";
+
+  @override
+  void initState() {
+    super.initState();
+    final projects = context
+        .read<AdminBloc>()
+        .state
+        .projects
+        .map((p) => p.trimCount())
+        .toList();
+    final labels = context.read<LabelBloc>().state.labels;
+    _titleController.text = widget.task.title;
+    selectedPriority = widget.task.priority;
+    selectedProject =
+        projects.where((p) => p.id == widget.task.projectId).first;
+    selectedDueDate = widget.task.dueDate;
+    selectedLabels = widget.task.labelList.isNotEmpty
+        ? labels.where((l) => widget.task.labelList.contains(l.name)).toList()
+        : [];
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    MyEditTaskBloc editTaskBloc =
-        CustomBlocProvider.of<MyEditTaskBloc>(context);
-    editTaskBloc.taskID = task!.id!;
-    editTaskBloc.updateTitle = task?.title ?? '';
-    editTaskBloc
-        .updateDueDate(task?.dueDate ?? DateTime.now().millisecondsSinceEpoch);
-    editTaskBloc.updatePriority(task?.priority ?? PriorityStatus.PRIORITY_4);
-    editTaskBloc.projectSelectedByID(task!.projectId);
-    editTaskBloc.labelAddByNames(task?.labelList ?? []);
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -53,16 +92,13 @@ class EditTaskScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
-                initialValue: task?.title ?? '',
                 key: ValueKey(EditTaskKeys.Edit_TITLE),
                 validator: (value) {
                   var msg = value!.isEmpty ? "Title Cannot be Empty" : null;
                   return msg;
                 },
-                onSaved: (value) {
-                  editTaskBloc.updateTitle = value!;
-                },
-                maxLines: null,
+                controller: _titleController,
+                onSaved: (value) {},
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
                   hintText: "",
@@ -80,25 +116,16 @@ class EditTaskScreen extends StatelessWidget {
             key: ValueKey("editProject"),
             leading: Icon(Icons.book),
             title: Text("Project"),
-            subtitle: StreamBuilder<Project>(
-              stream: editTaskBloc.selectedProject,
-              initialData: Project.inbox(),
-              builder: (context, snapshot) => Text(snapshot.data!.name),
-            ),
+            subtitle: Text(selectedProject.name),
             hoverColor: _grey,
             onTap: () {
-              _showProjectsDialog(editTaskBloc, context);
+              _showProjectsDialog(context);
             },
           ),
           ListTile(
             leading: Icon(Icons.calendar_today),
             title: Text("Due Date"),
-            subtitle: StreamBuilder<int>(
-              stream: editTaskBloc.dueDateSelected,
-              initialData: DateTime.now().millisecondsSinceEpoch,
-              builder: (context, snapshot) =>
-                  Text(getFormattedDate(snapshot.data!)),
-            ),
+            subtitle: Text(getFormattedDate(selectedDueDate)),
             hoverColor: _grey,
             onTap: () {
               _showDatePicker(context);
@@ -107,25 +134,16 @@ class EditTaskScreen extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.flag),
             title: Text("Priority"),
-            subtitle: StreamBuilder<PriorityStatus>(
-              stream: editTaskBloc.prioritySelection,
-              initialData: PriorityStatus.PRIORITY_4,
-              builder: (context, snapshot) =>
-                  Text(priorityText[snapshot.data!.index]),
-            ),
+            subtitle: Text(priorityText[selectedPriority.index]),
             hoverColor: _grey,
             onTap: () {
-              _showPriorityDialog(editTaskBloc, context);
+              _showPriorityDialog(context);
             },
           ),
           ListTile(
               leading: Icon(Icons.label),
               title: Text("Labels"),
-              subtitle: StreamBuilder<String>(
-                stream: editTaskBloc.labelSelection,
-                initialData: "No Labels",
-                builder: (context, snapshot) => Text(snapshot.data!),
-              ),
+              subtitle: Text(labelNames),
               hoverColor: _grey,
               onTap: () {
                 _showLabelsDialog(context);
@@ -153,23 +171,29 @@ class EditTaskScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
           key: ValueKey(EditTaskKeys.Edit_TASK),
           child: Icon(Icons.send, color: Colors.white),
-          onPressed: ()async {
+          onPressed: () {
             if (_formState.currentState!.validate()) {
               _formState.currentState!.save();
-              try {
-                await editTaskBloc.updateTask().first;
-                final filter = context.read<HomeBloc>().state.filter;
-                context.read<TaskBloc>().add(FilterTasksEvent(filter: filter!));
+              context.read<TaskBloc>().add(UpdateTaskEvent(
+                  task: Task.update(
+                    id: widget.task.id,
+                    title: _titleController.text,
+                    projectId: selectedProject.id ?? 0,
+                    priority: selectedPriority,
+                    dueDate: selectedDueDate,
+                  ),
+                  labelIds: labelIds));
 
-                if (context.isWiderScreen()) {
-                  context.read<HomeBloc>().add(ApplyFilterEvent("Today", Filter.byToday()));
-                } else {
-                  context.safePop();
-                }
-              } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Failed to update task: ${e.toString()}')),
-                );
+              /// if update task success
+              final filter = context.read<HomeBloc>().state.filter;
+              context.read<TaskBloc>().add(FilterTasksEvent(filter: filter!));
+
+              if (context.isWiderScreen()) {
+                context
+                    .read<HomeBloc>()
+                    .add(ApplyFilterEvent("Today", Filter.byToday()));
+              } else {
+                context.safePop();
               }
             }
           }),
@@ -179,7 +203,6 @@ class EditTaskScreen extends StatelessWidget {
   Color? get _grey => Colors.grey[300];
 
   Future<Null> _showDatePicker(BuildContext context) async {
-    MyEditTaskBloc editTaskBloc = CustomBlocProvider.of(context);
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -187,12 +210,13 @@ class EditTaskScreen extends StatelessWidget {
       lastDate: DateTime(2101),
     );
     if (picked != null) {
-      editTaskBloc.updateDueDate(picked.millisecondsSinceEpoch);
+      setState(() {
+        selectedDueDate = picked.millisecondsSinceEpoch;
+      });
     }
   }
 
-  Future<PriorityStatus?> _showPriorityDialog(
-      MyEditTaskBloc editTaskBloc, BuildContext context) async {
+  Future<PriorityStatus?> _showPriorityDialog(BuildContext context) async {
     return await showDialog<PriorityStatus>(
         context: context,
         builder: (BuildContext dialogContext) {
@@ -208,43 +232,38 @@ class EditTaskScreen extends StatelessWidget {
         });
   }
 
-  Future<PriorityStatus?> _showProjectsDialog(
-      MyEditTaskBloc editTaskBloc, BuildContext context) async {
+  Future<PriorityStatus?> _showProjectsDialog(BuildContext context) async {
     return showDialog<PriorityStatus>(
         context: context,
         builder: (BuildContext dialogContext) {
-          return StreamBuilder<List<Project>>(
-              stream: editTaskBloc.projects,
-              initialData: <Project>[],
-              builder: (context, snapshot) {
-                return SimpleDialog(
-                  title: const Text('Select Project'),
-                  children:
-                      buildProjects(editTaskBloc, context, snapshot.data!),
-                );
-              });
+          return BlocBuilder<AdminBloc, AdminState>(
+            builder: (context, state) {
+              return SimpleDialog(
+                title: const Text('Select Project'),
+                children: buildProjects(
+                    context, state.projects.map((p) => p.trimCount()).toList()),
+              );
+            },
+          );
         });
   }
 
   Future<PriorityStatus?> _showLabelsDialog(BuildContext context) async {
-    MyEditTaskBloc editTaskBloc = CustomBlocProvider.of(context);
     return showDialog<PriorityStatus>(
         context: context,
         builder: (BuildContext context) {
-          return StreamBuilder<List<Label>>(
-              stream: editTaskBloc.labels,
-              initialData: <Label>[],
-              builder: (context, snapshot) {
-                return SimpleDialog(
-                  title: const Text('Select Labels'),
-                  children: buildLabels(editTaskBloc, context, snapshot.data!),
-                );
-              });
+          return BlocBuilder<LabelBloc, LabelState>(
+            builder: (context, state) {
+              return SimpleDialog(
+                title: const Text('Select Labels'),
+                children: buildLabels(context, state.labels),
+              );
+            },
+          );
         });
   }
 
   List<Widget> buildProjects(
-    MyEditTaskBloc editTaskBloc,
     BuildContext context,
     List<Project> projectList,
   ) {
@@ -259,8 +278,10 @@ class EditTaskScreen extends StatelessWidget {
               ),
               title: Text(project.name),
               onTap: () {
-                editTaskBloc.projectSelected(project);
-                Navigator.pop(context);
+                setState(() {
+                  selectedProject = project;
+                  Navigator.pop(context);
+                });
               },
             ))
         .toList();
@@ -268,7 +289,6 @@ class EditTaskScreen extends StatelessWidget {
   }
 
   List<Widget> buildLabels(
-    MyEditTaskBloc editTaskBloc,
     BuildContext context,
     List<Label> labelList,
   ) {
@@ -277,11 +297,17 @@ class EditTaskScreen extends StatelessWidget {
               leading:
                   Icon(Icons.label, color: Color(label.colorValue), size: 18.0),
               title: Text(label.name),
-              trailing: editTaskBloc.selectedLabels.contains(label)
+              trailing: selectedLabels.contains(label)
                   ? Icon(Icons.close)
                   : Container(width: 18.0, height: 18.0),
               onTap: () {
-                editTaskBloc.labelAddOrRemove(label);
+                setState(() {
+                  if (selectedLabels.contains(label)) {
+                    selectedLabels.remove(label);
+                  } else {
+                    selectedLabels.add(label);
+                  }
+                });
                 Navigator.pop(context);
               },
             ))
@@ -290,16 +316,15 @@ class EditTaskScreen extends StatelessWidget {
   }
 
   GestureDetector buildContainer(BuildContext context, PriorityStatus status) {
-    MyEditTaskBloc editTaskBloc = CustomBlocProvider.of(context);
     return GestureDetector(
         onTap: () {
-          editTaskBloc.updatePriority(status);
-          Navigator.pop(context, status);
+          setState(() {
+            selectedPriority = status;
+            Navigator.pop(context, status);
+          });
         },
         child: Container(
-            color: status == editTaskBloc.lastPrioritySelection
-                ? Colors.grey
-                : Colors.white,
+            color: status == selectedPriority ? Colors.grey : Colors.white,
             child: Container(
               margin: const EdgeInsets.symmetric(vertical: 2.0),
               decoration: BoxDecoration(
@@ -333,7 +358,7 @@ class EditTaskProvider extends StatelessWidget {
         LabelDB.get(),
       ),
       child: EditTaskScreen(
-        task: task,
+        task: task!,
       ),
     );
   }

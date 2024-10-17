@@ -98,7 +98,7 @@ final GoRouter goRouter = GoRouter(
           path: 'task/edit',
           builder: (BuildContext context, GoRouterState state) {
             var task = state.extra as Task;
-            return EditTaskProvider(
+            return EditTaskScreen(
               task: task,
             );
           },

@@ -49,6 +49,13 @@ class Project {
       Project.dbColorName: colorName,
     };
   }
+
+  Project({
+    this.id,
+    required this.colorValue,
+    required this.name,
+    required this.colorName,
+  });
 }
 
 class ProjectWithCount {
@@ -88,6 +95,13 @@ class ProjectWithCount {
 }
 
 extension ProjectExt on ProjectWithCount {
+  Project trimCount() => Project(
+        id: this.id,
+        name: this.name,
+        colorName: this.colorName,
+        colorValue: this.colorCode,
+      );
+
   DataGridRow mapProjectRow() => DataGridRow(cells: [
         DataGridCell<int>(columnName: 'id', value: id),
         DataGridCell<String>(columnName: 'name', value: name),

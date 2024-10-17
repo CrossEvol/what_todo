@@ -132,9 +132,9 @@ class TaskDB {
   }
 
   /// Inserts or replaces the task.
-  Future updateTask(Task task, {List<int>? labelIDs}) async {
-    await _db.transaction(() async {
-      int id = await _db.into(_db.task).insertOnConflictUpdate(
+  Future<int> createTask(Task task, {List<int>? labelIDs}) async {
+    return await _db.transaction(() async {
+      int id = await _db.into(_db.task).insert(
             TaskCompanion(
               id: task.id != null ? Value(task.id!) : Value.absent(),
               title: Value(task.title),
@@ -151,6 +151,40 @@ class TaskDB {
           await _db.into(_db.taskLabel).insertOnConflictUpdate(
                 TaskLabelCompanion(
                   taskId: Value(id),
+                  labelId: Value(labelId),
+                ),
+              );
+        }
+      }
+
+      return id;
+    });
+  }
+
+  /// Inserts or replaces the task.
+  Future updateTask(Task task, {List<int>? labelIDs}) async {
+    await _db.transaction(() async {
+      // update the record in Task Table
+      await (_db.update(_db.task)..where((t) => t.id.equals(task.id!)))
+          .write(TaskCompanion(
+        id: task.id != null ? Value(task.id!) : Value.absent(),
+        title: Value(task.title),
+        projectId: Value(task.projectId),
+        comment: Value(task.comment),
+        dueDate: Value(task.dueDate),
+        priority: Value(task.priority.index),
+        status: Value(task.tasksStatus!.index),
+      ));
+
+      // remove the outdated relationship and build up new relationship
+      await (_db.delete(_db.taskLabel)
+            ..where((tbl) => tbl.taskId.equals(task.id!)))
+          .go();
+      if (labelIDs != null && labelIDs.isNotEmpty) {
+        for (var labelId in labelIDs) {
+          await _db.into(_db.taskLabel).insertOnConflictUpdate(
+                TaskLabelCompanion(
+                  taskId: Value(task.id!),
                   labelId: Value(labelId),
                 ),
               );

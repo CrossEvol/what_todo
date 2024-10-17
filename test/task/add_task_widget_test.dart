@@ -68,6 +68,12 @@ class FakeTaskDb implements TaskDB {
     // TODO: implement count
     throw UnimplementedError();
   }
+
+  @override
+  Future<int> createTask(Task task, {List<int>? labelIDs}) {
+    // TODO: implement createTask
+    throw UnimplementedError();
+  }
 }
 
 @GenerateMocks([ProjectDB, LabelDB])

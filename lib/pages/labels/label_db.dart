@@ -71,9 +71,14 @@ class LabelDB {
   }
 
   Future<bool> deleteLabel(int labelId) async {
-    final result = await (_db.delete(_db.label)
-          ..where((tbl) => tbl.id.equals(labelId)))
-        .go();
-    return result > 0;
+    return await _db.transaction(() async {
+      final result = await (_db.delete(_db.label)
+            ..where((tbl) => tbl.id.equals(labelId)))
+          .go();
+      await (_db.delete(_db.taskLabel)
+            ..where((tbl) => tbl.labelId.equals(labelId)))
+          .go();
+      return result > 0;
+    });
   }
 }
