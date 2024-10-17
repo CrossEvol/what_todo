@@ -44,6 +44,11 @@ class TaskDB {
       query.where(_db.task.status.equals(taskStatus.index));
     }
 
+    query.orderBy([
+      OrderingTerm.asc(_db.task.priority),
+      OrderingTerm.desc(_db.task.dueDate),
+    ]);
+
     var result = await query.get();
     return _bindData(result);
   }
@@ -80,6 +85,11 @@ class TaskDB {
       query.where(_db.task.status.equals(status.index));
     }
 
+    query.orderBy([
+      OrderingTerm.asc(_db.task.priority),
+      OrderingTerm.desc(_db.task.dueDate),
+    ]);
+
     var result = await query.get();
     return _bindData(result);
   }
@@ -97,6 +107,10 @@ class TaskDB {
     }
 
     query.where(_db.label.name.like('%$labelName%'));
+    query.orderBy([
+      OrderingTerm.asc(_db.task.priority),
+      OrderingTerm.desc(_db.task.dueDate),
+    ]);
 
     var result = await query.get();
     return _bindData(result);

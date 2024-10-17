@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:drift/drift.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_app/db/app_db.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
@@ -29,7 +28,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   void _onLoadTasks(LoadTasksEvent event, Emitter<TaskState> emit) async {
     emit(TaskLoading());
     try {
-      final tasks = await _getTasks();
+      final tasks = await _taskDB.getTasks();
       emit(TaskLoaded(tasks));
     } catch (e) {
       emit(TaskError(e.toString()));
@@ -57,8 +56,10 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       LoadTasksByProjectEvent event, Emitter<TaskState> emit) async {
     emit(TaskLoading());
     try {
-      final tasks =
-          await _getTasksByProject(event.projectId, status: event.status);
+      final tasks = await _taskDB.getTasksByProject(
+        event.projectId,
+        status: event.status,
+      );
       emit(TaskLoaded(tasks));
     } catch (e) {
       emit(TaskError(e.toString()));
@@ -70,85 +71,11 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     emit(TaskLoading());
     try {
       final tasks =
-          await _getTasksByLabel(event.labelName, status: event.status);
+          await _taskDB.getTasksByLabel(event.labelName, status: event.status);
       emit(TaskLoaded(tasks));
     } catch (e) {
       emit(TaskError(e.toString()));
     }
-  }
-
-  Future<List<Task>> _getTasks(
-      {int startDate = 0, int endDate = 0, TaskStatus? taskStatus}) async {
-    var query = _db.select(_db.task).join([
-      leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
-      leftOuterJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId)),
-      innerJoin(_db.project, _db.project.id.equalsExp(_db.task.projectId)),
-    ]);
-
-    if (startDate > 0 && endDate > 0) {
-      query.where(_db.task.dueDate.isBetweenValues(startDate, endDate));
-    }
-
-    if (taskStatus != null) {
-      query.where(_db.task.status.equals(taskStatus.index));
-    }
-
-    var result = await query.get();
-    return _bindData(result);
-  }
-
-  List<Task> _bindData(List<TypedResult> result) {
-    List<Task> tasks = [];
-    for (var item in result) {
-      var task = item.readTable(_db.task);
-      var project = item.readTable(_db.project);
-      var labelNames = item.readTableOrNull(_db.label)?.name;
-
-      var myTask = Task.fromMap(task.toJson());
-      myTask.projectName = project.name;
-      myTask.projectColor = project.colorCode;
-      if (labelNames != null) {
-        myTask.labelList = [labelNames];
-      }
-      tasks.add(myTask);
-    }
-    return tasks;
-  }
-
-  Future<List<Task>> _getTasksByProject(int projectId,
-      {TaskStatus? status}) async {
-    var query = _db.select(_db.task).join([
-      leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
-      leftOuterJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId)),
-      innerJoin(_db.project, _db.project.id.equalsExp(_db.task.projectId)),
-    ]);
-
-    query.where(_db.task.projectId.equals(projectId));
-
-    if (status != null) {
-      query.where(_db.task.status.equals(status.index));
-    }
-
-    var result = await query.get();
-    return _bindData(result);
-  }
-
-  Future<List<Task>> _getTasksByLabel(String labelName,
-      {TaskStatus? status}) async {
-    var query = _db.select(_db.task).join([
-      leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
-      leftOuterJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId)),
-      innerJoin(_db.project, _db.project.id.equalsExp(_db.task.projectId)),
-    ]);
-
-    if (status != null) {
-      query.where(_db.task.status.equals(status.index));
-    }
-
-    query.where(_db.label.name.like('%$labelName%'));
-
-    var result = await query.get();
-    return _bindData(result);
   }
 
   void _onAddTask(AddTaskEvent event, Emitter<TaskState> emit) async {
@@ -220,7 +147,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     final int taskEndTime = endDate.millisecondsSinceEpoch;
 
     // Read all today's tasks from database
-    var tasks = await _getTasks(
+    var tasks = await _taskDB.getTasks(
         startDate: taskStartTime,
         endDate: taskEndTime,
         taskStatus: TaskStatus.PENDING);
@@ -236,7 +163,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         DateTime(dateTime.year, dateTime.month, dateTime.day + 7, 23, 59)
             .millisecondsSinceEpoch;
     // Read all next week tasks from database
-    var tasks = await _getTasks(
+    var tasks = await _taskDB.getTasks(
         startDate: taskStartTime,
         endDate: taskEndTime,
         taskStatus: TaskStatus.PENDING);
