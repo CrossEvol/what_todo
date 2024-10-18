@@ -5,4 +5,13 @@ targets:
     builders:
       drift_dev:
         options:
+          # Relative path to the database file
+          databases:
+            default: lib/db/app_db.dart
+
+          # Other Drift options
           store_date_time_values_as_text: true
+          sql:
+            dialect: sqlite
+            options:
+              modules: [fts5]

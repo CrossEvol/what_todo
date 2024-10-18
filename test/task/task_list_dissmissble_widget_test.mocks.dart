@@ -112,6 +112,20 @@ class MockTaskDB extends _i1.Mock implements _i2.TaskDB {
       ) as _i3.Future<dynamic>);
 
   @override
+  _i3.Future<int> createTask(
+    _i4.Task? task, {
+    List<int>? labelIDs,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #createTask,
+          [task],
+          {#labelIDs: labelIDs},
+        ),
+        returnValue: _i3.Future<int>.value(0),
+      ) as _i3.Future<int>);
+
+  @override
   _i3.Future<dynamic> updateTask(
     _i4.Task? task, {
     List<int>? labelIDs,
@@ -132,7 +146,6 @@ class MockTaskDB extends _i1.Mock implements _i2.TaskDB {
           #updateExpiredTasks,
           [todayStartTime],
         ),
-        returnValue: _i3.Future<void>.value(),
-        returnValueForMissingStub: _i3.Future<void>.value(),
+        returnValue: _i3.Future<bool>.value(false),
       ) as _i3.Future<bool>);
 }

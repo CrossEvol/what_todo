@@ -42,7 +42,7 @@ class SettingsDB {
     final companion = SettingCompanion.insert(
       key: setting.key,
       value: Value(setting.value),
-      updatedAt: setting.updatedAt,
+      updatedAt: Value(setting.updatedAt),
       type: setting.type,
     );
     final result = await _db.into(_db.setting).insert(companion);
