@@ -21,8 +21,7 @@ class TaskDB {
 
     var query = _db.selectOnly(_db.task);
     query.addColumns([_db.task.id.count()]);
-    query.where(_db.task.dueDate.isBetweenValues(
-        yesterday.millisecondsSinceEpoch, today.millisecondsSinceEpoch));
+    query.where(_db.task.dueDate.isBetweenValues(yesterday, today));
     var single = await query.getSingle();
     var count = single.read(_db.task.id.count()) ?? 0;
     return count;
@@ -37,7 +36,9 @@ class TaskDB {
     ]);
 
     if (startDate > 0 && endDate > 0) {
-      query.where(_db.task.dueDate.isBetweenValues(startDate, endDate));
+      query.where(_db.task.dueDate.isBetweenValues(
+          DateTime.fromMillisecondsSinceEpoch(startDate),
+          DateTime.fromMillisecondsSinceEpoch(endDate)));
     }
 
     if (taskStatus != null) {
@@ -62,7 +63,11 @@ class TaskDB {
       var label = item.readTableOrNull(_db.label);
 
       if (!taskMap.containsKey(task.id)) {
-        var myTask = Task.fromMap(task.toJson());
+        var map = task.toJson();
+        var myTask = Task.fromMap({
+          ...map,
+          'dueDate': DateTime.parse(map['dueDate']).millisecondsSinceEpoch
+        });
         myTask.projectName = project.name;
         myTask.projectColor = project.colorCode;
         myTask.labelList = [];
@@ -140,7 +145,7 @@ class TaskDB {
               title: Value(task.title),
               projectId: Value(task.projectId),
               comment: Value(task.comment),
-              dueDate: Value(task.dueDate),
+              dueDate: Value(DateTime.fromMillisecondsSinceEpoch(task.dueDate)),
               priority: Value(task.priority.index),
               status: Value(task.tasksStatus!.index),
             ),
@@ -171,7 +176,7 @@ class TaskDB {
         title: Value(task.title),
         projectId: Value(task.projectId),
         comment: Value(task.comment),
-        dueDate: Value(task.dueDate),
+        dueDate: Value(DateTime.fromMillisecondsSinceEpoch(task.dueDate)),
         priority: Value(task.priority.index),
         status: Value(task.tasksStatus!.index),
       ));
@@ -196,16 +201,21 @@ class TaskDB {
   Future<bool> updateExpiredTasks(int todayStartTime) async {
     final tomorrowStartTime = todayStartTime + Duration(days: 1).inMilliseconds;
     var query = _db.select(_db.task);
-    query.where((tbl) =>
-        tbl.dueDate.isBetweenValues(todayStartTime, tomorrowStartTime));
+    query.where((tbl) => tbl.dueDate.isBetweenValues(
+        DateTime.fromMillisecondsSinceEpoch(todayStartTime),
+        DateTime.fromMillisecondsSinceEpoch(tomorrowStartTime)));
     var future = await query.get();
     if (future.length == 0) return true;
 
     var result = await (_db.update(_db.task)
           ..where((tbl) =>
-              tbl.dueDate.isBetweenValues(todayStartTime, tomorrowStartTime) &
+              tbl.dueDate.isBetweenValues(
+                  DateTime.fromMillisecondsSinceEpoch(todayStartTime),
+                  DateTime.fromMillisecondsSinceEpoch(tomorrowStartTime)) &
               tbl.status.equals(TaskStatus.PENDING.index)))
-        .write(TaskCompanion(dueDate: Value(tomorrowStartTime)));
+        .write(TaskCompanion(
+            dueDate:
+                Value(DateTime.fromMillisecondsSinceEpoch(tomorrowStartTime))));
     return result > 0;
   }
 }

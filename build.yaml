@@ -7,7 +7,7 @@ targets:
         options:
           # Relative path to the database file
           databases:
-            default: lib/db/app_db.dart
+            app_database: lib/db/app_db.dart
 
           # Other Drift options
           store_date_time_values_as_text: true

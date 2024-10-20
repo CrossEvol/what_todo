@@ -18,7 +18,14 @@ class Task extends Table {
 
   TextColumn get comment => text().nullable()();
 
-  IntColumn get dueDate => integer().nullable()();
+  // v3
+  // IntColumn get dueDate => integer().nullable()();
+
+  // v2
+  // DateTimeColumn get updatedAt => dateTime().nullable()();
+
+  // v4
+  DateTimeColumn get dueDate => dateTime().nullable()();
 
   IntColumn get priority => integer().nullable()();
 

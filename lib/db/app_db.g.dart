@@ -287,9 +287,9 @@ class $TaskTable extends Task with TableInfo<$TaskTable, TaskData> {
   static const VerificationMeta _dueDateMeta =
       const VerificationMeta('dueDate');
   @override
-  late final GeneratedColumn<int> dueDate = GeneratedColumn<int>(
+  late final GeneratedColumn<DateTime> dueDate = GeneratedColumn<DateTime>(
       'due_date', aliasedName, true,
-      type: DriftSqlType.int, requiredDuringInsert: false);
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
   static const VerificationMeta _priorityMeta =
       const VerificationMeta('priority');
   @override
@@ -371,7 +371,7 @@ class $TaskTable extends Task with TableInfo<$TaskTable, TaskData> {
       comment: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}comment']),
       dueDate: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}due_date']),
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}due_date']),
       priority: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}priority']),
       projectId: attachedDatabase.typeMapping
@@ -391,7 +391,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
   final int id;
   final String title;
   final String? comment;
-  final int? dueDate;
+  final DateTime? dueDate;
   final int? priority;
   final int projectId;
   final int status;
@@ -412,7 +412,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
       map['comment'] = Variable<String>(comment);
     }
     if (!nullToAbsent || dueDate != null) {
-      map['due_date'] = Variable<int>(dueDate);
+      map['due_date'] = Variable<DateTime>(dueDate);
     }
     if (!nullToAbsent || priority != null) {
       map['priority'] = Variable<int>(priority);
@@ -447,7 +447,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
       id: serializer.fromJson<int>(json['id']),
       title: serializer.fromJson<String>(json['title']),
       comment: serializer.fromJson<String?>(json['comment']),
-      dueDate: serializer.fromJson<int?>(json['dueDate']),
+      dueDate: serializer.fromJson<DateTime?>(json['dueDate']),
       priority: serializer.fromJson<int?>(json['priority']),
       projectId: serializer.fromJson<int>(json['projectId']),
       status: serializer.fromJson<int>(json['status']),
@@ -460,7 +460,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
       'id': serializer.toJson<int>(id),
       'title': serializer.toJson<String>(title),
       'comment': serializer.toJson<String?>(comment),
-      'dueDate': serializer.toJson<int?>(dueDate),
+      'dueDate': serializer.toJson<DateTime?>(dueDate),
       'priority': serializer.toJson<int?>(priority),
       'projectId': serializer.toJson<int>(projectId),
       'status': serializer.toJson<int>(status),
@@ -471,7 +471,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
           {int? id,
           String? title,
           Value<String?> comment = const Value.absent(),
-          Value<int?> dueDate = const Value.absent(),
+          Value<DateTime?> dueDate = const Value.absent(),
           Value<int?> priority = const Value.absent(),
           int? projectId,
           int? status}) =>
@@ -530,7 +530,7 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
   final Value<int> id;
   final Value<String> title;
   final Value<String?> comment;
-  final Value<int?> dueDate;
+  final Value<DateTime?> dueDate;
   final Value<int?> priority;
   final Value<int> projectId;
   final Value<int> status;
@@ -558,7 +558,7 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
     Expression<int>? id,
     Expression<String>? title,
     Expression<String>? comment,
-    Expression<int>? dueDate,
+    Expression<DateTime>? dueDate,
     Expression<int>? priority,
     Expression<int>? projectId,
     Expression<int>? status,
@@ -578,7 +578,7 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
       {Value<int>? id,
       Value<String>? title,
       Value<String?>? comment,
-      Value<int?>? dueDate,
+      Value<DateTime?>? dueDate,
       Value<int?>? priority,
       Value<int>? projectId,
       Value<int>? status}) {
@@ -606,7 +606,7 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
       map['comment'] = Variable<String>(comment.value);
     }
     if (dueDate.present) {
-      map['due_date'] = Variable<int>(dueDate.value);
+      map['due_date'] = Variable<DateTime>(dueDate.value);
     }
     if (priority.present) {
       map['priority'] = Variable<int>(priority.value);
@@ -1982,7 +1982,7 @@ typedef $$TaskTableCreateCompanionBuilder = TaskCompanion Function({
   Value<int> id,
   required String title,
   Value<String?> comment,
-  Value<int?> dueDate,
+  Value<DateTime?> dueDate,
   Value<int?> priority,
   required int projectId,
   required int status,
@@ -1991,7 +1991,7 @@ typedef $$TaskTableUpdateCompanionBuilder = TaskCompanion Function({
   Value<int> id,
   Value<String> title,
   Value<String?> comment,
-  Value<int?> dueDate,
+  Value<DateTime?> dueDate,
   Value<int?> priority,
   Value<int> projectId,
   Value<int> status,
@@ -2046,7 +2046,7 @@ class $$TaskTableFilterComposer extends Composer<_$AppDatabase, $TaskTable> {
   ColumnFilters<String> get comment => $composableBuilder(
       column: $table.comment, builder: (column) => ColumnFilters(column));
 
-  ColumnFilters<int> get dueDate => $composableBuilder(
+  ColumnFilters<DateTime> get dueDate => $composableBuilder(
       column: $table.dueDate, builder: (column) => ColumnFilters(column));
 
   ColumnFilters<int> get priority => $composableBuilder(
@@ -2114,7 +2114,7 @@ class $$TaskTableOrderingComposer extends Composer<_$AppDatabase, $TaskTable> {
   ColumnOrderings<String> get comment => $composableBuilder(
       column: $table.comment, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<int> get dueDate => $composableBuilder(
+  ColumnOrderings<DateTime> get dueDate => $composableBuilder(
       column: $table.dueDate, builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<int> get priority => $composableBuilder(
@@ -2162,7 +2162,7 @@ class $$TaskTableAnnotationComposer
   GeneratedColumn<String> get comment =>
       $composableBuilder(column: $table.comment, builder: (column) => column);
 
-  GeneratedColumn<int> get dueDate =>
+  GeneratedColumn<DateTime> get dueDate =>
       $composableBuilder(column: $table.dueDate, builder: (column) => column);
 
   GeneratedColumn<int> get priority =>
@@ -2239,7 +2239,7 @@ class $$TaskTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             Value<String> title = const Value.absent(),
             Value<String?> comment = const Value.absent(),
-            Value<int?> dueDate = const Value.absent(),
+            Value<DateTime?> dueDate = const Value.absent(),
             Value<int?> priority = const Value.absent(),
             Value<int> projectId = const Value.absent(),
             Value<int> status = const Value.absent(),
@@ -2257,7 +2257,7 @@ class $$TaskTableTableManager extends RootTableManager<
             Value<int> id = const Value.absent(),
             required String title,
             Value<String?> comment = const Value.absent(),
-            Value<int?> dueDate = const Value.absent(),
+            Value<DateTime?> dueDate = const Value.absent(),
             Value<int?> priority = const Value.absent(),
             required int projectId,
             required int status,
