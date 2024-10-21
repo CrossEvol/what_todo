@@ -74,6 +74,19 @@ class FakeTaskDb implements TaskDB {
     // TODO: implement createTask
     throw UnimplementedError();
   }
+
+  @override
+  Future<List<ExportTask>> getExports() {
+    // TODO: implement getExports
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> importTasks(List<Map<String, dynamic>> taskMaps) {
+    // TODO: implement importTask
+    throw UnimplementedError();
+  }
+
 }
 
 @GenerateMocks([ProjectDB, LabelDB])

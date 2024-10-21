@@ -27,6 +27,38 @@ class TaskDB {
     return count;
   }
 
+  Future<List<ExportTask>> getExports() async {
+    var query = _db.select(_db.task).join([
+      innerJoin(_db.project, _db.project.id.equalsExp(_db.task.projectId)),
+    ]);
+
+    query.orderBy([
+      OrderingTerm.asc(_db.task.priority),
+      OrderingTerm.desc(_db.task.dueDate),
+    ]);
+
+    var result = await query.get();
+
+    Map<int, ExportTask> taskMap = {};
+
+    for (var item in result) {
+      var task = item.readTable(_db.task);
+      var project = item.readTable(_db.project);
+
+      if (!taskMap.containsKey(task.id)) {
+        var map = task.toJson();
+        var myTask = ExportTask.fromMap({
+          ...map,
+          'projectName': project.name,
+          'dueDate': DateTime.parse(map['dueDate'])
+        });
+        taskMap[task.id] = myTask;
+      }
+    }
+
+    return taskMap.values.toList();
+  }
+
   Future<List<Task>> getTasks(
       {int startDate = 0, int endDate = 0, TaskStatus? taskStatus}) async {
     var query = _db.select(_db.task).join([
@@ -217,5 +249,20 @@ class TaskDB {
             dueDate:
                 Value(DateTime.fromMillisecondsSinceEpoch(tomorrowStartTime))));
     return result > 0;
+  }
+
+  Future<void> importTasks(List<Map<String, dynamic>> taskMaps) async {
+    for (var taskMap in taskMaps) {
+      // Check if the task already exists by title
+      var existingTasks = await (_db.select(_db.task)
+            ..where((tbl) => tbl.title.equals(taskMap['title'])))
+          .get();
+
+      if (existingTasks.isEmpty) {
+        // Create a new task if it doesn't exist
+        var newTask = Task.fromImport(taskMap);
+        await createTask(newTask);
+      }
+    }
   }
 }

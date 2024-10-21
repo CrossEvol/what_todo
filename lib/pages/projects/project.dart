@@ -27,6 +27,11 @@ class Project {
     }
   }
 
+  Project.byName(this.name) {
+    this.colorName = 'Grey';
+    this.colorValue = Colors.grey.value;
+  }
+
   Project.inbox()
       : this.update(
             id: 1,

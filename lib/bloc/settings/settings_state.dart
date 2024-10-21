@@ -4,6 +4,7 @@ enum ResultStatus { success, failure, none }
 
 class SettingsState extends Equatable {
   final bool useCountBadges;
+  final bool enableImportExport;
   final ResultStatus status;
   final String updatedKey;
 
@@ -11,6 +12,7 @@ class SettingsState extends Equatable {
     required this.useCountBadges,
     required this.status,
     required this.updatedKey,
+    required this.enableImportExport,
   });
 
   @override
@@ -20,12 +22,17 @@ class SettingsState extends Equatable {
         updatedKey,
       ];
 
-  SettingsState copyWith(
-      {bool? useCountBadges, ResultStatus? status, String? updatedKey}) {
+  SettingsState copyWith({
+    bool? useCountBadges,
+    ResultStatus? status,
+    String? updatedKey,
+    bool? enableImportExport,
+  }) {
     return SettingsState(
       useCountBadges: useCountBadges ?? this.useCountBadges,
       status: status ?? this.status,
       updatedKey: updatedKey ?? this.updatedKey,
+      enableImportExport: enableImportExport ?? this.enableImportExport,
     );
   }
 
@@ -36,6 +43,7 @@ class SettingsState extends Equatable {
           other is SettingsState &&
           runtimeType == other.runtimeType &&
           useCountBadges == other.useCountBadges &&
+          enableImportExport == other.enableImportExport &&
           status == other.status &&
           updatedKey == other.updatedKey;
 
@@ -43,6 +51,7 @@ class SettingsState extends Equatable {
   int get hashCode =>
       super.hashCode ^
       useCountBadges.hashCode ^
+      enableImportExport.hashCode ^
       status.hashCode ^
       updatedKey.hashCode;
 }

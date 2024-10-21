@@ -44,6 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       },
       builder: (context, state) {
         bool useCountBadges = state.useCountBadges;
+        bool enableImportExport = state.enableImportExport;
         return Scaffold(
           appBar: AppBar(
             title: const Text('Settings'),
@@ -102,6 +103,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     initialValue: useCountBadges,
                     leading: const Icon(Icons.badge),
                     title: const Text('Enable count badges'),
+                  ),
+                  SettingsTile.switchTile(
+                    onToggle: (value) {
+                      context
+                          .read<SettingsBloc>()
+                          .add(ToggleEnableImportExport());
+                    },
+                    initialValue: enableImportExport,
+                    leading: const Icon(Icons.import_export),
+                    title: const Text('Enable Import/Export'),
                   ),
                   SettingsTile.switchTile(
                     onToggle: (value) {

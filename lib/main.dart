@@ -20,6 +20,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   setupLogger();
   if (Platform.isWindows) {
     setupWindow();

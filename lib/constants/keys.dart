@@ -25,6 +25,7 @@ class SideDrawerKeys {
 
 class SettingKeys {
   static const USE_COUNT_BADGES = 'use_count_badges';
+  static const ENABLE_IMPORT_EXPORT = 'enable_import_export';
 }
 
 class AddProjectKeys {
@@ -62,4 +63,6 @@ class CompletedTaskPageKeys {
   static const COMPLETED_TASKS = 'completed_tasks';
   static const UNCOMPLETED_TASKS = 'uncompleted_tasks';
   static const POSTPONE_TASKS = 'postpone_tasks';
+  static const EXPORT_DATA = 'export_data';
+  static const IMPORT_DATA = 'import_data';
 }

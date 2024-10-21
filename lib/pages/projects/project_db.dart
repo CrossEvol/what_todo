@@ -78,4 +78,19 @@ class ProjectDB {
         .go();
     return affectedRows > 0;
   }
+
+  Future<void> importProjects(Set<String> projectNames) async {
+    for (var projectName in projectNames) {
+      // Check if the project already exists
+      var existingProjects = await (_db.select(_db.project)
+            ..where((tbl) => tbl.name.equals(projectName)))
+          .get();
+
+      if (existingProjects.isEmpty) {
+        // Create a new project if it doesn't exist
+        var newProject = Project.byName(projectName);
+        await upsertProject(newProject);
+      }
+    }
+  }
 }

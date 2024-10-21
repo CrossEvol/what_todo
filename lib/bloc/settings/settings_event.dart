@@ -13,3 +13,9 @@ final class ToggleUseCountBadgesEvent extends SettingsEvent {
   @override
   List<Object?> get props => [];
 }
+
+final class ToggleEnableImportExport extends SettingsEvent {
+  @override
+  List<Object?> get props => [];
+}
+

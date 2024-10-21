@@ -1,14 +1,20 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
+import 'package:flutter_app/bloc/project/project_bloc.dart';
+import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/about/about_us.dart';
 import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/home/screen_enum.dart';
 import 'package:flutter_app/pages/home/side_drawer.dart';
 import 'package:flutter_app/pages/labels/label_widget.dart';
+import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/projects/project_widget.dart';
 import 'package:flutter_app/pages/tasks/add_task.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
@@ -20,9 +26,13 @@ import 'package:flutter_app/pages/tasks/task_uncompleted/task_uncompleted.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_app/pages/tasks/task_widgets.dart';
 import 'package:flutter_app/constants/keys.dart';
+import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:path/path.dart' as p;
 
 class AdaptiveHomePage extends StatelessWidget {
   const AdaptiveHomePage({
@@ -174,9 +184,17 @@ class HomePage extends StatelessWidget {
           case MenuItem.TASK_POSTPONE:
             context.read<TaskBloc>().add(PostponeTasksEvent());
             break;
+          case MenuItem.EXPORTS:
+            await _export(context);
+            break;
+          case MenuItem.IMPORTS:
+            _import(context);
+            break;
         }
       },
       itemBuilder: (BuildContext context) {
+        final enableImportExport =
+            context.read<SettingsBloc>().state.enableImportExport;
         return <PopupMenuEntry<MenuItem>>[
           const PopupMenuItem<MenuItem>(
             value: MenuItem.TASK_COMPLETED,
@@ -198,12 +216,150 @@ class HomePage extends StatelessWidget {
                 child: const Text(
                   'Postpone Tasks',
                   key: ValueKey(CompletedTaskPageKeys.POSTPONE_TASKS),
-                ))
+                )),
+          if (enableImportExport)
+            const PopupMenuItem<MenuItem>(
+              value: MenuItem.EXPORTS,
+              child: const Text(
+                'Exports',
+                key: ValueKey(CompletedTaskPageKeys.EXPORT_DATA),
+              ),
+            ),
+          if (enableImportExport)
+            const PopupMenuItem<MenuItem>(
+              value: MenuItem.IMPORTS,
+              child: const Text(
+                'Imports',
+                key: ValueKey(CompletedTaskPageKeys.IMPORT_DATA),
+              ),
+            ),
         ];
+      },
+    );
+  }
+
+  Future<void> _export(BuildContext context) async {
+    try {
+      var tasks = await TaskDB.get().getExports();
+      const encoder = JsonEncoder.withIndent('  ');
+      var json = encoder.convert(tasks.map((t) => t.toMap()).toList());
+      var importPath = await _getImportPath();
+
+      if (importPath != null) {
+        var file = File('$importPath');
+        await file.writeAsString(json);
+      }
+      showSnackbar(context, 'Saved to $importPath.');
+    } catch (e) {
+      showSnackbar(context, 'Error', materialColor: Colors.red);
+    }
+  }
+
+  Future<String?> _getImportPath() async {
+    const filename = 'tasks.json';
+    String? dest;
+
+    if (Platform.isAndroid) {
+      var directory = await getExternalStorageDirectory();
+      dest = directory?.path;
+    } else if (Platform.isWindows) {
+      var directory = await getApplicationDocumentsDirectory();
+      dest = directory.path;
+    }
+
+    if (dest == null) {
+      return null;
+    }
+
+    return p.join(dest, filename);
+  }
+
+  Future<void> _import(BuildContext context) async {
+    // Call _getImportPath() before showing the dialog
+    String? importPath = await _getImportPath();
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // Initialize the controller with the import path
+        TextEditingController filePathController =
+            TextEditingController(text: importPath ?? '');
+        return AlertDialog(
+          title: Text('Import File'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: filePathController,
+                decoration: InputDecoration(
+                  labelText: 'File Path',
+                ),
+              ),
+              SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () async {
+                  FilePickerResult? result =
+                      await FilePicker.platform.pickFiles();
+                  if (result != null) {
+                    filePathController.text = result.files.single.path!;
+                  }
+                },
+                child: Text('Pick File'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                if (filePathController.text.isNotEmpty) {
+                  File file = File(filePathController.text);
+                  String fileContent = await file.readAsString();
+                  List<dynamic> jsonData = jsonDecode(fileContent);
+                  Set<String> projectNames = {};
+                  List<Map<String, dynamic>> taskData = [];
+                  for (var task in jsonData) {
+                    if (task is Map<String, dynamic>) {
+                      projectNames.add(task['projectName']);
+                      taskData.add(task);
+                    }
+                  }
+                  await ProjectDB.get().importProjects(projectNames);
+                  if (projectNames.isNotEmpty) {
+                    context.read<ProjectBloc>().add(RefreshProjectsEvent());
+                    context.read<AdminBloc>().add(AdminLoadProjectsEvent());
+                  }
+                  await TaskDB.get().importTasks(taskData);
+                  var filter = context.read<HomeBloc>().state.filter;
+                  if (filter != null) {
+                    context
+                        .read<TaskBloc>()
+                        .add(FilterTasksEvent(filter: filter));
+                  }
+                  Navigator.of(context).pop();
+                } else {
+                  showSnackbar(context, 'No file selected',
+                      materialColor: Colors.red);
+                }
+              },
+              child: Text('Confirm'),
+            ),
+          ],
+        );
       },
     );
   }
 }
 
 // This is the type used by the popup menu below.
-enum MenuItem { TASK_COMPLETED, TASK_UNCOMPLETED, TASK_POSTPONE }
+enum MenuItem {
+  TASK_COMPLETED,
+  TASK_UNCOMPLETED,
+  TASK_POSTPONE,
+  EXPORTS,
+  IMPORTS
+}

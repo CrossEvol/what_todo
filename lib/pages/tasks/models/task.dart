@@ -66,6 +66,17 @@ class Task {
           tasksStatus: TaskStatus.values[map[dbStatus]],
         );
 
+  Task.fromImport(Map<String, dynamic> map)
+      : this(
+          title: map[dbTitle],
+          projectId: 1,
+          comment: map[dbComment],
+          dueDate:
+              DateTime.parse(map[dbDueDate] as String).millisecondsSinceEpoch,
+          priority: PriorityStatus.values[map[dbPriority]],
+          tasksStatus: TaskStatus.values[map[dbStatus]],
+        );
+
   Map<String, dynamic> toMap() {
     return {
       Task.dbId: id,
@@ -79,9 +90,63 @@ class Task {
       Task.dbProjectID: projectId,
     };
   }
+
+  Task({
+    required this.title,
+    required this.comment,
+    this.id,
+    required this.dueDate,
+    required this.projectId,
+    required this.priority,
+    this.tasksStatus,
+  });
 }
 
 enum TaskStatus {
   PENDING,
   COMPLETE,
+}
+
+class ExportTask {
+  final int id;
+  final String title;
+  final String comment;
+  final DateTime dueDate;
+  final int priority;
+  final int status;
+  final String projectName;
+
+  const ExportTask({
+    required this.id,
+    required this.title,
+    required this.comment,
+    required this.dueDate,
+    required this.priority,
+    required this.status,
+    required this.projectName,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': this.id,
+      'title': this.title,
+      'comment': this.comment,
+      'dueDate': this.dueDate.toIso8601String(),
+      'priority': this.priority,
+      'status': this.status,
+      'projectName': this.projectName,
+    };
+  }
+
+  factory ExportTask.fromMap(Map<String, dynamic> map) {
+    return ExportTask(
+      id: map['id'] as int,
+      title: map['title'] as String,
+      comment: map['comment'] as String,
+      dueDate: map['dueDate'] as DateTime,
+      priority: map['priority'] as int,
+      status: map['status'] as int,
+      projectName: map['projectName'] as String,
+    );
+  }
 }

@@ -13,5 +13,9 @@ void main() {
     print(DateTime(now.year, now.month, now.day, 23, 59));
     print(DateTime(now.year, now.month, now.day, 23, 59).millisecondsSinceEpoch);
     print(DateTime(now.year, now.month, now.day + 1));
+    print('---------------------------------->');
+    print(now.toString());
+    print(now.toIso8601String());
+    print(now.toLocal().toString());
   });
 }
