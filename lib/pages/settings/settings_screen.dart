@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
+import 'package:flutter_app/providers/theme_provider.dart';
+import 'package:flutter_app/styles/theme_data_style.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -13,8 +16,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool useCustomTheme = false;
-
-  // bool useCountBadges = false;
 
   final platformsMap = <DevicePlatform, String>{
     DevicePlatform.device: 'Default',
@@ -45,6 +46,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       builder: (context, state) {
         bool useCountBadges = state.useCountBadges;
         bool enableImportExport = state.enableImportExport;
+        final themeProvider = Provider.of<ThemeProvider>(context);
         return Scaffold(
           appBar: AppBar(
             title: const Text('Settings'),
@@ -113,6 +115,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     initialValue: enableImportExport,
                     leading: const Icon(Icons.import_export),
                     title: const Text('Enable Import/Export'),
+                  ),
+                  SettingsTile.switchTile(
+                    onToggle: (value) {
+                      themeProvider.changeTheme();
+                    },
+                    initialValue: themeProvider.themeDataStyle == ThemeDataStyle.dark,
+                    leading: const Icon(Icons.style_sharp),
+                    title: const Text('Enable Dark Mode'),
                   ),
                   SettingsTile.switchTile(
                     onToggle: (value) {

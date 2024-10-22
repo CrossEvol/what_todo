@@ -14,9 +14,11 @@ import 'package:flutter_app/pages/profile/profile_db.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
+import 'package:flutter_app/providers/theme_provider.dart';
 import 'package:flutter_app/router/router.dart';
 import 'package:flutter_app/utils/logger_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() {
@@ -28,7 +30,10 @@ void main() {
   // https://drift.simonbinder.eu/docs/getting-started/advanced_dart_tables/#datetime-options
   driftRuntimeOptions.defaultSerializer =
       ValueSerializer.defaults(serializeDateTimeValuesAsString: true);
-  runApp(MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => ThemeProvider(),
+    child: MyApp(),
+  ));
 }
 
 const double windowWidth = 400;
@@ -57,11 +62,6 @@ void setupWindow() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    const primaryColor = Color(0xFF3543DE);
-    final theme = ThemeData(
-      primaryColor: primaryColor,
-      visualDensity: VisualDensity.adaptivePlatformDensity,
-    );
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -99,12 +99,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
-        theme: theme.copyWith(
-          colorScheme: theme.colorScheme.copyWith(
-            secondary: Colors.purple,
-            primary: primaryColor,
-          ),
-        ),
+        theme: Provider.of<ThemeProvider>(context).themeDataStyle,
         routerConfig: goRouter,
       ),
     );
