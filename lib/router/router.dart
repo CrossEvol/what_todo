@@ -7,6 +7,7 @@ import 'package:flutter_app/pages/home/home.dart';
 import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/labels/label_grid.dart';
 import 'package:flutter_app/pages/labels/label_widget.dart';
+import 'package:flutter_app/pages/order/order_page.dart';
 import 'package:flutter_app/pages/profile/profile_page.dart';
 import 'package:flutter_app/pages/projects/project_grid.dart';
 import 'package:flutter_app/pages/projects/project_widget.dart';
@@ -32,6 +33,12 @@ final GoRouter goRouter = GoRouter(
         );
       },
       routes: <RouteBase>[
+        GoRoute(
+          path: 'order',
+          builder: (BuildContext context, GoRouterState state) {
+            return OrderApp();
+          },
+        ),
         GoRoute(
           path: 'about',
           builder: (BuildContext context, GoRouterState state) {

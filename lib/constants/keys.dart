@@ -65,4 +65,5 @@ class CompletedTaskPageKeys {
   static const POSTPONE_TASKS = 'postpone_tasks';
   static const EXPORT_DATA = 'export_data';
   static const IMPORT_DATA = 'import_data';
+  static const ALL_TO_TODAY = 'all_to_today';
 }

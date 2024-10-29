@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_app/db/app_db.dart';
@@ -22,6 +24,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<LoadTasksByProjectEvent>(_onLoadTasksByProject);
     on<LoadTasksByLabelEvent>(_onLoadTasksByLabel);
     on<PostponeTasksEvent>(_onPostponeTasks);
+    on<PushAllToTodayEvent>(_onPushAllToToday);
     on<FilterTasksEvent>(_onFilterTasks);
   }
 
@@ -208,6 +211,20 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         return await _filterByProject(_lastFilterStatus.projectId!);
       case FilterStatus.BY_STATUS:
         return await _filterByStatus(_lastFilterStatus.status!);
+    }
+  }
+
+  FutureOr<void> _onPushAllToToday(
+      PushAllToTodayEvent event, Emitter<TaskState> emit) async {
+    emit(TaskLoading());
+    try {
+      var flag = await _taskDB.updateInboxTasksToToday();
+      if (flag) {
+        final tasks = await _filterTodayTasks();
+        emit(TaskLoaded(tasks));
+      }
+    } catch (e) {
+      emit(TaskError(e.toString()));
     }
   }
 }

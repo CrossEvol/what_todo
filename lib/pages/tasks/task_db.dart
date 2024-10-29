@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:flutter_app/db/app_db.dart';
+import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 
 class TaskDB {
@@ -248,6 +249,27 @@ class TaskDB {
         .write(TaskCompanion(
             dueDate:
                 Value(DateTime.fromMillisecondsSinceEpoch(tomorrowStartTime))));
+    return result > 0;
+  }
+
+  Future<bool> updateInboxTasksToToday() async {
+    final inboxProject = Project.inbox();
+    final projectID = _db.selectOnly(_db.project)
+      ..addColumns([_db.project.id])
+      ..where(_db.project.name.equals(inboxProject.name))
+      ..limit(1);
+
+    var now = DateTime.now();
+    var today = DateTime(now.year, now.month, now.day);
+    var query = _db.select(_db.task)
+      ..where((row) => row.projectId.equalsExp(subqueryExpression(projectID)));
+    var records = await query.get();
+    if (records.length == 0) return true;
+
+    var result = await ((_db.update(_db.task)
+          ..where(
+              (tbl) => tbl.projectId.equalsExp(subqueryExpression(projectID))))
+        .write(TaskCompanion(dueDate: Value(today))));
     return result > 0;
   }
 

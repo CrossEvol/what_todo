@@ -108,6 +108,16 @@ class _SideDrawerState extends State<SideDrawer> {
           ),
           ListTile(
             onTap: () {
+              context.go('/order');
+            },
+            leading: Icon(Icons.unarchive_sharp),
+            title: Text(
+              'OrderTest',
+              key: ValueKey(SideDrawerKeys.UNKNOWN),
+            ),
+          ),
+          ListTile(
+            onTap: () {
               showSnackbar(context, 'Unknown has not implemented.',
                   materialColor: Colors.teal);
             },

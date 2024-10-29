@@ -190,6 +190,12 @@ class HomePage extends StatelessWidget {
           case MenuItem.IMPORTS:
             _import(context);
             break;
+          case MenuItem.ALL_TO_TODAY:
+            context.read<TaskBloc>().add(PushAllToTodayEvent());
+            context
+                .read<HomeBloc>()
+                .add(ApplyFilterEvent("Today", Filter.byToday()));
+            break;
         }
       },
       itemBuilder: (BuildContext context) {
@@ -210,6 +216,13 @@ class HomePage extends StatelessWidget {
               key: ValueKey(CompletedTaskPageKeys.UNCOMPLETED_TASKS),
             ),
           ),
+          if (title == 'Inbox')
+            const PopupMenuItem<MenuItem>(
+                value: MenuItem.ALL_TO_TODAY,
+                child: const Text(
+                  'All to Today',
+                  key: ValueKey(CompletedTaskPageKeys.ALL_TO_TODAY),
+                )),
           if (title == 'Today')
             const PopupMenuItem<MenuItem>(
                 value: MenuItem.TASK_POSTPONE,
@@ -361,5 +374,6 @@ enum MenuItem {
   TASK_UNCOMPLETED,
   TASK_POSTPONE,
   EXPORTS,
-  IMPORTS
+  IMPORTS,
+  ALL_TO_TODAY,
 }

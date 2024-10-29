@@ -31,6 +31,8 @@ class LoadTasksByProjectEvent extends TaskEvent {
 
 class PostponeTasksEvent extends TaskEvent {}
 
+class PushAllToTodayEvent extends TaskEvent {}
+
 class AddTaskEvent extends TaskEvent {
   final Task task;
   final List<int> labelIds;
