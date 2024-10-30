@@ -33,6 +33,9 @@ class Task extends Table {
       .customConstraint('NOT NULL REFERENCES project(id) ON DELETE CASCADE')();
 
   IntColumn get status => integer()();
+
+  // v7
+  IntColumn get order => integer().withDefault(const Constant(0))();
 }
 
 class Label extends Table {

@@ -309,9 +309,16 @@ class $TaskTable extends Task with TableInfo<$TaskTable, TaskData> {
   late final GeneratedColumn<int> status = GeneratedColumn<int>(
       'status', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+  static const VerificationMeta _orderMeta = const VerificationMeta('order');
+  @override
+  late final GeneratedColumn<int> order = GeneratedColumn<int>(
+      'order', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   @override
   List<GeneratedColumn> get $columns =>
-      [id, title, comment, dueDate, priority, projectId, status];
+      [id, title, comment, dueDate, priority, projectId, status, order];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -355,6 +362,10 @@ class $TaskTable extends Task with TableInfo<$TaskTable, TaskData> {
     } else if (isInserting) {
       context.missing(_statusMeta);
     }
+    if (data.containsKey('order')) {
+      context.handle(
+          _orderMeta, order.isAcceptableOrUnknown(data['order']!, _orderMeta));
+    }
     return context;
   }
 
@@ -378,6 +389,8 @@ class $TaskTable extends Task with TableInfo<$TaskTable, TaskData> {
           .read(DriftSqlType.int, data['${effectivePrefix}project_id'])!,
       status: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}status'])!,
+      order: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}order'])!,
     );
   }
 
@@ -395,6 +408,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
   final int? priority;
   final int projectId;
   final int status;
+  final int order;
   const TaskData(
       {required this.id,
       required this.title,
@@ -402,7 +416,8 @@ class TaskData extends DataClass implements Insertable<TaskData> {
       this.dueDate,
       this.priority,
       required this.projectId,
-      required this.status});
+      required this.status,
+      required this.order});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -419,6 +434,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
     }
     map['project_id'] = Variable<int>(projectId);
     map['status'] = Variable<int>(status);
+    map['order'] = Variable<int>(order);
     return map;
   }
 
@@ -437,6 +453,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
           : Value(priority),
       projectId: Value(projectId),
       status: Value(status),
+      order: Value(order),
     );
   }
 
@@ -451,6 +468,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
       priority: serializer.fromJson<int?>(json['priority']),
       projectId: serializer.fromJson<int>(json['projectId']),
       status: serializer.fromJson<int>(json['status']),
+      order: serializer.fromJson<int>(json['order']),
     );
   }
   @override
@@ -464,6 +482,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
       'priority': serializer.toJson<int?>(priority),
       'projectId': serializer.toJson<int>(projectId),
       'status': serializer.toJson<int>(status),
+      'order': serializer.toJson<int>(order),
     };
   }
 
@@ -474,7 +493,8 @@ class TaskData extends DataClass implements Insertable<TaskData> {
           Value<DateTime?> dueDate = const Value.absent(),
           Value<int?> priority = const Value.absent(),
           int? projectId,
-          int? status}) =>
+          int? status,
+          int? order}) =>
       TaskData(
         id: id ?? this.id,
         title: title ?? this.title,
@@ -483,6 +503,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
         priority: priority.present ? priority.value : this.priority,
         projectId: projectId ?? this.projectId,
         status: status ?? this.status,
+        order: order ?? this.order,
       );
   TaskData copyWithCompanion(TaskCompanion data) {
     return TaskData(
@@ -493,6 +514,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
       priority: data.priority.present ? data.priority.value : this.priority,
       projectId: data.projectId.present ? data.projectId.value : this.projectId,
       status: data.status.present ? data.status.value : this.status,
+      order: data.order.present ? data.order.value : this.order,
     );
   }
 
@@ -505,14 +527,15 @@ class TaskData extends DataClass implements Insertable<TaskData> {
           ..write('dueDate: $dueDate, ')
           ..write('priority: $priority, ')
           ..write('projectId: $projectId, ')
-          ..write('status: $status')
+          ..write('status: $status, ')
+          ..write('order: $order')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, title, comment, dueDate, priority, projectId, status);
+  int get hashCode => Object.hash(
+      id, title, comment, dueDate, priority, projectId, status, order);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -523,7 +546,8 @@ class TaskData extends DataClass implements Insertable<TaskData> {
           other.dueDate == this.dueDate &&
           other.priority == this.priority &&
           other.projectId == this.projectId &&
-          other.status == this.status);
+          other.status == this.status &&
+          other.order == this.order);
 }
 
 class TaskCompanion extends UpdateCompanion<TaskData> {
@@ -534,6 +558,7 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
   final Value<int?> priority;
   final Value<int> projectId;
   final Value<int> status;
+  final Value<int> order;
   const TaskCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
@@ -542,6 +567,7 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
     this.priority = const Value.absent(),
     this.projectId = const Value.absent(),
     this.status = const Value.absent(),
+    this.order = const Value.absent(),
   });
   TaskCompanion.insert({
     this.id = const Value.absent(),
@@ -551,6 +577,7 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
     this.priority = const Value.absent(),
     required int projectId,
     required int status,
+    this.order = const Value.absent(),
   })  : title = Value(title),
         projectId = Value(projectId),
         status = Value(status);
@@ -562,6 +589,7 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
     Expression<int>? priority,
     Expression<int>? projectId,
     Expression<int>? status,
+    Expression<int>? order,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -571,6 +599,7 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
       if (priority != null) 'priority': priority,
       if (projectId != null) 'project_id': projectId,
       if (status != null) 'status': status,
+      if (order != null) 'order': order,
     });
   }
 
@@ -581,7 +610,8 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
       Value<DateTime?>? dueDate,
       Value<int?>? priority,
       Value<int>? projectId,
-      Value<int>? status}) {
+      Value<int>? status,
+      Value<int>? order}) {
     return TaskCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
@@ -590,6 +620,7 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
       priority: priority ?? this.priority,
       projectId: projectId ?? this.projectId,
       status: status ?? this.status,
+      order: order ?? this.order,
     );
   }
 
@@ -617,6 +648,9 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
     if (status.present) {
       map['status'] = Variable<int>(status.value);
     }
+    if (order.present) {
+      map['order'] = Variable<int>(order.value);
+    }
     return map;
   }
 
@@ -629,7 +663,8 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
           ..write('dueDate: $dueDate, ')
           ..write('priority: $priority, ')
           ..write('projectId: $projectId, ')
-          ..write('status: $status')
+          ..write('status: $status, ')
+          ..write('order: $order')
           ..write(')'))
         .toString();
   }
@@ -2167,6 +2202,7 @@ typedef $$TaskTableCreateCompanionBuilder = TaskCompanion Function({
   Value<int?> priority,
   required int projectId,
   required int status,
+  Value<int> order,
 });
 typedef $$TaskTableUpdateCompanionBuilder = TaskCompanion Function({
   Value<int> id,
@@ -2176,6 +2212,7 @@ typedef $$TaskTableUpdateCompanionBuilder = TaskCompanion Function({
   Value<int?> priority,
   Value<int> projectId,
   Value<int> status,
+  Value<int> order,
 });
 
 final class $$TaskTableReferences
@@ -2235,6 +2272,9 @@ class $$TaskTableFilterComposer extends Composer<_$AppDatabase, $TaskTable> {
 
   ColumnFilters<int> get status => $composableBuilder(
       column: $table.status, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get order => $composableBuilder(
+      column: $table.order, builder: (column) => ColumnFilters(column));
 
   $$ProjectTableFilterComposer get projectId {
     final $$ProjectTableFilterComposer composer = $composerBuilder(
@@ -2304,6 +2344,9 @@ class $$TaskTableOrderingComposer extends Composer<_$AppDatabase, $TaskTable> {
   ColumnOrderings<int> get status => $composableBuilder(
       column: $table.status, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<int> get order => $composableBuilder(
+      column: $table.order, builder: (column) => ColumnOrderings(column));
+
   $$ProjectTableOrderingComposer get projectId {
     final $$ProjectTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -2351,6 +2394,9 @@ class $$TaskTableAnnotationComposer
 
   GeneratedColumn<int> get status =>
       $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<int> get order =>
+      $composableBuilder(column: $table.order, builder: (column) => column);
 
   $$ProjectTableAnnotationComposer get projectId {
     final $$ProjectTableAnnotationComposer composer = $composerBuilder(
@@ -2424,6 +2470,7 @@ class $$TaskTableTableManager extends RootTableManager<
             Value<int?> priority = const Value.absent(),
             Value<int> projectId = const Value.absent(),
             Value<int> status = const Value.absent(),
+            Value<int> order = const Value.absent(),
           }) =>
               TaskCompanion(
             id: id,
@@ -2433,6 +2480,7 @@ class $$TaskTableTableManager extends RootTableManager<
             priority: priority,
             projectId: projectId,
             status: status,
+            order: order,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -2442,6 +2490,7 @@ class $$TaskTableTableManager extends RootTableManager<
             Value<int?> priority = const Value.absent(),
             required int projectId,
             required int status,
+            Value<int> order = const Value.absent(),
           }) =>
               TaskCompanion.insert(
             id: id,
@@ -2451,6 +2500,7 @@ class $$TaskTableTableManager extends RootTableManager<
             priority: priority,
             projectId: projectId,
             status: status,
+            order: order,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) =>

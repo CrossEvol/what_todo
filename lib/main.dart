@@ -9,6 +9,7 @@ import 'package:flutter_app/bloc/profile/profile_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
+import 'package:flutter_app/db/app_db.dart';
 import 'package:flutter_app/pages/drift_schema/drift_schema_db.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/profile/profile_db.dart';
@@ -31,18 +32,38 @@ void main() async {
   // https://drift.simonbinder.eu/docs/getting-started/advanced_dart_tables/#datetime-options
   driftRuntimeOptions.defaultSerializer =
       ValueSerializer.defaults(serializeDateTimeValuesAsString: true);
-  await migrate();
+  await _migrate();
   runApp(ChangeNotifierProvider(
     create: (context) => ThemeProvider(),
     child: MyApp(),
   ));
 }
 
-Future<void> migrate() async {
+Future<void> _migrate() async {
   var schemaDB = DriftSchemaDB.get();
   var existsSchema = await schemaDB.exists();
   if (!existsSchema) {
     schemaDB.createSchema(1);
+  }
+  // 1->2
+  if ((await schemaDB.getMaximalVersion()) == 1) {
+    if ((await schemaDB.shouldMigrate(1))) {
+      schemaDB.createSchema(2);
+      AppDatabase().customStatement(r'''
+      WITH numbered_rows AS (
+        SELECT 
+          id,
+          ROW_NUMBER() OVER (ORDER BY id) AS row_num
+        FROM task
+      )
+      UPDATE task
+      SET "order" = (
+        SELECT row_num * 1000 
+        FROM numbered_rows 
+        WHERE numbered_rows.id = task.id
+      );
+      ''');
+    }
   }
 }
 

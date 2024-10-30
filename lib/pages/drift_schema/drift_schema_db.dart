@@ -42,7 +42,8 @@ class DriftSchemaDB {
 
   Future<int> getMaximalVersion() async {
     var result = await (_db.select(_db.driftSchema)
-          ..orderBy([(tbl) => OrderingTerm.desc(tbl.version)]))
+          ..orderBy([(tbl) => OrderingTerm.desc(tbl.version)])
+          ..limit(1))
         .getSingleOrNull();
     return result == null ? 0 : result.version;
   }
