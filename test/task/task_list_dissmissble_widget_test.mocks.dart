@@ -40,6 +40,15 @@ class MockTaskDB extends _i1.Mock implements _i2.TaskDB {
       ) as _i3.Future<int>);
 
   @override
+  _i3.Future<List<_i4.ExportTask>> getExports() => (super.noSuchMethod(
+        Invocation.method(
+          #getExports,
+          [],
+        ),
+        returnValue: _i3.Future<List<_i4.ExportTask>>.value(<_i4.ExportTask>[]),
+      ) as _i3.Future<List<_i4.ExportTask>>);
+
+  @override
   _i3.Future<List<_i4.Task>> getTasks({
     int? startDate = 0,
     int? endDate = 0,
@@ -148,4 +157,24 @@ class MockTaskDB extends _i1.Mock implements _i2.TaskDB {
         ),
         returnValue: _i3.Future<bool>.value(false),
       ) as _i3.Future<bool>);
+
+  @override
+  _i3.Future<bool> updateInboxTasksToToday() => (super.noSuchMethod(
+        Invocation.method(
+          #updateInboxTasksToToday,
+          [],
+        ),
+        returnValue: _i3.Future<bool>.value(false),
+      ) as _i3.Future<bool>);
+
+  @override
+  _i3.Future<void> importTasks(List<Map<String, dynamic>>? taskMaps) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #importTasks,
+          [taskMaps],
+        ),
+        returnValue: _i3.Future<void>.value(),
+        returnValueForMissingStub: _i3.Future<void>.value(),
+      ) as _i3.Future<void>);
 }

@@ -1705,6 +1705,186 @@ class SettingCompanion extends UpdateCompanion<SettingData> {
   }
 }
 
+class $DriftSchemaTable extends DriftSchema
+    with TableInfo<$DriftSchemaTable, DriftSchemaData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DriftSchemaTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _versionMeta =
+      const VerificationMeta('version');
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+      'version', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
+  @override
+  List<GeneratedColumn> get $columns => [id, version];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'drift_schema';
+  @override
+  VerificationContext validateIntegrity(Insertable<DriftSchemaData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('version')) {
+      context.handle(_versionMeta,
+          version.isAcceptableOrUnknown(data['version']!, _versionMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DriftSchemaData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DriftSchemaData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      version: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}version'])!,
+    );
+  }
+
+  @override
+  $DriftSchemaTable createAlias(String alias) {
+    return $DriftSchemaTable(attachedDatabase, alias);
+  }
+}
+
+class DriftSchemaData extends DataClass implements Insertable<DriftSchemaData> {
+  final int id;
+  final int version;
+  const DriftSchemaData({required this.id, required this.version});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['version'] = Variable<int>(version);
+    return map;
+  }
+
+  DriftSchemaCompanion toCompanion(bool nullToAbsent) {
+    return DriftSchemaCompanion(
+      id: Value(id),
+      version: Value(version),
+    );
+  }
+
+  factory DriftSchemaData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DriftSchemaData(
+      id: serializer.fromJson<int>(json['id']),
+      version: serializer.fromJson<int>(json['version']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'version': serializer.toJson<int>(version),
+    };
+  }
+
+  DriftSchemaData copyWith({int? id, int? version}) => DriftSchemaData(
+        id: id ?? this.id,
+        version: version ?? this.version,
+      );
+  DriftSchemaData copyWithCompanion(DriftSchemaCompanion data) {
+    return DriftSchemaData(
+      id: data.id.present ? data.id.value : this.id,
+      version: data.version.present ? data.version.value : this.version,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftSchemaData(')
+          ..write('id: $id, ')
+          ..write('version: $version')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, version);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DriftSchemaData &&
+          other.id == this.id &&
+          other.version == this.version);
+}
+
+class DriftSchemaCompanion extends UpdateCompanion<DriftSchemaData> {
+  final Value<int> id;
+  final Value<int> version;
+  const DriftSchemaCompanion({
+    this.id = const Value.absent(),
+    this.version = const Value.absent(),
+  });
+  DriftSchemaCompanion.insert({
+    this.id = const Value.absent(),
+    this.version = const Value.absent(),
+  });
+  static Insertable<DriftSchemaData> custom({
+    Expression<int>? id,
+    Expression<int>? version,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (version != null) 'version': version,
+    });
+  }
+
+  DriftSchemaCompanion copyWith({Value<int>? id, Value<int>? version}) {
+    return DriftSchemaCompanion(
+      id: id ?? this.id,
+      version: version ?? this.version,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftSchemaCompanion(')
+          ..write('id: $id, ')
+          ..write('version: $version')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -1714,12 +1894,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TaskLabelTable taskLabel = $TaskLabelTable(this);
   late final $ProfileTable profile = $ProfileTable(this);
   late final $SettingTable setting = $SettingTable(this);
+  late final $DriftSchemaTable driftSchema = $DriftSchemaTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [project, task, label, taskLabel, profile, setting];
+      [project, task, label, taskLabel, profile, setting, driftSchema];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
         [
@@ -3191,6 +3372,128 @@ typedef $$SettingTableProcessedTableManager = ProcessedTableManager<
     (SettingData, BaseReferences<_$AppDatabase, $SettingTable, SettingData>),
     SettingData,
     PrefetchHooks Function()>;
+typedef $$DriftSchemaTableCreateCompanionBuilder = DriftSchemaCompanion
+    Function({
+  Value<int> id,
+  Value<int> version,
+});
+typedef $$DriftSchemaTableUpdateCompanionBuilder = DriftSchemaCompanion
+    Function({
+  Value<int> id,
+  Value<int> version,
+});
+
+class $$DriftSchemaTableFilterComposer
+    extends Composer<_$AppDatabase, $DriftSchemaTable> {
+  $$DriftSchemaTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnFilters(column));
+}
+
+class $$DriftSchemaTableOrderingComposer
+    extends Composer<_$AppDatabase, $DriftSchemaTable> {
+  $$DriftSchemaTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<int> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnOrderings(column));
+}
+
+class $$DriftSchemaTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DriftSchemaTable> {
+  $$DriftSchemaTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+}
+
+class $$DriftSchemaTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $DriftSchemaTable,
+    DriftSchemaData,
+    $$DriftSchemaTableFilterComposer,
+    $$DriftSchemaTableOrderingComposer,
+    $$DriftSchemaTableAnnotationComposer,
+    $$DriftSchemaTableCreateCompanionBuilder,
+    $$DriftSchemaTableUpdateCompanionBuilder,
+    (
+      DriftSchemaData,
+      BaseReferences<_$AppDatabase, $DriftSchemaTable, DriftSchemaData>
+    ),
+    DriftSchemaData,
+    PrefetchHooks Function()> {
+  $$DriftSchemaTableTableManager(_$AppDatabase db, $DriftSchemaTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DriftSchemaTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DriftSchemaTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DriftSchemaTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> version = const Value.absent(),
+          }) =>
+              DriftSchemaCompanion(
+            id: id,
+            version: version,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<int> version = const Value.absent(),
+          }) =>
+              DriftSchemaCompanion.insert(
+            id: id,
+            version: version,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$DriftSchemaTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $DriftSchemaTable,
+    DriftSchemaData,
+    $$DriftSchemaTableFilterComposer,
+    $$DriftSchemaTableOrderingComposer,
+    $$DriftSchemaTableAnnotationComposer,
+    $$DriftSchemaTableCreateCompanionBuilder,
+    $$DriftSchemaTableUpdateCompanionBuilder,
+    (
+      DriftSchemaData,
+      BaseReferences<_$AppDatabase, $DriftSchemaTable, DriftSchemaData>
+    ),
+    DriftSchemaData,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -3206,4 +3509,6 @@ class $AppDatabaseManager {
       $$ProfileTableTableManager(_db, _db.profile);
   $$SettingTableTableManager get setting =>
       $$SettingTableTableManager(_db, _db.setting);
+  $$DriftSchemaTableTableManager get driftSchema =>
+      $$DriftSchemaTableTableManager(_db, _db.driftSchema);
 }

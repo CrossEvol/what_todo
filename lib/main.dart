@@ -9,6 +9,7 @@ import 'package:flutter_app/bloc/profile/profile_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
+import 'package:flutter_app/pages/drift_schema/drift_schema_db.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/profile/profile_db.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
@@ -21,7 +22,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupLogger();
   if (Platform.isWindows) {
@@ -30,10 +31,19 @@ void main() {
   // https://drift.simonbinder.eu/docs/getting-started/advanced_dart_tables/#datetime-options
   driftRuntimeOptions.defaultSerializer =
       ValueSerializer.defaults(serializeDateTimeValuesAsString: true);
+  await migrate();
   runApp(ChangeNotifierProvider(
     create: (context) => ThemeProvider(),
     child: MyApp(),
   ));
+}
+
+Future<void> migrate() async {
+  var schemaDB = DriftSchemaDB.get();
+  var existsSchema = await schemaDB.exists();
+  if (!existsSchema) {
+    schemaDB.createSchema(1);
+  }
 }
 
 const double windowWidth = 400;

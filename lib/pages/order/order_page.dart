@@ -58,10 +58,21 @@ class _OrderPageState extends State<OrderPage> {
       proxyDecorator: proxyDecorator,
       children: <Widget>[
         for (int index = 0; index < _items.length; index += 1)
-          ListTile(
+          GestureDetector(
             key: Key('$index'),
-            tileColor: _items[index].isOdd ? oddItemColor : evenItemColor,
-            title: Text('Item ${_items[index]}'),
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('Item $index'),
+                backgroundColor: Colors.red,
+              ));
+              Future.delayed(Duration(seconds: 1), () {
+                ScaffoldMessenger.of(context).removeCurrentSnackBar();
+              });
+            },
+            child: ListTile(
+              tileColor: _items[index].isOdd ? oddItemColor : evenItemColor,
+              title: Text('Item ${_items[index]}'),
+            ),
           ),
       ],
       onReorder: (int oldIndex, int newIndex) {

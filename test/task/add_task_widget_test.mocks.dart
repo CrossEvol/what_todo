@@ -118,6 +118,17 @@ class MockProjectDB extends _i1.Mock implements _i3.ProjectDB {
         ),
         returnValue: _i4.Future<bool>.value(false),
       ) as _i4.Future<bool>);
+
+  @override
+  _i4.Future<void> importProjects(Set<String>? projectNames) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #importProjects,
+          [projectNames],
+        ),
+        returnValue: _i4.Future<void>.value(),
+        returnValueForMissingStub: _i4.Future<void>.value(),
+      ) as _i4.Future<void>);
 }
 
 /// A class which mocks [LabelDB].

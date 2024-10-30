@@ -80,3 +80,9 @@ class Setting extends Table {
   TextColumn get type => textEnum<SettingType>()
       .customConstraint('DEFAULT ${SettingType.Text.name}')();
 }
+
+class DriftSchema extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  IntColumn get version => integer().withDefault(const Constant(0))();
+}
