@@ -6,6 +6,7 @@ import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
+import '../../utils/strings.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -46,6 +47,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       builder: (context, state) {
         bool useCountBadges = state.useCountBadges;
         bool enableImportExport = state.enableImportExport;
+        final environment = state.environment;
         final themeProvider = Provider.of<ThemeProvider>(context);
         return Scaffold(
           appBar: AppBar(
@@ -91,16 +93,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   SettingsTile.navigation(
                     leading: const Icon(Icons.cloud_outlined),
                     title: const Text('Environment'),
-                    value: const Text('Production'),
+                    value: Text(environment.name.capitalizeFirstLetter()),
+                    onPressed: _toggleEnvironment,
                   ),
                   SettingsTile.switchTile(
                     onToggle: (value) {
                       context
                           .read<SettingsBloc>()
                           .add(ToggleUseCountBadgesEvent());
-                      // setState(() {
-                      //   useCountBadges = value;
-                      // });
                     },
                     initialValue: useCountBadges,
                     leading: const Icon(Icons.badge),
@@ -120,7 +120,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     onToggle: (value) {
                       themeProvider.changeTheme();
                     },
-                    initialValue: themeProvider.themeDataStyle == ThemeDataStyle.dark,
+                    initialValue:
+                        themeProvider.themeDataStyle == ThemeDataStyle.dark,
                     leading: const Icon(Icons.style_sharp),
                     title: const Text('Enable Dark Mode'),
                   ),
@@ -204,6 +205,65 @@ class _SettingsScreenState extends State<SettingsScreen> {
         );
       },
     );
+  }
+
+  void _toggleEnvironment(context) {
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              content: SizedBox(
+                height: 180,
+                child: Column(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        context.read<SettingsBloc>().add(ToggleEnvironment(
+                            environment: Environment.production));
+                        Navigator.pop(context);
+                      },
+                      child: Card(
+                        child: ListTile(
+                          leading: FlutterLogo(),
+                          title: Text(Environment.production.name
+                              .capitalizeFirstLetter()),
+                          trailing: Icon(Icons.arrow_right),
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        context.read<SettingsBloc>().add(ToggleEnvironment(
+                            environment: Environment.development));
+                        Navigator.pop(context);
+                      },
+                      child: Card(
+                        child: ListTile(
+                          leading: FlutterLogo(),
+                          title: Text(Environment.development.name
+                              .capitalizeFirstLetter()),
+                          trailing: Icon(Icons.arrow_right),
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        context.read<SettingsBloc>().add(
+                            ToggleEnvironment(environment: Environment.test));
+                        Navigator.pop(context);
+                      },
+                      child: Card(
+                        child: ListTile(
+                          leading: FlutterLogo(),
+                          title: Text(
+                              Environment.test.name.capitalizeFirstLetter()),
+                          trailing: Icon(Icons.arrow_right),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ));
   }
 }
 

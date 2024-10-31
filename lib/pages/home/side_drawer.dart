@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
+import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/home/profile_card.dart';
 import 'package:flutter_app/pages/home/today_menu_item.dart';
@@ -30,6 +31,7 @@ class _SideDrawerState extends State<SideDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    final environment = context.read<SettingsBloc>().state.environment;
     return Drawer(
       child: ListView(
         padding: EdgeInsets.all(0.0),
@@ -106,16 +108,17 @@ class _SideDrawerState extends State<SideDrawer> {
               key: ValueKey(SideDrawerKeys.UNKNOWN),
             ),
           ),
-          ListTile(
-            onTap: () {
-              context.go('/order');
-            },
-            leading: Icon(Icons.unarchive_sharp),
-            title: Text(
-              'OrderTest',
-              key: ValueKey(SideDrawerKeys.UNKNOWN),
+          if (environment == Environment.test)
+            ListTile(
+              onTap: () {
+                context.go('/order');
+              },
+              leading: Icon(Icons.unarchive_sharp),
+              title: Text(
+                'OrderTest',
+                key: ValueKey(SideDrawerKeys.UNKNOWN),
+              ),
             ),
-          ),
           ListTile(
             onTap: () {
               showSnackbar(context, 'Unknown has not implemented.',

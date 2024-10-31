@@ -19,3 +19,13 @@ final class ToggleEnableImportExport extends SettingsEvent {
   List<Object?> get props => [];
 }
 
+final class ToggleEnvironment extends SettingsEvent {
+  final Environment environment;
+
+  @override
+  List<Object?> get props => [environment];
+
+  const ToggleEnvironment({
+    required this.environment,
+  });
+}

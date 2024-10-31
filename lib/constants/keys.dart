@@ -1,3 +1,4 @@
+
 class AboutUsKeys {
   static const TITLE_ABOUT = "titleAbout";
   static const TITLE_REPORT = 'titleReport';
@@ -26,6 +27,7 @@ class SideDrawerKeys {
 class SettingKeys {
   static const USE_COUNT_BADGES = 'use_count_badges';
   static const ENABLE_IMPORT_EXPORT = 'enable_import_export';
+  static const Environment = 'environment';
 }
 
 class AddProjectKeys {
