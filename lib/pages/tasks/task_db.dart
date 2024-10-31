@@ -1,3 +1,4 @@
+
 import 'package:drift/drift.dart';
 import 'package:flutter_app/db/app_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
@@ -34,7 +35,7 @@ class TaskDB {
     ]);
 
     query.orderBy([
-      OrderingTerm.asc(_db.task.priority),
+      OrderingTerm.desc(_db.task.order),
       OrderingTerm.desc(_db.task.dueDate),
     ]);
 
@@ -79,7 +80,7 @@ class TaskDB {
     }
 
     query.orderBy([
-      OrderingTerm.asc(_db.task.priority),
+      OrderingTerm.desc(_db.task.order),
       OrderingTerm.desc(_db.task.dueDate),
     ]);
 
@@ -130,7 +131,7 @@ class TaskDB {
     }
 
     query.orderBy([
-      OrderingTerm.asc(_db.task.priority),
+      OrderingTerm.desc(_db.task.order),
       OrderingTerm.desc(_db.task.dueDate),
     ]);
 
@@ -152,7 +153,7 @@ class TaskDB {
 
     query.where(_db.label.name.like('%$labelName%'));
     query.orderBy([
-      OrderingTerm.asc(_db.task.priority),
+      OrderingTerm.desc(_db.task.order),
       OrderingTerm.desc(_db.task.dueDate),
     ]);
 
@@ -174,14 +175,15 @@ class TaskDB {
     return await _db.transaction(() async {
       int id = await _db.into(_db.task).insert(
             TaskCompanion(
-              id: task.id != null ? Value(task.id!) : Value.absent(),
-              title: Value(task.title),
-              projectId: Value(task.projectId),
-              comment: Value(task.comment),
-              dueDate: Value(DateTime.fromMillisecondsSinceEpoch(task.dueDate)),
-              priority: Value(task.priority.index),
-              status: Value(task.tasksStatus!.index),
-            ),
+                id: task.id != null ? Value(task.id!) : Value.absent(),
+                title: Value(task.title),
+                projectId: Value(task.projectId),
+                comment: Value(task.comment),
+                dueDate:
+                    Value(DateTime.fromMillisecondsSinceEpoch(task.dueDate)),
+                priority: Value(task.priority.index),
+                status: Value(task.tasksStatus!.index),
+                order: Value(await _orderForNewTask())),
           );
 
       if (id > 0 && labelIDs != null && labelIDs.isNotEmpty) {
@@ -229,6 +231,17 @@ class TaskDB {
         }
       }
     });
+  }
+
+  Future<int> _orderForNewTask() async {
+    var query = _db.select(_db.task)
+      ..orderBy([(tbl) => OrderingTerm.desc(tbl.order)])
+      ..limit(1);
+    var task = await query.getSingleOrNull();
+    if (task == null) {
+      return 0;
+    }
+    return task.order + 1000;
   }
 
   Future<bool> updateExpiredTasks(int todayStartTime) async {

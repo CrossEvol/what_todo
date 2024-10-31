@@ -13,13 +13,15 @@ void main() {
 
   test('output tasks json', () async {
     var task = Task(
-        id: 1,
-        title: 'title',
-        projectId: 1,
-        comment: "",
-        dueDate: DateTime.now().second,
-        priority: PriorityStatus.PRIORITY_1,
-        tasksStatus: TaskStatus.COMPLETE);
+      id: 1,
+      title: 'title',
+      projectId: 1,
+      comment: "",
+      dueDate: DateTime.now().second,
+      priority: PriorityStatus.PRIORITY_1,
+      tasksStatus: TaskStatus.COMPLETE,
+      order: 0,
+    );
     const jsonEncoder = JsonEncoder.withIndent('  ');
     print(jsonEncoder.convert(task.toMap()));
   });

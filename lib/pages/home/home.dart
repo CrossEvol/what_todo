@@ -28,6 +28,7 @@ import 'package:flutter_app/pages/tasks/task_widgets.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/extension.dart';
+import 'package:flutter_app/utils/logger_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
@@ -264,6 +265,7 @@ class HomePage extends StatelessWidget {
       }
       showSnackbar(context, 'Saved to $importPath.');
     } catch (e) {
+      logger.warn(e);
       showSnackbar(context, 'Error', materialColor: Colors.red);
     }
   }

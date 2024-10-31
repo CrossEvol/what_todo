@@ -9,6 +9,7 @@ class Task {
   static final dbPriority = "priority";
   static final dbStatus = "status";
   static final dbProjectID = "projectId";
+  static final dbOrder = "order";
 
   String title;
   String comment;
@@ -17,6 +18,7 @@ class Task {
   int? projectColor;
   int dueDate;
   int projectId;
+  int order = 0;
   PriorityStatus priority;
   TaskStatus? tasksStatus;
   List<String> labelList = [];
@@ -49,6 +51,7 @@ class Task {
     this.dueDate = -1,
     this.priority = PriorityStatus.PRIORITY_4,
     this.tasksStatus = TaskStatus.PENDING,
+    this.order = 0,
   }) {
     if (this.dueDate == -1) {
       this.dueDate = DateTime.now().millisecondsSinceEpoch;
@@ -64,6 +67,7 @@ class Task {
           dueDate: map[dbDueDate],
           priority: PriorityStatus.values[map[dbPriority]],
           tasksStatus: TaskStatus.values[map[dbStatus]],
+          order: map[dbOrder],
         );
 
   Task.fromImport(Map<String, dynamic> map)
@@ -75,6 +79,7 @@ class Task {
               DateTime.parse(map[dbDueDate] as String).millisecondsSinceEpoch,
           priority: PriorityStatus.values[map[dbPriority]],
           tasksStatus: TaskStatus.values[map[dbStatus]],
+          order: map[dbOrder],
         );
 
   Map<String, dynamic> toMap() {
@@ -88,6 +93,7 @@ class Task {
       Task.dbStatus: tasksStatus?.index,
       // convert enum to value index (nullable)
       Task.dbProjectID: projectId,
+      Task.dbOrder: order,
     };
   }
 
@@ -99,6 +105,7 @@ class Task {
     required this.projectId,
     required this.priority,
     this.tasksStatus,
+    required this.order,
   });
 }
 
@@ -115,6 +122,7 @@ class ExportTask {
   final int priority;
   final int status;
   final String projectName;
+  final int order;
 
   const ExportTask({
     required this.id,
@@ -124,6 +132,7 @@ class ExportTask {
     required this.priority,
     required this.status,
     required this.projectName,
+    required this.order,
   });
 
   Map<String, dynamic> toMap() {
@@ -131,10 +140,11 @@ class ExportTask {
       'id': this.id,
       'title': this.title,
       'comment': this.comment,
-      'dueDate': this.dueDate.toIso8601String(),
+      'dueDate': this.dueDate.toLocal().toString(),
       'priority': this.priority,
       'status': this.status,
       'projectName': this.projectName,
+      'order': this.order,
     };
   }
 
@@ -147,6 +157,7 @@ class ExportTask {
       priority: map['priority'] as int,
       status: map['status'] as int,
       projectName: map['projectName'] as String,
+      order: map['order'] as int,
     );
   }
 }

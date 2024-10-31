@@ -14,8 +14,12 @@ void main() {
     print(DateTime(now.year, now.month, now.day, 23, 59).millisecondsSinceEpoch);
     print(DateTime(now.year, now.month, now.day + 1));
     print('---------------------------------->');
-    print(now.toString());
-    print(now.toIso8601String());
-    print(now.toLocal().toString());
+    print(now.toString()); // 2024-10-30 22:26:06.223657
+    print(now.toIso8601String()); // 2024-10-30T22:26:06.223657
+    print(now.toLocal().toString()); // 2024-10-30 22:26:06.223657
+
+
+
+
   });
 }
