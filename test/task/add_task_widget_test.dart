@@ -93,6 +93,12 @@ class FakeTaskDb implements TaskDB {
     throw UnimplementedError();
   }
 
+  @override
+  Future<bool> updateOrder(
+      {required int taskID, required int order, required bool findPrev}) {
+    // TODO: implement updateOrder
+    throw UnimplementedError();
+  }
 }
 
 @GenerateMocks([ProjectDB, LabelDB])

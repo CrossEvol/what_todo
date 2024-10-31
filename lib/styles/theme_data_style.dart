@@ -14,6 +14,7 @@ class ThemeDataStyle {
     colorScheme: theme.colorScheme.copyWith(
       secondary: Colors.purple,
       primary: primaryColor,
+      tertiary: Colors.grey.shade100,
     ),
   );
 
@@ -25,6 +26,7 @@ class ThemeDataStyle {
       onSurface: Colors.grey.shade900,
       primary: Colors.deepPurple.shade700,
       secondary: Colors.deepPurple.shade900,
+      tertiary: Colors.blueGrey,
     ),
   );
 }

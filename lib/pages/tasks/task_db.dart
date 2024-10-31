@@ -1,4 +1,3 @@
-
 import 'package:drift/drift.dart';
 import 'package:flutter_app/db/app_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
@@ -170,6 +169,51 @@ class TaskDB {
         .write(TaskCompanion(status: Value(status.index)));
   }
 
+  Future<bool> updateOrder(
+      {required int taskID, required int order, required bool findPrev}) async {
+    var avgOrder = _db.task.order.avg();
+    var result = await (_db.selectOnly(_db.task)
+          ..addColumns([avgOrder])
+          ..where(findPrev
+              ? _db.task.order.isSmallerOrEqualValue(order)
+              : _db.task.order.isBiggerOrEqualValue(order))
+          ..limit(2))
+        .getSingle();
+    var avg = result.read(avgOrder);
+    var newOrder = avg == null
+        ? (findPrev ? order - 1000 : order + 1000)
+        : (findPrev ? avg.floor() - 1 : avg.ceil() + 1);
+    var i = await (_db.update(_db.task)..where((tbl) => tbl.id.equals(taskID)))
+        .write(TaskCompanion(order: Value(newOrder)));
+    if (i > 0) _resetOrderValues(newOrder);
+    return i > 0;
+  }
+
+  Future<void> _resetOrderValues(int newOrder) async {
+    final orderCount = _db.task.order.count();
+    final count = (await (_db.selectOnly(_db.task)
+              ..addColumns([orderCount])
+              ..where(_db.task.order.equals(newOrder)))
+            .getSingle())
+        .read(orderCount);
+    if (count == null) return;
+    if (count == 1) return;
+    _db.customStatement(r'''
+      WITH numbered_rows AS (
+        SELECT 
+          id,
+          ROW_NUMBER() OVER (ORDER BY `order`) AS row_num
+        FROM task ORDER BY "order"
+      )
+      UPDATE task
+      SET "order" = (
+        SELECT row_num * 1000 
+        FROM numbered_rows 
+        WHERE numbered_rows.id = task.id
+      );
+      ''');
+  }
+
   /// Inserts or replaces the task.
   Future<int> createTask(Task task, {List<int>? labelIDs}) async {
     return await _db.transaction(() async {
@@ -239,7 +283,7 @@ class TaskDB {
       ..limit(1);
     var task = await query.getSingleOrNull();
     if (task == null) {
-      return 0;
+      return 1000;
     }
     return task.order + 1000;
   }

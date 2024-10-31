@@ -6,6 +6,7 @@ import 'package:flutter_app/db/app_db.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
+import 'package:flutter_app/utils/logger_util.dart';
 
 part 'task_event.dart';
 
@@ -26,6 +27,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<PostponeTasksEvent>(_onPostponeTasks);
     on<PushAllToTodayEvent>(_onPushAllToToday);
     on<FilterTasksEvent>(_onFilterTasks);
+    on<ReOrderTasksEvent>(_reOrderTasks);
   }
 
   void _onLoadTasks(LoadTasksEvent event, Emitter<TaskState> emit) async {
@@ -225,6 +227,29 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       }
     } catch (e) {
       emit(TaskError(e.toString()));
+    }
+  }
+
+  FutureOr<void> _reOrderTasks(
+      ReOrderTasksEvent event, Emitter<TaskState> emit) async {
+    try {
+      var oldTask = event.oldTask;
+      var newTask = event.newTask;
+      var oldOrder = oldTask.order;
+      var newOrder = newTask.order;
+      bool hasUpdated;
+      if (oldOrder < newOrder) {
+        hasUpdated = await _taskDB.updateOrder(
+            taskID: oldTask.id!, order: newOrder, findPrev: false);
+      } else {
+        hasUpdated = await _taskDB.updateOrder(
+            taskID: oldTask.id!, order: newOrder, findPrev: true);
+      }
+      if (hasUpdated) emit(TaskReOrdered());
+    } catch (e) {
+      logger.error(e);
+      emit(TaskError(e.toString()));
+      print(e);
     }
   }
 }

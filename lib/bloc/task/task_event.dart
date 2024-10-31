@@ -85,3 +85,19 @@ class FilterTasksEvent extends TaskEvent {
     required this.filter,
   });
 }
+
+class ReOrderTasksEvent extends TaskEvent {
+  final Task oldTask;
+  final Task newTask;
+
+  const ReOrderTasksEvent({
+    required this.oldTask,
+    required this.newTask,
+  });
+
+  @override
+  List<Object> get props => [
+        oldTask,
+        newTask,
+      ];
+}
