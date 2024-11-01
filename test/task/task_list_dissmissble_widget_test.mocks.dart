@@ -96,16 +96,16 @@ class MockTaskDB extends _i1.Mock implements _i2.TaskDB {
       ) as _i3.Future<List<_i4.Task>>);
 
   @override
-  _i3.Future<dynamic> deleteTask(int? taskID) => (super.noSuchMethod(
+  _i3.Future<bool> deleteTask(int? taskID) => (super.noSuchMethod(
         Invocation.method(
           #deleteTask,
           [taskID],
         ),
         returnValue: _i3.Future<dynamic>.value(),
-      ) as _i3.Future<dynamic>);
+      ) as _i3.Future<bool>);
 
   @override
-  _i3.Future<dynamic> updateTaskStatus(
+  _i3.Future<bool> updateTaskStatus(
     int? taskID,
     _i4.TaskStatus? status,
   ) =>
@@ -118,7 +118,7 @@ class MockTaskDB extends _i1.Mock implements _i2.TaskDB {
           ],
         ),
         returnValue: _i3.Future<dynamic>.value(),
-      ) as _i3.Future<dynamic>);
+      ) as _i3.Future<bool>);
 
   @override
   _i3.Future<int> createTask(
@@ -135,7 +135,7 @@ class MockTaskDB extends _i1.Mock implements _i2.TaskDB {
       ) as _i3.Future<int>);
 
   @override
-  _i3.Future<dynamic> updateTask(
+  _i3.Future<bool> updateTask(
     _i4.Task? task, {
     List<int>? labelIDs,
   }) =>
@@ -146,7 +146,7 @@ class MockTaskDB extends _i1.Mock implements _i2.TaskDB {
           {#labelIDs: labelIDs},
         ),
         returnValue: _i3.Future<dynamic>.value(),
-      ) as _i3.Future<dynamic>);
+      ) as _i3.Future<bool>);
 
   @override
   _i3.Future<bool> updateExpiredTasks(int? todayStartTime) =>

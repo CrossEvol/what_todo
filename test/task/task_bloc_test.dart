@@ -148,17 +148,17 @@ class FakeTaskDb extends Fake implements TaskDB {
   }
 
   @override
-  Future deleteTask(int taskID) async {
+  Future<bool> deleteTask(int taskID) async {
     throw UnimplementedError();
   }
 
   @override
-  Future updateTaskStatus(int taskID, TaskStatus status) async {
+  Future<bool> updateTaskStatus(int taskID, TaskStatus status) async {
     throw UnimplementedError();
   }
 
   @override
-  Future updateTask(Task task, {List<int>? labelIDs}) async {
+  Future<bool> updateTask(Task task, {List<int>? labelIDs}) async {
     throw UnimplementedError();
   }
 }

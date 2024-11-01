@@ -160,13 +160,18 @@ class TaskDB {
     return _bindData(result);
   }
 
-  Future deleteTask(int taskID) async {
-    await (_db.delete(_db.task)..where((tbl) => tbl.id.equals(taskID))).go();
+  Future<bool> deleteTask(int taskID) async {
+    var result = await (_db.delete(_db.task)
+          ..where((tbl) => tbl.id.equals(taskID)))
+        .go();
+    return result > 0;
   }
 
-  Future updateTaskStatus(int taskID, TaskStatus status) async {
-    await (_db.update(_db.task)..where((tbl) => tbl.id.equals(taskID)))
+  Future<bool> updateTaskStatus(int taskID, TaskStatus status) async {
+    var result = await (_db.update(_db.task)
+          ..where((tbl) => tbl.id.equals(taskID)))
         .write(TaskCompanion(status: Value(status.index)));
+    return result > 0;
   }
 
   Future<bool> updateOrder(
@@ -246,10 +251,11 @@ class TaskDB {
   }
 
   /// Inserts or replaces the task.
-  Future updateTask(Task task, {List<int>? labelIDs}) async {
-    await _db.transaction(() async {
+  Future<bool> updateTask(Task task, {List<int>? labelIDs}) async {
+    var flag = await _db.transaction(() async {
       // update the record in Task Table
-      await (_db.update(_db.task)..where((t) => t.id.equals(task.id!)))
+      var result = await (_db.update(_db.task)
+            ..where((t) => t.id.equals(task.id!)))
           .write(TaskCompanion(
         id: task.id != null ? Value(task.id!) : Value.absent(),
         title: Value(task.title),
@@ -274,7 +280,11 @@ class TaskDB {
               );
         }
       }
+
+      return result > 0;
     });
+
+    return flag;
   }
 
   Future<int> _orderForNewTask() async {

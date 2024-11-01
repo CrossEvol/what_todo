@@ -132,9 +132,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   }
 
   Future<Environment> _getEnvironment(SettingsDB settingsDB) async {
-    String environment = '';
     final setting = await settingsDB.findByName(SettingKeys.Environment);
     if (setting == null) {
+      String environment = '';
       var created = await settingsDB.createSetting(Setting.create(
           key: SettingKeys.Environment,
           value: Environment.development.name,
@@ -149,10 +149,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           environment = newSetting.value;
         }
       }
+      return environment.toEnvironment();
     } else {
-      environment = Environment.development.name;
+      return setting.value.toEnvironment();
     }
-    return environment.toEnvironment();
   }
 
   FutureOr<void> _toggleEnvironment(

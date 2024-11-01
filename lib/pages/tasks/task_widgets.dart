@@ -13,7 +13,9 @@ class TasksPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<TaskBloc, TaskState>(
       listener: (BuildContext context, TaskState state) {
-        if (state is TaskReOrdered) {
+        if (state is TaskReOrdered ||
+            state is TaskHasDeleted ||
+            state is TaskHasUpdated) {
           final filter = context.read<HomeBloc>().state.filter;
           context.read<TaskBloc>().add(FilterTasksEvent(filter: filter!));
         }
@@ -110,8 +112,8 @@ class TasksPage extends StatelessWidget {
                 proxyDecorator: proxyDecorator,
                 onReorder: (int oldIndex, int newIndex) {
                   var oldTask = list[oldIndex];
-                  var newTask =
-                      list[newIndex == list.length ? list.length - 1 : newIndex];
+                  var newTask = list[
+                      newIndex == list.length ? list.length - 1 : newIndex];
                   context.read<TaskBloc>().add(
                       ReOrderTasksEvent(oldTask: oldTask, newTask: newTask));
                 },

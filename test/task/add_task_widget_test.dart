@@ -20,16 +20,10 @@ class FakeTaskDb implements TaskDB {
   Task? task;
   List<int>? labelIds;
 
-  Future updateTask(Task task, {List<int>? labelIDs}) async {
+  Future<bool> updateTask(Task task, {List<int>? labelIDs}) async {
     this.task = task;
     this.labelIds = labelIDs!;
     return Future.value();
-  }
-
-  @override
-  Future deleteTask(int taskID) {
-    // TODO: implement deleteTask
-    throw UnimplementedError();
   }
 
   @override
@@ -52,7 +46,7 @@ class FakeTaskDb implements TaskDB {
   }
 
   @override
-  Future updateTaskStatus(int taskID, TaskStatus status) {
+  Future<bool> updateTaskStatus(int taskID, TaskStatus status) {
     // TODO: implement updateTaskStatus
     throw UnimplementedError();
   }
@@ -97,6 +91,12 @@ class FakeTaskDb implements TaskDB {
   Future<bool> updateOrder(
       {required int taskID, required int order, required bool findPrev}) {
     // TODO: implement updateOrder
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> deleteTask(int taskID) {
+    // TODO: implement deleteTask
     throw UnimplementedError();
   }
 }

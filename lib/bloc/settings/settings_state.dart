@@ -5,8 +5,9 @@ enum ResultStatus { success, failure, none }
 enum Environment { production, development, test }
 
 extension on String {
-  toEnvironment() {
-    EnumToString.fromString(Environment.values, this);
+  Environment toEnvironment() {
+    return EnumToString.fromString(Environment.values, this) ??
+        Environment.test;
   }
 }
 

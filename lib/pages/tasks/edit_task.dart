@@ -54,6 +54,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   @override
   void initState() {
     super.initState();
+    // if the projects is empty, will trigger no element error
     final projects = context
         .read<AdminBloc>()
         .state
@@ -63,8 +64,10 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     final labels = context.read<LabelBloc>().state.labels;
     _titleController.text = widget.task.title;
     selectedPriority = widget.task.priority;
-    selectedProject =
-        projects.where((p) => p.id == widget.task.projectId).first;
+    // TODO: it will confirm the EditTask rendering, but will interfere the value of current task
+    selectedProject = projects.isNotEmpty
+        ? projects.where((p) => p.id == widget.task.projectId).first
+        : Project.inbox();
     selectedDueDate = widget.task.dueDate;
     selectedLabels = widget.task.labelList.isNotEmpty
         ? labels.where((l) => widget.task.labelList.contains(l.name)).toList()

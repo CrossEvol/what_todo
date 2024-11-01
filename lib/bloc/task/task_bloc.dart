@@ -112,7 +112,10 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     final currentState = state;
     if (currentState is TaskLoaded) {
       try {
-        await _taskDB.deleteTask(event.taskId);
+        var hasDeleted = await _taskDB.deleteTask(event.taskId);
+        if (hasDeleted) {
+          emit(TaskHasDeleted());
+        }
       } catch (e) {
         emit(TaskError(e.toString()));
       }
@@ -124,7 +127,11 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     final currentState = state;
     if (currentState is TaskLoaded) {
       try {
-        await _taskDB.updateTaskStatus(event.taskId, event.status);
+        var hasUpdated =
+            await _taskDB.updateTaskStatus(event.taskId, event.status);
+        if (hasUpdated) {
+          emit(TaskHasUpdated());
+        }
       } catch (e) {
         emit(TaskError(e.toString()));
       }

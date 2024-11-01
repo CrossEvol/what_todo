@@ -110,11 +110,14 @@ class MyApp extends StatelessWidget {
           create: (context) => TaskBloc(TaskDB.get())
             ..add(FilterTasksEvent(filter: Filter.byToday())),
         ),
+        // TODO: it did not load projects at the first time on mobile device
         BlocProvider(
           create: (_) => AdminBloc(
             LabelDB.get(),
             ProjectDB.get(),
-          ),
+          )
+            ..add(AdminLoadProjectsEvent())
+            ..add(AdminLoadLabelsEvent()),
         ),
         BlocProvider(
           create: (_) => ProfileBloc(
