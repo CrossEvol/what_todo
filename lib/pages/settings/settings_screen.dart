@@ -212,55 +212,59 @@ class _SettingsScreenState extends State<SettingsScreen> {
         context: context,
         builder: (context) => AlertDialog(
               content: SizedBox(
-                height: 180,
-                child: Column(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        context.read<SettingsBloc>().add(ToggleEnvironment(
-                            environment: Environment.production));
-                        Navigator.pop(context);
-                      },
-                      child: Card(
-                        child: ListTile(
-                          leading: FlutterLogo(),
-                          title: Text(Environment.production.name
-                              .capitalizeFirstLetter()),
-                          trailing: Icon(Icons.arrow_right),
+                width: 300,
+                height: 200,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          context.read<SettingsBloc>().add(ToggleEnvironment(
+                              environment: Environment.production));
+                          Navigator.pop(context);
+                        },
+                        child: Card(
+                          child: ListTile(
+                            leading: FlutterLogo(),
+                            title: Text(Environment.production.name
+                                .capitalizeFirstLetter()),
+                            trailing: Icon(Icons.arrow_right),
+                          ),
                         ),
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        context.read<SettingsBloc>().add(ToggleEnvironment(
-                            environment: Environment.development));
-                        Navigator.pop(context);
-                      },
-                      child: Card(
-                        child: ListTile(
-                          leading: FlutterLogo(),
-                          title: Text(Environment.development.name
-                              .capitalizeFirstLetter()),
-                          trailing: Icon(Icons.arrow_right),
+                      GestureDetector(
+                        onTap: () {
+                          context.read<SettingsBloc>().add(ToggleEnvironment(
+                              environment: Environment.development));
+                          Navigator.pop(context);
+                        },
+                        child: Card(
+                          child: ListTile(
+                            leading: FlutterLogo(),
+                            title: Text(Environment.development.name
+                                .capitalizeFirstLetter()),
+                            trailing: Icon(Icons.arrow_right),
+                          ),
                         ),
                       ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        context.read<SettingsBloc>().add(
-                            ToggleEnvironment(environment: Environment.test));
-                        Navigator.pop(context);
-                      },
-                      child: Card(
-                        child: ListTile(
-                          leading: FlutterLogo(),
-                          title: Text(
-                              Environment.test.name.capitalizeFirstLetter()),
-                          trailing: Icon(Icons.arrow_right),
+                      GestureDetector(
+                        onTap: () {
+                          context.read<SettingsBloc>().add(
+                              ToggleEnvironment(environment: Environment.test));
+                          Navigator.pop(context);
+                        },
+                        child: Card(
+                          child: ListTile(
+                            leading: FlutterLogo(),
+                            title: Text(
+                                Environment.test.name.capitalizeFirstLetter()),
+                            trailing: Icon(Icons.arrow_right),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ));
