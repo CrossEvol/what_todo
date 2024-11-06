@@ -16,11 +16,11 @@ to `flutter_bloc`
 - ~~remove origin bloc logic which is coupled with completed_tasks~~
 - ~~remove origin bloc logic which is coupled with uncompleted_tasks~~
 - ~~apply PopScope as more as possible~~
-- migrate database properly. I do not want to delete data again. maybe I can export the data.
-- switch theme mode 
-- i18n
+- ~~migrate database properly. I do not want to delete data again. maybe I can export the data.~~
+- ~~switch theme mode ~~
+- ~~i18n~~
 - send email 
-- export data
-- import data
-- dateTime in db from int -> string
+- ~~export data~~
+- ~~import data~~
+- ~~dateTime in db from int -> string~~
 - tidy up tests 

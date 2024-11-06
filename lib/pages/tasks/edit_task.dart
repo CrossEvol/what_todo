@@ -17,6 +17,7 @@ import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../labels/label_db.dart';
 import '../projects/project_db.dart';
@@ -85,7 +86,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Edit Task",
+          AppLocalizations.of(context)!.editTask,
           key: ValueKey(EditTaskKeys.Edit_TASK_TITLE),
         ),
       ),
@@ -97,15 +98,16 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
               child: TextFormField(
                 key: ValueKey(EditTaskKeys.Edit_TITLE),
                 validator: (value) {
-                  var msg = value!.isEmpty ? "Title Cannot be Empty" : null;
-                  return msg;
+                  return value!.isEmpty
+                      ? AppLocalizations.of(context)!.titleCannotBeEmpty
+                      : null;
                 },
                 controller: _titleController,
                 onSaved: (value) {},
                 keyboardType: TextInputType.multiline,
                 decoration: InputDecoration(
                   hintText: "",
-                  labelText: "Title",
+                  labelText: AppLocalizations.of(context)!.taskTitle,
                   focusedBorder: OutlineInputBorder(
                       borderSide:
                           BorderSide(color: Theme.of(context).primaryColor)),
@@ -118,7 +120,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
           ListTile(
             key: ValueKey("editProject"),
             leading: Icon(Icons.book),
-            title: Text("Project"),
+            title: Text(AppLocalizations.of(context)!.project),
             subtitle: Text(selectedProject.name),
             hoverColor: _grey,
             onTap: () {
@@ -127,7 +129,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
           ),
           ListTile(
             leading: Icon(Icons.calendar_today),
-            title: Text("Due Date"),
+            title: Text(AppLocalizations.of(context)!.dueDate),
             subtitle: Text(getFormattedDate(selectedDueDate)),
             hoverColor: _grey,
             onTap: () {
@@ -136,7 +138,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
           ),
           ListTile(
             leading: Icon(Icons.flag),
-            title: Text("Priority"),
+            title: Text(AppLocalizations.of(context)!.priority),
             subtitle: Text(priorityText[selectedPriority.index]),
             hoverColor: _grey,
             onTap: () {
@@ -144,29 +146,30 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
             },
           ),
           ListTile(
-              leading: Icon(Icons.label),
-              title: Text("Labels"),
-              subtitle: Text(labelNames),
-              hoverColor: _grey,
-              onTap: () {
-                _showLabelsDialog(context);
-              }),
-          ListTile(
-            leading: Icon(Icons.mode_comment),
-            title: Text("Comments"),
-            subtitle: Text("No Comments"),
+            leading: Icon(Icons.label),
+            title: Text(AppLocalizations.of(context)!.labels),
+            subtitle: Text(labelNames),
             hoverColor: _grey,
             onTap: () {
-              showSnackbar(context, "Coming Soon");
+              _showLabelsDialog(context);
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.mode_comment),
+            title: Text(AppLocalizations.of(context)!.comments),
+            subtitle: Text(AppLocalizations.of(context)!.noComments),
+            hoverColor: _grey,
+            onTap: () {
+              showSnackbar(context, AppLocalizations.of(context)!.comingSoon);
             },
           ),
           ListTile(
             leading: Icon(Icons.timer),
-            title: Text("Reminder"),
-            subtitle: Text("No Reminder"),
+            title: Text(AppLocalizations.of(context)!.reminder),
+            subtitle: Text(AppLocalizations.of(context)!.noReminder),
             hoverColor: _grey,
             onTap: () {
-              showSnackbar(context, "Coming Soon");
+              showSnackbar(context, AppLocalizations.of(context)!.comingSoon);
             },
           )
         ],
@@ -224,7 +227,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
         context: context,
         builder: (BuildContext dialogContext) {
           return SimpleDialog(
-            title: const Text('Select Priority'),
+            title: Text(AppLocalizations.of(context)!.selectPriority),
             children: <Widget>[
               buildContainer(context, PriorityStatus.PRIORITY_1),
               buildContainer(context, PriorityStatus.PRIORITY_2),
@@ -242,7 +245,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
           return BlocBuilder<AdminBloc, AdminState>(
             builder: (context, state) {
               return SimpleDialog(
-                title: const Text('Select Project'),
+                title: Text(AppLocalizations.of(context)!.selectProject),
                 children: buildProjects(
                     context, state.projects.map((p) => p.trimCount()).toList()),
               );
@@ -258,7 +261,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
           return BlocBuilder<LabelBloc, LabelState>(
             builder: (context, state) {
               return SimpleDialog(
-                title: const Text('Select Labels'),
+                title: Text(AppLocalizations.of(context)!.selectLabels),
                 children: buildLabels(context, state.labels),
               );
             },

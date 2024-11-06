@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/constants/app_constant.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/constants/keys.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AboutUsScreen extends StatelessWidget {
   @override
@@ -9,7 +10,7 @@ class AboutUsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "About",
+          AppLocalizations.of(context)!.aboutTitle,
           key: ValueKey(AboutUsKeys.TITLE_ABOUT),
         ),
       ),
@@ -24,17 +25,17 @@ class AboutUsScreen extends StatelessWidget {
                     ListTile(
                         leading: Icon(Icons.bug_report, color: Colors.black),
                         title: Text(
-                          "Report an Issue",
+                          AppLocalizations.of(context)!.reportIssueTitle,
                           key: ValueKey(AboutUsKeys.TITLE_REPORT),
                         ),
                         subtitle: Text(
-                          "Having an issue ? Report it here",
+                          AppLocalizations.of(context)!.reportIssueSubtitle,
                           key: ValueKey(AboutUsKeys.SUBTITLE_REPORT),
                         ),
                         onTap: () => launchURL(ISSUE_URL)),
                     ListTile(
                       leading: Icon(Icons.update, color: Colors.black),
-                      title: Text("Version"),
+                      title: Text(AppLocalizations.of(context)!.versionTitle),
                       subtitle: Text(
                         "1.0.0",
                         key: ValueKey(AboutUsKeys.VERSION_NUMBER),
@@ -49,7 +50,8 @@ class AboutUsScreen extends StatelessWidget {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0, left: 16.0),
-                      child: Text("Author",
+                      child: Text(
+                          AppLocalizations.of(context)!.authorSectionTitle,
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
@@ -58,22 +60,22 @@ class AboutUsScreen extends StatelessWidget {
                     ListTile(
                       leading: Icon(Icons.perm_identity, color: Colors.black),
                       title: Text(
-                        "Burhanuddin Rashid",
+                        AppLocalizations.of(context)!.authorName,
                         key: ValueKey(AboutUsKeys.AUTHOR_NAME),
                       ),
                       subtitle: Text(
-                        "burhanrashid52",
+                        AppLocalizations.of(context)!.authorUsername,
                         key: ValueKey(AboutUsKeys.AUTHOR_USERNAME),
                       ),
                       onTap: () => launchURL(GITHUB_URL),
                     ),
                     ListTile(
                         leading: Icon(Icons.bug_report, color: Colors.black),
-                        title: Text("Fork on Github"),
+                        title: Text(AppLocalizations.of(context)!.forkGithub),
                         onTap: () => launchURL(PROJECT_URL)),
                     ListTile(
                         leading: Icon(Icons.email, color: Colors.black),
-                        title: Text("Send an Email"),
+                        title: Text(AppLocalizations.of(context)!.sendEmail),
                         subtitle: Text(
                           "burhanrashid5253@gmail.com",
                           key: ValueKey(AboutUsKeys.AUTHOR_EMAIL),
@@ -88,7 +90,7 @@ class AboutUsScreen extends StatelessWidget {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0, left: 16.0),
-                      child: Text("Ask Question ?",
+                      child: Text(AppLocalizations.of(context)!.askQuestion,
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
@@ -132,7 +134,7 @@ class AboutUsScreen extends StatelessWidget {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0, left: 16.0),
-                      child: Text("Apache Licensee",
+                      child: Text(AppLocalizations.of(context)!.apacheLicense,
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
@@ -141,10 +143,8 @@ class AboutUsScreen extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: ListTile(
-                        subtitle: Text("Copyright 2020 Burhanuddin Rashid"
-                            '\n\nLicensed under the Apache License, Version 2.0 (the "License") you may not use this file except in compliance with the License. You may obtain a copy of the License at'
-                            "\n\n\nhttp://www.apache.org/licenses/LICENSE-2.0"
-                            '\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.'),
+                        subtitle:
+                            Text(AppLocalizations.of(context)!.licenseText),
                       ),
                     ),
                   ],

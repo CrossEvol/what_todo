@@ -4,10 +4,16 @@ enum ResultStatus { success, failure, none }
 
 enum Environment { production, development, test }
 
+enum Language { english, japanese, chinese }
+
 extension on String {
   Environment toEnvironment() {
     return EnumToString.fromString(Environment.values, this) ??
         Environment.test;
+  }
+
+  Language toLanguage() {
+    return EnumToString.fromString(Language.values, this) ?? Language.english;
   }
 }
 
@@ -17,6 +23,8 @@ class SettingsState extends Equatable {
   final ResultStatus status;
   final String updatedKey;
   final Environment environment;
+  final Language language;
+  final Function(Locale) setLocale;
 
   const SettingsState({
     required this.useCountBadges,
@@ -24,6 +32,8 @@ class SettingsState extends Equatable {
     required this.updatedKey,
     required this.enableImportExport,
     required this.environment,
+    required this.language,
+    required this.setLocale,
   });
 
   @override
@@ -33,6 +43,7 @@ class SettingsState extends Equatable {
         updatedKey,
         enableImportExport,
         environment,
+        language,
       ];
 
   SettingsState copyWith({
@@ -41,6 +52,8 @@ class SettingsState extends Equatable {
     String? updatedKey,
     bool? enableImportExport,
     Environment? environment,
+    Language? language,
+    Function(Locale)? setLocale,
   }) {
     return SettingsState(
       useCountBadges: useCountBadges ?? this.useCountBadges,
@@ -48,6 +61,8 @@ class SettingsState extends Equatable {
       updatedKey: updatedKey ?? this.updatedKey,
       enableImportExport: enableImportExport ?? this.enableImportExport,
       environment: environment ?? this.environment,
+      language: language ?? this.language,
+      setLocale: setLocale ?? this.setLocale,
     );
   }
 
@@ -61,7 +76,8 @@ class SettingsState extends Equatable {
           enableImportExport == other.enableImportExport &&
           status == other.status &&
           updatedKey == other.updatedKey &&
-          environment == other.environment;
+          environment == other.environment &&
+          language == other.language;
 
   @override
   int get hashCode =>
@@ -70,5 +86,6 @@ class SettingsState extends Equatable {
       enableImportExport.hashCode ^
       status.hashCode ^
       updatedKey.hashCode ^
-      environment.hashCode;
+      environment.hashCode ^
+      language.hashCode;
 }

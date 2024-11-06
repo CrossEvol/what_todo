@@ -34,6 +34,8 @@ import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as p;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_app/utils/localization_ext.dart';
 
 class AdaptiveHomePage extends StatelessWidget {
   const AdaptiveHomePage({
@@ -121,7 +123,7 @@ class HomePage extends StatelessWidget {
         title: BlocBuilder<HomeBloc, HomeState>(
           builder: (context, state) {
             return Text(
-              state.title,
+              state.title.localize(context),
               key: ValueKey(HomePageKeys.HOME_TITLE),
             );
           },
@@ -203,47 +205,49 @@ class HomePage extends StatelessWidget {
         final enableImportExport =
             context.read<SettingsBloc>().state.enableImportExport;
         return <PopupMenuEntry<MenuItem>>[
-          const PopupMenuItem<MenuItem>(
+          PopupMenuItem<MenuItem>(
             value: MenuItem.TASK_COMPLETED,
-            child: const Text(
-              'Completed Tasks',
+            child: Text(
+              AppLocalizations.of(context)!.completedTasks,
               key: ValueKey(CompletedTaskPageKeys.COMPLETED_TASKS),
             ),
           ),
-          const PopupMenuItem<MenuItem>(
+          PopupMenuItem<MenuItem>(
             value: MenuItem.TASK_UNCOMPLETED,
-            child: const Text(
-              'Uncompleted Tasks',
+            child: Text(
+              AppLocalizations.of(context)!.uncompletedTasks,
               key: ValueKey(CompletedTaskPageKeys.UNCOMPLETED_TASKS),
             ),
           ),
           if (title == 'Inbox')
-            const PopupMenuItem<MenuItem>(
-                value: MenuItem.ALL_TO_TODAY,
-                child: const Text(
-                  'All to Today',
-                  key: ValueKey(CompletedTaskPageKeys.ALL_TO_TODAY),
-                )),
+            PopupMenuItem<MenuItem>(
+              value: MenuItem.ALL_TO_TODAY,
+              child: Text(
+                AppLocalizations.of(context)!.allToToday,
+                key: ValueKey(CompletedTaskPageKeys.ALL_TO_TODAY),
+              ),
+            ),
           if (title == 'Today')
-            const PopupMenuItem<MenuItem>(
-                value: MenuItem.TASK_POSTPONE,
-                child: const Text(
-                  'Postpone Tasks',
-                  key: ValueKey(CompletedTaskPageKeys.POSTPONE_TASKS),
-                )),
+            PopupMenuItem<MenuItem>(
+              value: MenuItem.TASK_POSTPONE,
+              child: Text(
+                AppLocalizations.of(context)!.postponeTasks,
+                key: ValueKey(CompletedTaskPageKeys.POSTPONE_TASKS),
+              ),
+            ),
           if (enableImportExport)
-            const PopupMenuItem<MenuItem>(
+            PopupMenuItem<MenuItem>(
               value: MenuItem.EXPORTS,
-              child: const Text(
-                'Exports',
+              child: Text(
+                AppLocalizations.of(context)!.exports,
                 key: ValueKey(CompletedTaskPageKeys.EXPORT_DATA),
               ),
             ),
           if (enableImportExport)
-            const PopupMenuItem<MenuItem>(
+            PopupMenuItem<MenuItem>(
               value: MenuItem.IMPORTS,
-              child: const Text(
-                'Imports',
+              child: Text(
+                AppLocalizations.of(context)!.imports,
                 key: ValueKey(CompletedTaskPageKeys.IMPORT_DATA),
               ),
             ),
@@ -290,23 +294,21 @@ class HomePage extends StatelessWidget {
   }
 
   Future<void> _import(BuildContext context) async {
-    // Call _getImportPath() before showing the dialog
     String? importPath = await _getImportPath();
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // Initialize the controller with the import path
         TextEditingController filePathController =
             TextEditingController(text: importPath ?? '');
         return AlertDialog(
-          title: Text('Import File'),
+          title: Text(AppLocalizations.of(context)!.importFile),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: filePathController,
                 decoration: InputDecoration(
-                  labelText: 'File Path',
+                  labelText: AppLocalizations.of(context)!.filePath,
                 ),
               ),
               SizedBox(height: 10),
@@ -318,7 +320,7 @@ class HomePage extends StatelessWidget {
                     filePathController.text = result.files.single.path!;
                   }
                 },
-                child: Text('Pick File'),
+                child: Text(AppLocalizations.of(context)!.pickFile),
               ),
             ],
           ),
@@ -327,7 +329,7 @@ class HomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             TextButton(
               onPressed: () async {
@@ -357,11 +359,14 @@ class HomePage extends StatelessWidget {
                   }
                   Navigator.of(context).pop();
                 } else {
-                  showSnackbar(context, 'No file selected',
-                      materialColor: Colors.red);
+                  showSnackbar(
+                    context, 
+                    AppLocalizations.of(context)!.noFileSelected,
+                    materialColor: Colors.red
+                  );
                 }
               },
-              child: Text('Confirm'),
+              child: Text(AppLocalizations.of(context)!.confirm),
             ),
           ],
         );

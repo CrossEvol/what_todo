@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
 import 'package:enum_to_string/enum_to_string.dart';
@@ -21,14 +22,15 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           status: ResultStatus.none,
           updatedKey: '',
           environment: Environment.development,
+          language: Language.english,
+          setLocale: (Locale) {},
         )) {
     on<LoadSettingsEvent>(_loadSettings);
     on<ToggleUseCountBadgesEvent>(_toggleUseCountBadges);
     on<ToggleEnableImportExport>(_toggleEnableExportImport);
     on<ToggleEnvironment>(_toggleEnvironment);
-    on<SettingsEvent>((event, emit) {
-      // TODO: implement event handler
-    });
+    on<ToggleLanguage>(_toggleLanguage);
+    on<AddSetLocaleFunction>(_addSetLocaleFunction);
   }
 
   FutureOr<void> _toggleUseCountBadges(
@@ -80,6 +82,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
     var environment = await _getEnvironment(settingsDB);
     emit(state.copyWith(environment: environment));
+
+    var language = await _getLanguage(settingsDB);
+    emit(state.copyWith(language: language));
   }
 
   Future<bool> _getUseCountBadges(SettingsDB settingsDB) async {
@@ -175,5 +180,74 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         status: ResultStatus.success,
       ),
     );
+  }
+
+  Future<Language> _getLanguage(SettingsDB settingsDB) async {
+    final setting = await settingsDB.findByName(SettingKeys.LANGUAGE);
+    if (setting == null) {
+      var created = await settingsDB.createSetting(Setting.create(
+          key: SettingKeys.LANGUAGE,
+          value: Language.english.name,
+          updatedAt: DateTime.now(),
+          type: SettingType.Text));
+      if (created) {
+        final newSetting = await settingsDB.findByName(SettingKeys.LANGUAGE);
+        if (newSetting == null) {
+          logger.warn('Insert ${SettingKeys.LANGUAGE} failed.');
+          return Language.english;
+        }
+        return newSetting.value.toLanguage();
+      }
+      return Language.english;
+    }
+    return setting.value.toLanguage();
+  }
+
+  FutureOr<void> _toggleLanguage(
+      ToggleLanguage event, Emitter<SettingsState> emit) async {
+    final settingsDB = SettingsDB.get();
+    final setting = await settingsDB.findByName(SettingKeys.LANGUAGE);
+    if (setting == null) return;
+
+    await settingsDB.updateSetting(Setting.update(
+      id: setting.id,
+      key: setting.key,
+      value: event.language.name,
+      updatedAt: DateTime.now(),
+      type: setting.type,
+    ));
+
+    _updateLocaleBasedOnLanguage(event.language);
+
+    emit(state.copyWith(
+      language: event.language,
+      updatedKey: SettingKeys.LANGUAGE,
+      status: ResultStatus.success,
+    ));
+  }
+
+  FutureOr<void> _addSetLocaleFunction(
+      AddSetLocaleFunction event, Emitter<SettingsState> emit) async {
+    emit(state.copyWith(
+      setLocale: event.setLocale,
+    ));
+    var language = await _getLanguage(SettingsDB.get());
+    this.add(ToggleLanguage(language: language));
+  }
+
+  void _updateLocaleBasedOnLanguage(Language language) {
+    Locale newLocale;
+    switch (language) {
+      case Language.english:
+        newLocale = const Locale('en');
+        break;
+      case Language.japanese:
+        newLocale = const Locale('ja');
+        break;
+      case Language.chinese:
+        newLocale = const Locale('zh');
+        break;
+    }
+    state.setLocale(newLocale);
   }
 }

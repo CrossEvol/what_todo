@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/profile/profile_bloc.dart';
 import 'package:flutter_app/pages/profile/profile.dart';
+import 'package:flutter_app/utils/logger_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -55,7 +57,7 @@ class _ProfilePageState extends State<ProfilePage> {
       }
     } catch (e) {
       // Handle any errors here
-      print('Error picking image: $e');
+      logger.error('Error picking image: $e');
     }
   }
 
@@ -63,7 +65,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile Page'),
+        title: Text(AppLocalizations.of(context)!.profile),
       ),
       body: BlocConsumer<ProfileBloc, ProfileState>(
         listener: (context, state) {
@@ -99,15 +101,21 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 TextFormField(
                   controller: _nameController,
-                  decoration: const InputDecoration(labelText: 'Name'),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.name,
+                  ),
                 ),
                 TextFormField(
                   controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.email,
+                  ),
                 ),
                 TextFormField(
                   controller: _avatarUrlController,
-                  decoration: const InputDecoration(labelText: 'Avatar URL'),
+                  decoration: InputDecoration(
+                    labelText: AppLocalizations.of(context)!.avatarUrl,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 if (_imageFile != null)
@@ -139,7 +147,15 @@ class _ProfilePageState extends State<ProfilePage> {
                         )));
                   },
                   child: const Text('Update Profile'),
-                )
+                ),
+                ElevatedButton(
+                  onPressed: () => _onImageButtonPressed(ImageSource.gallery),
+                  child: Text(AppLocalizations.of(context)!.pickImage),
+                ),
+                ElevatedButton(
+                  onPressed: () => _onImageButtonPressed(ImageSource.camera),
+                  child: Text(AppLocalizations.of(context)!.takePhoto),
+                ),
               ],
             );
           }

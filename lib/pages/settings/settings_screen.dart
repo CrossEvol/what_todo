@@ -88,7 +88,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   SettingsTile.navigation(
                     leading: const Icon(Icons.language),
                     title: const Text('Language'),
-                    value: const Text('English'),
+                    value: Text(state.language.name.capitalizeFirstLetter()),
+                    onPressed: _toggleLanguage,
                   ),
                   SettingsTile.navigation(
                     leading: const Icon(Icons.cloud_outlined),
@@ -268,6 +269,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
               ),
             ));
+  }
+
+  void _toggleLanguage(context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: SizedBox(
+          width: 300,
+          height: 200,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: Language.values.map((lang) => GestureDetector(
+                onTap: () {
+                  context.read<SettingsBloc>().add(ToggleLanguage(language: lang));
+                  Navigator.pop(context);
+                },
+                child: Card(
+                  child: ListTile(
+                    leading: const Icon(Icons.language),
+                    title: Text(lang.name.capitalizeFirstLetter()),
+                    trailing: const Icon(Icons.arrow_right),
+                  ),
+                ),
+              )).toList(),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 

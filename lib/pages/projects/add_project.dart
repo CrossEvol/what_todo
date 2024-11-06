@@ -8,6 +8,7 @@ import 'package:flutter_app/utils/collapsable_expand_tile.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddProject extends StatelessWidget {
   final expansionTile = GlobalKey<CollapsibleExpansionTileState>();
@@ -20,7 +21,7 @@ class AddProject extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          "Add Project",
+          AppLocalizations.of(context)!.addProject,
           key: ValueKey(AddProjectKeys.TITLE_ADD_PROJECT),
         ),
       ),
@@ -53,10 +54,14 @@ class AddProject extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: TextFormField(
                 key: ValueKey(AddProjectKeys.TEXT_FORM_PROJECT_NAME),
-                decoration: InputDecoration(hintText: "Project Name"),
+                decoration: InputDecoration(
+                  hintText: AppLocalizations.of(context)!.projectName
+                ),
                 maxLength: 20,
                 validator: (value) {
-                  return value!.isEmpty ? "Project name cannot be empty" : null;
+                  return value!.isEmpty 
+                    ? AppLocalizations.of(context)!.projectNameCannotBeEmpty 
+                    : null;
                 },
                 onSaved: (value) {
                   projectName = value!;

@@ -1,0 +1,278 @@
+{
+  "inbox": "收件箱",
+  "@inbox": {
+    "description": "收件箱菜单项的标题"
+  },
+  "today": "今天",
+  "@today": {
+    "description": "今天菜单项的标题"
+  },
+  "next7Days": "未来7天",
+  "@next7Days": {
+    "description": "未来7天菜单项的标题"
+  },
+  "projectGrid": "项目网格",
+  "@projectGrid": {
+    "description": "项目网格视图的标题"
+  },
+  "labelGrid": "标签网格",
+  "@labelGrid": {
+    "description": "标签网格视图的标题"
+  },
+  "settings": "设置",
+  "@settings": {
+    "description": "设置菜单项的标题"
+  },
+  "orderTest": "排序测试",
+  "@orderTest": {
+    "description": "排序测试菜单项的标题（仅在测试环境中显示）"
+  },
+  "unknown": "未知",
+  "@unknown": {
+    "description": "未知菜单项的标题"
+  },
+  "unknownNotImplemented": "未知功能尚未实现。",
+  "@unknownNotImplemented": {
+    "description": "点击未知功能时显示的消息"
+  },
+  "aboutTitle": "关于",
+  "@aboutTitle": {
+    "description": "关于界面的标题"
+  },
+  "reportIssueTitle": "报告问题",
+  "@reportIssueTitle": {
+    "description": "报告问题部分的标题"
+  },
+  "reportIssueSubtitle": "遇到问题？在这里报告",
+  "@reportIssueSubtitle": {
+    "description": "报告问题部分的副标题"
+  },
+  "versionTitle": "版本",
+  "@versionTitle": {
+    "description": "版本部分的标题"
+  },
+  "authorSectionTitle": "作者",
+  "@authorSectionTitle": {
+    "description": "作者部分的标题"
+  },
+  "authorName": "Burhanuddin Rashid",
+  "@authorName": {
+    "description": "作者的姓名"
+  },
+  "authorUsername": "burhanrashid52",
+  "@authorUsername": {
+    "description": "作者的用户名"
+  },
+  "forkGithub": "在GitHub上Fork",
+  "@forkGithub": {
+    "description": "Github fork按钮的文本"
+  },
+  "sendEmail": "发送邮件",
+  "@sendEmail": {
+    "description": "发送邮件按钮的文本"
+  },
+  "askQuestion": "提问？",
+  "@askQuestion": {
+    "description": "社交媒体部分的标题"
+  },
+  "apacheLicense": "Apache许可证",
+  "@apacheLicense": {
+    "description": "许可证部分的标题"
+  },
+  "licenseText": "版权所有 2020 Burhanuddin Rashid\n\n根据Apache许可证2.0版（\"许可证\"）获得许可；除非遵守许可证，否则您不得使用此文件。您可以在以下位置获取许可证副本：\n\nhttp://www.apache.org/licenses/LICENSE-2.0\n\n除非适用法律要求或书面同意，否则根据许可证分发的软件是基于\"按原样\"分发的，没有任何明示或暗示的保证或条件。有关许可证下特定语言的权限和限制，请参阅许可证。",
+  "@licenseText": {
+    "description": "许可证全文"
+  },
+  "projects": "项目",
+  "@projects": {
+    "description": "项目部分的标题"
+  },
+  "addProject": "添加项目",
+  "@addProject": {
+    "description": "添加项目按钮的文本"
+  },
+  "labels": "标签",
+  "@labels": {
+    "description": "标签部分的标题"
+  },
+  "addLabel": "添加标签",
+  "@addLabel": {
+    "description": "添加标签按钮的文本"
+  },
+  "failedToLoadProjects": "加载项目失败",
+  "@failedToLoadProjects": {
+    "description": "项目加载失败时的错误消息"
+  },
+  "failedToLoadLabels": "加载标签失败",
+  "@failedToLoadLabels": {
+    "description": "标签加载失败时的错误消息"
+  },
+  "addTask": "添加任务",
+  "@addTask": {
+    "description": "添加任务界面的标题"
+  },
+  "taskTitle": "标题",
+  "@taskTitle": {
+    "description": "任务标题输入字段的标签"
+  },
+  "titleCannotBeEmpty": "标题不能为空",
+  "@titleCannotBeEmpty": {
+    "description": "标题为空时的验证消息"
+  },
+  "project": "项目",
+  "@project": {
+    "description": "项目选择的标签"
+  },
+  "editTask": "编辑任务",
+  "@editTask": {
+    "description": "编辑任务界面的标题"
+  },
+  "dueDate": "截止日期",
+  "@dueDate": {
+    "description": "截止日期选择的标签"
+  },
+  "priority": "优先级",
+  "@priority": {
+    "description": "优先级选择的标签"
+  },
+  "selectPriority": "选择优先级",
+  "@selectPriority": {
+    "description": "优先级选择对话框的标题"
+  },
+  "selectProject": "选择项目",
+  "@selectProject": {
+    "description": "项目选择对话框的标题"
+  },
+  "selectLabels": "选择标签",
+  "@selectLabels": {
+    "description": "标签选择对话框的标题"
+  },
+  "comments": "评论",
+  "@comments": {
+    "description": "评论部分的标签"
+  },
+  "noComments": "无评论",
+  "@noComments": {
+    "description": "没有评论时显示的文本"
+  },
+  "reminder": "提醒",
+  "@reminder": {
+    "description": "提醒部分的标签"
+  },
+  "noReminder": "无提醒",
+  "@noReminder": {
+    "description": "未设置提醒时显示的文本"
+  },
+  "comingSoon": "即将推出",
+  "@comingSoon": {
+    "description": "未实现功能时显示的文本"
+  },
+  "noLabels": "无标签",
+  "@noLabels": {
+    "description": "未选择标签时显示的文本"
+  },
+  "labelName": "标签名称",
+  "@labelName": {
+    "description": "标签名称输入字段的标签"
+  },
+  "labelCannotBeEmpty": "标签名称不能为空",
+  "@labelCannotBeEmpty": {
+    "description": "标签名称为空时的验证消息"
+  },
+  "labelAlreadyExists": "标签已存在",
+  "@labelAlreadyExists": {
+    "description": "创建重复标签时的错误消息"
+  },
+  "projectName": "项目名称",
+  "@projectName": {
+    "description": "项目名称输入字段的标签"
+  },
+  "projectNameCannotBeEmpty": "项目名称不能为空",
+  "@projectNameCannotBeEmpty": {
+    "description": "项目名称为空时的验证消息"
+  },
+  "completedTasks": "已完成任务",
+  "@completedTasks": {
+    "description": "已完成任务菜单项的文本"
+  },
+  "uncompletedTasks": "未完成任务",
+  "@uncompletedTasks": {
+    "description": "未完成任务菜单项的文本"
+  },
+  "allToToday": "全部移至今天",
+  "@allToToday": {
+    "description": "将所有任务移至今天菜单项的文本"
+  },
+  "postponeTasks": "推迟任务",
+  "@postponeTasks": {
+    "description": "推迟任务菜单项的文本"
+  },
+  "exports": "导出",
+  "@exports": {
+    "description": "导出菜单项的文本"
+  },
+  "imports": "导入",
+  "@imports": {
+    "description": "导入菜单项的文本"
+  },
+  "profile": "个人资料",
+  "@profile": {
+    "description": "个人资料页面的标题"
+  },
+  "name": "姓名",
+  "@name": {
+    "description": "姓名输入字段的标签"
+  },
+  "email": "邮箱",
+  "@email": {
+    "description": "邮箱输入字段的标签"
+  },
+  "avatarUrl": "头像链接",
+  "@avatarUrl": {
+    "description": "头像链接输入字段的标签"
+  },
+  "pickImage": "选择图片",
+  "@pickImage": {
+    "description": "图片选择按钮的文本"
+  },
+  "takePhoto": "拍照",
+  "@takePhoto": {
+    "description": "相机拍摄按钮的文本"
+  },
+  "importFile": "导入文件",
+  "@importFile": {
+    "description": "导入文件对话框的标题"
+  },
+  "filePath": "文件路径",
+  "@filePath": {
+    "description": "文件路径输入字段的标签"
+  },
+  "pickFile": "选择文件",
+  "@pickFile": {
+    "description": "文件选择按钮的文本"
+  },
+  "cancel": "取消",
+  "@cancel": {
+    "description": "取消按钮的文本"
+  },
+  "confirm": "确认",
+  "@confirm": {
+    "description": "确认按钮的文本"
+  },
+  "noFileSelected": "未选择文件",
+  "@noFileSelected": {
+    "description": "未选择文件时的错误消息"
+  },
+  "noTaskAdded": "暂无任务",
+  "@noTaskAdded": {
+    "description": "没有任务时显示的消息"
+  },
+  "taskCompleted": "任务已完成",
+  "@taskCompleted": {
+    "description": "任务标记为完成时显示的消息"
+  },
+  "taskDeleted": "任务已删除",
+  "@taskDeleted": {
+    "description": "任务被删除时显示的消息"
+  }
+}

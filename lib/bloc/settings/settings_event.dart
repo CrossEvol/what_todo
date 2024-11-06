@@ -29,3 +29,21 @@ final class ToggleEnvironment extends SettingsEvent {
     required this.environment,
   });
 }
+
+final class ToggleLanguage extends SettingsEvent {
+  final Language language;
+
+  const ToggleLanguage({required this.language});
+
+  @override
+  List<Object?> get props => [language];
+}
+
+final class AddSetLocaleFunction extends SettingsEvent {
+  final Function(Locale) setLocale;
+
+  const AddSetLocaleFunction({required this.setLocale});
+
+  @override
+  List<Object?> get props => [];
+}

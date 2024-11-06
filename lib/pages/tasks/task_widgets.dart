@@ -7,6 +7,7 @@ import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/row_task.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TasksPage extends StatelessWidget {
   @override
@@ -57,7 +58,7 @@ class TasksPage extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: list.length == 0
-          ? MessageInCenterWidget("No Task Added")
+          ? MessageInCenterWidget(AppLocalizations.of(context)!.noTaskAdded)
           : Container(
               child: ReorderableListView.builder(
                 itemCount: list.length,
@@ -70,8 +71,8 @@ class TasksPage extends StatelessWidget {
                           var taskID = list[index].id!;
                           String message =
                               direction == DismissDirection.endToStart
-                                  ? "Task completed"
-                                  : "Task deleted";
+                                  ? AppLocalizations.of(context)!.taskCompleted
+                                  : AppLocalizations.of(context)!.taskDeleted;
                           if (direction == DismissDirection.endToStart) {
                             context.read<TaskBloc>().add(UpdateTaskStatusEvent(
                                 taskID, TaskStatus.COMPLETE));

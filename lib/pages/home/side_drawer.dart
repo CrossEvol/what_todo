@@ -14,6 +14,7 @@ import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SideDrawer extends StatefulWidget {
   @override
@@ -40,7 +41,7 @@ class _SideDrawerState extends State<SideDrawer> {
           ListTile(
               leading: Icon(Icons.inbox),
               title: Text(
-                "Inbox",
+                AppLocalizations.of(context)!.inbox,
                 key: ValueKey(SideDrawerKeys.INBOX),
               ),
               onTap: () {
@@ -56,7 +57,7 @@ class _SideDrawerState extends State<SideDrawer> {
             onTap: () {
               context
                   .read<HomeBloc>()
-                  .add(ApplyFilterEvent("Next 7 Days", Filter.byNextWeek()));
+                  .add(ApplyFilterEvent(AppLocalizations.of(context)!.next7Days, Filter.byNextWeek()));
               context
                   .read<TaskBloc>()
                   .add(FilterTasksEvent(filter: Filter.byNextWeek()));
@@ -64,7 +65,7 @@ class _SideDrawerState extends State<SideDrawer> {
             },
             leading: Icon(Icons.calendar_view_day_rounded),
             title: Text(
-              "Next 7 Days",
+              AppLocalizations.of(context)!.next7Days,
               key: ValueKey(SideDrawerKeys.NEXT_7_DAYS),
             ),
           ),
@@ -76,7 +77,7 @@ class _SideDrawerState extends State<SideDrawer> {
             },
             leading: Icon(Icons.grid_view_outlined),
             title: Text(
-              'Project Grid',
+              AppLocalizations.of(context)!.projectGrid,
               style: TextStyle(
                 fontSize: 14.0,
                 fontWeight: FontWeight.w500,
@@ -90,7 +91,7 @@ class _SideDrawerState extends State<SideDrawer> {
             },
             leading: Icon(Icons.view_comfortable_outlined),
             title: Text(
-              'Label Grid',
+              AppLocalizations.of(context)!.labelGrid,
               style: TextStyle(
                 fontSize: 14.0,
                 fontWeight: FontWeight.w500,
@@ -104,7 +105,7 @@ class _SideDrawerState extends State<SideDrawer> {
             },
             leading: Icon(Icons.settings_sharp),
             title: Text(
-              'Settings',
+              AppLocalizations.of(context)!.settings,
               key: ValueKey(SideDrawerKeys.UNKNOWN),
             ),
           ),
@@ -115,18 +116,21 @@ class _SideDrawerState extends State<SideDrawer> {
               },
               leading: Icon(Icons.unarchive_sharp),
               title: Text(
-                'OrderTest',
+                AppLocalizations.of(context)!.orderTest,
                 key: ValueKey(SideDrawerKeys.UNKNOWN),
               ),
             ),
           ListTile(
             onTap: () {
-              showSnackbar(context, 'Unknown has not implemented.',
-                  materialColor: Colors.teal);
+              showSnackbar(
+                context, 
+                AppLocalizations.of(context)!.unknownNotImplemented,
+                materialColor: Colors.teal
+              );
             },
             leading: Icon(Icons.unarchive_sharp),
             title: Text(
-              'UNKNOWN',
+              AppLocalizations.of(context)!.unknown,
               key: ValueKey(SideDrawerKeys.UNKNOWN),
             ),
           ),

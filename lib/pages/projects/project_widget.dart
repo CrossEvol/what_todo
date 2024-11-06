@@ -15,6 +15,7 @@ import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:go_router/go_router.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProjectPage extends StatelessWidget {
   @override
@@ -29,7 +30,7 @@ class ProjectPage extends StatelessWidget {
           );
         } else {
           return Center(
-            child: Text('Failed to load projects'),
+            child: Text(AppLocalizations.of(context)!.failedToLoadProjects),
           );
         }
       },
@@ -47,8 +48,10 @@ class ProjectExpansionTileWidget extends StatelessWidget {
     return ExpansionTile(
       key: ValueKey(SideDrawerKeys.DRAWER_PROJECTS),
       leading: Icon(Icons.book),
-      title: Text("Projects",
-          style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold)),
+      title: Text(
+        AppLocalizations.of(context)!.projects,
+        style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold)
+      ),
       children: buildProjects(context),
     );
   }
@@ -59,7 +62,7 @@ class ProjectExpansionTileWidget extends StatelessWidget {
     projectWidgetList.add(ListTile(
       key: ValueKey(SideDrawerKeys.ADD_PROJECT),
       leading: Icon(Icons.add),
-      title: Text("Add Project"),
+      title: Text(AppLocalizations.of(context)!.addProject),
       onTap: () async {
         context.go('/project/add');
         context.read<ProjectBloc>().add(RefreshProjectsEvent());

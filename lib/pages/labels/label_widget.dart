@@ -10,6 +10,7 @@ import 'package:flutter_app/pages/labels/add_label.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LabelPage extends StatelessWidget {
   @override
@@ -22,7 +23,7 @@ class LabelPage extends StatelessWidget {
         } else if (state is LabelLoading) {
           return Center(child: CircularProgressIndicator());
         } else {
-          return Center(child: Text('Failed to load labels'));
+          return Center(child: Text(AppLocalizations.of(context)!.failedToLoadLabels));
         }
       },
     );
@@ -39,8 +40,10 @@ class LabelExpansionTileWidget extends StatelessWidget {
     return ExpansionTile(
       key: ValueKey(SideDrawerKeys.DRAWER_LABELS),
       leading: Icon(Icons.label),
-      title: Text("Labels",
-          style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold)),
+      title: Text(
+        AppLocalizations.of(context)!.labels,
+        style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold)
+      ),
       children: buildLabels(context),
     );
   }
@@ -51,7 +54,7 @@ class LabelExpansionTileWidget extends StatelessWidget {
     projectWidgetList.add(ListTile(
         leading: Icon(Icons.add),
         title: Text(
-          "Add Label",
+          AppLocalizations.of(context)!.addLabel,
           key: ValueKey(SideDrawerKeys.ADD_LABEL),
         ),
         onTap: () async {

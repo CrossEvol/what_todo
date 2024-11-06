@@ -20,8 +20,10 @@ import 'package:flutter_app/providers/theme_provider.dart';
 import 'package:flutter_app/router/router.dart';
 import 'package:flutter_app/utils/logger_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -90,7 +92,20 @@ void setupWindow() async {
   });
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  Locale _locale = const Locale('ja');
+
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -126,12 +141,23 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => SettingsBloc()
-            ..add(
-              LoadSettingsEvent(),
-            ),
+            ..add(LoadSettingsEvent())
+            ..add(AddSetLocaleFunction(setLocale: setLocale)),
         ),
       ],
       child: MaterialApp.router(
+        locale: _locale,
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en'),
+          Locale('ja'),
+          Locale('zh'),
+        ],
         debugShowCheckedModeBanner: false,
         theme: Provider.of<ThemeProvider>(context).themeDataStyle,
         routerConfig: goRouter,

@@ -9,6 +9,7 @@ import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddLabel extends StatelessWidget {
   final GlobalKey<FormState> _formState = GlobalKey<FormState>();
@@ -23,7 +24,7 @@ class AddLabel extends StatelessWidget {
       listener: (context, state) {
         if (state is LabelExistenceChecked) {
           if (state.exists) {
-            showSnackbar(context, "Label already exists");
+            showSnackbar(context, AppLocalizations.of(context)!.labelAlreadyExists);
           } else {
             context.safePop();
             if (context.isWiderScreen()) {
@@ -40,7 +41,7 @@ class AddLabel extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: Text(
-              "Add Label",
+              AppLocalizations.of(context)!.addLabel,
               key: ValueKey(AddLabelKeys.TITLE_ADD_LABEL),
             ),
           ),
@@ -69,10 +70,14 @@ class AddLabel extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: TextFormField(
                     key: ValueKey(AddLabelKeys.TEXT_FORM_LABEL_NAME),
-                    decoration: InputDecoration(hintText: "Label Name"),
+                    decoration: InputDecoration(
+                      hintText: AppLocalizations.of(context)!.labelName
+                    ),
                     maxLength: 20,
                     validator: (value) {
-                      return value!.isEmpty ? "Label Cannot be empty" : null;
+                      return value!.isEmpty 
+                        ? AppLocalizations.of(context)!.labelCannotBeEmpty 
+                        : null;
                     },
                     onSaved: (value) {
                       labelName = value!;

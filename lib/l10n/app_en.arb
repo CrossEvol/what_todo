@@ -1,0 +1,278 @@
+{
+  "inbox": "Inbox",
+  "@inbox": {
+    "description": "Title for the inbox menu item"
+  },
+  "today": "Today",
+  "@today": {
+    "description": "Title for the today menu item"
+  },
+  "next7Days": "Next 7 Days",
+  "@next7Days": {
+    "description": "Title for the next 7 days menu item"
+  },
+  "projectGrid": "Project Grid",
+  "@projectGrid": {
+    "description": "Title for the project grid view"
+  },
+  "labelGrid": "Label Grid",
+  "@labelGrid": {
+    "description": "Title for the label grid view"
+  },
+  "settings": "Settings",
+  "@settings": {
+    "description": "Title for the settings menu item"
+  },
+  "orderTest": "OrderTest",
+  "@orderTest": {
+    "description": "Title for the order test menu item (only shown in test environment)"
+  },
+  "unknown": "UNKNOWN",
+  "@unknown": {
+    "description": "Title for the unknown menu item"
+  },
+  "unknownNotImplemented": "Unknown has not implemented.",
+  "@unknownNotImplemented": {
+    "description": "Message shown when unknown feature is clicked"
+  },
+  "aboutTitle": "About",
+  "@aboutTitle": {
+    "description": "Title for the about screen"
+  },
+  "reportIssueTitle": "Report an Issue",
+  "@reportIssueTitle": {
+    "description": "Title for report issue section"
+  },
+  "reportIssueSubtitle": "Having an issue ? Report it here",
+  "@reportIssueSubtitle": {
+    "description": "Subtitle for report issue section"
+  },
+  "versionTitle": "Version",
+  "@versionTitle": {
+    "description": "Title for version section"
+  },
+  "authorSectionTitle": "Author",
+  "@authorSectionTitle": {
+    "description": "Title for author section"
+  },
+  "authorName": "Burhanuddin Rashid",
+  "@authorName": {
+    "description": "Name of the author"
+  },
+  "authorUsername": "burhanrashid52",
+  "@authorUsername": {
+    "description": "Username of the author"
+  },
+  "forkGithub": "Fork on Github",
+  "@forkGithub": {
+    "description": "Text for Github fork button"
+  },
+  "sendEmail": "Send an Email",
+  "@sendEmail": {
+    "description": "Text for email button"
+  },
+  "askQuestion": "Ask Question ?",
+  "@askQuestion": {
+    "description": "Title for social media section"
+  },
+  "apacheLicense": "Apache License",
+  "@apacheLicense": {
+    "description": "Title for license section"
+  },
+  "licenseText": "Copyright 2020 Burhanuddin Rashid\n\nLicensed under the Apache License, Version 2.0 (the \"License\") you may not use this file except in compliance with the License. You may obtain a copy of the License at\n\n\nhttp://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.",
+  "@licenseText": {
+    "description": "Full license text"
+  },
+  "projects": "Projects",
+  "@projects": {
+    "description": "Title for the projects section"
+  },
+  "addProject": "Add Project",
+  "@addProject": {
+    "description": "Text for add project button"
+  },
+  "labels": "Labels",
+  "@labels": {
+    "description": "Title for the labels section"
+  },
+  "addLabel": "Add Label",
+  "@addLabel": {
+    "description": "Text for add label button"
+  },
+  "failedToLoadProjects": "Failed to load projects",
+  "@failedToLoadProjects": {
+    "description": "Error message when projects fail to load"
+  },
+  "failedToLoadLabels": "Failed to load labels",
+  "@failedToLoadLabels": {
+    "description": "Error message when labels fail to load"
+  },
+  "addTask": "Add Task",
+  "@addTask": {
+    "description": "Title for add task screen"
+  },
+  "taskTitle": "Title",
+  "@taskTitle": {
+    "description": "Label for task title input field"
+  },
+  "titleCannotBeEmpty": "Title Cannot be Empty",
+  "@titleCannotBeEmpty": {
+    "description": "Validation message for empty task title"
+  },
+  "project": "Project",
+  "@project": {
+    "description": "Label for project selection"
+  },
+  "editTask": "Edit Task",
+  "@editTask": {
+    "description": "Title for edit task screen"
+  },
+  "dueDate": "Due Date",
+  "@dueDate": {
+    "description": "Label for due date selection"
+  },
+  "priority": "Priority",
+  "@priority": {
+    "description": "Label for priority selection"
+  },
+  "selectPriority": "Select Priority",
+  "@selectPriority": {
+    "description": "Title for priority selection dialog"
+  },
+  "selectProject": "Select Project",
+  "@selectProject": {
+    "description": "Title for project selection dialog"
+  },
+  "selectLabels": "Select Labels",
+  "@selectLabels": {
+    "description": "Title for labels selection dialog"
+  },
+  "comments": "Comments",
+  "@comments": {
+    "description": "Label for comments section"
+  },
+  "noComments": "No Comments",
+  "@noComments": {
+    "description": "Text shown when no comments exist"
+  },
+  "reminder": "Reminder",
+  "@reminder": {
+    "description": "Label for reminder section"
+  },
+  "noReminder": "No Reminder",
+  "@noReminder": {
+    "description": "Text shown when no reminder is set"
+  },
+  "comingSoon": "Coming Soon",
+  "@comingSoon": {
+    "description": "Text shown for features that are not yet implemented"
+  },
+  "noLabels": "No Labels",
+  "@noLabels": {
+    "description": "Text shown when no labels are selected"
+  },
+  "labelName": "Label Name",
+  "@labelName": {
+    "description": "Label for label name input field"
+  },
+  "labelCannotBeEmpty": "Label Cannot be empty",
+  "@labelCannotBeEmpty": {
+    "description": "Validation message for empty label name"
+  },
+  "labelAlreadyExists": "Label already exists",
+  "@labelAlreadyExists": {
+    "description": "Error message when creating duplicate label"
+  },
+  "projectName": "Project Name",
+  "@projectName": {
+    "description": "Label for project name input field"
+  },
+  "projectNameCannotBeEmpty": "Project name cannot be empty",
+  "@projectNameCannotBeEmpty": {
+    "description": "Validation message for empty project name"
+  },
+  "completedTasks": "Completed Tasks",
+  "@completedTasks": {
+    "description": "Text for completed tasks menu item"
+  },
+  "uncompletedTasks": "Uncompleted Tasks",
+  "@uncompletedTasks": {
+    "description": "Text for uncompleted tasks menu item"
+  },
+  "allToToday": "All to Today",
+  "@allToToday": {
+    "description": "Text for moving all tasks to today menu item"
+  },
+  "postponeTasks": "Postpone Tasks",
+  "@postponeTasks": {
+    "description": "Text for postpone tasks menu item"
+  },
+  "exports": "Exports",
+  "@exports": {
+    "description": "Text for exports menu item"
+  },
+  "imports": "Imports",
+  "@imports": {
+    "description": "Text for imports menu item"
+  },
+  "profile": "Profile",
+  "@profile": {
+    "description": "Title for the profile page"
+  },
+  "name": "Name",
+  "@name": {
+    "description": "Label for name input field"
+  },
+  "email": "Email",
+  "@email": {
+    "description": "Label for email input field"
+  },
+  "avatarUrl": "Avatar URL",
+  "@avatarUrl": {
+    "description": "Label for avatar URL input field"
+  },
+  "pickImage": "Pick Image",
+  "@pickImage": {
+    "description": "Text for image picker button"
+  },
+  "takePhoto": "Take Photo",
+  "@takePhoto": {
+    "description": "Text for camera capture button"
+  },
+  "importFile": "Import File",
+  "@importFile": {
+    "description": "Title for import file dialog"
+  },
+  "filePath": "File Path",
+  "@filePath": {
+    "description": "Label for file path input field"
+  },
+  "pickFile": "Pick File",
+  "@pickFile": {
+    "description": "Text for file picker button"
+  },
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Text for cancel button"
+  },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Text for confirm button"
+  },
+  "noFileSelected": "No file selected",
+  "@noFileSelected": {
+    "description": "Error message when no file is selected"
+  },
+  "noTaskAdded": "No Task Added",
+  "@noTaskAdded": {
+    "description": "Message shown when no tasks exist"
+  },
+  "taskCompleted": "Task completed",
+  "@taskCompleted": {
+    "description": "Message shown when a task is marked as completed"
+  },
+  "taskDeleted": "Task deleted",
+  "@taskDeleted": {
+    "description": "Message shown when a task is deleted"
+  }
+}

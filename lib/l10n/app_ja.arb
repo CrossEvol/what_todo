@@ -1,0 +1,278 @@
+{
+  "inbox": "受信トレイ",
+  "@inbox": {
+    "description": "受信トレイメニュー項目のタイトル"
+  },
+  "today": "今日",
+  "@today": {
+    "description": "今日のメニュー項目のタイトル"
+  },
+  "next7Days": "次の7日間",
+  "@next7Days": {
+    "description": "次の7日間メニュー項目のタイトル"
+  },
+  "projectGrid": "プロジェクトグリッド",
+  "@projectGrid": {
+    "description": "プロジェクトグリッドビューのタイトル"
+  },
+  "labelGrid": "ラベルグリッド",
+  "@labelGrid": {
+    "description": "ラベルグリッドビューのタイトル"
+  },
+  "settings": "設定",
+  "@settings": {
+    "description": "設定メニュー項目のタイトル"
+  },
+  "orderTest": "順序テスト",
+  "@orderTest": {
+    "description": "順序テストメニュー項目のタイトル（テスト環境でのみ表示）"
+  },
+  "unknown": "不明",
+  "@unknown": {
+    "description": "不明メニュー項目のタイトル"
+  },
+  "unknownNotImplemented": "不明な機能は実装されていません。",
+  "@unknownNotImplemented": {
+    "description": "不明な機能がクリックされた時に表示されるメッセージ"
+  },
+  "aboutTitle": "アプリについて",
+  "@aboutTitle": {
+    "description": "アプリについての画面のタイトル"
+  },
+  "reportIssueTitle": "問題を報告",
+  "@reportIssueTitle": {
+    "description": "問題報告セクションのタイトル"
+  },
+  "reportIssueSubtitle": "問題がありますか？ここで報告してください",
+  "@reportIssueSubtitle": {
+    "description": "問題報告セクションのサブタイトル"
+  },
+  "versionTitle": "バージョン",
+  "@versionTitle": {
+    "description": "バージョンセクションのタイトル"
+  },
+  "authorSectionTitle": "作者",
+  "@authorSectionTitle": {
+    "description": "作者セクションのタイトル"
+  },
+  "authorName": "Burhanuddin Rashid",
+  "@authorName": {
+    "description": "作者の名前"
+  },
+  "authorUsername": "burhanrashid52",
+  "@authorUsername": {
+    "description": "作者のユーザー名"
+  },
+  "forkGithub": "GitHubでフォーク",
+  "@forkGithub": {
+    "description": "GitHubフォークボタンのテキスト"
+  },
+  "sendEmail": "メールを送信",
+  "@sendEmail": {
+    "description": "メール送信ボタンのテキスト"
+  },
+  "askQuestion": "質問する？",
+  "@askQuestion": {
+    "description": "ソーシャルメディアセクションのタイトル"
+  },
+  "apacheLicense": "Apacheライセンス",
+  "@apacheLicense": {
+    "description": "ライセンスセクションのタイトル"
+  },
+  "licenseText": "Copyright 2020 Burhanuddin Rashid\n\nApache License Version 2.0（以下「ライセンス」）に基づいてライセンスされています。あなたはライセンスに従う場合を除き、このファイルを使用することはできません。ライセンスのコピーは下記から入手できます。\n\nhttp://www.apache.org/licenses/LICENSE-2.0\n\n適用される法律で要求されるか、書面で合意されない限り、このライセンスの下で配布されるソフトウェアは、「現状のまま」で、明示または黙示を問わず、いかなる保証も条件もなしに提供されます。ライセンスの下での許可と制限を規定する特定の言語についてはライセンスを参照してください。",
+  "@licenseText": {
+    "description": "ライセンスの全文"
+  },
+  "projects": "プロジェクト",
+  "@projects": {
+    "description": "プロジェクトセクションのタイトル"
+  },
+  "addProject": "プロジェクトを追加",
+  "@addProject": {
+    "description": "プロジェクト追加ボタンのテキスト"
+  },
+  "labels": "ラベル",
+  "@labels": {
+    "description": "ラベルセクションのタイトル"
+  },
+  "addLabel": "ラベルを追加",
+  "@addLabel": {
+    "description": "ラベル追加ボタンのテキスト"
+  },
+  "failedToLoadProjects": "プロジェクトの読み込みに失敗しました",
+  "@failedToLoadProjects": {
+    "description": "プロジェクト読み込み失敗時のエラーメッセージ"
+  },
+  "failedToLoadLabels": "ラベルの読み込みに失敗しました",
+  "@failedToLoadLabels": {
+    "description": "ラベル読み込み失敗時のエラーメッセージ"
+  },
+  "addTask": "タスクを追加",
+  "@addTask": {
+    "description": "タスク追加画面のタイトル"
+  },
+  "taskTitle": "タイトル",
+  "@taskTitle": {
+    "description": "タスクタイトル入力フィールドのラベル"
+  },
+  "titleCannotBeEmpty": "タイトルを入力してください",
+  "@titleCannotBeEmpty": {
+    "description": "タイトルが空の場合の検証メッセージ"
+  },
+  "project": "プロジェクト",
+  "@project": {
+    "description": "プロジェクト選択のラベル"
+  },
+  "editTask": "タスクを編集",
+  "@editTask": {
+    "description": "タスク編集画面のタイトル"
+  },
+  "dueDate": "期限",
+  "@dueDate": {
+    "description": "期限選択のラベル"
+  },
+  "priority": "優先度",
+  "@priority": {
+    "description": "優先度選択のラベル"
+  },
+  "selectPriority": "優先度を選択",
+  "@selectPriority": {
+    "description": "優先度選択ダイアログのタイトル"
+  },
+  "selectProject": "プロジェクトを選択",
+  "@selectProject": {
+    "description": "プロジェクト選択ダイアログのタイトル"
+  },
+  "selectLabels": "ラベルを選択",
+  "@selectLabels": {
+    "description": "ラベル選択ダイアログのタイトル"
+  },
+  "comments": "コメント",
+  "@comments": {
+    "description": "コメントセクションのラベル"
+  },
+  "noComments": "コメントなし",
+  "@noComments": {
+    "description": "コメントがない場合のテキスト"
+  },
+  "reminder": "リマインダー",
+  "@reminder": {
+    "description": "リマインダーセクションのラベル"
+  },
+  "noReminder": "リマインダーなし",
+  "@noReminder": {
+    "description": "リマインダーが設定されていない場合のテキスト"
+  },
+  "comingSoon": "近日公開",
+  "@comingSoon": {
+    "description": "未実装の機能に表示されるテキスト"
+  },
+  "noLabels": "ラベルなし",
+  "@noLabels": {
+    "description": "ラベルが選択されていない場合のテキスト"
+  },
+  "labelName": "ラベル名",
+  "@labelName": {
+    "description": "ラベル名入力フィールドのラベル"
+  },
+  "labelCannotBeEmpty": "ラベル名を入力してください",
+  "@labelCannotBeEmpty": {
+    "description": "ラベル名が空の場合の検証メッセージ"
+  },
+  "labelAlreadyExists": "ラベルが既に存在します",
+  "@labelAlreadyExists": {
+    "description": "重複するラベルを作成した場合のエラーメッセージ"
+  },
+  "projectName": "プロジェクト名",
+  "@projectName": {
+    "description": "プロジェクト名入力フィールドのラベル"
+  },
+  "projectNameCannotBeEmpty": "プロジェクト名を入力してください",
+  "@projectNameCannotBeEmpty": {
+    "description": "プロジェクト名が空の場合の検証メッセージ"
+  },
+  "completedTasks": "完了した��ク",
+  "@completedTasks": {
+    "description": "完了したタスクメニュー項目のテキスト"
+  },
+  "uncompletedTasks": "未完了のタスク",
+  "@uncompletedTasks": {
+    "description": "未完了のタスクメニュー項目のテキスト"
+  },
+  "allToToday": "すべて今日へ",
+  "@allToToday": {
+    "description": "すべてのタスクを今日に移動するメニュー項目のテキスト"
+  },
+  "postponeTasks": "タスクを延期",
+  "@postponeTasks": {
+    "description": "タスクを延期するメニュー項目のテキスト"
+  },
+  "exports": "エクスポート",
+  "@exports": {
+    "description": "エクスポートメニュー項目のテキスト"
+  },
+  "imports": "インポート",
+  "@imports": {
+    "description": "インポートメニュー項目のテキスト"
+  },
+  "profile": "プロフィール",
+  "@profile": {
+    "description": "プロフィールページのタイトル"
+  },
+  "name": "名前",
+  "@name": {
+    "description": "名前入力フィールドのラベル"
+  },
+  "email": "メールアドレス",
+  "@email": {
+    "description": "メールアドレス入力フィールドのラベル"
+  },
+  "avatarUrl": "アバターURL",
+  "@avatarUrl": {
+    "description": "アバターURL入力フィールドのラベル"
+  },
+  "pickImage": "画像を選択",
+  "@pickImage": {
+    "description": "画像選択ボタンのテキスト"
+  },
+  "takePhoto": "写真を撮影",
+  "@takePhoto": {
+    "description": "カメラ撮影ボタンのテキスト"
+  },
+  "importFile": "ファイルをインポート",
+  "@importFile": {
+    "description": "インポートファイルダイアログのタイトル"
+  },
+  "filePath": "ファイルパス",
+  "@filePath": {
+    "description": "ファイルパス入力フィールドのラベル"
+  },
+  "pickFile": "ファイルを選択",
+  "@pickFile": {
+    "description": "ファイル選択ボタンのテキスト"
+  },
+  "cancel": "キャンセル",
+  "@cancel": {
+    "description": "キャンセルボタンのテキスト"
+  },
+  "confirm": "確認",
+  "@confirm": {
+    "description": "確認ボタンのテキスト"
+  },
+  "noFileSelected": "ファイルが選択されていません",
+  "@noFileSelected": {
+    "description": "ファイルが選択されていない場合のエラーメッセージ"
+  },
+  "noTaskAdded": "タスクがありません",
+  "@noTaskAdded": {
+    "description": "タスクが存在しない場合に表示されるメッセージ"
+  },
+  "taskCompleted": "タスクを完了しました",
+  "@taskCompleted": {
+    "description": "タスクが完了としてマークされた時に表示されるメッセージ"
+  },
+  "taskDeleted": "タスクを削除しました",
+  "@taskDeleted": {
+    "description": "タスクが削除された時に表示されるメッセージ"
+  }
+}
