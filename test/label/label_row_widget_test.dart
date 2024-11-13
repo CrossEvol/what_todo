@@ -8,7 +8,6 @@ import 'package:flutter_test/flutter_test.dart';
 import '../test_helpers.dart';
 
 main() {
-
   testWidgets("Label Row Widget", (tester) async {
     final homeBloc = MyHomeBloc();
     var testLabel = Label.update(
@@ -17,8 +16,7 @@ main() {
         colorName: "Green",
         colorCode: Colors.green.value);
 
-    await tester
-        .pumpWidget(LabelRow(testLabel).wrapScaffoldWithBloc(homeBloc));
+    await tester.pumpWidget(LabelRow(testLabel).wrapScaffoldWithBloc(homeBloc));
 
     expect(find.text("@ ${testLabel.name}"), findsOneWidget);
 
@@ -38,8 +36,8 @@ main() {
         colorName: "Green",
         colorCode: Colors.green.value);
 
-    await tester
-        .pumpWidget(LabelRow(testLabel).wrapScaffoldWithBloc(homeBloc));
+    await tester.pumpWidget(
+        LabelRow(testLabel).wrapScaffoldWithBloc(homeBloc).withThemeProvider());
 
     expect(homeBloc.title, emitsInOrder(["@ ${testLabel.name}"]));
     expect(homeBloc.filter, emitsInOrder([Filter.byLabel(testLabel.name)]));

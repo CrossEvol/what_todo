@@ -12,6 +12,7 @@ part 'profile_state.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final ProfileDB _profileDB;
+  final ILogger _logger = ILogger();
 
   ProfileBloc(this._profileDB) : super(ProfileInitial()) {
     on<ProfileLoadEvent>(_loadProfile);
@@ -24,7 +25,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     if (userProfile != null) {
       emit(ProfileLoaded(userProfile));
     } else {
-      logger.error('Can not find UserProfile#1');
+      _logger.error('Can not find UserProfile#1');
     }
   }
 
@@ -36,7 +37,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
             status: ProfileStateStatus.updateSuccess));
       }
     } catch (e) {
-      logger.error('Failed to update profile: $e');
+      _logger.error('Failed to update profile: $e');
       emit(ProfileLoaded((state as ProfileLoaded).profile,
           status: ProfileStateStatus.updateFailure));
       // You might want to emit an error state here

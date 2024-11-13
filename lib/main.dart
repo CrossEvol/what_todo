@@ -14,11 +14,13 @@ import 'package:flutter_app/pages/drift_schema/drift_schema_db.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/profile/profile_db.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
+import 'package:flutter_app/pages/settings/settings_db.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_app/providers/theme_provider.dart';
 import 'package:flutter_app/router/router.dart';
 import 'package:flutter_app/utils/logger_util.dart';
+import 'package:flutter_app/utils/shard_prefs_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +37,7 @@ void main() async {
   driftRuntimeOptions.defaultSerializer =
       ValueSerializer.defaults(serializeDateTimeValuesAsString: true);
   await _migrate();
+  await setupSharedPreference();
   runApp(ChangeNotifierProvider(
     create: (context) => ThemeProvider(),
     child: MyApp(),
@@ -98,7 +101,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Locale _locale = const Locale('ja');
+  Locale _locale = Locale(prefs.getLocale());
 
   void setLocale(Locale locale) {
     setState(() {
@@ -118,8 +121,8 @@ class _MyAppState extends State<MyApp> {
               ProjectBloc(ProjectDB.get())..add(LoadProjectsEvent()),
         ),
         BlocProvider(
-          create: (context) =>
-              HomeBloc()..add(ApplyFilterEvent("Today", Filter.byToday())),
+          create: (context) => HomeBloc(TaskDB.get())
+            ..add(ApplyFilterEvent("Today", Filter.byToday())),
         ),
         BlocProvider(
           create: (context) => TaskBloc(TaskDB.get())
@@ -140,7 +143,7 @@ class _MyAppState extends State<MyApp> {
           )..add(ProfileLoadEvent()),
         ),
         BlocProvider(
-          create: (_) => SettingsBloc()
+          create: (_) => SettingsBloc(SettingsDB.get())
             ..add(LoadSettingsEvent())
             ..add(AddSetLocaleFunction(setLocale: setLocale)),
         ),

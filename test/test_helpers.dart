@@ -2,8 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_app/providers/theme_provider.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 extension TestWrapMaterialApp on Widget {
+  Widget withLocalizedMaterialApp() {
+    return MaterialApp(
+      locale: const Locale('en'),
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('ja'),
+        Locale('zh'),
+      ],
+      home: Scaffold(
+        body: this,
+      ),
+    );
+  }
+
   Widget wrapMaterialApp() {
     return MaterialApp(
       home: this,
@@ -24,6 +48,13 @@ extension TestWrapMaterialApp on Widget {
       home: Scaffold(
         body: this,
       ),
+    );
+  }
+
+  Widget withThemeProvider() {
+    return ChangeNotifierProvider(
+      create: (_) => ThemeProvider(),
+      child: this,
     );
   }
 

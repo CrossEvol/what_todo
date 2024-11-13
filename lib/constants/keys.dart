@@ -23,6 +23,10 @@ class SideDrawerKeys {
   static const UNKNOWN = 'unknown';
 }
 
+class ShardPrefKeys {
+  static const Locale = 'locale';
+}
+
 class SettingKeys {
   static const USE_COUNT_BADGES = 'use_count_badges';
   static const ENABLE_IMPORT_EXPORT = 'enable_import_export';

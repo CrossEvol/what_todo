@@ -101,7 +101,7 @@ class MockTaskDB extends _i1.Mock implements _i2.TaskDB {
           #deleteTask,
           [taskID],
         ),
-        returnValue: _i3.Future<dynamic>.value(),
+        returnValue: _i3.Future<bool>.value(false),
       ) as _i3.Future<bool>);
 
   @override
@@ -117,7 +117,26 @@ class MockTaskDB extends _i1.Mock implements _i2.TaskDB {
             status,
           ],
         ),
-        returnValue: _i3.Future<dynamic>.value(),
+        returnValue: _i3.Future<bool>.value(false),
+      ) as _i3.Future<bool>);
+
+  @override
+  _i3.Future<bool> updateOrder({
+    required int? taskID,
+    required int? order,
+    required bool? findPrev,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateOrder,
+          [],
+          {
+            #taskID: taskID,
+            #order: order,
+            #findPrev: findPrev,
+          },
+        ),
+        returnValue: _i3.Future<bool>.value(false),
       ) as _i3.Future<bool>);
 
   @override
@@ -145,7 +164,7 @@ class MockTaskDB extends _i1.Mock implements _i2.TaskDB {
           [task],
           {#labelIDs: labelIDs},
         ),
-        returnValue: _i3.Future<dynamic>.value(),
+        returnValue: _i3.Future<bool>.value(false),
       ) as _i3.Future<bool>);
 
   @override

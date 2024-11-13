@@ -9,13 +9,17 @@ import 'package:flutter_app/models/setting_type.dart';
 import 'package:flutter_app/pages/settings/setting.dart';
 import 'package:flutter_app/pages/settings/settings_db.dart';
 import 'package:flutter_app/utils/logger_util.dart';
+import 'package:flutter_app/utils/shard_prefs_util.dart';
 
 part 'settings_event.dart';
 
 part 'settings_state.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
-  SettingsBloc()
+  final SettingsDB _settingsDB;
+  final ILogger _logger = ILogger();
+
+  SettingsBloc(this._settingsDB)
       : super(SettingsState(
           useCountBadges: false,
           enableImportExport: false,
@@ -35,10 +39,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   FutureOr<void> _toggleUseCountBadges(
       ToggleUseCountBadgesEvent event, Emitter<SettingsState> emit) async {
-    final settingsDB = SettingsDB.get();
-    final setting = await settingsDB.findByName(SettingKeys.USE_COUNT_BADGES);
+    final setting = await _settingsDB.findByName(SettingKeys.USE_COUNT_BADGES);
     if (setting == null) return;
-    settingsDB.updateSetting(Setting.update(
+    _settingsDB.updateSetting(Setting.update(
         id: setting.id,
         key: setting.key,
         value: '${!bool.parse(setting.value)}',
@@ -53,11 +56,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   FutureOr<void> _toggleEnableExportImport(
       ToggleEnableImportExport event, Emitter<SettingsState> emit) async {
-    final settingsDB = SettingsDB.get();
     final setting =
-        await settingsDB.findByName(SettingKeys.ENABLE_IMPORT_EXPORT);
+        await _settingsDB.findByName(SettingKeys.ENABLE_IMPORT_EXPORT);
     if (setting == null) return;
-    settingsDB.updateSetting(Setting.update(
+    _settingsDB.updateSetting(Setting.update(
         id: setting.id,
         key: setting.key,
         value: '${!bool.parse(setting.value)}',
@@ -72,35 +74,33 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   FutureOr<void> _loadSettings(
       LoadSettingsEvent event, Emitter<SettingsState> emit) async {
-    final settingsDB = SettingsDB.get();
-
-    bool useCountBadges = await _getUseCountBadges(settingsDB);
+    bool useCountBadges = await _getUseCountBadges(_settingsDB);
     emit(state.copyWith(useCountBadges: useCountBadges));
 
-    bool enableImportExport = await _getEnableImportExport(settingsDB);
+    bool enableImportExport = await _getEnableImportExport(_settingsDB);
     emit(state.copyWith(enableImportExport: enableImportExport));
 
-    var environment = await _getEnvironment(settingsDB);
+    var environment = await _getEnvironment(_settingsDB);
     emit(state.copyWith(environment: environment));
 
-    var language = await _getLanguage(settingsDB);
+    var language = await _getLanguage(_settingsDB);
     emit(state.copyWith(language: language));
   }
 
   Future<bool> _getUseCountBadges(SettingsDB settingsDB) async {
     bool useCountBadges = false;
-    final setting = await settingsDB.findByName(SettingKeys.USE_COUNT_BADGES);
+    final setting = await _settingsDB.findByName(SettingKeys.USE_COUNT_BADGES);
     if (setting == null) {
-      var created = await settingsDB.createSetting(Setting.create(
+      var created = await _settingsDB.createSetting(Setting.create(
           key: SettingKeys.USE_COUNT_BADGES,
           value: 'true',
           updatedAt: DateTime.now(),
           type: SettingType.Bool));
       if (created) {
         final newSetting =
-            await settingsDB.findByName(SettingKeys.USE_COUNT_BADGES);
+            await _settingsDB.findByName(SettingKeys.USE_COUNT_BADGES);
         if (newSetting == null) {
-          logger.warn('Insert ${SettingKeys.USE_COUNT_BADGES} failed.');
+          _logger.warn('Insert ${SettingKeys.USE_COUNT_BADGES} failed.');
           return useCountBadges;
         }
         useCountBadges = bool.parse(newSetting.value);
@@ -114,18 +114,18 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   Future<bool> _getEnableImportExport(SettingsDB settingsDB) async {
     bool enableImportExport = false;
     final setting =
-        await settingsDB.findByName(SettingKeys.ENABLE_IMPORT_EXPORT);
+        await _settingsDB.findByName(SettingKeys.ENABLE_IMPORT_EXPORT);
     if (setting == null) {
-      var created = await settingsDB.createSetting(Setting.create(
+      var created = await _settingsDB.createSetting(Setting.create(
           key: SettingKeys.ENABLE_IMPORT_EXPORT,
           value: 'true',
           updatedAt: DateTime.now(),
           type: SettingType.Bool));
       if (created) {
         final newSetting =
-            await settingsDB.findByName(SettingKeys.ENABLE_IMPORT_EXPORT);
+            await _settingsDB.findByName(SettingKeys.ENABLE_IMPORT_EXPORT);
         if (newSetting == null) {
-          logger.warn('Insert ${SettingKeys.ENABLE_IMPORT_EXPORT} failed.');
+          _logger.warn('Insert ${SettingKeys.ENABLE_IMPORT_EXPORT} failed.');
           return enableImportExport;
         }
         enableImportExport = bool.parse(newSetting.value);
@@ -137,18 +137,19 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   }
 
   Future<Environment> _getEnvironment(SettingsDB settingsDB) async {
-    final setting = await settingsDB.findByName(SettingKeys.Environment);
+    final setting = await _settingsDB.findByName(SettingKeys.Environment);
     if (setting == null) {
       String environment = '';
-      var created = await settingsDB.createSetting(Setting.create(
+      var created = await _settingsDB.createSetting(Setting.create(
           key: SettingKeys.Environment,
           value: Environment.development.name,
           updatedAt: DateTime.now(),
           type: SettingType.Text));
       if (created) {
-        final newSetting = await settingsDB.findByName(SettingKeys.Environment);
+        final newSetting =
+            await _settingsDB.findByName(SettingKeys.Environment);
         if (newSetting == null) {
-          logger.warn('Insert ${SettingKeys.Environment} failed.');
+          _logger.warn('Insert ${SettingKeys.Environment} failed.');
           environment = Environment.development.name;
         } else {
           environment = newSetting.value;
@@ -162,10 +163,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   FutureOr<void> _toggleEnvironment(
       ToggleEnvironment event, Emitter<SettingsState> emit) async {
-    final settingsDB = SettingsDB.get();
-    final setting = await settingsDB.findByName(SettingKeys.Environment);
+    final setting = await _settingsDB.findByName(SettingKeys.Environment);
     if (setting == null) return;
-    settingsDB.updateSetting(
+    _settingsDB.updateSetting(
       Setting.update(
           id: setting.id,
           key: setting.key,
@@ -183,17 +183,17 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   }
 
   Future<Language> _getLanguage(SettingsDB settingsDB) async {
-    final setting = await settingsDB.findByName(SettingKeys.LANGUAGE);
+    final setting = await _settingsDB.findByName(SettingKeys.LANGUAGE);
     if (setting == null) {
-      var created = await settingsDB.createSetting(Setting.create(
+      var created = await _settingsDB.createSetting(Setting.create(
           key: SettingKeys.LANGUAGE,
           value: Language.english.name,
           updatedAt: DateTime.now(),
           type: SettingType.Text));
       if (created) {
-        final newSetting = await settingsDB.findByName(SettingKeys.LANGUAGE);
+        final newSetting = await _settingsDB.findByName(SettingKeys.LANGUAGE);
         if (newSetting == null) {
-          logger.warn('Insert ${SettingKeys.LANGUAGE} failed.');
+          _logger.warn('Insert ${SettingKeys.LANGUAGE} failed.');
           return Language.english;
         }
         return newSetting.value.toLanguage();
@@ -205,11 +205,10 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   FutureOr<void> _toggleLanguage(
       ToggleLanguage event, Emitter<SettingsState> emit) async {
-    final settingsDB = SettingsDB.get();
-    final setting = await settingsDB.findByName(SettingKeys.LANGUAGE);
+    final setting = await _settingsDB.findByName(SettingKeys.LANGUAGE);
     if (setting == null) return;
 
-    await settingsDB.updateSetting(Setting.update(
+    await _settingsDB.updateSetting(Setting.update(
       id: setting.id,
       key: setting.key,
       value: event.language.name,
@@ -231,7 +230,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     emit(state.copyWith(
       setLocale: event.setLocale,
     ));
-    var language = await _getLanguage(SettingsDB.get());
+    var language = await _getLanguage(_settingsDB);
     this.add(ToggleLanguage(language: language));
   }
 
@@ -249,5 +248,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         break;
     }
     state.setLocale(newLocale);
+    prefs.setLocale(language);
   }
 }

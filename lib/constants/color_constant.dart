@@ -12,11 +12,6 @@ class ColorPalette {
 
   ColorPalette(this.colorName, this.colorValue);
 
-  bool operator ==(o) =>
-      o is ColorPalette &&
-      o.colorValue == colorValue &&
-      o.colorName == colorName;
-
   Map<String, dynamic> toMap() {
     return {
       'colorName': this.colorName,
@@ -30,6 +25,17 @@ class ColorPalette {
       map['colorValue'] as int,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ColorPalette &&
+          runtimeType == other.runtimeType &&
+          colorName == other.colorName &&
+          colorValue == other.colorValue;
+
+  @override
+  int get hashCode => colorName.hashCode ^ colorValue.hashCode;
 }
 
 var colorsPalettes = <ColorPalette>[
