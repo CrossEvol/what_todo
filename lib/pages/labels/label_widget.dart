@@ -4,9 +4,7 @@ import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
-import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/labels/label.dart';
-import 'package:flutter_app/pages/labels/add_label.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:go_router/go_router.dart';
@@ -49,9 +47,9 @@ class LabelExpansionTileWidget extends StatelessWidget {
   }
 
   List<Widget> buildLabels(BuildContext context) {
-    List<Widget> projectWidgetList = [];
-    _labels.forEach((label) => projectWidgetList.add(LabelRow(label)));
-    projectWidgetList.add(ListTile(
+    List<Widget> labelWidgetList = [];
+    _labels.forEach((label) => labelWidgetList.add(LabelRow(label)));
+    labelWidgetList.add(ListTile(
         leading: Icon(Icons.add),
         title: Text(
           AppLocalizations.of(context)!.addLabel,
@@ -61,7 +59,7 @@ class LabelExpansionTileWidget extends StatelessWidget {
           context.go('/label/add');
           context.read<LabelBloc>().add(RefreshLabelsEvent());
         }));
-    return projectWidgetList;
+    return labelWidgetList;
   }
 }
 
@@ -72,7 +70,6 @@ class LabelRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final homeBloc = context.bloc<MyHomeBloc>();
     return ListTile(
       key: ValueKey("tile_${label.name}_${label.id}"),
       onTap: () {
@@ -102,16 +99,6 @@ class LabelRow extends StatelessWidget {
           color: Color(label.colorValue),
         ),
       ),
-    );
-  }
-}
-
-class AddLabelPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => LabelBloc(LabelDB.get()),
-      child: AddLabel(),
     );
   }
 }

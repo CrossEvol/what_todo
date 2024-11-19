@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/pages/home/my_home_bloc.dart';
+import 'package:flutter_app/utils/shard_prefs_util.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_app/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 extension TestWrapMaterialApp on Widget {
   Widget withLocalizedMaterialApp() {
@@ -80,4 +82,10 @@ extension TestWidgetFinder<T> on WidgetTester {
     var findKey = find.byKey(ValueKey(key));
     return this.firstWidget(findKey) as T;
   }
+}
+
+Future<void> setupTest() async {
+  TestWidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences.setMockInitialValues({});
+  await setupSharedPreference();
 }

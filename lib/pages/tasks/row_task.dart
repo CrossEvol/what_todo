@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_app/constants/app_constant.dart';
 import 'package:go_router/go_router.dart';
 
-import 'task_db.dart';
 
 class TaskRow extends StatelessWidget {
-  final MyTaskBloc _taskBloc = MyTaskBloc(TaskDB.get());
   final Task task;
   static final dateLabel = "Date";
   final List<String> labelNames = [];

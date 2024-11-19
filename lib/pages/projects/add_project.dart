@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/pages/home/screen_enum.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
-import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/utils/collapsable_expand_tile.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+
+class AddProjectPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AddProject();
+  }
+}
 
 class AddProject extends StatelessWidget {
   final expansionTile = GlobalKey<CollapsibleExpansionTileState>();
@@ -41,7 +49,8 @@ class AddProject extends StatelessWidget {
             );
             context.read<ProjectBloc>().add(CreateProjectEvent(project));
             if (context.isWiderScreen()) {
-              context.bloc<MyHomeBloc>().updateScreen(SCREEN.HOME);
+              context.read<HomeBloc>().add(UpdateScreenEvent(SCREEN.HOME));
+              // context.bloc<MyHomeBloc>().updateScreen(SCREEN.HOME);
             }
             context.safePop();
           }
@@ -55,13 +64,12 @@ class AddProject extends StatelessWidget {
               child: TextFormField(
                 key: ValueKey(AddProjectKeys.TEXT_FORM_PROJECT_NAME),
                 decoration: InputDecoration(
-                  hintText: AppLocalizations.of(context)!.projectName
-                ),
+                    hintText: AppLocalizations.of(context)!.projectName),
                 maxLength: 20,
                 validator: (value) {
-                  return value!.isEmpty 
-                    ? AppLocalizations.of(context)!.projectNameCannotBeEmpty 
-                    : null;
+                  return value!.isEmpty
+                      ? AppLocalizations.of(context)!.projectNameCannotBeEmpty
+                      : null;
                 },
                 onSaved: (value) {
                   projectName = value!;
@@ -77,7 +85,8 @@ class AddProject extends StatelessWidget {
                 if (state is ColorSelectionUpdated) {
                   currentSelectedPalette = state.colorPalette;
                 } else {
-                  currentSelectedPalette = ColorPalette("Grey", Colors.grey.value);
+                  currentSelectedPalette =
+                      ColorPalette("Grey", Colors.grey.value);
                 }
                 return CollapsibleExpansionTile(
                   key: expansionTile,
@@ -114,10 +123,10 @@ class AddProject extends StatelessWidget {
         onTap: () {
           expansionTile.currentState!.collapse();
           context.read<ProjectBloc>().add(
-            UpdateColorSelectionEvent(
-              ColorPalette(colors.colorName, colors.colorValue),
-            ),
-          );
+                UpdateColorSelectionEvent(
+                  ColorPalette(colors.colorName, colors.colorValue),
+                ),
+              );
         },
       ));
     });

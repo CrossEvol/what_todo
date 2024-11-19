@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
-import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
@@ -10,7 +9,6 @@ import 'package:flutter_app/models/priority.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
-import 'package:flutter_app/pages/tasks/bloc/my_edit_task_bloc.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/utils/date_util.dart';
@@ -19,10 +17,7 @@ import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../labels/label_db.dart';
-import '../projects/project_db.dart';
 import 'models/task.dart';
-import 'task_db.dart';
 
 class EditTaskScreen extends StatefulWidget {
   final Task task;
@@ -357,15 +352,8 @@ class EditTaskProvider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomBlocProvider(
-      bloc: MyEditTaskBloc(
-        TaskDB.get(),
-        ProjectDB.get(),
-        LabelDB.get(),
-      ),
-      child: EditTaskScreen(
-        task: task!,
-      ),
+    return EditTaskScreen(
+      task: task!,
     );
   }
 }

@@ -93,7 +93,7 @@ BEGIN
             VALUE "FileDescription", "what_todo" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "what_todo" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2023 ja.burhanrashid52. All rights reserved." "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2024 ja.burhanrashid52. All rights reserved." "\0"
             VALUE "OriginalFilename", "what_todo.exe" "\0"
             VALUE "ProductName", "what_todo" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"

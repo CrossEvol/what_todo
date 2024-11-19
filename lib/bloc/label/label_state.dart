@@ -19,7 +19,7 @@ class LabelsLoaded extends LabelState {
   const LabelsLoaded(this.labels);
 
   @override
-  List<Object> get props => [labels];
+  List<Object> get props => [this.labels];
 }
 
 class LabelExistenceChecked extends LabelState {

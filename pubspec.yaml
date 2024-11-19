@@ -75,6 +75,7 @@ flutter:
     - assets/facebook_logo.png
     - assets/stack_overflow.png
     - assets/Agnimon.jpg
+    - assets/empty.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.

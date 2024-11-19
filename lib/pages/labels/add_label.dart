@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
-import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/home/screen_enum.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/utils/app_util.dart';
@@ -10,6 +10,14 @@ import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+
+class AddLabelPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return AddLabel();
+  }
+}
 
 class AddLabel extends StatelessWidget {
   final GlobalKey<FormState> _formState = GlobalKey<FormState>();
@@ -24,11 +32,12 @@ class AddLabel extends StatelessWidget {
       listener: (context, state) {
         if (state is LabelExistenceChecked) {
           if (state.exists) {
-            showSnackbar(context, AppLocalizations.of(context)!.labelAlreadyExists);
+            showSnackbar(
+                context, AppLocalizations.of(context)!.labelAlreadyExists);
           } else {
             context.safePop();
             if (context.isWiderScreen()) {
-              context.bloc<MyHomeBloc>().updateScreen(SCREEN.HOME);
+              context.read<HomeBloc>().add(UpdateScreenEvent(SCREEN.HOME));
             }
           }
         } else if (state is ColorSelectionUpdated) {
@@ -71,13 +80,12 @@ class AddLabel extends StatelessWidget {
                   child: TextFormField(
                     key: ValueKey(AddLabelKeys.TEXT_FORM_LABEL_NAME),
                     decoration: InputDecoration(
-                      hintText: AppLocalizations.of(context)!.labelName
-                    ),
+                        hintText: AppLocalizations.of(context)!.labelName),
                     maxLength: 20,
                     validator: (value) {
-                      return value!.isEmpty 
-                        ? AppLocalizations.of(context)!.labelCannotBeEmpty 
-                        : null;
+                      return value!.isEmpty
+                          ? AppLocalizations.of(context)!.labelCannotBeEmpty
+                          : null;
                     },
                     onSaved: (value) {
                       labelName = value!;
@@ -119,9 +127,9 @@ class AddLabel extends StatelessWidget {
   }
 
   List<Widget> buildMaterialColors(BuildContext context) {
-    List<Widget> projectWidgetList = [];
+    List<Widget> colorSelectionWidgets = [];
     colorsPalettes.forEach((colors) {
-      projectWidgetList.add(ListTile(
+      colorSelectionWidgets.add(ListTile(
         leading: Icon(
           Icons.label,
           size: 16.0,
@@ -138,6 +146,6 @@ class AddLabel extends StatelessWidget {
         },
       ));
     });
-    return projectWidgetList;
+    return colorSelectionWidgets;
   }
 }

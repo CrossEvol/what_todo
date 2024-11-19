@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
+import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/providers/theme_provider.dart';
 import 'package:flutter_app/styles/theme_data_style.dart';
 import 'package:flutter_app/utils/app_util.dart';
@@ -86,18 +87,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 title: const Text('Common'),
                 tiles: <SettingsTile>[
                   SettingsTile.navigation(
+                    key: ValueKey(SettingKeys.LANGUAGE),
                     leading: const Icon(Icons.language),
                     title: const Text('Language'),
                     value: Text(state.language.name.capitalizeFirstLetter()),
                     onPressed: _toggleLanguage,
                   ),
                   SettingsTile.navigation(
+                    key: ValueKey(SettingKeys.Environment),
                     leading: const Icon(Icons.cloud_outlined),
                     title: const Text('Environment'),
                     value: Text(environment.name.capitalizeFirstLetter()),
                     onPressed: _toggleEnvironment,
                   ),
                   SettingsTile.switchTile(
+                    key: ValueKey(SettingKeys.USE_COUNT_BADGES),
                     onToggle: (value) {
                       context
                           .read<SettingsBloc>()
@@ -108,6 +112,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: const Text('Enable count badges'),
                   ),
                   SettingsTile.switchTile(
+                    key: ValueKey(SettingKeys.ENABLE_IMPORT_EXPORT),
                     onToggle: (value) {
                       context
                           .read<SettingsBloc>()
@@ -118,6 +123,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: const Text('Enable Import/Export'),
                   ),
                   SettingsTile.switchTile(
+                    key: ValueKey(SettingKeys.ENABLE_DARK_MODE),
                     onToggle: (value) {
                       themeProvider.changeTheme();
                     },
@@ -127,6 +133,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: const Text('Enable Dark Mode'),
                   ),
                   SettingsTile.switchTile(
+                    key: ValueKey(SettingKeys.ENABLE_CUSTOM_THEME),
                     onToggle: (value) {
                       setState(() {
                         useCustomTheme = value;
@@ -208,92 +215,69 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void _toggleEnvironment(context) {
-    showDialog(
-        context: context,
-        builder: (context) => AlertDialog(
-              content: SizedBox(
-                width: 300,
-                height: 200,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          context.read<SettingsBloc>().add(ToggleEnvironment(
-                              environment: Environment.production));
-                          Navigator.pop(context);
-                        },
-                        child: Card(
-                          child: ListTile(
-                            leading: FlutterLogo(),
-                            title: Text(Environment.production.name
-                                .capitalizeFirstLetter()),
-                            trailing: Icon(Icons.arrow_right),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          context.read<SettingsBloc>().add(ToggleEnvironment(
-                              environment: Environment.development));
-                          Navigator.pop(context);
-                        },
-                        child: Card(
-                          child: ListTile(
-                            leading: FlutterLogo(),
-                            title: Text(Environment.development.name
-                                .capitalizeFirstLetter()),
-                            trailing: Icon(Icons.arrow_right),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          context.read<SettingsBloc>().add(
-                              ToggleEnvironment(environment: Environment.test));
-                          Navigator.pop(context);
-                        },
-                        child: Card(
-                          child: ListTile(
-                            leading: FlutterLogo(),
-                            title: Text(
-                                Environment.test.name.capitalizeFirstLetter()),
-                            trailing: Icon(Icons.arrow_right),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ));
-  }
-
-  void _toggleLanguage(context) {
+  void _toggleEnvironment(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (_) => AlertDialog(
         content: SizedBox(
           width: 300,
           height: 200,
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              children: Language.values.map((lang) => GestureDetector(
-                onTap: () {
-                  context.read<SettingsBloc>().add(ToggleLanguage(language: lang));
-                  Navigator.pop(context);
-                },
-                child: Card(
-                  child: ListTile(
-                    leading: const Icon(Icons.language),
-                    title: Text(lang.name.capitalizeFirstLetter()),
-                    trailing: const Icon(Icons.arrow_right),
-                  ),
-                ),
-              )).toList(),
+              children: Environment.values
+                  .map((env) => GestureDetector(
+                        key: ValueKey('env-${env.name}'),
+                        onTap: () {
+                          context
+                              .read<SettingsBloc>()
+                              .add(ToggleEnvironment(environment: env));
+                          Navigator.pop(context);
+                        },
+                        child: Card(
+                          child: ListTile(
+                            leading: const FlutterLogo(),
+                            title: Text(env.name.capitalizeFirstLetter()),
+                            trailing: const Icon(Icons.arrow_right),
+                          ),
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _toggleLanguage(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        content: SizedBox(
+          width: 300,
+          height: 200,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: Language.values
+                  .map((lang) => GestureDetector(
+                        key: ValueKey('lang-${lang.name}'),
+                        onTap: () {
+                          context
+                              .read<SettingsBloc>()
+                              .add(ToggleLanguage(language: lang));
+                          Navigator.pop(context);
+                        },
+                        child: Card(
+                          child: ListTile(
+                            leading: const Icon(Icons.language),
+                            title: Text(lang.name.capitalizeFirstLetter()),
+                            trailing: const Icon(Icons.arrow_right),
+                          ),
+                        ),
+                      ))
+                  .toList(),
             ),
           ),
         ),

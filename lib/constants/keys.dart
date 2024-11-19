@@ -28,10 +28,12 @@ class ShardPrefKeys {
 }
 
 class SettingKeys {
-  static const USE_COUNT_BADGES = 'use_count_badges';
-  static const ENABLE_IMPORT_EXPORT = 'enable_import_export';
   static const Environment = 'environment';
   static const LANGUAGE = 'language';
+  static const USE_COUNT_BADGES = 'use_count_badges';
+  static const ENABLE_IMPORT_EXPORT = 'enable_import_export';
+  static const ENABLE_DARK_MODE = 'enable_dark_mode';
+  static const ENABLE_CUSTOM_THEME = 'enable_custom_theme';
 }
 
 class AddProjectKeys {

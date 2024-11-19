@@ -5,12 +5,12 @@ import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/pages/about/about_us.dart';
 import 'package:flutter_app/pages/home/home.dart';
 import 'package:flutter_app/pages/home/my_home_bloc.dart';
+import 'package:flutter_app/pages/labels/add_label.dart';
 import 'package:flutter_app/pages/labels/label_grid.dart';
-import 'package:flutter_app/pages/labels/label_widget.dart';
 import 'package:flutter_app/pages/order/order_page.dart';
 import 'package:flutter_app/pages/profile/profile_page.dart';
+import 'package:flutter_app/pages/projects/add_project.dart';
 import 'package:flutter_app/pages/projects/project_grid.dart';
-import 'package:flutter_app/pages/projects/project_widget.dart';
 import 'package:flutter_app/pages/settings/settings_screen.dart';
 import 'package:flutter_app/pages/tasks/add_task.dart';
 import 'package:flutter_app/pages/tasks/edit_task.dart';
@@ -60,7 +60,7 @@ final GoRouter goRouter = GoRouter(
         GoRoute(
           path: 'task/add',
           builder: (BuildContext context, GoRouterState state) {
-            return AddTaskScreen();
+            return AddTaskProvider();
           },
         ),
         GoRoute(
@@ -105,7 +105,7 @@ final GoRouter goRouter = GoRouter(
           path: 'task/edit',
           builder: (BuildContext context, GoRouterState state) {
             var task = state.extra as Task;
-            return EditTaskScreen(
+            return EditTaskProvider(
               task: task,
             );
           },

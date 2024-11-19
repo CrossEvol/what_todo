@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
-import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
-import 'package:flutter_app/pages/projects/my_project_bloc.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
-import 'package:flutter_app/pages/projects/add_project.dart';
 import 'package:flutter_app/pages/projects/project.dart';
-import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:go_router/go_router.dart';
@@ -131,16 +127,6 @@ class ProjectRow extends StatelessWidget {
           backgroundColor: Color(project.colorValue),
         ),
       ),
-    );
-  }
-}
-
-class AddProjectPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return CustomBlocProvider(
-      bloc: MyProjectBloc(ProjectDB.get()),
-      child: AddProject(),
     );
   }
 }
