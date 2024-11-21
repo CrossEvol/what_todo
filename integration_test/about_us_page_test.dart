@@ -4,7 +4,6 @@ import 'package:flutter_app/pages/about/about_us.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 
-import '../test/about_us/about_us_test.dart';
 import '../test/test_helpers.dart';
 
 void main() {

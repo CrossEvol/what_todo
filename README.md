@@ -4,6 +4,11 @@
 the project is not build on the [bloc](https://bloclibrary.dev/), I want to rebuild it
 to `flutter_bloc`
 
+# cautions
+
+- add `--dart-define=IS_TEST=true` to control test database.
+- `test/` can be run in `flutter test` directly, but the `integration_test` can not.
+
 # Todo:
 
 - ~~mobile can not update title properly, it will commit updateTask several times, and preserve the
@@ -19,7 +24,7 @@ to `flutter_bloc`
 - ~~migrate database properly. I do not want to delete data again. maybe I can export the data.~~
 - ~~switch theme mode ~~
 - ~~i18n~~
-- send email 
+- send email
 - ~~export data~~
 - ~~import data~~
 - ~~dateTime in db from int -> string~~

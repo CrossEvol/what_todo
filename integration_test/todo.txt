@@ -1,0 +1,3 @@
+all files here can not run by command.
+
+The successful tests for failed tests will bloat up the size of .dart_tool/.

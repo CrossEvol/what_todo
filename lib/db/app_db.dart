@@ -1,6 +1,7 @@
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
 import 'package:flutter_app/db/app_db.steps.dart';
+import 'package:flutter_app/utils/logger_util.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'dart:io';
@@ -91,11 +92,19 @@ class AppDatabase extends _$AppDatabase {
 }
 
 LazyDatabase _openConnection() {
+  const isTest = bool.fromEnvironment('IS_TEST');
+  const dbName = isTest ? 'tasks.test.db' : 'tasks.db';
+
+  if (isTest) {
+    logger.info('Use the database of path => $dbName ...');
+  }
+
   // TODO: should decouple the data to application directory
   if (Platform.isAndroid) {
     return LazyDatabase(() async {
       final dbFolder = await getExternalStorageDirectory();
-      final file = File(p.join(dbFolder!.path, 'tasks.db'));
+      final file = File(p.join(dbFolder!.path, dbName));
+      resetDatabase(isTest, file);
       return NativeDatabase(
         file,
         logStatements: true,
@@ -105,10 +114,20 @@ LazyDatabase _openConnection() {
 
   return LazyDatabase(() async {
     final dbFolder = await getApplicationDocumentsDirectory();
-    final file = File(p.join(dbFolder.path, 'tasks.db'));
+    final file = File(p.join(dbFolder.path, dbName));
+    resetDatabase(isTest, file);
     return NativeDatabase(
       file,
       logStatements: true,
     );
   });
+}
+
+void resetDatabase(bool isTest, File file) {
+  if (isTest && file.existsSync()) {
+    logger.info('Delete the database => ${file.absolute.path}');
+    file.deleteSync(recursive: false);
+    logger.info('Create the database => ${file.absolute.path}');
+    file.createSync();
+  }
 }

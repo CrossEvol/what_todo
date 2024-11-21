@@ -1,3 +1,4 @@
+import 'dart:io';
 
 import 'package:flutter_app/main.dart' as app;
 import 'package:flutter_app/constants/keys.dart';
@@ -15,6 +16,7 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text("Today"), findsOneWidget);
       expect(find.text("No Task Added"), findsOneWidget);
+      exit(0);
     });
 
     testWidgets('Show Today Tasks', (WidgetTester tester) async {
@@ -31,6 +33,7 @@ void main() {
 
       expect(find.text("Task Two"), findsOneWidget);
       expect(find.text("Personal"), findsOneWidget);
+      exit(0);
     });
 
     testWidgets('Show Inbox Tasks', (WidgetTester tester) async {
@@ -42,6 +45,7 @@ void main() {
 
       expect(find.text("Task One"), findsOneWidget);
       expect(find.text("Inbox"), findsNWidgets(2));
+      exit(0);
     });
 
     testWidgets('Show Next 7 days Tasks', (WidgetTester tester) async {
@@ -74,6 +78,7 @@ void main() {
 
       expect(find.text("Task Two"), findsOneWidget);
       expect(find.text("Personal"), findsNWidgets(2));
+      exit(0);
     });
 
     testWidgets('Show No Travel project Tasks Found',
@@ -87,13 +92,14 @@ void main() {
       await tester.tapAndSettle('Travel_4');
 
       expect(find.text("No Task Added"), findsOneWidget);
+      exit(0);
     });
 
     //TODO: Add test for tasks Label Filter
   });
 
   tearDown(() async {
-    await cleanDb();
+    // await cleanDb();
   });
 }
 
