@@ -27,6 +27,6 @@ extension ShardPrefsExtension on SharedPreferences {
   }
 
   String getLocale() {
-    return this.getString(ShardPrefKeys.Locale) ?? 'ja';
+    return this.getString(ShardPrefKeys.Locale) ?? 'en';
   }
 }
