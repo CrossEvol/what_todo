@@ -120,7 +120,7 @@ class MyAddTaskBloc implements CustomBlocBase {
       );
 
       _taskDB.updateTask(task, labelIDs: labelIds).then((task) {
-        Notification.onDone();
+        // Notification.onDone();
       });
     });
   }

@@ -29,3 +29,9 @@ to `flutter_bloc`
 - ~~import data~~
 - ~~dateTime in db from int -> string~~
 - tidy up tests 
+
+# Update
+## 2025/04/05
+### flutter-generate-i10n-source
+not stable, should wait for some time
+see [breaking-changes/flutter-generate-i10n-source](https://docs.flutter.dev/release/breaking-changes/flutter-generate-i10n-source)
