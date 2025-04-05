@@ -1,7 +1,7 @@
 plugins {
-    id "com.android.application"
-    id "kotlin-android"
-    id "dev.flutter.flutter-gradle-plugin"
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'dev.flutter.flutter-gradle-plugin'
 }
 
 def localProperties = new Properties()
@@ -24,22 +24,22 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 35
-    namespace "ja.burhanrashid52.whattodo"
+    compileSdk 35
+    namespace 'ja.burhanrashid52.whattodo'
 
-    ndkVersion = "26.3.11579264"
+    ndkVersion '26.3.11579264'
 
-    lintOptions {
+    lint {
         disable 'InvalidPackage'
     }
 
     defaultConfig {
-        applicationId "ja.burhanrashid52.whattodo"
-        minSdkVersion flutter.minSdkVersion
-        targetSdkVersion 34
+        applicationId 'ja.burhanrashid52.whattodo'
+        minSdk flutter.minSdkVersion
+        targetSdk 34
         versionCode 6
-        versionName "1.0.4"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        versionName '1.0.4'
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
     compileOptions {
@@ -52,14 +52,12 @@ android {
     }
 
     signingConfigs {
-        file(rootProject.file('key.properties')).with { propFile ->
-            if (propFile.canRead()) {
-                release {
-                    keyAlias keystoreProperties['keyAlias']
-                    keyPassword keystoreProperties['keyPassword']
-                    storeFile file(keystoreProperties['storeFile'])
-                    storePassword keystoreProperties['storePassword']
-                }
+        release {
+            if (keystorePropertiesFile.exists()) {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
             } else {
                 print('not signed')
             }
@@ -68,18 +66,22 @@ android {
 
     buildTypes {
         release {
-            file(rootProject.file('key.properties')).with { propFile ->
-                if (propFile.canRead()) {
-                    signingConfig signingConfigs.release
-                }
+            if (keystorePropertiesFile.exists()) {
+                signingConfig signingConfigs.release
             }
+            minifyEnabled false
+            shrinkResources false
 
-            applicationVariants.all { variant ->
-                variant.outputs.all { output ->
-                    output.outputFileName = "app-release.apk"
+            applicationVariants.configureEach { variant ->
+                variant.outputs.configureEach { output ->
+                    outputFileName = "app-release.apk"
                 }
             }
         }
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
     }
 }
 
@@ -88,7 +90,13 @@ flutter {
 }
 
 dependencies {
-    testImplementation 'junit:junit:4.13.1'
-    androidTestImplementation 'androidx.test:runner:1.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    // Test dependencies
+    testImplementation 'junit:junit:4.13.2'  // Updated to latest stable version
+    androidTestImplementation 'androidx.test:runner:1.5.2'  // Updated to latest stable version
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    // Updated to latest stable version
+
+    // Kotlin standard library (recommended for Kotlin projects)
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.22'
 }
+

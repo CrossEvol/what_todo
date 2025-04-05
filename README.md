@@ -35,3 +35,6 @@ to `flutter_bloc`
 ### flutter-generate-i10n-source
 see [breaking-changes/flutter-generate-i10n-source](https://docs.flutter.dev/release/breaking-changes/flutter-generate-i10n-source)
 besides the migrate guide, should use the flutter-intl tool to generate the code , this tool has been integrated into android studio 
+
+### not rely on `.flutter-plugins` any more
+see [flutter-plugins-configuration]https://docs.flutter.dev/release/breaking-changes/flutter-plugins-configuration
