@@ -34,7 +34,7 @@ import 'package:go_router/go_router.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as p;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_app/l10n/app_localizations.dart';
 import 'package:flutter_app/utils/localization_ext.dart';
 
 class AdaptiveHomePage extends StatelessWidget {

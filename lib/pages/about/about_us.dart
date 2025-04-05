@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/constants/app_constant.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/constants/keys.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_app/l10n/app_localizations.dart';
 
 class AboutUsScreen extends StatelessWidget {
   @override

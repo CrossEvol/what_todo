@@ -7,7 +7,7 @@ import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/row_task.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_app/l10n/app_localizations.dart';
 
 class TasksPage extends StatelessWidget {
   @override

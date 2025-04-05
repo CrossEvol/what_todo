@@ -8,7 +8,7 @@ import 'package:flutter_app/utils/collapsable_expand_tile.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_app/l10n/app_localizations.dart';
 
 
 class AddProjectPage extends StatelessWidget {

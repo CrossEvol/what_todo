@@ -11,7 +11,7 @@ import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:go_router/go_router.dart';
 import 'package:badges/badges.dart' as badges;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_app/l10n/app_localizations.dart';
 
 class ProjectPage extends StatelessWidget {
   @override

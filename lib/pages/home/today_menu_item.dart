@@ -7,7 +7,7 @@ import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:badges/badges.dart' as badges;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_app/l10n/app_localizations.dart';
 
 class TodayMenuItem extends StatefulWidget {
   const TodayMenuItem({super.key});
