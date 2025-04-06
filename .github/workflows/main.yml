@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - 'v*.*.*'  # This will trigger on tags like v1.0.0, v2.1.3, etc.
   pull_request:
     branches:
       - master
@@ -27,3 +29,35 @@ jobs:
 
       - name: Run Tests
         run: flutter test test/
+
+  build-and-release:
+    name: Build APK and Release
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')  # Only run on tag push
+    runs-on: ubuntu-latest
+    needs: test  # This job will run after the test job succeeds
+    permissions: # Add this section
+      contents: write  # Required to create releases
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.2'
+          channel: 'stable'
+
+      - name: Get Packages
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/app/outputs/flutter-apk/app-release.apk
+          name: Release ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
