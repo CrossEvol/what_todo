@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/custom_bloc_provider.dart';
-import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/utils/shard_prefs_util.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_app/providers/theme_provider.dart';
@@ -36,15 +34,6 @@ extension TestWrapMaterialApp on Widget {
     );
   }
 
-  Widget wrapMaterialAppWithBloc<T extends CustomBlocBase>(T myBloc) {
-    return MaterialApp(
-      home: CustomBlocProvider(
-        bloc: MyHomeBloc(),
-        child: CustomBlocProvider(bloc: myBloc, child: this),
-      ),
-    );
-  }
-
   Widget wrapWithScaffold() {
     return MaterialApp(
       home: Scaffold(
@@ -57,14 +46,6 @@ extension TestWrapMaterialApp on Widget {
     return ChangeNotifierProvider(
       create: (_) => ThemeProvider(),
       child: this,
-    );
-  }
-
-  Widget wrapScaffoldWithBloc<T extends CustomBlocBase>(T myBloc) {
-    return MaterialApp(
-      home: Scaffold(
-        body: CustomBlocProvider(bloc: myBloc, child: this),
-      ),
     );
   }
 }
