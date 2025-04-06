@@ -4,13 +4,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
-import 'package:flutter_app/bloc/custom_bloc_provider.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/about/about_us.dart';
-import 'package:flutter_app/pages/home/my_home_bloc.dart';
 import 'package:flutter_app/pages/home/screen_enum.dart';
 import 'package:flutter_app/pages/home/side_drawer.dart';
 import 'package:flutter_app/pages/labels/add_label.dart';
@@ -18,7 +16,6 @@ import 'package:flutter_app/pages/projects/add_project.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/tasks/add_task.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
-import 'package:flutter_app/pages/tasks/bloc/my_task_bloc.dart';
 import 'package:flutter_app/pages/tasks/edit_task.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_completed/task_completed.dart';
@@ -51,71 +48,63 @@ class AdaptiveHomePage extends StatelessWidget {
 class WiderHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final homeBloc = context.bloc<MyHomeBloc>();
+    final homeBloc = context.read<HomeBloc>();
+    final screen = homeBloc.state.screen;
     return Row(
       children: [
         Expanded(
-          child: StreamBuilder<SCREEN>(
-              stream: homeBloc.screens,
-              builder: (context, snapshot) {
-                //Refresh side drawer whenever screen is updated
-                return SideDrawer();
-              }),
+          child: SideDrawer(),
           flex: 2,
         ),
         SizedBox(
           width: 0.5,
         ),
         Expanded(
-          child: StreamBuilder<SCREEN>(
-              stream: homeBloc.screens,
-              builder: (context, snapshot) {
-                if (snapshot.data != null) {
-                  // ignore: missing_enum_constant_in_switch
-                  switch (snapshot.data) {
-                    case SCREEN.ABOUT:
-                      return AboutUsScreen();
-                    case SCREEN.ADD_TASK:
-                      return AddTaskProvider();
-                    case SCREEN.COMPLETED_TASK:
-                      return TaskCompletedPage();
-                    case SCREEN.ADD_PROJECT:
-                      return AddProjectPage();
-                    case SCREEN.ADD_LABEL:
-                      return AddLabelPage();
-                    case SCREEN.HOME:
-                      return HomePage();
-                    case SCREEN.UNCOMPLETED_TASK:
-                      return TaskUnCompletedPage();
-                    case SCREEN.EDIT_TASK:
-                      return EditTaskProvider();
-                    case null:
-                    // TODO: Handle this case.
-                  }
-                }
-                return HomePage();
-              }),
+          child: ScreenSelector(screen),
           flex: 5,
         )
       ],
     );
   }
+
+  StatelessWidget ScreenSelector(SCREEN? data) {
+    if (data != null) {
+      // ignore: missing_enum_constant_in_switch
+      switch (data) {
+        case SCREEN.ABOUT:
+          return AboutUsScreen();
+        case SCREEN.ADD_TASK:
+          return AddTaskProvider();
+        case SCREEN.COMPLETED_TASK:
+          return TaskCompletedPage();
+        case SCREEN.ADD_PROJECT:
+          return AddProjectPage();
+        case SCREEN.ADD_LABEL:
+          return AddLabelPage();
+        case SCREEN.HOME:
+          return HomePage();
+        case SCREEN.UNCOMPLETED_TASK:
+          return TaskUnCompletedPage();
+        case SCREEN.EDIT_TASK:
+          return EditTaskProvider();
+        case null:
+        // TODO: Handle this case.
+      }
+    }
+    return HomePage();
+  }
 }
 
 class HomePage extends StatelessWidget {
-  final MyTaskBloc _taskBloc = MyTaskBloc(TaskDB.get());
+  // final MyTaskBloc _taskBloc = MyTaskBloc(TaskDB.get());
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     final bool isWiderScreen = context.isWiderScreen();
-    final homeBloc = context.bloc<MyHomeBloc>();
+    final homeBloc = context.read<HomeBloc>();
     scheduleMicrotask(() {
       StreamSubscription? _filterSubscription;
-      _filterSubscription = homeBloc.filter.listen((filter) {
-        _taskBloc.updateFilters(filter);
-        //_filterSubscription?.cancel();
-      });
     });
     return Scaffold(
       key: _scaffoldKey,
@@ -155,14 +144,11 @@ class HomePage extends StatelessWidget {
         onPressed: () async {
           context.go('/task/add');
           // await context.adaptiveNavigate(SCREEN.ADD_TASK, AddTaskProvider());
-          _taskBloc.refresh();
+          // _taskBloc.refresh();
         },
       ),
       drawer: isWiderScreen ? null : SideDrawer(),
-      body: CustomBlocProvider(
-        bloc: _taskBloc,
-        child: TasksPage(),
-      ),
+      body: TasksPage(),
     );
   }
 
@@ -360,10 +346,8 @@ class HomePage extends StatelessWidget {
                   Navigator.of(context).pop();
                 } else {
                   showSnackbar(
-                    context, 
-                    AppLocalizations.of(context)!.noFileSelected,
-                    materialColor: Colors.red
-                  );
+                      context, AppLocalizations.of(context)!.noFileSelected,
+                      materialColor: Colors.red);
                 }
               },
               child: Text(AppLocalizations.of(context)!.confirm),
