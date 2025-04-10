@@ -3,13 +3,12 @@ import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_app/constants/app_constant.dart';
+import 'package:flutter_app/pages/labels/label.dart'; // Import Label
 import 'package:go_router/go_router.dart';
-
 
 class TaskRow extends StatelessWidget {
   final Task task;
   static final dateLabel = "Date";
-  final List<String> labelNames = [];
 
   TaskRow(this.task);
 
@@ -83,7 +82,7 @@ class TaskRow extends StatelessWidget {
                                     height: 8.0,
                                     child: CircleAvatar(
                                       backgroundColor:
-                                          Color(task.projectColor!),
+                                      Color(task.projectColor!),
                                     ),
                                   )
                                 ],
@@ -113,16 +112,34 @@ class TaskRow extends StatelessWidget {
     );
   }
 
-  Widget getLabels(List<String> labelList) {
+  Widget getLabels(List<Label> labelList) { // Changed parameter type
     if (labelList.isEmpty) {
       return Container();
     } else {
       return Padding(
         padding: const EdgeInsets.only(
             left: PADDING_SMALL, bottom: PADDING_VERY_SMALL),
-        child: Text(task.labelList.join("  "),
-            key: ValueKey("taskLabels_${task.id}"),
-            style: TextStyle(fontSize: FONT_SIZE_LABEL)),
+        child: Wrap(
+          spacing: 8.0, // Horizontal space between labels
+          runSpacing: 4.0, // Vertical space between lines of labels
+          children: labelList.map((label) {
+            return Row(
+              mainAxisSize: MainAxisSize.min, // Row takes minimum space
+              children: <Widget>[
+                Text(
+                  label.name, // Access label name
+                  style: TextStyle(fontSize: FONT_SIZE_LABEL),
+                ),
+                SizedBox(width: 4.0), // Space between text and icon
+                Icon(
+                  Icons.label,
+                  size: FONT_SIZE_LABEL, // Match icon size with text size
+                  color: Color(label.colorValue), // Use label color
+                ),
+              ],
+            );
+          }).toList(),
+        ),
       );
     }
   }

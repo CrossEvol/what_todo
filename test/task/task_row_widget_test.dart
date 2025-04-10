@@ -3,6 +3,7 @@ import 'package:flutter_app/models/priority.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/row_task.dart';
 import 'package:flutter_app/constants/color_constant.dart';
+import 'package:flutter_app/pages/labels/label.dart'; // Import Label
 import 'package:flutter_test/flutter_test.dart';
 
 import '../test_helpers.dart';
@@ -66,7 +67,10 @@ void main() {
 
     testTask1.projectName = "Inbox";
     testTask1.projectColor = Colors.grey.value;
-    testTask1.labelList = ["Android", "Flutter"];
+    testTask1.labelList = [
+      Label.update(id: 1, name: "Android", colorCode: Colors.blue.value, colorName: "Blue"),
+      Label.update(id: 2, name: "Flutter", colorCode: Colors.green.value, colorName: "Green"),
+    ];
 
     var wrapMaterialApp = TaskRow(testTask1).wrapMaterialApp();
     await tester.pumpWidget(wrapMaterialApp);
@@ -75,9 +79,10 @@ void main() {
     expect(find.text(testTask1.projectName!), findsOneWidget);
     expect(find.text('Aug  15'), findsOneWidget);
 
-    //Test labels are visible
-    expect(find.byKey(ValueKey("taskLabels_1")), findsOneWidget);
-    expect(find.text("Android  Flutter"), findsOneWidget);
+    //Test labels are visible by checking individual label texts and icons
+    expect(find.text("Android"), findsOneWidget);
+    expect(find.text("Flutter"), findsOneWidget);
+    expect(find.byIcon(Icons.label), findsNWidgets(2)); // Check for 2 label icons
   });
 
   testWidgets("Task row smoke test with priorities color",

@@ -1,5 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:flutter_app/db/app_db.dart';
+import 'package:flutter_app/pages/labels/label.dart' as lb; // Use alias to avoid name clash if necessary
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 
@@ -108,7 +109,14 @@ class TaskDB {
       }
 
       if (label != null) {
-        taskMap[task.id]!.labelList.add(label.name);
+        // Create a Label object and add it to the list
+        final labelObject = lb.Label.fromMap({
+          lb.Label.dbId: label.id,
+          lb.Label.dbName: label.name,
+          lb.Label.dbColorCode: label.colorCode,
+          lb.Label.dbColorName: label.colorName,
+        });
+        taskMap[task.id]!.labelList.add(labelObject);
       }
     }
 

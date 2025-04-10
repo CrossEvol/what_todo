@@ -6,6 +6,7 @@ import 'package:flutter_app/pages/tasks/row_task.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/models/priority.dart';
+import 'package:flutter_app/pages/labels/label.dart'; // Import Label
 
 import '../mocks/fake-bloc.dart';
 import '../test_helpers.dart';
@@ -66,23 +67,30 @@ void main() {
 
   testWidgets('TaskRow should display labels when present',
       (WidgetTester tester) async {
-    testTask.labelList = ["Label1", "Label2"];
+    testTask.labelList = [
+      Label.update(id: 1, name: "Label1", colorCode: Colors.red.value, colorName: "Red"),
+      Label.update(id: 2, name: "Label2", colorCode: Colors.purple.value, colorName: "Purple"),
+    ];
 
     await tester.pumpWidget(createWidgetUnderTest());
     await tester.pumpAndSettle();
 
-    expect(find.text("Label1  Label2"), findsOneWidget);
-    expect(find.byKey(ValueKey("taskLabels_1")), findsOneWidget);
+    // Check for individual label texts and icons
+    expect(find.text("Label1"), findsOneWidget);
+    expect(find.text("Label2"), findsOneWidget);
+    expect(find.byIcon(Icons.label), findsNWidgets(2));
   });
 
   testWidgets('TaskRow should not display labels section when empty',
       (WidgetTester tester) async {
-    testTask.labelList = [];
+    testTask.labelList = []; // Already correct type, just ensuring it's empty
 
     await tester.pumpWidget(createWidgetUnderTest());
     await tester.pumpAndSettle();
 
-    expect(find.byKey(ValueKey("taskLabels_1")), findsNothing);
+    // Check that no label text or icons are found
+    expect(find.textContaining("Label"), findsNothing); // More robust check
+    expect(find.byIcon(Icons.label), findsNothing);
   });
 
   testWidgets('TaskRow should display formatted due date',

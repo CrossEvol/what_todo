@@ -5,10 +5,11 @@ import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_app/constants/app_constant.dart';
 
+import '../../labels/label.dart';
+
 class TaskUncompletedRow extends StatelessWidget {
   final Task tasks;
   static final dateLabel = "Date";
-  final List<String> labelNames = [];
 
   TaskUncompletedRow(this.tasks);
 
@@ -105,7 +106,7 @@ class TaskUncompletedRow extends StatelessWidget {
     );
   }
 
-  Widget getLabels(List<String> labelList) {
+  Widget getLabels(List<Label> labelList) {
     if (labelList.isEmpty) {
       return Container();
     } else {
