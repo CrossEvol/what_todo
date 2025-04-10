@@ -214,4 +214,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get taskDeleted => 'Task deleted';
+
+  @override
+  String get fieldCannotBeEmpty => 'Field must not be empty';
+
+  @override
+  String valueTooLong(int maxLength) {
+    return 'Value cannot be longer than $maxLength characters';
+  }
 }

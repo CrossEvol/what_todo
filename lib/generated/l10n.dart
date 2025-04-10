@@ -745,6 +745,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Field must not be empty`
+  String get fieldCannotBeEmpty {
+    return Intl.message(
+      'Field must not be empty',
+      name: 'fieldCannotBeEmpty',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Value cannot be longer than {maxLength} characters`
+  String valueTooLong(int maxLength) {
+    return Intl.message(
+      'Value cannot be longer than $maxLength characters',
+      name: 'valueTooLong',
+      desc: '',
+      args: [maxLength],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

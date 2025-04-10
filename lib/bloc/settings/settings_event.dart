@@ -39,6 +39,24 @@ final class ToggleLanguage extends SettingsEvent {
   List<Object?> get props => [language];
 }
 
+final class ToggleLabelLen extends SettingsEvent {
+  final int len;
+
+  const ToggleLabelLen({required this.len});
+
+  @override
+  List<Object?> get props => [len];
+}
+
+final class ToggleProjectLen extends SettingsEvent {
+  final int len;
+
+  const ToggleProjectLen({required this.len});
+
+  @override
+  List<Object?> get props => [len];
+}
+
 final class AddSetLocaleFunction extends SettingsEvent {
   final Function(Locale) setLocale;
 

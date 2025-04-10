@@ -146,6 +146,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ],
               ),
               SettingsSection(
+                title: const Text('Editor'),
+                tiles: <SettingsTile>[
+                  SettingsTile.navigation(
+                    key: ValueKey(SettingKeys.LABEL_LEN), // Use new key
+                    leading: const Icon(Icons.label_outline), // Changed icon
+                    title: const Text('Label Max Length'), // Changed title
+                    value: Text('${state.labelLen}'), // Use state.labelLen
+                    onPressed: (context) => _toggleLength(
+                        context, SettingKeys.LABEL_LEN, state.labelLen), // Use new handler
+                  ),
+                  SettingsTile.navigation(
+                    key: ValueKey(SettingKeys.PROJECT_LEN), // Use new key
+                    leading: const Icon(Icons.folder_outlined), // Changed icon
+                    title: const Text('Project Max Length'), // Changed title
+                    value: Text('${state.projectLen}'), // Use state.projectLen
+                    onPressed: (context) => _toggleLength(
+                        context, SettingKeys.PROJECT_LEN, state.projectLen), // Use new handler
+                  ),
+                ],
+              ),
+              SettingsSection(
                 title: const Text('Account'),
                 tiles: <SettingsTile>[
                   SettingsTile.navigation(
@@ -274,6 +295,57 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             leading: const Icon(Icons.language),
                             title: Text(lang.name.capitalizeFirstLetter()),
                             trailing: const Icon(Icons.arrow_right),
+                          ),
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Added method to handle length toggling
+  void _toggleLength(BuildContext context, String key, int currentValue) {
+    // Define updated predefined length options
+    final List<int> lengthOptions = [4, 8, 12, 16, 20]; // Updated options
+    String title = key == SettingKeys.LABEL_LEN
+        ? 'Select Label Max Length'
+        : 'Select Project Max Length';
+
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(title),
+        content: SizedBox(
+          width: 300,
+          // Adjust height based on options or make scrollable
+          height: lengthOptions.length * 60.0, // Simple height calculation
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: lengthOptions
+                  .map((len) => GestureDetector(
+                        key: ValueKey('$key-$len'),
+                        onTap: () {
+                          if (key == SettingKeys.LABEL_LEN) {
+                            context
+                                .read<SettingsBloc>()
+                                .add(ToggleLabelLen(len: len));
+                          } else if (key == SettingKeys.PROJECT_LEN) {
+                            context
+                                .read<SettingsBloc>()
+                                .add(ToggleProjectLen(len: len));
+                          }
+                          Navigator.pop(context);
+                        },
+                        child: Card(
+                          child: ListTile(
+                            title: Text('$len characters'),
+                            trailing: currentValue == len
+                                ? const Icon(Icons.check, color: Colors.blue)
+                                : null,
                           ),
                         ),
                       ))

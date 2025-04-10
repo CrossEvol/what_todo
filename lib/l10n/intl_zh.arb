@@ -274,5 +274,14 @@
   "taskDeleted": "任务已删除",
   "@taskDeleted": {
     "description": "任务被删除时显示的消息"
+  },
+  "fieldCannotBeEmpty": "字段不能为空",
+  "valueTooLong": "值不能超过{maxLength}个字符",
+  "@valueTooLong": {
+    "placeholders": {
+      "maxLength": {
+        "type": "int"
+      }
+    }
   }
 }

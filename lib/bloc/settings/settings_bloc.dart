@@ -27,6 +27,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           updatedKey: '',
           environment: Environment.development,
           language: Language.english,
+          labelLen: 8, // Default value changed to 8
+          projectLen: 8, // Default value changed to 8
           setLocale: (Locale) {},
         )) {
     on<LoadSettingsEvent>(_loadSettings);
@@ -34,6 +36,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<ToggleEnableImportExport>(_toggleEnableExportImport);
     on<ToggleEnvironment>(_toggleEnvironment);
     on<ToggleLanguage>(_toggleLanguage);
+    on<ToggleLabelLen>(_toggleLabelLen); // Added
+    on<ToggleProjectLen>(_toggleProjectLen); // Added
     on<AddSetLocaleFunction>(_addSetLocaleFunction);
   }
 
@@ -85,6 +89,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
     var language = await _getLanguage(_settingsDB);
     emit(state.copyWith(language: language));
+
+    var labelLen = await _getLabelLen(_settingsDB); // Added
+    emit(state.copyWith(labelLen: labelLen)); // Added
+
+    var projectLen = await _getProjectLen(_settingsDB); // Added
+    emit(state.copyWith(projectLen: projectLen)); // Added
   }
 
   Future<bool> _getUseCountBadges(SettingsDB settingsDB) async {
@@ -158,6 +168,55 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       return environment.toEnvironment();
     } else {
       return setting.value.toEnvironment();
+    }
+  }
+
+  // Added method _getLabelLen
+  Future<int> _getLabelLen(SettingsDB settingsDB) async {
+    const defaultLen = 8; // Default value changed to 8
+    final setting = await _settingsDB.findByName(SettingKeys.LABEL_LEN);
+    if (setting == null) {
+      var created = await _settingsDB.createSetting(Setting.create(
+          key: SettingKeys.LABEL_LEN,
+          value: '$defaultLen', // Store as string
+          updatedAt: DateTime.now(),
+          type: SettingType.IntNumber)); // Use Int type
+      if (created) {
+        final newSetting = await _settingsDB.findByName(SettingKeys.LABEL_LEN);
+        if (newSetting == null) {
+          _logger.warn('Insert ${SettingKeys.LABEL_LEN} failed.');
+          return defaultLen;
+        }
+        return int.tryParse(newSetting.value) ?? defaultLen;
+      }
+      return defaultLen;
+    } else {
+      return int.tryParse(setting.value) ?? defaultLen;
+    }
+  }
+
+  // Added method _getProjectLen
+  Future<int> _getProjectLen(SettingsDB settingsDB) async {
+    const defaultLen = 8; // Default value changed to 8
+    final setting = await _settingsDB.findByName(SettingKeys.PROJECT_LEN);
+    if (setting == null) {
+      var created = await _settingsDB.createSetting(Setting.create(
+          key: SettingKeys.PROJECT_LEN,
+          value: '$defaultLen', // Store as string
+          updatedAt: DateTime.now(),
+          type: SettingType.IntNumber)); // Use Int type
+      if (created) {
+        final newSetting =
+            await _settingsDB.findByName(SettingKeys.PROJECT_LEN);
+        if (newSetting == null) {
+          _logger.warn('Insert ${SettingKeys.PROJECT_LEN} failed.');
+          return defaultLen;
+        }
+        return int.tryParse(newSetting.value) ?? defaultLen;
+      }
+      return defaultLen;
+    } else {
+      return int.tryParse(setting.value) ?? defaultLen;
     }
   }
 
@@ -249,5 +308,43 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     }
     state.setLocale(newLocale);
     prefs.setLocale(language);
+  }
+
+  // Added handler _toggleLabelLen
+  FutureOr<void> _toggleLabelLen(
+      ToggleLabelLen event, Emitter<SettingsState> emit) async {
+    final setting = await _settingsDB.findByName(SettingKeys.LABEL_LEN);
+    if (setting == null) return;
+    await _settingsDB.updateSetting(Setting.update(
+      id: setting.id,
+      key: setting.key,
+      value: '${event.len}', // Store as string
+      updatedAt: DateTime.now(),
+      type: setting.type,
+    ));
+    emit(state.copyWith(
+      labelLen: event.len,
+      updatedKey: SettingKeys.LABEL_LEN,
+      status: ResultStatus.success,
+    ));
+  }
+
+  // Added handler _toggleProjectLen
+  FutureOr<void> _toggleProjectLen(
+      ToggleProjectLen event, Emitter<SettingsState> emit) async {
+    final setting = await _settingsDB.findByName(SettingKeys.PROJECT_LEN);
+    if (setting == null) return;
+    await _settingsDB.updateSetting(Setting.update(
+      id: setting.id,
+      key: setting.key,
+      value: '${event.len}', // Store as string
+      updatedAt: DateTime.now(),
+      type: setting.type,
+    ));
+    emit(state.copyWith(
+      projectLen: event.len,
+      updatedKey: SettingKeys.PROJECT_LEN,
+      status: ResultStatus.success,
+    ));
   }
 }

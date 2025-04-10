@@ -214,4 +214,12 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get taskDeleted => 'タスクを削除しました';
+
+  @override
+  String get fieldCannotBeEmpty => 'フィールドは空にできません';
+
+  @override
+  String valueTooLong(int maxLength) {
+    return '値は$maxLength文字を超えることはできません';
+  }
 }

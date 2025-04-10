@@ -20,6 +20,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
+  static String m0(maxLength) =>
+      "Value cannot be longer than ${maxLength} characters";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "aboutTitle": MessageLookupByLibrary.simpleMessage("About"),
@@ -47,6 +50,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "failedToLoadProjects": MessageLookupByLibrary.simpleMessage(
       "Failed to load projects",
+    ),
+    "fieldCannotBeEmpty": MessageLookupByLibrary.simpleMessage(
+      "Field must not be empty",
     ),
     "filePath": MessageLookupByLibrary.simpleMessage("File Path"),
     "forkGithub": MessageLookupByLibrary.simpleMessage("Fork on Github"),
@@ -110,6 +116,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknownNotImplemented": MessageLookupByLibrary.simpleMessage(
       "Unknown has not implemented.",
     ),
+    "valueTooLong": m0,
     "versionTitle": MessageLookupByLibrary.simpleMessage("Version"),
   };
 }

@@ -274,5 +274,14 @@
   "taskDeleted": "Task deleted",
   "@taskDeleted": {
     "description": "Message shown when a task is deleted"
+  },
+  "fieldCannotBeEmpty": "Field must not be empty",
+  "valueTooLong": "Value cannot be longer than {maxLength} characters",
+  "@valueTooLong": {
+    "placeholders": {
+      "maxLength": {
+        "type": "int"
+      }
+    }
   }
 }

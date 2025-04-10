@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
+import 'package:flutter_app/bloc/settings/settings_bloc.dart'; // Import SettingsBloc
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/pages/labels/label.dart';
+import 'package:flutter_app/l10n/app_localizations.dart'; // Import localizations
 import 'package:flutter_app/utils/collapsable_expand_tile.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -294,6 +296,10 @@ class _LabelGridPageState extends State<LabelGridPage> {
   /// Building the each field with label and TextFormField
   Widget _buildRow(
       {required TextEditingController controller, required String columnName}) {
+    // Access SettingsBloc state here
+    final settingsState = context.read<SettingsBloc>().state;
+    final labelMaxLength = settingsState.labelLen;
+
     final bool isTextInput = <String>[
       'Name',
     ].contains(columnName);
@@ -312,11 +318,17 @@ class _LabelGridPageState extends State<LabelGridPage> {
             flex: 3,
             child: TextFormField(
               validator: (String? value) {
-                if (value!.isEmpty) {
-                  return 'Field must not be empty';
+                if (value == null || value.isEmpty) {
+                  return AppLocalizations.of(context)!
+                      .fieldCannotBeEmpty; // Use localization
+                }
+                if (columnName == 'Name' && value.length > labelMaxLength) {
+                  return AppLocalizations.of(context)!
+                      .valueTooLong(labelMaxLength); // Use localization
                 }
                 return null;
               },
+              maxLength: columnName == 'Name' ? labelMaxLength : null, // Apply maxLength only to Name
               controller: controller,
               keyboardType: keyboardType,
               inputFormatters: isTextInput

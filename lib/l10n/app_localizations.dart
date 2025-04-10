@@ -510,6 +510,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Task deleted'**
   String get taskDeleted;
+
+  /// No description provided for @fieldCannotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Field must not be empty'**
+  String get fieldCannotBeEmpty;
+
+  /// No description provided for @valueTooLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Value cannot be longer than {maxLength} characters'**
+  String valueTooLong(int maxLength);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

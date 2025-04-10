@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
+import 'package:flutter_app/bloc/settings/settings_bloc.dart'; // Import SettingsBloc
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/pages/projects/project.dart';
+import 'package:flutter_app/l10n/app_localizations.dart'; // Import localizations
 import 'package:flutter_app/utils/collapsable_expand_tile.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -291,6 +293,10 @@ class _ProjectGridPageState extends State<ProjectGridPage> {
   /// Building the each field with label and TextFormField
   Widget _buildRow(
       {required TextEditingController controller, required String columnName}) {
+    // Access SettingsBloc state here
+    final settingsState = context.read<SettingsBloc>().state;
+    final projectMaxLength = settingsState.projectLen;
+
     final bool isTextInput = <String>[
       'Name',
     ].contains(columnName);
@@ -309,11 +315,20 @@ class _ProjectGridPageState extends State<ProjectGridPage> {
             flex: 3,
             child: TextFormField(
               validator: (String? value) {
-                if (value!.isEmpty) {
-                  return 'Field must not be empty';
+                if (value == null || value.isEmpty) {
+                  // Use localization if available, otherwise fallback
+                  return AppLocalizations.of(context)?.fieldCannotBeEmpty ??
+                      'Field must not be empty';
+                }
+                if (columnName == 'Name' && value.length > projectMaxLength) {
+                  // Use localization if available, otherwise fallback
+                  return AppLocalizations.of(context)
+                          ?.valueTooLong(projectMaxLength) ??
+                      'Value cannot be longer than $projectMaxLength characters';
                 }
                 return null;
               },
+              maxLength: columnName == 'Name' ? projectMaxLength : null, // Apply maxLength only to Name
               controller: controller,
               keyboardType: keyboardType,
               inputFormatters: isTextInput
