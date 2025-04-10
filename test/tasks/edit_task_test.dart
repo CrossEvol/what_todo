@@ -213,7 +213,8 @@ void main() {
       ),
     ];
 
-    testTask.labelList = ["Label 1"];
+    // Assign a Label object instead of a string
+    testTask.labelList = [labels[0]];
 
     whenListen(
       mockLabelBloc,
@@ -228,7 +229,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Select Labels'), findsOneWidget);
-    expect(find.text('Label 1'), findsNWidgets(2));
+    expect(find.text('Label 1'), findsOneWidget);
     expect(find.text('Label 2'), findsOneWidget);
   });
 

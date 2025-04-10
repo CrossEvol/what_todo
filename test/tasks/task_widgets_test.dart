@@ -8,6 +8,7 @@ import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_widgets.dart';
 import 'package:flutter_app/models/priority.dart';
+import 'package:flutter_app/pages/labels/label.dart'; // Import Label
 
 import '../mocks/fake-bloc.dart';
 import '../test_helpers.dart';
@@ -78,7 +79,7 @@ void main() {
         ..projectName = "Test Project"
         ..projectColor = Colors.blue.value
         ..dueDate = DateTime.now().millisecondsSinceEpoch
-        ..labelList = ["Label 1"],
+        ..labelList = [Label.update(id: 1, name: "Label 1", colorCode: Colors.orange.value, colorName: "Orange")],
       Task.create(
         title: "Test Task 2",
         projectId: 1,
@@ -88,7 +89,7 @@ void main() {
         ..projectName = "Test Project"
         ..projectColor = Colors.blue.value
         ..dueDate = DateTime.now().millisecondsSinceEpoch
-        ..labelList = ["Label 1"],
+        ..labelList = [Label.update(id: 1, name: "Label 1", colorCode: Colors.orange.value, colorName: "Orange")],
     ];
 
     whenListen(
@@ -116,7 +117,7 @@ void main() {
       ..projectName = "Test Project"
       ..projectColor = Colors.blue.value
       ..dueDate = DateTime.now().millisecondsSinceEpoch
-      ..labelList = ["Label 1"];
+      ..labelList = [Label.update(id: 1, name: "Label 1", colorCode: Colors.orange.value, colorName: "Orange")];
 
     whenListen(
       mockTaskBloc,
@@ -147,7 +148,7 @@ void main() {
       ..projectName = "Test Project"
       ..projectColor = Colors.blue.value
       ..dueDate = DateTime.now().millisecondsSinceEpoch
-      ..labelList = ["Label 1"];
+      ..labelList = [Label.update(id: 1, name: "Label 1", colorCode: Colors.orange.value, colorName: "Orange")];
 
     whenListen(
       mockTaskBloc,
