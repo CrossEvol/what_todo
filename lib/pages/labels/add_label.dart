@@ -4,6 +4,7 @@ import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/pages/home/screen_enum.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/utils/app_util.dart';
+import 'package:flutter_app/bloc/settings/settings_bloc.dart'; // Import SettingsBloc
 import 'package:flutter_app/utils/collapsable_expand_tile.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
@@ -46,7 +47,11 @@ class AddLabel extends StatelessWidget {
           context.safePop();
         }
       },
-      builder: (context, state) {
+      builder: (context, labelState) { // Rename state to avoid conflict
+        // Access SettingsBloc state here
+        final settingsState = context.watch<SettingsBloc>().state;
+        final labelMaxLength = settingsState.labelLen;
+
         return Scaffold(
           appBar: AppBar(
             title: Text(
@@ -81,11 +86,16 @@ class AddLabel extends StatelessWidget {
                     key: ValueKey(AddLabelKeys.TEXT_FORM_LABEL_NAME),
                     decoration: InputDecoration(
                         hintText: AppLocalizations.of(context)!.labelName),
-                    maxLength: 20,
+                    maxLength: labelMaxLength, // Use setting value
                     validator: (value) {
-                      return value!.isEmpty
-                          ? AppLocalizations.of(context)!.labelCannotBeEmpty
-                          : null;
+                      if (value == null || value.isEmpty) {
+                        return AppLocalizations.of(context)!.labelCannotBeEmpty;
+                      }
+                      if (value.length > labelMaxLength) {
+                        return AppLocalizations.of(context)!
+                            .valueTooLong(labelMaxLength); // Add localization if needed
+                      }
+                      return null;
                     },
                     onSaved: (value) {
                       labelName = value!;

@@ -20,6 +20,8 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh';
 
+  static String m0(maxLength) => "值不能超过${maxLength}个字符";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "aboutTitle": MessageLookupByLibrary.simpleMessage("关于"),
@@ -44,6 +46,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "exports": MessageLookupByLibrary.simpleMessage("导出"),
     "failedToLoadLabels": MessageLookupByLibrary.simpleMessage("加载标签失败"),
     "failedToLoadProjects": MessageLookupByLibrary.simpleMessage("加载项目失败"),
+    "fieldCannotBeEmpty": MessageLookupByLibrary.simpleMessage("字段不能为空"),
     "filePath": MessageLookupByLibrary.simpleMessage("文件路径"),
     "forkGithub": MessageLookupByLibrary.simpleMessage("在GitHub上Fork"),
     "importFile": MessageLookupByLibrary.simpleMessage("导入文件"),
@@ -94,6 +97,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "uncompletedTasks": MessageLookupByLibrary.simpleMessage("未完成任务"),
     "unknown": MessageLookupByLibrary.simpleMessage("未知"),
     "unknownNotImplemented": MessageLookupByLibrary.simpleMessage("未知功能尚未实现。"),
+    "valueTooLong": m0,
     "versionTitle": MessageLookupByLibrary.simpleMessage("版本"),
   };
 }

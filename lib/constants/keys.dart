@@ -34,6 +34,8 @@ class SettingKeys {
   static const ENABLE_IMPORT_EXPORT = 'enable_import_export';
   static const ENABLE_DARK_MODE = 'enable_dark_mode';
   static const ENABLE_CUSTOM_THEME = 'enable_custom_theme';
+  static const LABEL_LEN = 'label_len';
+  static const PROJECT_LEN = 'project_len';
 }
 
 class AddProjectKeys {

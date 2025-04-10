@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
+import 'package:flutter_app/bloc/settings/settings_bloc.dart'; // Import SettingsBloc
 import 'package:flutter_app/pages/home/screen_enum.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
@@ -24,6 +25,10 @@ class AddProject extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Access SettingsBloc state here
+    final settingsState = context.watch<SettingsBloc>().state;
+    final projectMaxLength = settingsState.projectLen;
+
     late ColorPalette currentSelectedPalette;
     String projectName = "";
     return Scaffold(
@@ -65,11 +70,18 @@ class AddProject extends StatelessWidget {
                 key: ValueKey(AddProjectKeys.TEXT_FORM_PROJECT_NAME),
                 decoration: InputDecoration(
                     hintText: AppLocalizations.of(context)!.projectName),
-                maxLength: 20,
+                maxLength: projectMaxLength, // Use setting value
                 validator: (value) {
-                  return value!.isEmpty
-                      ? AppLocalizations.of(context)!.projectNameCannotBeEmpty
-                      : null;
+                  if (value == null || value.isEmpty) {
+                    return AppLocalizations.of(context)!
+                        .projectNameCannotBeEmpty;
+                  }
+                  if (value.length > projectMaxLength) {
+                    // You might need to add a specific localization message for this
+                    return AppLocalizations.of(context)!
+                        .valueTooLong(projectMaxLength);
+                  }
+                  return null;
                 },
                 onSaved: (value) {
                   projectName = value!;

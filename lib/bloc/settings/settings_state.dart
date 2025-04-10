@@ -24,6 +24,8 @@ class SettingsState extends Equatable {
   final String updatedKey;
   final Environment environment;
   final Language language;
+  final int labelLen; // Added
+  final int projectLen; // Added
   final Function(Locale) setLocale;
 
   const SettingsState({
@@ -33,6 +35,8 @@ class SettingsState extends Equatable {
     required this.enableImportExport,
     required this.environment,
     required this.language,
+    required this.labelLen, // Added
+    required this.projectLen, // Added
     required this.setLocale,
   });
 
@@ -44,6 +48,8 @@ class SettingsState extends Equatable {
         enableImportExport,
         environment,
         language,
+        labelLen, // Added
+        projectLen, // Added
       ];
 
   SettingsState copyWith({
@@ -53,6 +59,8 @@ class SettingsState extends Equatable {
     bool? enableImportExport,
     Environment? environment,
     Language? language,
+    int? labelLen, // Added
+    int? projectLen, // Added
     Function(Locale)? setLocale,
   }) {
     return SettingsState(
@@ -62,6 +70,8 @@ class SettingsState extends Equatable {
       enableImportExport: enableImportExport ?? this.enableImportExport,
       environment: environment ?? this.environment,
       language: language ?? this.language,
+      labelLen: labelLen ?? this.labelLen, // Added
+      projectLen: projectLen ?? this.projectLen, // Added
       setLocale: setLocale ?? this.setLocale,
     );
   }
@@ -77,7 +87,9 @@ class SettingsState extends Equatable {
           status == other.status &&
           updatedKey == other.updatedKey &&
           environment == other.environment &&
-          language == other.language;
+          language == other.language &&
+          labelLen == other.labelLen && // Added
+          projectLen == other.projectLen; // Added
 
   @override
   int get hashCode =>
@@ -87,5 +99,7 @@ class SettingsState extends Equatable {
       status.hashCode ^
       updatedKey.hashCode ^
       environment.hashCode ^
-      language.hashCode;
+      language.hashCode ^
+      labelLen.hashCode ^ // Added
+      projectLen.hashCode; // Added
 }

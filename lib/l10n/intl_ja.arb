@@ -274,5 +274,14 @@
   "taskDeleted": "タスクを削除しました",
   "@taskDeleted": {
     "description": "タスクが削除された時に表示されるメッセージ"
+  },
+  "fieldCannotBeEmpty": "フィールドは空にできません",
+  "valueTooLong": "値は{maxLength}文字を超えることはできません",
+  "@valueTooLong": {
+    "placeholders": {
+      "maxLength": {
+        "type": "int"
+      }
+    }
   }
 }

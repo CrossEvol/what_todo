@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
+import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/pages/labels/add_label.dart';
 import 'package:flutter_app/constants/color_constant.dart';
@@ -16,16 +17,32 @@ LabelState defaultLabelState() {
   return LabelInitial();
 }
 
+SettingsState defaultSettingState() {
+  return SettingsState(
+    useCountBadges: false,
+    enableImportExport: false,
+    status: ResultStatus.none,
+    updatedKey: '',
+    environment: Environment.development,
+    language: Language.english,
+    setLocale: (Locale) {},
+    labelLen: 16,
+    projectLen: 16,
+  );
+}
+
 void main() {
   setupTest();
   late MockLabelBloc mockLabelBloc;
   late MockHomeBloc mockHomeBloc;
+  late MockSettingsBloc mockSettingsBloc;
 
   Widget createWidgetUnderTest() {
     return MultiBlocProvider(
       providers: [
         BlocProvider<LabelBloc>.value(value: mockLabelBloc),
         BlocProvider<HomeBloc>.value(value: mockHomeBloc),
+        BlocProvider<SettingsBloc>.value(value: mockSettingsBloc),
       ],
       child: AddLabelPage().withLocalizedMaterialApp().withThemeProvider(),
     );
@@ -34,6 +51,7 @@ void main() {
   setUp(() {
     mockLabelBloc = MockLabelBloc();
     mockHomeBloc = MockHomeBloc();
+    mockSettingsBloc = MockSettingsBloc();
   });
 
   Future<void> pumpAddLabelWidget(WidgetTester tester) async {
@@ -48,9 +66,18 @@ void main() {
     );
   }
 
+  void arrangeSettingsBlocStream(List<SettingsState> states) {
+    whenListen(
+      mockSettingsBloc,
+      Stream.fromIterable(states),
+      initialState: defaultSettingState(),
+    );
+  }
+
   testWidgets('AddLabelPage should render properly',
       (WidgetTester tester) async {
     arrangeLabelBlocStream([defaultLabelState()]);
+    arrangeSettingsBlocStream([defaultSettingState()]);
     await pumpAddLabelWidget(tester);
 
     expect(find.byType(AddLabelPage), findsOneWidget);
@@ -63,6 +90,7 @@ void main() {
   testWidgets('Should show error when submitting empty label name',
       (WidgetTester tester) async {
     arrangeLabelBlocStream([defaultLabelState()]);
+    arrangeSettingsBlocStream([defaultSettingState()]);
     await pumpAddLabelWidget(tester);
 
     await tester.tap(find.byKey(ValueKey(AddLabelKeys.ADD_LABEL_BUTTON)));
@@ -78,6 +106,7 @@ void main() {
       ColorSelectionUpdated(ColorPalette("Blue", Colors.blue.value)),
       LabelExistenceChecked(false),
     ]);
+    arrangeSettingsBlocStream([defaultSettingState()]);
     await pumpAddLabelWidget(tester);
 
     await tester.enterText(
@@ -95,6 +124,7 @@ void main() {
       ColorSelectionUpdated(ColorPalette("Blue", Colors.blue.value)),
       LabelExistenceChecked(true),
     ]);
+    arrangeSettingsBlocStream([defaultSettingState()]);
     await pumpAddLabelWidget(tester);
 
     await tester.enterText(
@@ -114,6 +144,7 @@ void main() {
       defaultLabelState(),
       ColorSelectionUpdated(ColorPalette("Blue", Colors.blue.value)),
     ]);
+    arrangeSettingsBlocStream([defaultSettingState()]);
     await pumpAddLabelWidget(tester);
 
     // Find and tap the expansion tile

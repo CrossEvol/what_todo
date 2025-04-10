@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
+import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/pages/projects/add_project.dart';
@@ -16,16 +17,33 @@ ProjectState defaultProjectState() {
   return ProjectsLoaded(const []);
 }
 
+SettingsState defaultSettingState() {
+  return SettingsState(
+    useCountBadges: false,
+    enableImportExport: false,
+    status: ResultStatus.none,
+    updatedKey: '',
+    environment: Environment.development,
+    language: Language.english,
+    setLocale: (Locale) {},
+    labelLen: 16,
+    projectLen: 16,
+  );
+}
+
+
 void main() async {
   setupTest();
   late MockProjectBloc mockProjectBloc;
   late MockHomeBloc mockHomeBloc;
+  late MockSettingsBloc mockSettingsBloc;
 
   Widget createWidgetUnderTest() {
     return MultiBlocProvider(
       providers: [
         BlocProvider<ProjectBloc>.value(value: mockProjectBloc),
         BlocProvider<HomeBloc>.value(value: mockHomeBloc),
+        BlocProvider<SettingsBloc>.value(value: mockSettingsBloc),
       ],
       child: AddProjectPage().withLocalizedMaterialApp().withThemeProvider(),
     );
@@ -34,6 +52,7 @@ void main() async {
   setUp(() {
     mockProjectBloc = MockProjectBloc();
     mockHomeBloc = MockHomeBloc();
+    mockSettingsBloc = MockSettingsBloc();
   });
 
   Future<void> pumpAddProjectWidget(WidgetTester tester) async {
@@ -48,8 +67,17 @@ void main() async {
     );
   }
 
+  void arrangeSettingsBlocStream(List<SettingsState> states) {
+    whenListen(
+      mockSettingsBloc,
+      Stream.fromIterable(states),
+      initialState: defaultSettingState(),
+    );
+  }
+
   testWidgets('AddProject should render properly', (WidgetTester tester) async {
     arrangeProjectBlocStream([defaultProjectState()]);
+    arrangeSettingsBlocStream([defaultSettingState()]);
     await pumpAddProjectWidget(tester);
 
     expect(find.byType(AddProjectPage), findsOneWidget);
@@ -64,6 +92,7 @@ void main() async {
   testWidgets('Should show error when submitting empty project name',
       (WidgetTester tester) async {
     arrangeProjectBlocStream([defaultProjectState()]);
+    arrangeSettingsBlocStream([defaultSettingState()]);
     await pumpAddProjectWidget(tester);
 
     await tester.tap(find.byKey(ValueKey(AddProjectKeys.ADD_PROJECT_BUTTON)));
@@ -75,6 +104,7 @@ void main() async {
   testWidgets('Should create project when form is valid',
       (WidgetTester tester) async {
     arrangeProjectBlocStream([defaultProjectState()]);
+    arrangeSettingsBlocStream([defaultSettingState()]);
     await pumpAddProjectWidget(tester);
 
     await tester.enterText(
@@ -89,6 +119,7 @@ void main() async {
   testWidgets('Should show color selection options',
       (WidgetTester tester) async {
     arrangeProjectBlocStream([defaultProjectState()]);
+    arrangeSettingsBlocStream([defaultSettingState()]);
     await pumpAddProjectWidget(tester);
 
     final expansionTile = find.byType(CollapsibleExpansionTile);
@@ -107,6 +138,7 @@ void main() async {
       defaultProjectState(),
       ColorSelectionUpdated(ColorPalette("Red", Colors.red.value))
     ]);
+    arrangeSettingsBlocStream([defaultSettingState()]);
     await pumpAddProjectWidget(tester);
 
     final expansionTile = find.byType(CollapsibleExpansionTile);

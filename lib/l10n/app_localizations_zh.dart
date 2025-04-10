@@ -214,4 +214,12 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get taskDeleted => '任务已删除';
+
+  @override
+  String get fieldCannotBeEmpty => '字段不能为空';
+
+  @override
+  String valueTooLong(int maxLength) {
+    return '值不能超过$maxLength个字符';
+  }
 }

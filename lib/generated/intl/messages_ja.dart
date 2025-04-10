@@ -20,6 +20,8 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ja';
 
+  static String m0(maxLength) => "値は${maxLength}文字を超えることはできません";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
     "aboutTitle": MessageLookupByLibrary.simpleMessage("アプリについて"),
@@ -48,6 +50,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "failedToLoadProjects": MessageLookupByLibrary.simpleMessage(
       "プロジェクトの読み込みに失敗しました",
     ),
+    "fieldCannotBeEmpty": MessageLookupByLibrary.simpleMessage("フィールドは空にできません"),
     "filePath": MessageLookupByLibrary.simpleMessage("ファイルパス"),
     "forkGithub": MessageLookupByLibrary.simpleMessage("GitHubでフォーク"),
     "importFile": MessageLookupByLibrary.simpleMessage("ファイルをインポート"),
@@ -102,6 +105,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unknownNotImplemented": MessageLookupByLibrary.simpleMessage(
       "不明な機能は実装されていません。",
     ),
+    "valueTooLong": m0,
     "versionTitle": MessageLookupByLibrary.simpleMessage("バージョン"),
   };
 }
