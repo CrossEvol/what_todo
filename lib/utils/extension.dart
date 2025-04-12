@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/pages/home/screen_enum.dart';
 
 extension NavigatorExt on BuildContext {
   void safePop() {

@@ -100,7 +100,7 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with RouteAware {
   Locale _locale = Locale(prefs.getLocale());
 
   void setLocale(Locale locale) {

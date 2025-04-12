@@ -1,6 +1,3 @@
-import 'package:flutter_app/pages/home/screen_enum.dart';
-import 'package:flutter_app/pages/tasks/bloc/filter.dart';
-import 'package:test/test.dart';
 
 void main(){
 
