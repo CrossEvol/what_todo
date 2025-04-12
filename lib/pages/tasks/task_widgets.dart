@@ -57,7 +57,7 @@ class TasksPage extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: list.length == 0
+      child: list.isEmpty
           ? MessageInCenterWidget(AppLocalizations.of(context)!.noTaskAdded)
           : Container(
               child: ReorderableListView.builder(

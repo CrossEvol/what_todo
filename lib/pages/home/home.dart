@@ -67,7 +67,7 @@ class WiderHomePage extends StatelessWidget {
     );
   }
 
-  StatelessWidget ScreenSelector(SCREEN? data) {
+  Widget ScreenSelector(SCREEN? data) {
     if (data != null) {
       // ignore: missing_enum_constant_in_switch
       switch (data) {
@@ -95,9 +95,42 @@ class WiderHomePage extends StatelessWidget {
   }
 }
 
-class HomePage extends StatelessWidget {
-  // final MyTaskBloc _taskBloc = MyTaskBloc(TaskDB.get());
+class HomePage extends StatefulWidget {
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> with RestorationMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final ScrollController _scrollController = ScrollController();
+  final RestorableDouble _scrollOffset = RestorableDouble(0);
+
+  @override
+  String get restorationId => 'home_page';
+
+  @override
+  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
+    registerForRestoration(_scrollOffset, 'scroll_offset');
+    if (_scrollController.hasClients) {
+      _scrollController.jumpTo(_scrollOffset.value);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      _scrollOffset.value = _scrollController.offset;
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _scrollOffset.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,7 +186,6 @@ class HomePage extends StatelessWidget {
   }
 
 // This menu button widget updates a _selection field (of type WhyFarther,
-// not shown here).
   Widget buildPopupMenu(BuildContext context, String title) {
     return PopupMenuButton<MenuItem>(
       icon: Icon(Icons.adaptive.more),
