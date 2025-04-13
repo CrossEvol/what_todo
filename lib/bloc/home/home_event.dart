@@ -36,3 +36,14 @@ class UpdateScreenEvent extends HomeEvent {
   @override
   List<Object> get props => [screen];
 }
+
+class SaveScrollPositionEvent extends HomeEvent {
+  final double position;
+
+  const SaveScrollPositionEvent(this.position);
+
+  @override
+  List<Object> get props => [position];
+}
+
+class ClearScrollPositionEvent extends HomeEvent {}
