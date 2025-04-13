@@ -10,6 +10,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app/l10n/app_localizations.dart';
 
 class TasksPage extends StatelessWidget {
+  final ScrollController? scrollController;
+  
+  const TasksPage({Key? key, this.scrollController}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<TaskBloc, TaskState>(
@@ -61,6 +65,7 @@ class TasksPage extends StatelessWidget {
           ? MessageInCenterWidget(AppLocalizations.of(context)!.noTaskAdded)
           : Container(
               child: ReorderableListView.builder(
+                scrollController: scrollController,
                 itemCount: list.length,
                 itemBuilder: (BuildContext context, int index) {
                   return ClipRect(

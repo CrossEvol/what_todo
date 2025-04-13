@@ -22,6 +22,8 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<UpdateTitleEvent>(_onUpdateTitle);
     on<ApplyFilterEvent>(_onApplyFilter);
     on<UpdateScreenEvent>(_onUpdateScreen);
+    on<SaveScrollPositionEvent>(_onSaveScrollPosition);
+    on<ClearScrollPositionEvent>(_onClearScrollPosition);
   }
 
   void _onUpdateTitle(UpdateTitleEvent event, Emitter<HomeState> emit) {
@@ -38,6 +40,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   void _onUpdateScreen(UpdateScreenEvent event, Emitter<HomeState> emit) {
     emit(state.copyWith(screen: event.screen));
+  }
+
+  void _onSaveScrollPosition(SaveScrollPositionEvent event, Emitter<HomeState> emit) {
+    emit(state.copyWith(scrollPosition: event.position));
+  }
+
+  void _onClearScrollPosition(ClearScrollPositionEvent event, Emitter<HomeState> emit) {
+    emit(state.copyWith(scrollPosition: null));
   }
 
   FutureOr<void> _loadTodayCount(

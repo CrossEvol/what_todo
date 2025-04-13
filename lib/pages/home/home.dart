@@ -100,35 +100,43 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> with RestorationMixin {
+class _HomePageState extends State<HomePage>  {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final ScrollController _scrollController = ScrollController();
-  final RestorableDouble _scrollOffset = RestorableDouble(0);
+  late final VoidCallback _scrollListener;
 
   @override
   String get restorationId => 'home_page';
 
-  @override
-  void restoreState(RestorationBucket? oldBucket, bool initialRestore) {
-    registerForRestoration(_scrollOffset, 'scroll_offset');
-    if (_scrollController.hasClients) {
-      _scrollController.jumpTo(_scrollOffset.value);
-    }
-  }
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(() {
-      _scrollOffset.value = _scrollController.offset;
-    });
+    
+    // Define the scroll listener function
+    _scrollListener = () {
+      context.read<HomeBloc>().add(SaveScrollPositionEvent(_scrollController.offset));
+    };
+    
+    // Restore saved scroll position on initialization
+    final homeBloc = context.read<HomeBloc>();
+    final scrollPosition = homeBloc.state.scrollPosition;
+    if (scrollPosition != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollController.jumpTo(scrollPosition);
+      });
+    }
+
+    // Listen to scroll changes to save position continuously
+    _scrollController.addListener(_scrollListener);
   }
 
   @override
   void dispose() {
+    // Clear the scroll listener before disposing
+    _scrollController.removeListener(_scrollListener);
     _scrollController.dispose();
-    _scrollOffset.dispose();
     super.dispose();
   }
 
@@ -181,7 +189,7 @@ class _HomePageState extends State<HomePage> with RestorationMixin {
         },
       ),
       drawer: isWiderScreen ? null : SideDrawer(),
-      body: TasksPage(),
+      body: TasksPage(scrollController: _scrollController),
     );
   }
 
