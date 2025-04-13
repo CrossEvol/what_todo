@@ -68,7 +68,7 @@ void main() {
       'emits [LabelExistenceChecked] when CreateLabelEvent is added',
       build: () {
         final testLabel = Label.create('Test Label', 0xFF000000, 'Black');
-        when(mockLabelDB.isLabelExits(testLabel)).thenAnswer((_) async => true);
+        when(mockLabelDB.isLabelExists(testLabel)).thenAnswer((_) async => true);
         return labelBloc;
       },
       act: (bloc) => bloc.add(CreateLabelEvent(

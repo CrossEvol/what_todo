@@ -261,7 +261,35 @@
   },
   "noFileSelected": "No file selected",
   "@noFileSelected": {
-    "description": "Error message when no file is selected"
+    "description": "Error message when no file is selected for import"
+  },
+  "importSuccess": "Import successful",
+  "@importSuccess": {
+    "description": "Message when task is successfully imported"
+  },
+  "importError": "Import error",
+  "@importError": {
+    "description": "Error message when import fails"
+  },
+  "chooseExportFormat": "Choose export format",
+  "@chooseExportFormat": {
+    "description": "Label for choosing export format"
+  },
+  "legacyFormat": "Legacy Format",
+  "@legacyFormat": {
+    "description": "Label for legacy format option"
+  },
+  "newFormat": "New Format",
+  "@newFormat": {
+    "description": "Label for new format option"
+  },
+  "exportSuccess": "Export successful",
+  "@exportSuccess": {
+    "description": "Message when export is successful"
+  },
+  "exportError": "Export error",
+  "@exportError": {
+    "description": "Error message when export fails"
   },
   "noTaskAdded": "No Task Added",
   "@noTaskAdded": {

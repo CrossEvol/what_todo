@@ -77,10 +77,12 @@ class Task {
   Task.fromImport(Map<String, dynamic> map)
       : this(
           title: map[dbTitle],
-          projectId: 1,
+          projectId: map['projectId'] ??
+              1, // Use provided projectId if available, otherwise use Inbox (ID 1)
           comment: map[dbComment],
-          dueDate:
-              DateTime.parse(map[dbDueDate] as String).millisecondsSinceEpoch,
+          dueDate: map[dbDueDate] is int
+              ? map[dbDueDate]
+              : DateTime.parse(map[dbDueDate] as String).millisecondsSinceEpoch,
           priority: PriorityStatus.values[map[dbPriority]],
           tasksStatus: TaskStatus.values[map[dbStatus]],
           order: map[dbOrder],

@@ -261,9 +261,37 @@
   },
   "noFileSelected": "未选择文件",
   "@noFileSelected": {
-    "description": "未选择文件时的错误消息"
+    "description": "导入时未选择文件的错误消息"
   },
-  "noTaskAdded": "暂无任务",
+  "importSuccess": "导入成功",
+  "@importSuccess": {
+    "description": "任务成功导入时的消息"
+  },
+  "importError": "导入错误",
+  "@importError": {
+    "description": "导入失败时的错误消息"
+  },
+  "chooseExportFormat": "选择导出格式",
+  "@chooseExportFormat": {
+    "description": "选择导出格式的标签"
+  },
+  "legacyFormat": "旧版格式",
+  "@legacyFormat": {
+    "description": "旧版格式选项的标签"
+  },
+  "newFormat": "新版格式",
+  "@newFormat": {
+    "description": "新版格式选项的标签"
+  },
+  "exportSuccess": "导出成功",
+  "@exportSuccess": {
+    "description": "导出成功时的消息"
+  },
+  "exportError": "导出错误",
+  "@exportError": {
+    "description": "导出失败时的错误消息"
+  },
+  "noTaskAdded": "未添加任务",
   "@noTaskAdded": {
     "description": "没有任务时显示的消息"
   },

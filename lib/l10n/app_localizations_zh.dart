@@ -207,7 +207,28 @@ class AppLocalizationsZh extends AppLocalizations {
   String get noFileSelected => '未选择文件';
 
   @override
-  String get noTaskAdded => '暂无任务';
+  String get importSuccess => '导入成功';
+
+  @override
+  String get importError => '导入错误';
+
+  @override
+  String get chooseExportFormat => '选择导出格式';
+
+  @override
+  String get legacyFormat => '旧版格式';
+
+  @override
+  String get newFormat => '新版格式';
+
+  @override
+  String get exportSuccess => '导出成功';
+
+  @override
+  String get exportError => '导出错误';
+
+  @override
+  String get noTaskAdded => '未添加任务';
 
   @override
   String get taskCompleted => '任务已完成';

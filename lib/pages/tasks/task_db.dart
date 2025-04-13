@@ -1,7 +1,10 @@
 import 'package:drift/drift.dart';
 import 'package:flutter_app/db/app_db.dart';
-import 'package:flutter_app/pages/labels/label.dart' as lb; // Use alias to avoid name clash if necessary
+import 'package:flutter_app/pages/labels/label.dart'
+    as lb; // Use alias to avoid name clash if necessary
+import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
+import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 
 class TaskDB {
@@ -59,6 +62,67 @@ class TaskDB {
     }
 
     return taskMap.values.toList();
+  }
+
+  Future<Map<String, dynamic>> getExportDataV1() async {
+    // Get all tasks with project and label information
+    var query = _db.select(_db.task).join([
+      innerJoin(_db.project, _db.project.id.equalsExp(_db.task.projectId)),
+      leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
+      leftOuterJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId)),
+    ]);
+
+    query.orderBy([
+      OrderingTerm.desc(_db.task.order),
+      OrderingTerm.desc(_db.task.dueDate),
+    ]);
+
+    var result = await query.get();
+
+    // Parse tasks with their labels
+    Map<int, Map<String, dynamic>> taskMap = {};
+    Map<int, Set<String>> taskLabels = {};
+
+    for (var item in result) {
+      var task = item.readTable(_db.task);
+      var project = item.readTable(_db.project);
+      var label = item.readTableOrNull(_db.label);
+
+      if (!taskMap.containsKey(task.id)) {
+        var map = task.toJson();
+        taskMap[task.id] = {
+          ...map,
+          'projectName': project.name,
+          // Convert DateTime to ISO string format to make it JSON serializable
+          'dueDate': DateTime.parse(map['dueDate']).toIso8601String(),
+          'labelNames': <String>[],
+        };
+        taskLabels[task.id] = <String>{};
+      }
+
+      if (label != null) {
+        taskLabels[task.id]!.add(label.name);
+      }
+    }
+
+    // Add label names to tasks
+    for (var entry in taskLabels.entries) {
+      taskMap[entry.key]!['labelNames'] = entry.value.toList();
+    }
+
+    // Get all projects
+    final projects = await ProjectDB.get().getProjects();
+
+    // Get all labels
+    final labels = await LabelDB.get().getLabels();
+
+    // Build the final export data
+    return {
+      '__v': 1,
+      'projects': projects.map((p) => p.toMap()).toList(),
+      'labels': labels.map((l) => l.toMap()).toList(),
+      'tasks': taskMap.values.toList(),
+    };
   }
 
   Future<List<Task>> getTasks(
@@ -359,6 +423,103 @@ class TaskDB {
         // Create a new task if it doesn't exist
         var newTask = Task.fromImport(taskMap);
         await createTask(newTask);
+      }
+    }
+  }
+
+  Future<void> importDataV1(Map<String, dynamic> data) async {
+    // Version check
+    final version = data['__v'] as int? ?? 0;
+    if (version != 1) {
+      throw Exception('Unsupported data version: $version');
+    }
+
+    // Import projects first
+    if (data.containsKey('projects')) {
+      final projectMaps =
+          (data['projects'] as List).cast<Map<String, dynamic>>();
+      // final projectNames = projectMaps.map((p) => p['name'] as String).toSet();
+      // await ProjectDB.get().importProjects(projectNames);
+      for (var projectMap in projectMaps) {
+        final project = Project.fromMap(projectMap);
+        final projectDB = ProjectDB.get();
+        // Only import if the label doesn't exist
+        if (!await projectDB.isProjectExists(project)) {
+          await projectDB.insertProject(project);
+        }
+      }
+    }
+
+    // Import labels
+    if (data.containsKey('labels')) {
+      final labelMaps = (data['labels'] as List).cast<Map<String, dynamic>>();
+      for (var labelMap in labelMaps) {
+        final label = lb.Label.fromMap(labelMap);
+        final labelDB = LabelDB.get();
+        // Only import if the label doesn't exist
+        if (!await labelDB.isLabelExists(label)) {
+          await labelDB.insertLabel(label);
+        }
+      }
+    }
+
+    // Import tasks
+    if (data.containsKey('tasks')) {
+      final taskMaps = (data['tasks'] as List).cast<Map<String, dynamic>>();
+
+      // Build project name to ID mapping
+      final projects = await ProjectDB.get().getProjects();
+      final projectNameToId = {
+        for (var project in projects) project.name: project.id
+      };
+
+      // Build label name to ID mapping
+      final labels = await LabelDB.get().getLabels();
+      final labelNameToId = {for (var label in labels) label.name: label.id};
+
+      for (var taskMap in taskMaps) {
+        // Check if task already exists
+        var existingTasks = await (_db.select(_db.task)
+              ..where((tbl) => tbl.title.equals(taskMap['title'])))
+            .get();
+
+        if (existingTasks.isEmpty) {
+          // Get project ID from project name
+          final projectName = taskMap['projectName'] as String;
+          final projectId =
+              projectNameToId[projectName] ?? 1; // Default to Inbox (ID 1)
+
+          // Create task
+          var task = Task.fromImport({
+            ...taskMap,
+            'projectId': projectId,
+          });
+
+          // Create the task and get its ID
+          final taskId = await createTask(task);
+
+          // Handle label associations if present
+          if (taskMap.containsKey('labelNames') && taskId > 0) {
+            final labelNames = (taskMap['labelNames'] as List).cast<String>();
+            final labelIds = labelNames
+                .map((name) => labelNameToId[name])
+                .where((id) => id != null)
+                .cast<int>()
+                .toList();
+
+            if (labelIds.isNotEmpty) {
+              // Create task-label associations
+              for (var labelId in labelIds) {
+                await _db.into(_db.taskLabel).insertOnConflictUpdate(
+                      TaskLabelCompanion(
+                        taskId: Value(taskId),
+                        labelId: Value(labelId),
+                      ),
+                    );
+              }
+            }
+          }
+        }
       }
     }
   }

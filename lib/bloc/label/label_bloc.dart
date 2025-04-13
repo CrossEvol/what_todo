@@ -32,7 +32,7 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
   Future<void> _onCreateLabel(
       CreateLabelEvent event, Emitter<LabelState> emit) async {
     try {
-      final isExist = await _labelDB.isLabelExits(event.label);
+      final isExist = await _labelDB.isLabelExists(event.label);
       emit(LabelExistenceChecked(isExist));
     } catch (e) {
       emit(LabelError('Failed to check label existence'));
@@ -46,6 +46,7 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
 
   Future<void> _onRefreshLabels(
       RefreshLabelsEvent event, Emitter<LabelState> emit) async {
-    await _onLoadLabels(LoadLabelsEvent(), emit);
+    // await _onLoadLabels(LoadLabelsEvent(), emit);
+    add(LoadLabelsEvent());
   }
 }

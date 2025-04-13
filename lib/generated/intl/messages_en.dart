@@ -37,6 +37,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "authorUsername": MessageLookupByLibrary.simpleMessage("burhanrashid52"),
     "avatarUrl": MessageLookupByLibrary.simpleMessage("Avatar URL"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
+    "chooseExportFormat": MessageLookupByLibrary.simpleMessage(
+      "Choose export format",
+    ),
     "comingSoon": MessageLookupByLibrary.simpleMessage("Coming Soon"),
     "comments": MessageLookupByLibrary.simpleMessage("Comments"),
     "completedTasks": MessageLookupByLibrary.simpleMessage("Completed Tasks"),
@@ -44,6 +47,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "dueDate": MessageLookupByLibrary.simpleMessage("Due Date"),
     "editTask": MessageLookupByLibrary.simpleMessage("Edit Task"),
     "email": MessageLookupByLibrary.simpleMessage("Email"),
+    "exportError": MessageLookupByLibrary.simpleMessage("Export error"),
+    "exportSuccess": MessageLookupByLibrary.simpleMessage("Export successful"),
     "exports": MessageLookupByLibrary.simpleMessage("Exports"),
     "failedToLoadLabels": MessageLookupByLibrary.simpleMessage(
       "Failed to load labels",
@@ -56,7 +61,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "filePath": MessageLookupByLibrary.simpleMessage("File Path"),
     "forkGithub": MessageLookupByLibrary.simpleMessage("Fork on Github"),
+    "importError": MessageLookupByLibrary.simpleMessage("Import error"),
     "importFile": MessageLookupByLibrary.simpleMessage("Import File"),
+    "importSuccess": MessageLookupByLibrary.simpleMessage("Import successful"),
     "imports": MessageLookupByLibrary.simpleMessage("Imports"),
     "inbox": MessageLookupByLibrary.simpleMessage("Inbox"),
     "labelAlreadyExists": MessageLookupByLibrary.simpleMessage(
@@ -68,10 +75,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "labelGrid": MessageLookupByLibrary.simpleMessage("Label Grid"),
     "labelName": MessageLookupByLibrary.simpleMessage("Label Name"),
     "labels": MessageLookupByLibrary.simpleMessage("Labels"),
+    "legacyFormat": MessageLookupByLibrary.simpleMessage("Legacy Format"),
     "licenseText": MessageLookupByLibrary.simpleMessage(
       "Copyright 2020 Burhanuddin Rashid\n\nLicensed under the Apache License, Version 2.0 (the \"License\") you may not use this file except in compliance with the License. You may obtain a copy of the License at\n\n\nhttp://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.",
     ),
     "name": MessageLookupByLibrary.simpleMessage("Name"),
+    "newFormat": MessageLookupByLibrary.simpleMessage("New Format"),
     "next7Days": MessageLookupByLibrary.simpleMessage("Next 7 Days"),
     "noComments": MessageLookupByLibrary.simpleMessage("No Comments"),
     "noFileSelected": MessageLookupByLibrary.simpleMessage("No file selected"),

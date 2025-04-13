@@ -31,9 +31,9 @@ seedDataInDb() async {
   await projectDB.upsertProject(testProject4);
 
   var labelDB = LabelDB.get();
-  await labelDB.upsertLabel(testLabel1);
-  await labelDB.upsertLabel(testLabel2);
-  await labelDB.upsertLabel(testLabel3);
+  await labelDB.insertLabel(testLabel1);
+  await labelDB.insertLabel(testLabel2);
+  await labelDB.insertLabel(testLabel3);
 
   var taskDB = TaskDB.get();
   await taskDB.updateTask(testTask1);
