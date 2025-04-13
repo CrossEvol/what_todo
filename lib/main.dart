@@ -30,6 +30,7 @@ import 'package:flutter_app/l10n/app_localizations.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupLogger();
+  logger.info("TodoApp boostraping....");
   if (Platform.isWindows) {
     setupWindow();
   }
