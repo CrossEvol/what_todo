@@ -11,7 +11,6 @@ import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_app/l10n/app_localizations.dart';
 
-
 class AddProjectPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -31,6 +30,7 @@ class AddProject extends StatelessWidget {
 
     late ColorPalette currentSelectedPalette;
     String projectName = "";
+
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -55,7 +55,6 @@ class AddProject extends StatelessWidget {
             context.read<ProjectBloc>().add(CreateProjectEvent(project));
             if (context.isWiderScreen()) {
               context.read<HomeBloc>().add(UpdateScreenEvent(SCREEN.HOME));
-              // context.bloc<MyHomeBloc>().updateScreen(SCREEN.HOME);
             }
             context.safePop();
           }
@@ -70,7 +69,8 @@ class AddProject extends StatelessWidget {
                 key: ValueKey(AddProjectKeys.TEXT_FORM_PROJECT_NAME),
                 decoration: InputDecoration(
                     hintText: AppLocalizations.of(context)!.projectName),
-                maxLength: projectMaxLength, // Use setting value
+                maxLength: projectMaxLength,
+                // Use setting value
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return AppLocalizations.of(context)!

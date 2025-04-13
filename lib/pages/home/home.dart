@@ -460,10 +460,6 @@ class _HomePageState extends State<HomePage> {
         dest = directory.path;
       }
 
-      if (dest == null) {
-        return null;
-      }
-
       // Make sure the directory exists
       final dir = Directory(dest);
       if (!await dir.exists()) {
