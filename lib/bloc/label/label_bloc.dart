@@ -33,6 +33,9 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
       CreateLabelEvent event, Emitter<LabelState> emit) async {
     try {
       final isExist = await _labelDB.isLabelExists(event.label);
+      if (!isExist) {
+        await _labelDB.insertLabel(event.label);
+      }
       emit(LabelExistenceChecked(isExist));
     } catch (e) {
       emit(LabelError('Failed to check label existence'));

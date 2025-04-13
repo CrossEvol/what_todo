@@ -18,16 +18,12 @@ import 'package:flutter_app/pages/tasks/task_uncompleted/task_uncompleted.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../utils/logger_util.dart' show logger;
-
-
 /// The route configuration.
 final GoRouter goRouter = GoRouter(
   routes: <RouteBase>[
     GoRoute(
       path: '/',
       builder: (BuildContext context, GoRouterState state) {
-        logger.info("Navigate to HomePage...");
         context.read<HomeBloc>().add(LoadTodayCountEvent());
         return AdaptiveHomePage();
       },
@@ -71,14 +67,12 @@ final GoRouter goRouter = GoRouter(
         GoRoute(
           path: 'project/add',
           builder: (BuildContext context, GoRouterState state) {
-            logger.info("Navigate to AddProjectPage...");
             return AddProjectPage();
           },
         ),
         GoRoute(
           path: 'label/add',
           builder: (BuildContext context, GoRouterState state) {
-            logger.info("Navigate to AddLabelPage...");
             return AddLabelPage();
           },
         ),
