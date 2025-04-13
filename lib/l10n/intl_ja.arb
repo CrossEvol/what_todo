@@ -191,7 +191,7 @@
   "@projectNameCannotBeEmpty": {
     "description": "プロジェクト名が空の場合の検証メッセージ"
   },
-  "completedTasks": "完了した��ク",
+  "completedTasks": "完了したタスク",
   "@completedTasks": {
     "description": "完了したタスクメニュー項目のテキスト"
   },
@@ -261,9 +261,37 @@
   },
   "noFileSelected": "ファイルが選択されていません",
   "@noFileSelected": {
-    "description": "ファイルが選択されていない場合のエラーメッセージ"
+    "description": "インポート用ファイルが選択されていない場合のエラーメッセージ"
   },
-  "noTaskAdded": "タスクがありません",
+  "importSuccess": "インポートに成功しました",
+  "@importSuccess": {
+    "description": "タスクが正常にインポートされたときのメッセージ"
+  },
+  "importError": "インポートエラー",
+  "@importError": {
+    "description": "インポートが失敗した時のエラーメッセージ"
+  },
+  "chooseExportFormat": "エクスポート形式を選択",
+  "@chooseExportFormat": {
+    "description": "エクスポート形式選択のラベル"
+  },
+  "legacyFormat": "レガシー形式",
+  "@legacyFormat": {
+    "description": "レガシー形式オプションのラベル"
+  },
+  "newFormat": "新形式",
+  "@newFormat": {
+    "description": "新形式オプションのラベル"
+  },
+  "exportSuccess": "エクスポートに成功しました",
+  "@exportSuccess": {
+    "description": "エクスポートが成功した時のメッセージ"
+  },
+  "exportError": "エクスポートエラー",
+  "@exportError": {
+    "description": "エクスポートが失敗した時のエラーメッセージ"
+  },
+  "noTaskAdded": "タスクが追加されていません",
   "@noTaskAdded": {
     "description": "タスクが存在しない場合に表示されるメッセージ"
   },

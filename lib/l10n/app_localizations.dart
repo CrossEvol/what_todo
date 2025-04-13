@@ -487,11 +487,53 @@ abstract class AppLocalizations {
   /// **'Confirm'**
   String get confirm;
 
-  /// Error message when no file is selected
+  /// Error message when no file is selected for import
   ///
   /// In en, this message translates to:
   /// **'No file selected'**
   String get noFileSelected;
+
+  /// Message when task is successfully imported
+  ///
+  /// In en, this message translates to:
+  /// **'Import successful'**
+  String get importSuccess;
+
+  /// Error message when import fails
+  ///
+  /// In en, this message translates to:
+  /// **'Import error'**
+  String get importError;
+
+  /// Label for choosing export format
+  ///
+  /// In en, this message translates to:
+  /// **'Choose export format'**
+  String get chooseExportFormat;
+
+  /// Label for legacy format option
+  ///
+  /// In en, this message translates to:
+  /// **'Legacy Format'**
+  String get legacyFormat;
+
+  /// Label for new format option
+  ///
+  /// In en, this message translates to:
+  /// **'New Format'**
+  String get newFormat;
+
+  /// Message when export is successful
+  ///
+  /// In en, this message translates to:
+  /// **'Export successful'**
+  String get exportSuccess;
+
+  /// Error message when export fails
+  ///
+  /// In en, this message translates to:
+  /// **'Export error'**
+  String get exportError;
 
   /// Message shown when no tasks exist
   ///

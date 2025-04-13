@@ -153,7 +153,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get projectNameCannotBeEmpty => 'プロジェクト名を入力してください';
 
   @override
-  String get completedTasks => '完了した��ク';
+  String get completedTasks => '完了したタスク';
 
   @override
   String get uncompletedTasks => '未完了のタスク';
@@ -207,7 +207,28 @@ class AppLocalizationsJa extends AppLocalizations {
   String get noFileSelected => 'ファイルが選択されていません';
 
   @override
-  String get noTaskAdded => 'タスクがありません';
+  String get importSuccess => 'インポートに成功しました';
+
+  @override
+  String get importError => 'インポートエラー';
+
+  @override
+  String get chooseExportFormat => 'エクスポート形式を選択';
+
+  @override
+  String get legacyFormat => 'レガシー形式';
+
+  @override
+  String get newFormat => '新形式';
+
+  @override
+  String get exportSuccess => 'エクスポートに成功しました';
+
+  @override
+  String get exportError => 'エクスポートエラー';
+
+  @override
+  String get noTaskAdded => 'タスクが追加されていません';
 
   @override
   String get taskCompleted => 'タスクを完了しました';

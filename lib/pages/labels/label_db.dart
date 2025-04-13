@@ -14,22 +14,21 @@ class LabelDB {
     return _labelDb;
   }
 
-  Future<bool> isLabelExits(Label label) async {
+  Future<bool> isLabelExists(Label label) async {
     var result = await (_db.select(_db.label)
           ..where((tbl) => tbl.name.equals(label.name)))
         .get();
     if (result.isEmpty) {
-      await upsertLabel(label);
       return false;
     } else {
       return true;
     }
   }
 
-  Future upsertLabel(Label label) async {
+  Future insertLabel(Label label) async {
     await _db.into(_db.label).insertOnConflictUpdate(
           LabelCompanion(
-            id: label.id != null ? Value(label.id ?? 0) : Value.absent(),
+            id: Value.absent(),
             name: Value(label.name),
             colorCode: Value(label.colorValue),
             colorName: Value(label.colorName),

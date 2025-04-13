@@ -711,7 +711,77 @@ class S {
     return Intl.message(
       'No file selected',
       name: 'noFileSelected',
-      desc: 'Error message when no file is selected',
+      desc: 'Error message when no file is selected for import',
+      args: [],
+    );
+  }
+
+  /// `Import successful`
+  String get importSuccess {
+    return Intl.message(
+      'Import successful',
+      name: 'importSuccess',
+      desc: 'Message when task is successfully imported',
+      args: [],
+    );
+  }
+
+  /// `Import error`
+  String get importError {
+    return Intl.message(
+      'Import error',
+      name: 'importError',
+      desc: 'Error message when import fails',
+      args: [],
+    );
+  }
+
+  /// `Choose export format`
+  String get chooseExportFormat {
+    return Intl.message(
+      'Choose export format',
+      name: 'chooseExportFormat',
+      desc: 'Label for choosing export format',
+      args: [],
+    );
+  }
+
+  /// `Legacy Format`
+  String get legacyFormat {
+    return Intl.message(
+      'Legacy Format',
+      name: 'legacyFormat',
+      desc: 'Label for legacy format option',
+      args: [],
+    );
+  }
+
+  /// `New Format`
+  String get newFormat {
+    return Intl.message(
+      'New Format',
+      name: 'newFormat',
+      desc: 'Label for new format option',
+      args: [],
+    );
+  }
+
+  /// `Export successful`
+  String get exportSuccess {
+    return Intl.message(
+      'Export successful',
+      name: 'exportSuccess',
+      desc: 'Message when export is successful',
+      args: [],
+    );
+  }
+
+  /// `Export error`
+  String get exportError {
+    return Intl.message(
+      'Export error',
+      name: 'exportError',
+      desc: 'Error message when export fails',
       args: [],
     );
   }

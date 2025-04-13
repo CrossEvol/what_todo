@@ -188,7 +188,7 @@ class ProjectCompanion extends UpdateCompanion<ProjectData> {
   final Value<String> name;
   final Value<String> colorName;
   final Value<int> colorCode;
-  const ProjectCompanion({
+  const  ProjectCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.colorName = const Value.absent(),

@@ -2,12 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
+import 'package:flutter_app/constants/keys.dart';
+import 'package:flutter_app/l10n/app_localizations.dart';
 import 'package:flutter_app/pages/about/about_us.dart';
 import 'package:flutter_app/pages/home/screen_enum.dart';
 import 'package:flutter_app/pages/home/side_drawer.dart';
@@ -19,20 +22,18 @@ import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/pages/tasks/edit_task.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_completed/task_completed.dart';
-import 'package:flutter_app/pages/tasks/task_uncompleted/task_uncompleted.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
+import 'package:flutter_app/pages/tasks/task_uncompleted/task_uncompleted.dart';
 import 'package:flutter_app/pages/tasks/task_widgets.dart';
-import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/extension.dart';
+import 'package:flutter_app/utils/localization_ext.dart';
 import 'package:flutter_app/utils/logger_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as p;
-import 'package:flutter_app/l10n/app_localizations.dart';
-import 'package:flutter_app/utils/localization_ext.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AdaptiveHomePage extends StatelessWidget {
   const AdaptiveHomePage({
@@ -100,7 +101,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>  {
+class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final ScrollController _scrollController = ScrollController();
@@ -109,16 +110,17 @@ class _HomePageState extends State<HomePage>  {
   @override
   String get restorationId => 'home_page';
 
-
   @override
   void initState() {
     super.initState();
-    
+
     // Define the scroll listener function
     _scrollListener = () {
-      context.read<HomeBloc>().add(SaveScrollPositionEvent(_scrollController.offset));
+      context
+          .read<HomeBloc>()
+          .add(SaveScrollPositionEvent(_scrollController.offset));
     };
-    
+
     // Restore saved scroll position on initialization
     final homeBloc = context.read<HomeBloc>();
     final scrollPosition = homeBloc.state.scrollPosition;
@@ -168,12 +170,12 @@ class _HomePageState extends State<HomePage>  {
         leading: isWiderScreen
             ? null
             : new IconButton(
-                icon: new Icon(
-                  Icons.menu,
-                  key: ValueKey(SideDrawerKeys.DRAWER),
-                ),
-                onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-              ),
+          icon: new Icon(
+            Icons.menu,
+            key: ValueKey(SideDrawerKeys.DRAWER),
+          ),
+          onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         key: ValueKey(HomePageKeys.ADD_NEW_TASK_BUTTON),
@@ -229,7 +231,10 @@ class _HomePageState extends State<HomePage>  {
       },
       itemBuilder: (BuildContext context) {
         final enableImportExport =
-            context.read<SettingsBloc>().state.enableImportExport;
+            context
+                .read<SettingsBloc>()
+                .state
+                .enableImportExport;
         return <PopupMenuEntry<MenuItem>>[
           PopupMenuItem<MenuItem>(
             value: MenuItem.TASK_COMPLETED,
@@ -282,21 +287,152 @@ class _HomePageState extends State<HomePage>  {
     );
   }
 
+  // Method to check and request storage permissions
+  Future<bool> _checkAndRequestStoragePermission(BuildContext context) async {
+    if (!Platform.isAndroid) {
+      // Only Android needs explicit permission handling
+      return true;
+    }
+
+    // For Android 10 (API level 29) and below
+    PermissionStatus status = await Permission.storage.status;
+
+    if (status.isGranted) {
+      return true;
+    }
+
+    if (status.isPermanentlyDenied) {
+      // User permanently denied permission, we need to ask them to enable from settings
+      showDialog(
+        context: context,
+        builder: (BuildContext context) =>
+            AlertDialog(
+              title: Text('Storage Permission Required'),
+              content: Text(
+                '${AppLocalizations.of(context)!
+                    .exportError}: Storage permissions are required. Please enable them in app settings.',
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text(AppLocalizations.of(context)!.cancel),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+                TextButton(
+                  child: Text(AppLocalizations.of(context)!.settings),
+                  onPressed: () => openAppSettings(),
+                ),
+              ],
+            ),
+      );
+      return false;
+    }
+
+    // Request permission
+    status = await Permission.storage.request();
+
+    if (status.isGranted) {
+      return true;
+    } else {
+      // User denied permission this time
+      showSnackbar(context,
+          '${AppLocalizations.of(context)!
+              .exportError}: Storage permissions required',
+          materialColor: Colors.red);
+      return false;
+    }
+  }
+
   Future<void> _export(BuildContext context) async {
+    // Check for storage permissions first
+    bool hasPermission = await _checkAndRequestStoragePermission(context);
+    if (!hasPermission) {
+      return;
+    }
+
     try {
-      var tasks = await TaskDB.get().getExports();
-      const encoder = JsonEncoder.withIndent('  ');
-      var json = encoder.convert(tasks.map((t) => t.toMap()).toList());
+      // Show a dialog to choose the export version
+      bool useNewFormat = await showDialog<bool>(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(AppLocalizations.of(context)!.exports),
+            content: Text(AppLocalizations.of(context)!.chooseExportFormat),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false); // v0 format
+                },
+                child: Text(
+                    'v0 (${AppLocalizations.of(context)!.legacyFormat})'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true); // v1 format
+                },
+                child:
+                Text('v1 (${AppLocalizations.of(context)!.newFormat})'),
+              ),
+            ],
+          );
+        },
+      ) ??
+          false;
+
+      String json;
+      if (useNewFormat) {
+        // Export with new format (v1)
+        var exportData = await TaskDB.get().getExportDataV1();
+        const encoder = JsonEncoder.withIndent('  ');
+        json = encoder.convert(exportData);
+      } else {
+        // Export with old format (v0)
+        var tasks = await TaskDB.get().getExports();
+        const encoder = JsonEncoder.withIndent('  ');
+        json = encoder.convert(tasks.map((t) => t.toMap()).toList());
+      }
+
       var importPath = await _getImportPath();
 
       if (importPath != null) {
-        var file = File('$importPath');
-        await file.writeAsString(json);
+        try {
+          var file = File('$importPath');
+          // Create directory if it doesn't exist
+          final dir = Directory(p.dirname(importPath));
+          if (!await dir.exists()) {
+            await dir.create(recursive: true);
+          }
+
+          await file.writeAsString(json);
+          showSnackbar(context,
+              '${AppLocalizations.of(context)!.exportSuccess}: $importPath');
+        } catch (e) {
+          logger.warn('Error writing to file: $e');
+          // Try one more time with application documents directory as fallback
+          final directory = await getApplicationDocumentsDirectory();
+          final fallbackPath = p.join(directory.path, 'tasks.json');
+
+          try {
+            var file = File(fallbackPath);
+            await file.writeAsString(json);
+            showSnackbar(context,
+                '${AppLocalizations.of(context)!
+                    .exportSuccess}: $fallbackPath');
+          } catch (e2) {
+            logger.warn('Error writing to fallback location: $e2');
+            showSnackbar(context,
+                '${AppLocalizations.of(context)!
+                    .exportError}: Storage permissions required',
+                materialColor: Colors.red);
+          }
+        }
+      } else {
+        showSnackbar(context, AppLocalizations.of(context)!.exportError,
+            materialColor: Colors.red);
       }
-      showSnackbar(context, 'Saved to $importPath.');
     } catch (e) {
-      logger.warn(e);
-      showSnackbar(context, 'Error', materialColor: Colors.red);
+      logger.warn('Export error: $e');
+      showSnackbar(context, '${AppLocalizations.of(context)!.exportError}: $e',
+          materialColor: Colors.red);
     }
   }
 
@@ -304,28 +440,62 @@ class _HomePageState extends State<HomePage>  {
     const filename = 'tasks.json';
     String? dest;
 
-    if (Platform.isAndroid) {
-      var directory = await getExternalStorageDirectory();
-      dest = directory?.path;
-    } else if (Platform.isWindows) {
-      var directory = await getApplicationDocumentsDirectory();
-      dest = directory.path;
-    }
+    try {
+      if (Platform.isAndroid) {
+        // Try to get the app-specific external storage directory first
+        var directory = await getExternalStorageDirectory();
+        dest = directory?.path;
 
-    if (dest == null) {
-      return null;
-    }
+        // If that fails, fall back to application documents directory
+        if (dest == null) {
+          var docDirectory = await getApplicationDocumentsDirectory();
+          dest = docDirectory.path;
+        }
+      } else if (Platform.isWindows) {
+        var directory = await getApplicationDocumentsDirectory();
+        dest = directory.path;
+      } else {
+        // For iOS and other platforms
+        var directory = await getApplicationDocumentsDirectory();
+        dest = directory.path;
+      }
 
-    return p.join(dest, filename);
+      if (dest == null) {
+        return null;
+      }
+
+      // Make sure the directory exists
+      final dir = Directory(dest);
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
+      }
+
+      return p.join(dest, filename);
+    } catch (e) {
+      logger.warn('Error getting import/export path: $e');
+      // Fallback to app documents directory
+      try {
+        final directory = await getApplicationDocumentsDirectory();
+        return p.join(directory.path, filename);
+      } catch (_) {
+        return null;
+      }
+    }
   }
 
   Future<void> _import(BuildContext context) async {
+    // Check for storage permissions first
+    bool hasPermission = await _checkAndRequestStoragePermission(context);
+    if (!hasPermission) {
+      return;
+    }
+
     String? importPath = await _getImportPath();
     showDialog(
       context: context,
       builder: (BuildContext context) {
         TextEditingController filePathController =
-            TextEditingController(text: importPath ?? '');
+        TextEditingController(text: importPath ?? '');
         return AlertDialog(
           title: Text(AppLocalizations.of(context)!.importFile),
           content: Column(
@@ -341,7 +511,7 @@ class _HomePageState extends State<HomePage>  {
               ElevatedButton(
                 onPressed: () async {
                   FilePickerResult? result =
-                      await FilePicker.platform.pickFiles();
+                  await FilePicker.platform.pickFiles();
                   if (result != null) {
                     filePathController.text = result.files.single.path!;
                   }
@@ -360,30 +530,103 @@ class _HomePageState extends State<HomePage>  {
             TextButton(
               onPressed: () async {
                 if (filePathController.text.isNotEmpty) {
-                  File file = File(filePathController.text);
-                  String fileContent = await file.readAsString();
-                  List<dynamic> jsonData = jsonDecode(fileContent);
-                  Set<String> projectNames = {};
-                  List<Map<String, dynamic>> taskData = [];
-                  for (var task in jsonData) {
-                    if (task is Map<String, dynamic>) {
-                      projectNames.add(task['projectName']);
-                      taskData.add(task);
+                  try {
+                    File file = File(filePathController.text);
+                    if (!await file.exists()) {
+                      showSnackbar(context,
+                          '${AppLocalizations.of(context)!
+                              .importError}: File not found',
+                          materialColor: Colors.red);
+                      return;
                     }
+
+                    String fileContent;
+                    try {
+                      fileContent = await file.readAsString();
+                    } catch (e) {
+                      logger.warn('Error reading file: $e');
+                      showSnackbar(context,
+                          '${AppLocalizations.of(context)!
+                              .importError}: Cannot read file',
+                          materialColor: Colors.red);
+                      return;
+                    }
+
+                    dynamic jsonData;
+                    try {
+                      jsonData = jsonDecode(fileContent);
+                    } catch (e) {
+                      logger.warn('Error parsing JSON: $e');
+                      showSnackbar(context,
+                          '${AppLocalizations.of(context)!
+                              .importError}: Invalid JSON format',
+                          materialColor: Colors.red);
+                      return;
+                    }
+
+                    // Check if the data is in v1 format (has __v key)
+                    bool isV1Format =
+                        jsonData is Map && jsonData.containsKey('__v');
+
+                    if (isV1Format) {
+                      // Handle v1 format
+                      await TaskDB.get()
+                          .importDataV1(jsonData as Map<String, dynamic>);
+
+                      // Refresh UI
+                      context.read<ProjectBloc>().add(RefreshProjectsEvent());
+                      context.read<AdminBloc>().add(AdminLoadProjectsEvent());
+
+                      var filter = context
+                          .read<HomeBloc>()
+                          .state
+                          .filter;
+                      if (filter != null) {
+                        context
+                            .read<TaskBloc>()
+                            .add(FilterTasksEvent(filter: filter));
+                      }
+                    } else {
+                      // Handle legacy format (v0)
+                      List<dynamic> taskJsonList =
+                      jsonData is List ? jsonData : [jsonData];
+                      Set<String> projectNames = {};
+                      List<Map<String, dynamic>> taskData = [];
+
+                      for (var task in taskJsonList) {
+                        if (task is Map<String, dynamic>) {
+                          projectNames.add(task['projectName']);
+                          taskData.add(task);
+                        }
+                      }
+
+                      await ProjectDB.get().importProjects(projectNames);
+                      if (projectNames.isNotEmpty) {
+                        context.read<ProjectBloc>().add(RefreshProjectsEvent());
+                        context.read<AdminBloc>().add(AdminLoadProjectsEvent());
+                      }
+
+                      await TaskDB.get().importTasks(taskData);
+                      var filter = context
+                          .read<HomeBloc>()
+                          .state
+                          .filter;
+                      if (filter != null) {
+                        context
+                            .read<TaskBloc>()
+                            .add(FilterTasksEvent(filter: filter));
+                      }
+                    }
+
+                    Navigator.of(context).pop();
+                    showSnackbar(
+                        context, AppLocalizations.of(context)!.importSuccess);
+                  } catch (e) {
+                    logger.warn(e);
+                    showSnackbar(context,
+                        '${AppLocalizations.of(context)!.importError}: $e',
+                        materialColor: Colors.red);
                   }
-                  await ProjectDB.get().importProjects(projectNames);
-                  if (projectNames.isNotEmpty) {
-                    context.read<ProjectBloc>().add(RefreshProjectsEvent());
-                    context.read<AdminBloc>().add(AdminLoadProjectsEvent());
-                  }
-                  await TaskDB.get().importTasks(taskData);
-                  var filter = context.read<HomeBloc>().state.filter;
-                  if (filter != null) {
-                    context
-                        .read<TaskBloc>()
-                        .add(FilterTasksEvent(filter: filter));
-                  }
-                  Navigator.of(context).pop();
                 } else {
                   showSnackbar(
                       context, AppLocalizations.of(context)!.noFileSelected,

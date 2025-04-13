@@ -14,6 +14,28 @@ class ProjectDB {
     return _projectDb;
   }
 
+  Future<bool> isProjectExists(Project project) async {
+    var result = await (_db.select(_db.project)
+          ..where((tbl) => tbl.name.equals(project.name)))
+        .get();
+    if (result.isEmpty) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  Future insertProject(Project project) async {
+    await _db.into(_db.project).insertOnConflictUpdate(
+          ProjectCompanion(
+            id: project.id != null ? Value(project.id ?? 0) : Value.absent(),
+            name: Value(project.name),
+            colorCode: Value(project.colorValue),
+            colorName: Value(project.colorName),
+          ),
+        );
+  }
+
   Future<Project> getProject(
       {required int id, bool isInboxVisible = true}) async {
     var query = _db.select(_db.project);

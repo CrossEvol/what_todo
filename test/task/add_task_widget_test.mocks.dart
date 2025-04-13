@@ -140,7 +140,7 @@ class MockLabelDB extends _i1.Mock implements _i5.LabelDB {
   }
 
   @override
-  _i4.Future<bool> isLabelExits(_i6.Label? label) => (super.noSuchMethod(
+  _i4.Future<bool> isLabelExists(_i6.Label? label) => (super.noSuchMethod(
         Invocation.method(
           #isLabelExits,
           [label],
@@ -149,7 +149,7 @@ class MockLabelDB extends _i1.Mock implements _i5.LabelDB {
       ) as _i4.Future<bool>);
 
   @override
-  _i4.Future<dynamic> upsertLabel(_i6.Label? label) => (super.noSuchMethod(
+  _i4.Future<dynamic> insertLabel(_i6.Label? label) => (super.noSuchMethod(
         Invocation.method(
           #upsertLabel,
           [label],

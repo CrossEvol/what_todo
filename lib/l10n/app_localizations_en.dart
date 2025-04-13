@@ -207,6 +207,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noFileSelected => 'No file selected';
 
   @override
+  String get importSuccess => 'Import successful';
+
+  @override
+  String get importError => 'Import error';
+
+  @override
+  String get chooseExportFormat => 'Choose export format';
+
+  @override
+  String get legacyFormat => 'Legacy Format';
+
+  @override
+  String get newFormat => 'New Format';
+
+  @override
+  String get exportSuccess => 'Export successful';
+
+  @override
+  String get exportError => 'Export error';
+
+  @override
   String get noTaskAdded => 'No Task Added';
 
   @override

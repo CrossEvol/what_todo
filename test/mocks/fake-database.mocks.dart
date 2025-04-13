@@ -45,7 +45,7 @@ class _FakeProject_0 extends _i1.SmartFake implements _i2.Project {
 /// See the documentation for Mockito's code generation for more information.
 class MockLabelDB extends _i1.Mock implements _i3.LabelDB {
   @override
-  _i4.Future<bool> isLabelExits(_i5.Label? label) => (super.noSuchMethod(
+  _i4.Future<bool> isLabelExists(_i5.Label? label) => (super.noSuchMethod(
         Invocation.method(
           #isLabelExits,
           [label],
@@ -55,7 +55,7 @@ class MockLabelDB extends _i1.Mock implements _i3.LabelDB {
       ) as _i4.Future<bool>);
 
   @override
-  _i4.Future<dynamic> upsertLabel(_i5.Label? label) => (super.noSuchMethod(
+  _i4.Future<dynamic> insertLabel(_i5.Label? label) => (super.noSuchMethod(
         Invocation.method(
           #upsertLabel,
           [label],
