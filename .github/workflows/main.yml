@@ -1,11 +1,11 @@
-name: WhatTodo Flutter Tests
+name: WhatTodo Flutter Tests & Release
 
 on:
   push:
     branches:
       - master
     tags:
-      - 'v*.*.*'  # This will trigger on tags like v1.0.0, v2.1.3, etc.
+      - 'v*.*.*'  # Trigger on tags like v1.0.0, v2.1.3
   pull_request:
     branches:
       - master
@@ -14,13 +14,12 @@ jobs:
   test:
     name: Run Flutter Tests
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.2'
+          flutter-version: '3.29.2' # Consider using a specific patch version if needed, or keep as is
           channel: 'stable'
       - run: flutter --version
 
@@ -31,12 +30,12 @@ jobs:
         run: flutter test test/
 
   build-and-release:
-    name: Build APK and Release
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')  # Only run on tag push
+    name: Build Signed APK and Release
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') # Only run on tag push
     runs-on: ubuntu-latest
-    needs: test  # This job will run after the test job succeeds
-    permissions: # Add this section
-      contents: write  # Required to create releases
+    needs: test # Run after tests succeed
+    permissions:
+      contents: write # Required to create releases
 
     steps:
       - uses: actions/checkout@v4
@@ -50,14 +49,52 @@ jobs:
       - name: Get Packages
         run: flutter pub get
 
-      - name: Build APK
-        run: flutter build apk --release
+      # ---- New Steps for Signing ----
+      - name: Decode Keystore
+        id: decode_keystore
+        # Use an environment variable to avoid exposing the secret in logs
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        # Create a temporary keystore file relative to the runner's workspace
+        run: |
+          echo $KEYSTORE_BASE64 | base64 --decode > $GITHUB_WORKSPACE/android/app/upload-keystore.jks
+
+      - name: Create key.properties file
+        # Use environment variables for secrets
+        env:
+          STORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          echo "storeFile=upload-keystore.jks" > android/key.properties
+          echo "storePassword=$STORE_PASSWORD" >> android/key.properties
+          echo "keyAlias=$KEY_ALIAS" >> android/key.properties
+          echo "keyPassword=$KEY_PASSWORD" >> android/key.properties
+      # ---- End New Steps for Signing ----
+
+      - name: Build Signed APK
+        # The build command remains the same, Flutter reads key.properties automatically
+        # Optional: Add build name and number from the tag
+        run: |
+          flutter build apk --release \
+            --build-name=${{ github.ref_name }} \
+            --build-number=${{ github.run_number }} # Or derive build number differently if needed
+
+      - name: Verify APK Exists # Optional but helpful for debugging
+        run: ls -l build/app/outputs/flutter-apk/
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: build/app/outputs/flutter-apk/app-release.apk
+          files: build/app/outputs/flutter-apk/app-release.apk # Path remains the same
           name: Release ${{ github.ref_name }}
           tag_name: ${{ github.ref_name }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GITHUB_TOKEN is automatically available
+
+      # ---- Optional: Clean up sensitive files ----
+      - name: Clean up Keystore and Properties
+        if: always() # Run even if previous steps fail
+        run: |
+          rm -f android/app/upload-keystore.jks
+          rm -f android/key.properties
