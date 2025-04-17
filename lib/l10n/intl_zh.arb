@@ -91,6 +91,10 @@
   "@addProject": {
     "description": "添加项目按钮的文本"
   },
+  "projectAlreadyExists": "项目已存在",
+  "@projectAlreadyExists": {
+    "description": "创建重复项目时的错误消息"
+  },
   "labels": "标签",
   "@labels": {
     "description": "标签部分的标题"

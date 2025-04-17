@@ -81,6 +81,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "priority": MessageLookupByLibrary.simpleMessage("优先级"),
     "profile": MessageLookupByLibrary.simpleMessage("个人资料"),
     "project": MessageLookupByLibrary.simpleMessage("项目"),
+    "projectAlreadyExists": MessageLookupByLibrary.simpleMessage("项目已存在"),
     "projectGrid": MessageLookupByLibrary.simpleMessage("项目网格"),
     "projectName": MessageLookupByLibrary.simpleMessage("项目名称"),
     "projectNameCannotBeEmpty": MessageLookupByLibrary.simpleMessage(

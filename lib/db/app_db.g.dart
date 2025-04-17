@@ -188,7 +188,7 @@ class ProjectCompanion extends UpdateCompanion<ProjectData> {
   final Value<String> name;
   final Value<String> colorName;
   final Value<int> colorCode;
-  const  ProjectCompanion({
+  const ProjectCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.colorName = const Value.absent(),
@@ -1478,7 +1478,6 @@ class $SettingTable extends Setting with TableInfo<$SettingTable, SettingData> {
       requiredDuringInsert: false,
       $customConstraints: 'DEFAULT CURRENT_TIMESTAMP',
       defaultValue: const CustomExpression('CURRENT_TIMESTAMP'));
-  static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
   late final GeneratedColumnWithTypeConverter<SettingType, String> type =
       GeneratedColumn<String>('type', aliasedName, false,
@@ -1513,7 +1512,6 @@ class $SettingTable extends Setting with TableInfo<$SettingTable, SettingData> {
       context.handle(_updatedAtMeta,
           updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta));
     }
-    context.handle(_typeMeta, const VerificationResult.success());
     return context;
   }
 
@@ -1991,7 +1989,7 @@ final class $$ProjectTableReferences
 
   $$TaskTableProcessedTableManager get taskRefs {
     final manager = $$TaskTableTableManager($_db, $_db.task)
-        .filter((f) => f.projectId.id($_item.id));
+        .filter((f) => f.projectId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_taskRefsTable($_db));
     return ProcessedTableManager(
@@ -2165,7 +2163,8 @@ class $$ProjectTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (taskRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<ProjectData, $ProjectTable,
+                            TaskData>(
                         currentTable: table,
                         referencedTable:
                             $$ProjectTableReferences._taskRefsTable(db),
@@ -2222,10 +2221,11 @@ final class $$TaskTableReferences
   static $ProjectTable _projectIdTable(_$AppDatabase db) => db.project
       .createAlias($_aliasNameGenerator(db.task.projectId, db.project.id));
 
-  $$ProjectTableProcessedTableManager? get projectId {
-    if ($_item.projectId == null) return null;
+  $$ProjectTableProcessedTableManager get projectId {
+    final $_column = $_itemColumn<int>('project_id')!;
+
     final manager = $$ProjectTableTableManager($_db, $_db.project)
-        .filter((f) => f.id($_item.projectId!));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_projectIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -2239,7 +2239,7 @@ final class $$TaskTableReferences
 
   $$TaskLabelTableProcessedTableManager get taskLabelRefs {
     final manager = $$TaskLabelTableTableManager($_db, $_db.taskLabel)
-        .filter((f) => f.taskId.id($_item.id));
+        .filter((f) => f.taskId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_taskLabelRefsTable($_db));
     return ProcessedTableManager(
@@ -2538,7 +2538,8 @@ class $$TaskTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (taskLabelRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<TaskData, $TaskTable,
+                            TaskLabelData>(
                         currentTable: table,
                         referencedTable:
                             $$TaskTableReferences._taskLabelRefsTable(db),
@@ -2591,7 +2592,7 @@ final class $$LabelTableReferences
 
   $$TaskLabelTableProcessedTableManager get taskLabelRefs {
     final manager = $$TaskLabelTableTableManager($_db, $_db.taskLabel)
-        .filter((f) => f.labelId.id($_item.id));
+        .filter((f) => f.labelId.id.sqlEquals($_itemColumn<int>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_taskLabelRefsTable($_db));
     return ProcessedTableManager(
@@ -2764,7 +2765,8 @@ class $$LabelTableTableManager extends RootTableManager<
               getPrefetchedDataCallback: (items) async {
                 return [
                   if (taskLabelRefs)
-                    await $_getPrefetchedData(
+                    await $_getPrefetchedData<LabelData, $LabelTable,
+                            TaskLabelData>(
                         currentTable: table,
                         referencedTable:
                             $$LabelTableReferences._taskLabelRefsTable(db),
@@ -2811,10 +2813,11 @@ final class $$TaskLabelTableReferences
   static $TaskTable _taskIdTable(_$AppDatabase db) => db.task
       .createAlias($_aliasNameGenerator(db.taskLabel.taskId, db.task.id));
 
-  $$TaskTableProcessedTableManager? get taskId {
-    if ($_item.taskId == null) return null;
+  $$TaskTableProcessedTableManager get taskId {
+    final $_column = $_itemColumn<int>('task_id')!;
+
     final manager = $$TaskTableTableManager($_db, $_db.task)
-        .filter((f) => f.id($_item.taskId!));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_taskIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
@@ -2824,10 +2827,11 @@ final class $$TaskLabelTableReferences
   static $LabelTable _labelIdTable(_$AppDatabase db) => db.label
       .createAlias($_aliasNameGenerator(db.taskLabel.labelId, db.label.id));
 
-  $$LabelTableProcessedTableManager? get labelId {
-    if ($_item.labelId == null) return null;
+  $$LabelTableProcessedTableManager get labelId {
+    final $_column = $_itemColumn<int>('label_id')!;
+
     final manager = $$LabelTableTableManager($_db, $_db.label)
-        .filter((f) => f.id($_item.labelId!));
+        .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_labelIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(

@@ -5,9 +5,12 @@ import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+
 import '../mocks/fake-database.mocks.dart';
 
 void main() {
+  late final testProject;
+  late final testProjects;
   late MockProjectDB mockProjectDB;
   late ProjectBloc projectBloc;
 
@@ -21,14 +24,14 @@ void main() {
   });
 
   group('ProjectBloc', () {
-    final testProject = Project(
+    testProject = Project(
       id: 1,
       name: 'Test Project',
       colorValue: Colors.blue.value,
       colorName: 'Blue',
     );
 
-    final List<Project> testProjects = [
+    List<Project> testProjects = [
       testProject,
       Project(
         id: 2,
@@ -101,31 +104,26 @@ void main() {
     blocTest<ProjectBloc, ProjectState>(
       'creates project and refreshes list when CreateProjectEvent is added',
       build: () {
-        when(mockProjectDB.upsertProject(testProject))
-            .thenAnswer((_) async => null);
-        when(mockProjectDB.getProjects(isInboxVisible: false))
-            .thenAnswer((_) async => testProjects);
+        when(mockProjectDB.isProjectExists(testProject))
+            .thenAnswer((_) async => Future.value(false));
+        when(mockProjectDB.insertProject(testProject))
+            .thenAnswer((_) async => Future.value());
         return projectBloc;
       },
       act: (bloc) => bloc.add(CreateProjectEvent(testProject)),
       expect: () => [
-        isA<ProjectLoading>(),
-        isA<ProjectsLoaded>().having(
-          (state) => state.projects,
-          'projects',
-          equals(testProjects),
-        ),
+        isA<ProjectCreateSuccess>(),
       ],
       verify: (_) {
-        verify(mockProjectDB.upsertProject(testProject)).called(1);
-        verify(mockProjectDB.getProjects(isInboxVisible: false)).called(1);
+        verify(mockProjectDB.isProjectExists(testProject)).called(1);
+        verify(mockProjectDB.insertProject(testProject)).called(1);
       },
     );
 
     blocTest<ProjectBloc, ProjectState>(
       'emits ProjectError when CreateProjectEvent fails',
       build: () {
-        when(mockProjectDB.upsertProject(testProject))
+        when(mockProjectDB.insertProject(testProject))
             .thenThrow(Exception('Database error'));
         return projectBloc;
       },
@@ -135,6 +133,25 @@ void main() {
           (state) => state.message,
           'error message',
           equals('Failed to create project'),
+        ),
+      ],
+    );
+
+    blocTest<ProjectBloc, ProjectState>(
+      'emits [ProjectExistenceChecked] when CreateProjectEvent is added',
+      build: () {
+        when(mockProjectDB.isProjectExists(testProject))
+            .thenAnswer((_) async => true);
+        return projectBloc;
+      },
+      act: (bloc) => bloc.add(
+        CreateProjectEvent(testProject),
+      ),
+      expect: () => [
+        isA<ProjectExistenceChecked>().having(
+          (state) => state.exists,
+          'exists',
+          equals(true),
         ),
       ],
     );

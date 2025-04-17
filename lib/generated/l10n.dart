@@ -536,6 +536,16 @@ class S {
     );
   }
 
+  /// `Project already exists`
+  String get projectAlreadyExists {
+    return Intl.message(
+      'Project already exists',
+      name: 'projectAlreadyExists',
+      desc: 'Error message when creating duplicate project',
+      args: [],
+    );
+  }
+
   /// `Completed Tasks`
   String get completedTasks {
     return Intl.message(

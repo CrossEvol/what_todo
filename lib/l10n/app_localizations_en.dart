@@ -153,6 +153,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get projectNameCannotBeEmpty => 'Project name cannot be empty';
 
   @override
+  String get projectAlreadyExists => 'Project already exists';
+
+  @override
   String get completedTasks => 'Completed Tasks';
 
   @override

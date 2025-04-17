@@ -94,6 +94,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "priority": MessageLookupByLibrary.simpleMessage("Priority"),
     "profile": MessageLookupByLibrary.simpleMessage("Profile"),
     "project": MessageLookupByLibrary.simpleMessage("Project"),
+    "projectAlreadyExists": MessageLookupByLibrary.simpleMessage(
+      "Project already exists",
+    ),
     "projectGrid": MessageLookupByLibrary.simpleMessage("Project Grid"),
     "projectName": MessageLookupByLibrary.simpleMessage("Project Name"),
     "projectNameCannotBeEmpty": MessageLookupByLibrary.simpleMessage(

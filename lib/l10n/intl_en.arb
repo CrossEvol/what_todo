@@ -191,6 +191,10 @@
   "@projectNameCannotBeEmpty": {
     "description": "Validation message for empty project name"
   },
+  "projectAlreadyExists": "Project already exists",
+  "@projectAlreadyExists": {
+    "description": "Error message when creating duplicate project"
+  },
   "completedTasks": "Completed Tasks",
   "@completedTasks": {
     "description": "Text for completed tasks menu item"

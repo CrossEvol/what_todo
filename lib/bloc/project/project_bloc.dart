@@ -29,8 +29,13 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
 
   Future<void> _onCreateProject(CreateProjectEvent event, Emitter<ProjectState> emit) async {
     try {
-      await _projectDB.upsertProject(event.project);
-      add(RefreshProjectsEvent(isInboxVisible: event.isInboxVisible));
+      final exists = await _projectDB.isProjectExists(event.project);
+      if(!exists){
+        await _projectDB.insertProject(event.project);
+        emit(ProjectCreateSuccess());
+      }else{
+        emit(ProjectExistenceChecked(true));
+      }
     } catch (e) {
       emit(ProjectError('Failed to create project'));
     }

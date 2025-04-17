@@ -40,6 +40,13 @@ class ColorSelectionUpdated extends LabelState {
   List<Object> get props => [colorPalette];
 }
 
+class LabelCreateSuccess extends LabelState {
+  const LabelCreateSuccess();
+
+  @override
+  List<Object> get props => [];
+}
+
 class LabelError extends LabelState {
   final String message;
 
