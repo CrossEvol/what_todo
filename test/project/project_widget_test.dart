@@ -32,7 +32,7 @@ void main() {
           BlocProvider<AdminBloc>.value(value: mockAdminBloc),
           BlocProvider<SettingsBloc>.value(value: mockSettingsBloc),
         ],
-        child: ProjectPage().withLocalizedMaterialApp().withThemeProvider(),
+        child: ProjectsExpansionTile().withLocalizedMaterialApp().withThemeProvider(),
       ),
     );
   }
@@ -62,7 +62,7 @@ void main() {
     await pumpProjectWidget(tester);
 
     expect(find.byType(ProjectExpansionTileWidget), findsNothing);
-    expect(find.byType(ProjectPage), findsOneWidget);
+    expect(find.byType(ProjectsExpansionTile), findsOneWidget);
     expect(find.text('Failed to load projects'), findsOneWidget);
   });
 
@@ -72,7 +72,7 @@ void main() {
     await pumpProjectWidget(tester);
 
     expect(find.byType(ProjectExpansionTileWidget), findsNothing);
-    expect(find.byType(ProjectPage), findsOneWidget);
+    expect(find.byType(ProjectsExpansionTile), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 

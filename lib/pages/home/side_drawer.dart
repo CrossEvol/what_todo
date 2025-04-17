@@ -69,8 +69,8 @@ class _SideDrawerState extends State<SideDrawer> {
               key: ValueKey(SideDrawerKeys.NEXT_7_DAYS),
             ),
           ),
-          ProjectPage(),
-          LabelPage(),
+          ProjectsExpansionTile(),
+          LabelsExpansionTile(),
           ListTile(
             onTap: () {
               context.go('/project/grid');
