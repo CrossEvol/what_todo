@@ -17,6 +17,7 @@ dependencies:
   rxdart: ^0.28.0
   window_manager: ^0.4.3
   permission_handler: ^11.3.1
+  device_info_plus: ^9.1.2
 
   path: any
   drift: ^2.20.1
