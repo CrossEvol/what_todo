@@ -287,13 +287,79 @@
   "@newFormat": {
     "description": "新形式オプションのラベル"
   },
-  "exportSuccess": "エクスポートに成功しました",
-  "@exportSuccess": {
-    "description": "エクスポートが成功した時のメッセージ"
+  "export": "エクスポート",
+  "@export": {
+    "description": "エクスポートページのタイトル"
   },
-  "exportError": "エクスポートエラー",
+  "tasks": "タスク",
+  "@tasks": {
+    "description": "エクスポートページのタスクタブのタイトル"
+  },
+  "delete": "削除",
+  "@delete": {
+    "description": "削除アクションボタンのテキスト"
+  },
+  "removeProject": "プロジェクトを削除",
+  "@removeProject": {
+    "description": "プロジェクト削除ダイアログのタイトル"
+  },
+  "removeLabel": "ラベルを削除",
+  "@removeLabel": {
+    "description": "ラベル削除ダイアログのタイトル"
+  },
+  "chooseOption": "オプションを選択:",
+  "@chooseOption": {
+    "description": "オプション選択プロンプトのテキスト"
+  },
+  "removeRelatedTasks": "関連タスクを削除",
+  "@removeRelatedTasks": {
+    "description": "関連タスクを削除するオプション"
+  },
+  "onlyRemoveProject": "プロジェクトのみ削除",
+  "@onlyRemoveProject": {
+    "description": "プロジェクトのみを削除するオプション"
+  },
+  "onlyRemoveLabel": "ラベルのみ削除",
+  "@onlyRemoveLabel": {
+    "description": "ラベルのみを削除するオプション"
+  },
+  "exportFormat": "エクスポート形式",
+  "@exportFormat": {
+    "description": "エクスポート形式ダイアログのタイトル"
+  },
+  "legacyFormatV0": "レガシー形式 (v0)",
+  "@legacyFormatV0": {
+    "description": "レガシー形式エクスポートのオプション"
+  },
+  "newFormatV1": "新形式 (v1)",
+  "@newFormatV1": {
+    "description": "新形式エクスポートのオプション"
+  },
+  "exportSuccess": "エクスポート成功: {path}",
+  "@exportSuccess": {
+    "description": "エクスポートが成功した時のメッセージ",
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "exportError": "エクスポートエラー: {error}",
   "@exportError": {
-    "description": "エクスポートが失敗した時のエラーメッセージ"
+    "description": "エクスポートが失敗した時のエラーメッセージ",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "storagePermissionRequired": "ストレージ権限が必要です",
+  "@storagePermissionRequired": {
+    "description": "ストレージ権限が必要な場合のエラーメッセージ"
+  },
+  "count": "数",
+  "@count": {
+    "description": "グリッドのカウント列のラベル"
   },
   "noTaskAdded": "タスクが追加されていません",
   "@noTaskAdded": {
@@ -315,5 +381,61 @@
         "type": "int"
       }
     }
+  },
+  "import": "インポート",
+  "@import": {
+    "description": "Title for import page"
+  },
+  "importDescription": "以前にエクスポートしたJSONファイルからタスクをインポートします。",
+  "@importDescription": {
+    "description": "Description text on import page"
+  },
+  "importing": "インポート中...",
+  "@importing": {
+    "description": "Text shown during import process"
+  },
+  "importInformation": "インポート情報",
+  "@importInformation": {
+    "description": "Title for import information section"
+  },
+  "importInfoLegacySupport": "• v0（レガシー）とv1（新）の両方のフォーマットをサポート",
+  "@importInfoLegacySupport": {
+    "description": "Import format support info"
+  },
+  "importInfoAutoDetect": "• インポートは自動的にフォーマットを検出します",
+  "@importInfoAutoDetect": {
+    "description": "Import auto-detection info"
+  },
+  "importInfoTasksAdded": "• インポートされたすべてのタスクがタスクリストに追加されます",
+  "@importInfoTasksAdded": {
+    "description": "Import tasks info"
+  },
+  "importInfoItemsCreated": "• プロジェクトとラベルは必要に応じて作成されます",
+  "@importInfoItemsCreated": {
+    "description": "Import project/label creation info"
+  },
+  "importingData": "データをインポート中...",
+  "@importingData": {
+    "description": "Message shown during data import"
+  },
+  "importingWait": "データがインポートされるまでお待ちください。",
+  "@importingWait": {
+    "description": "Wait message during import"
+  },
+  "fileNotFound": "ファイルが見つかりません",
+  "@fileNotFound": {
+    "description": "Error message when file is not found"
+  },
+  "cannotReadFile": "ファイルを読み込めません",
+  "@cannotReadFile": {
+    "description": "Error message when file cannot be read"
+  },
+  "invalidJsonFormat": "無効なJSON形式",
+  "@invalidJsonFormat": {
+    "description": "Error message for invalid JSON format"
+  },
+  "goBack": "戻る",
+  "@goBack": {
+    "description": "Text for go back button"
   }
 }

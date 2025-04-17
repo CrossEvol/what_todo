@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/pages/about/about_us.dart';
+import 'package:flutter_app/pages/export/export_page.dart';
 import 'package:flutter_app/pages/home/home.dart';
+import 'package:flutter_app/pages/import/import_page.dart';
 import 'package:flutter_app/pages/labels/add_label.dart';
 import 'package:flutter_app/pages/labels/label_grid.dart';
 import 'package:flutter_app/pages/order/order_page.dart';
@@ -50,6 +52,18 @@ final GoRouter goRouter = GoRouter(
           path: 'profile',
           builder: (BuildContext context, GoRouterState state) {
             return ProfilePage();
+          },
+        ),
+        GoRoute(
+          path: 'export',
+          builder: (BuildContext context, GoRouterState state) {
+            return ExportPage();
+          },
+        ),
+        GoRoute(
+          path: 'import',
+          builder: (BuildContext context, GoRouterState state) {
+            return ImportPage();
           },
         ),
         GoRoute(

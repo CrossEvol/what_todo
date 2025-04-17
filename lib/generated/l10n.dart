@@ -776,22 +776,162 @@ class S {
     );
   }
 
-  /// `Export successful`
-  String get exportSuccess {
+  /// `Export`
+  String get export {
     return Intl.message(
-      'Export successful',
-      name: 'exportSuccess',
-      desc: 'Message when export is successful',
+      'Export',
+      name: 'export',
+      desc: 'Title for the export page',
       args: [],
     );
   }
 
-  /// `Export error`
-  String get exportError {
+  /// `Tasks`
+  String get tasks {
     return Intl.message(
-      'Export error',
+      'Tasks',
+      name: 'tasks',
+      desc: 'Title for tasks tab in export page',
+      args: [],
+    );
+  }
+
+  /// `DELETE`
+  String get delete {
+    return Intl.message(
+      'DELETE',
+      name: 'delete',
+      desc: 'Text for delete action button',
+      args: [],
+    );
+  }
+
+  /// `Remove Project`
+  String get removeProject {
+    return Intl.message(
+      'Remove Project',
+      name: 'removeProject',
+      desc: 'Title for remove project dialog',
+      args: [],
+    );
+  }
+
+  /// `Remove Label`
+  String get removeLabel {
+    return Intl.message(
+      'Remove Label',
+      name: 'removeLabel',
+      desc: 'Title for remove label dialog',
+      args: [],
+    );
+  }
+
+  /// `Choose an option:`
+  String get chooseOption {
+    return Intl.message(
+      'Choose an option:',
+      name: 'chooseOption',
+      desc: 'Text for option selection prompt',
+      args: [],
+    );
+  }
+
+  /// `Remove related tasks`
+  String get removeRelatedTasks {
+    return Intl.message(
+      'Remove related tasks',
+      name: 'removeRelatedTasks',
+      desc: 'Option to remove related tasks',
+      args: [],
+    );
+  }
+
+  /// `Only remove project`
+  String get onlyRemoveProject {
+    return Intl.message(
+      'Only remove project',
+      name: 'onlyRemoveProject',
+      desc: 'Option to only remove project',
+      args: [],
+    );
+  }
+
+  /// `Only remove label`
+  String get onlyRemoveLabel {
+    return Intl.message(
+      'Only remove label',
+      name: 'onlyRemoveLabel',
+      desc: 'Option to only remove label',
+      args: [],
+    );
+  }
+
+  /// `Export Format`
+  String get exportFormat {
+    return Intl.message(
+      'Export Format',
+      name: 'exportFormat',
+      desc: 'Title for export format dialog',
+      args: [],
+    );
+  }
+
+  /// `Legacy Format (v0)`
+  String get legacyFormatV0 {
+    return Intl.message(
+      'Legacy Format (v0)',
+      name: 'legacyFormatV0',
+      desc: 'Option for legacy format export',
+      args: [],
+    );
+  }
+
+  /// `New Format (v1)`
+  String get newFormatV1 {
+    return Intl.message(
+      'New Format (v1)',
+      name: 'newFormatV1',
+      desc: 'Option for new format export',
+      args: [],
+    );
+  }
+
+  /// `Export Success: {path}`
+  String exportSuccess(String path) {
+    return Intl.message(
+      'Export Success: $path',
+      name: 'exportSuccess',
+      desc: 'Message when export is successful',
+      args: [path],
+    );
+  }
+
+  /// `Export Error: {error}`
+  String exportError(String error) {
+    return Intl.message(
+      'Export Error: $error',
       name: 'exportError',
       desc: 'Error message when export fails',
+      args: [error],
+    );
+  }
+
+  /// `Storage permissions required`
+  String get storagePermissionRequired {
+    return Intl.message(
+      'Storage permissions required',
+      name: 'storagePermissionRequired',
+      desc: 'Error message when storage permission is needed',
+      args: [],
+    );
+  }
+
+  /// `Count`
+  String get count {
+    return Intl.message(
+      'Count',
+      name: 'count',
+      desc: 'Label for count column in grids',
       args: [],
     );
   }
@@ -843,6 +983,146 @@ class S {
       name: 'valueTooLong',
       desc: '',
       args: [maxLength],
+    );
+  }
+
+  /// `Import`
+  String get import {
+    return Intl.message(
+      'Import',
+      name: 'import',
+      desc: 'Title for import page',
+      args: [],
+    );
+  }
+
+  /// `Import your tasks from a JSON file exported previously.`
+  String get importDescription {
+    return Intl.message(
+      'Import your tasks from a JSON file exported previously.',
+      name: 'importDescription',
+      desc: 'Description text on import page',
+      args: [],
+    );
+  }
+
+  /// `Importing...`
+  String get importing {
+    return Intl.message(
+      'Importing...',
+      name: 'importing',
+      desc: 'Text shown during import process',
+      args: [],
+    );
+  }
+
+  /// `Import Information`
+  String get importInformation {
+    return Intl.message(
+      'Import Information',
+      name: 'importInformation',
+      desc: 'Title for import information section',
+      args: [],
+    );
+  }
+
+  /// `• Supports both v0 (legacy) and v1 (new) format`
+  String get importInfoLegacySupport {
+    return Intl.message(
+      '• Supports both v0 (legacy) and v1 (new) format',
+      name: 'importInfoLegacySupport',
+      desc: 'Import format support info',
+      args: [],
+    );
+  }
+
+  /// `• Import will automatically detect the format`
+  String get importInfoAutoDetect {
+    return Intl.message(
+      '• Import will automatically detect the format',
+      name: 'importInfoAutoDetect',
+      desc: 'Import auto-detection info',
+      args: [],
+    );
+  }
+
+  /// `• All imported tasks will be added to your task list`
+  String get importInfoTasksAdded {
+    return Intl.message(
+      '• All imported tasks will be added to your task list',
+      name: 'importInfoTasksAdded',
+      desc: 'Import tasks info',
+      args: [],
+    );
+  }
+
+  /// `• Projects and labels will be created as needed`
+  String get importInfoItemsCreated {
+    return Intl.message(
+      '• Projects and labels will be created as needed',
+      name: 'importInfoItemsCreated',
+      desc: 'Import project/label creation info',
+      args: [],
+    );
+  }
+
+  /// `Importing data...`
+  String get importingData {
+    return Intl.message(
+      'Importing data...',
+      name: 'importingData',
+      desc: 'Message shown during data import',
+      args: [],
+    );
+  }
+
+  /// `Please wait while your data is being imported.`
+  String get importingWait {
+    return Intl.message(
+      'Please wait while your data is being imported.',
+      name: 'importingWait',
+      desc: 'Wait message during import',
+      args: [],
+    );
+  }
+
+  /// `File not found`
+  String get fileNotFound {
+    return Intl.message(
+      'File not found',
+      name: 'fileNotFound',
+      desc: 'Error message when file is not found',
+      args: [],
+    );
+  }
+
+  /// `Cannot read file`
+  String get cannotReadFile {
+    return Intl.message(
+      'Cannot read file',
+      name: 'cannotReadFile',
+      desc: 'Error message when file cannot be read',
+      args: [],
+    );
+  }
+
+  /// `Invalid JSON format`
+  String get invalidJsonFormat {
+    return Intl.message(
+      'Invalid JSON format',
+      name: 'invalidJsonFormat',
+      desc: 'Error message for invalid JSON format',
+      args: [],
+    );
+  }
+
+  /// `Go Back`
+  String get goBack {
+    return Intl.message(
+      'Go Back',
+      name: 'goBack',
+      desc: 'Text for go back button',
+      args: [],
     );
   }
 }
