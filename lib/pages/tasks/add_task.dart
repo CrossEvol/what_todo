@@ -5,17 +5,17 @@ import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
+import 'package:flutter_app/constants/color_constant.dart';
+import 'package:flutter_app/constants/keys.dart';
+import 'package:flutter_app/l10n/app_localizations.dart';
 import 'package:flutter_app/models/priority.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/utils/app_util.dart';
-import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/utils/date_util.dart';
-import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_app/l10n/app_localizations.dart';
 
 import 'models/task.dart';
 
@@ -32,6 +32,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   final GlobalKey<FormState> _formState = GlobalKey<FormState>();
 
   TextEditingController _titleController = TextEditingController();
+  TextEditingController _commentController = TextEditingController();
   PriorityStatus selectedPriority = PriorityStatus.PRIORITY_4;
   PriorityStatus lastPrioritySelection = PriorityStatus.PRIORITY_4;
   Project selectedProject = Project.inbox();
@@ -43,8 +44,20 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       .toList();
 
   String get labelNames => selectedLabels.isNotEmpty
-      ? (selectedLabels..sort((a, b) => a.id! - b.id!)).map((label) => label.name).join(", ")
+      ? (selectedLabels..sort((a, b) => a.id! - b.id!))
+          .map((label) => label.name)
+          .join(", ")
       : "No Labels";
+
+  String get commentPreview {
+    if (_commentController.text.isEmpty) {
+      return AppLocalizations.of(context)!.noComments;
+    }
+    if (_commentController.text.length <= 40) {
+      return _commentController.text;
+    }
+    return "${_commentController.text.substring(0, 40)}...";
+  }
 
   @override
   void initState() {
@@ -73,7 +86,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               child: TextFormField(
                 key: ValueKey(AddTaskKeys.ADD_TITLE),
                 validator: (value) {
-                  return value!.isEmpty ? AppLocalizations.of(context)!.titleCannotBeEmpty : null;
+                  return value!.isEmpty
+                      ? AppLocalizations.of(context)!.titleCannotBeEmpty
+                      : null;
                 },
                 controller: _titleController,
                 onSaved: (value) {},
@@ -130,10 +145,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           ListTile(
             leading: Icon(Icons.mode_comment),
             title: Text(AppLocalizations.of(context)!.comments),
-            subtitle: Text(AppLocalizations.of(context)!.noComments),
+            subtitle: Text(commentPreview),
             hoverColor: _grey,
             onTap: () {
-              showSnackbar(context, AppLocalizations.of(context)!.comingSoon);
+              _showCommentDialog(context);
             },
           ),
           ListTile(
@@ -158,6 +173,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                     title: _titleController.text,
                     projectId: selectedProject.id ?? 0,
                     priority: selectedPriority,
+                    comment: _commentController.text,
                   ),
                   labelIds: labelIds));
 
@@ -239,6 +255,40 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             },
           );
         });
+  }
+
+  Future<void> _showCommentDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context)!.comments),
+          content: TextField(
+            controller: _commentController,
+            maxLines: 5,
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context)!.comments,
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(AppLocalizations.of(context)!.cancel),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(AppLocalizations.of(context)!.confirm),
+              onPressed: () {
+                setState(() {});
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   List<Widget> buildProjects(

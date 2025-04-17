@@ -57,7 +57,7 @@ class ExportView extends StatelessWidget {
           } else if (state is ExportError) {
             return Center(
               child: Text(
-                'Error: ${(state as ExportError).message}',
+                'Error: ${(state).message}',
                 style: const TextStyle(color: Colors.red),
               ),
             );

@@ -5,17 +5,17 @@ import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
+import 'package:flutter_app/constants/color_constant.dart';
+import 'package:flutter_app/constants/keys.dart';
+import 'package:flutter_app/l10n/app_localizations.dart';
 import 'package:flutter_app/models/priority.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/utils/app_util.dart';
-import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/utils/date_util.dart';
-import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_app/l10n/app_localizations.dart';
 
 import 'models/task.dart';
 
@@ -32,6 +32,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   final GlobalKey<FormState> _formState = GlobalKey<FormState>();
 
   TextEditingController _titleController = TextEditingController();
+  TextEditingController _commentController = TextEditingController();
   PriorityStatus selectedPriority = PriorityStatus.PRIORITY_4;
   Project selectedProject = Project.inbox();
   List<Label> selectedLabels = [];
@@ -47,6 +48,40 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
           .join(", ")
       : "No Labels";
 
+  // Regular expression to match URLs
+  final RegExp _urlRegExp = RegExp(
+    r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)',
+    caseSensitive: false,
+  );
+
+  bool get hasUrl =>
+      _urlRegExp.hasMatch(_titleController.text) ||
+      _urlRegExp.hasMatch(_commentController.text);
+
+  String? get detectedUrl {
+    var titleMatch = _urlRegExp.firstMatch(_titleController.text);
+    if (titleMatch != null) {
+      return titleMatch.group(0);
+    }
+
+    var commentMatch = _urlRegExp.firstMatch(_commentController.text);
+    if (commentMatch != null) {
+      return commentMatch.group(0);
+    }
+
+    return null;
+  }
+
+  String get commentPreview {
+    if (_commentController.text.isEmpty) {
+      return AppLocalizations.of(context)!.noComments;
+    }
+    if (_commentController.text.length <= 40) {
+      return _commentController.text;
+    }
+    return "${_commentController.text.substring(0, 40)}...";
+  }
+
   @override
   void initState() {
     super.initState();
@@ -59,6 +94,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
         .toList();
     final labels = context.read<LabelBloc>().state.labels;
     _titleController.text = widget.task.title;
+    _commentController.text = widget.task.comment;
     selectedPriority = widget.task.priority;
     // TODO: it will confirm the EditTask rendering, but will interfere the value of current task
     selectedProject = projects.isNotEmpty
@@ -73,6 +109,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
   @override
   void dispose() {
     _titleController.dispose();
+    _commentController.dispose();
     super.dispose();
   }
 
@@ -152,10 +189,16 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
           ListTile(
             leading: Icon(Icons.mode_comment),
             title: Text(AppLocalizations.of(context)!.comments),
-            subtitle: Text(AppLocalizations.of(context)!.noComments),
+            subtitle: Text(commentPreview),
+            trailing: hasUrl
+                ? IconButton(
+                    icon: Icon(Icons.link),
+                    onPressed: _openUrl,
+                  )
+                : null,
             hoverColor: _grey,
             onTap: () {
-              showSnackbar(context, AppLocalizations.of(context)!.comingSoon);
+              _showCommentDialog(context);
             },
           ),
           ListTile(
@@ -182,6 +225,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                     projectId: selectedProject.id ?? 0,
                     priority: selectedPriority,
                     dueDate: selectedDueDate,
+                    comment: _commentController.text,
                   ),
                   labelIds: labelIds));
 
@@ -262,6 +306,51 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
             },
           );
         });
+  }
+
+  Future<void> _showCommentDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context)!.comments),
+          content: TextField(
+            controller: _commentController,
+            maxLines: 5,
+            decoration: InputDecoration(
+              hintText: AppLocalizations.of(context)!.comments,
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(AppLocalizations.of(context)!.cancel),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(AppLocalizations.of(context)!.confirm),
+              onPressed: () {
+                setState(() {});
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _openUrl() async {
+    final url = detectedUrl;
+    if (url != null) {
+      try {
+        await launchURL(url);
+      } catch (e) {
+        showSnackbar(context, 'Could not launch $url');
+      }
+    }
   }
 
   List<Widget> buildProjects(
