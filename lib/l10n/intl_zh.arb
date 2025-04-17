@@ -287,13 +287,79 @@
   "@newFormat": {
     "description": "新版格式选项的标签"
   },
-  "exportSuccess": "导出成功",
-  "@exportSuccess": {
-    "description": "导出成功时的消息"
+  "export": "导出",
+  "@export": {
+    "description": "导出页面的标题"
   },
-  "exportError": "导出错误",
+  "tasks": "任务",
+  "@tasks": {
+    "description": "导出页面中任务标签的标题"
+  },
+  "delete": "删除",
+  "@delete": {
+    "description": "删除操作按钮的文本"
+  },
+  "removeProject": "删除项目",
+  "@removeProject": {
+    "description": "删除项目对话框的标题"
+  },
+  "removeLabel": "删除标签",
+  "@removeLabel": {
+    "description": "删除标签对话框的标题"
+  },
+  "chooseOption": "选择一个选项:",
+  "@chooseOption": {
+    "description": "选项选择提示的文本"
+  },
+  "removeRelatedTasks": "删除相关任务",
+  "@removeRelatedTasks": {
+    "description": "删除相关任务的选项"
+  },
+  "onlyRemoveProject": "仅删除项目",
+  "@onlyRemoveProject": {
+    "description": "仅删除项目的选项"
+  },
+  "onlyRemoveLabel": "仅删除标签",
+  "@onlyRemoveLabel": {
+    "description": "仅删除标签的选项"
+  },
+  "exportFormat": "导出格式",
+  "@exportFormat": {
+    "description": "导出格式对话框的标题"
+  },
+  "legacyFormatV0": "旧版格式 (v0)",
+  "@legacyFormatV0": {
+    "description": "旧版格式导出的选项"
+  },
+  "newFormatV1": "新版格式 (v1)",
+  "@newFormatV1": {
+    "description": "新版格式导出的选项"
+  },
+  "exportSuccess": "导出成功: {path}",
+  "@exportSuccess": {
+    "description": "导出成功时的消息",
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "exportError": "导出错误: {error}",
   "@exportError": {
-    "description": "导出失败时的错误消息"
+    "description": "导出失败时的错误消息",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "storagePermissionRequired": "需要存储权限",
+  "@storagePermissionRequired": {
+    "description": "需要存储权限时的错误消息"
+  },
+  "count": "数量",
+  "@count": {
+    "description": "网格中计数列的标签"
   },
   "noTaskAdded": "未添加任务",
   "@noTaskAdded": {
@@ -315,5 +381,61 @@
         "type": "int"
       }
     }
+  },
+  "import": "导入",
+  "@import": {
+    "description": "Title for import page"
+  },
+  "importDescription": "从之前导出的JSON文件导入任务。",
+  "@importDescription": {
+    "description": "Description text on import page"
+  },
+  "importing": "导入中...",
+  "@importing": {
+    "description": "Text shown during import process"
+  },
+  "importInformation": "导入信息",
+  "@importInformation": {
+    "description": "Title for import information section"
+  },
+  "importInfoLegacySupport": "• 支持v0（旧版）和v1（新版）格式",
+  "@importInfoLegacySupport": {
+    "description": "Import format support info"
+  },
+  "importInfoAutoDetect": "• 导入将自动检测格式",
+  "@importInfoAutoDetect": {
+    "description": "Import auto-detection info"
+  },
+  "importInfoTasksAdded": "• 所有导入的任务将添加到您的任务列表中",
+  "@importInfoTasksAdded": {
+    "description": "Import tasks info"
+  },
+  "importInfoItemsCreated": "• 将根据需要创建项目和标签",
+  "@importInfoItemsCreated": {
+    "description": "Import project/label creation info"
+  },
+  "importingData": "正在导入数据...",
+  "@importingData": {
+    "description": "Message shown during data import"
+  },
+  "importingWait": "请等待数据导入完成。",
+  "@importingWait": {
+    "description": "Wait message during import"
+  },
+  "fileNotFound": "文件未找到",
+  "@fileNotFound": {
+    "description": "Error message when file is not found"
+  },
+  "cannotReadFile": "无法读取文件",
+  "@cannotReadFile": {
+    "description": "Error message when file cannot be read"
+  },
+  "invalidJsonFormat": "无效的JSON格式",
+  "@invalidJsonFormat": {
+    "description": "Error message for invalid JSON format"
+  },
+  "goBack": "返回",
+  "@goBack": {
+    "description": "Text for go back button"
   }
 }

@@ -3,13 +3,16 @@ import 'dart:io' show Platform;
 import 'package:drift/drift.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
+import 'package:flutter_app/bloc/export/export_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
+import 'package:flutter_app/bloc/import/import_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/profile/profile_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/db/app_db.dart';
+import 'package:flutter_app/l10n/app_localizations.dart';
 import 'package:flutter_app/pages/drift_schema/drift_schema_db.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/profile/profile_db.dart';
@@ -25,7 +28,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:flutter_app/l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -148,6 +150,13 @@ class _MyAppState extends State<MyApp> with RouteAware {
             ..add(LoadSettingsEvent())
             ..add(AddSetLocaleFunction(setLocale: setLocale)),
         ),
+        BlocProvider(
+            create: (_) =>
+                ExportBloc(ProjectDB.get(), LabelDB.get(), TaskDB.get())
+                  ..add(LoadExportDataEvent())),
+        BlocProvider(
+            create: (_) =>
+                ImportBloc(ProjectDB.get(), LabelDB.get(), TaskDB.get())),
       ],
       child: MaterialApp.router(
         locale: _locale,

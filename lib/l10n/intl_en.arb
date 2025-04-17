@@ -287,13 +287,79 @@
   "@newFormat": {
     "description": "Label for new format option"
   },
-  "exportSuccess": "Export successful",
-  "@exportSuccess": {
-    "description": "Message when export is successful"
+  "export": "Export",
+  "@export": {
+    "description": "Title for the export page"
   },
-  "exportError": "Export error",
+  "tasks": "Tasks",
+  "@tasks": {
+    "description": "Title for tasks tab in export page"
+  },
+  "delete": "DELETE",
+  "@delete": {
+    "description": "Text for delete action button"
+  },
+  "removeProject": "Remove Project",
+  "@removeProject": {
+    "description": "Title for remove project dialog"
+  },
+  "removeLabel": "Remove Label",
+  "@removeLabel": {
+    "description": "Title for remove label dialog"
+  },
+  "chooseOption": "Choose an option:",
+  "@chooseOption": {
+    "description": "Text for option selection prompt"
+  },
+  "removeRelatedTasks": "Remove related tasks",
+  "@removeRelatedTasks": {
+    "description": "Option to remove related tasks"
+  },
+  "onlyRemoveProject": "Only remove project",
+  "@onlyRemoveProject": {
+    "description": "Option to only remove project"
+  },
+  "onlyRemoveLabel": "Only remove label",
+  "@onlyRemoveLabel": {
+    "description": "Option to only remove label"
+  },
+  "exportFormat": "Export Format",
+  "@exportFormat": {
+    "description": "Title for export format dialog"
+  },
+  "legacyFormatV0": "Legacy Format (v0)",
+  "@legacyFormatV0": {
+    "description": "Option for legacy format export"
+  },
+  "newFormatV1": "New Format (v1)",
+  "@newFormatV1": {
+    "description": "Option for new format export"
+  },
+  "exportSuccess": "Export Success: {path}",
+  "@exportSuccess": {
+    "description": "Message when export is successful",
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "exportError": "Export Error: {error}",
   "@exportError": {
-    "description": "Error message when export fails"
+    "description": "Error message when export fails",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "storagePermissionRequired": "Storage permissions required",
+  "@storagePermissionRequired": {
+    "description": "Error message when storage permission is needed"
+  },
+  "count": "Count",
+  "@count": {
+    "description": "Label for count column in grids"
   },
   "noTaskAdded": "No Task Added",
   "@noTaskAdded": {
@@ -315,5 +381,61 @@
         "type": "int"
       }
     }
+  },
+  "import": "Import",
+  "@import": {
+    "description": "Title for import page"
+  },
+  "importDescription": "Import your tasks from a JSON file exported previously.",
+  "@importDescription": {
+    "description": "Description text on import page"
+  },
+  "importing": "Importing...",
+  "@importing": {
+    "description": "Text shown during import process"
+  },
+  "importInformation": "Import Information",
+  "@importInformation": {
+    "description": "Title for import information section"
+  },
+  "importInfoLegacySupport": "• Supports both v0 (legacy) and v1 (new) format",
+  "@importInfoLegacySupport": {
+    "description": "Import format support info"
+  },
+  "importInfoAutoDetect": "• Import will automatically detect the format",
+  "@importInfoAutoDetect": {
+    "description": "Import auto-detection info"
+  },
+  "importInfoTasksAdded": "• All imported tasks will be added to your task list",
+  "@importInfoTasksAdded": {
+    "description": "Import tasks info"
+  },
+  "importInfoItemsCreated": "• Projects and labels will be created as needed",
+  "@importInfoItemsCreated": {
+    "description": "Import project/label creation info"
+  },
+  "importingData": "Importing data...",
+  "@importingData": {
+    "description": "Message shown during data import"
+  },
+  "importingWait": "Please wait while your data is being imported.",
+  "@importingWait": {
+    "description": "Wait message during import"
+  },
+  "fileNotFound": "File not found",
+  "@fileNotFound": {
+    "description": "Error message when file is not found"
+  },
+  "cannotReadFile": "Cannot read file",
+  "@cannotReadFile": {
+    "description": "Error message when file cannot be read"
+  },
+  "invalidJsonFormat": "Invalid JSON format",
+  "@invalidJsonFormat": {
+    "description": "Error message for invalid JSON format"
+  },
+  "goBack": "Go Back",
+  "@goBack": {
+    "description": "Text for go back button"
   }
 }

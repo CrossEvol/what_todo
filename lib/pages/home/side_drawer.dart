@@ -3,18 +3,18 @@ import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
+import 'package:flutter_app/constants/keys.dart';
+import 'package:flutter_app/l10n/app_localizations.dart';
 import 'package:flutter_app/pages/home/profile_card.dart';
 import 'package:flutter_app/pages/home/today_menu_item.dart';
-import 'package:flutter_app/pages/tasks/bloc/filter.dart';
-import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/labels/label_widget.dart';
+import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_widget.dart';
-import 'package:flutter_app/constants/keys.dart';
+import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_app/l10n/app_localizations.dart';
 
 class SideDrawer extends StatefulWidget {
   @override
@@ -55,9 +55,9 @@ class _SideDrawerState extends State<SideDrawer> {
           TodayMenuItem(),
           ListTile(
             onTap: () {
-              context
-                  .read<HomeBloc>()
-                  .add(ApplyFilterEvent(AppLocalizations.of(context)!.next7Days, Filter.byNextWeek()));
+              context.read<HomeBloc>().add(ApplyFilterEvent(
+                  AppLocalizations.of(context)!.next7Days,
+                  Filter.byNextWeek()));
               context
                   .read<TaskBloc>()
                   .add(FilterTasksEvent(filter: Filter.byNextWeek()));
@@ -99,6 +99,40 @@ class _SideDrawerState extends State<SideDrawer> {
               key: ValueKey(SideDrawerKeys.LABEL_GRID),
             ),
           ),
+          Divider(),
+          if (context.read<SettingsBloc>().state.enableImportExport) ...[
+            ListTile(
+              onTap: () {
+                context.go('/export');
+                context.safePop();
+              },
+              leading: Icon(Icons.upload_file),
+              title: Text(
+                'Export Tasks',
+                style: TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w500,
+                ),
+                key: ValueKey(CompletedTaskPageKeys.EXPORT_DATA),
+              ),
+            ),
+            ListTile(
+              onTap: () {
+                context.go('/import');
+                context.safePop();
+              },
+              leading: Icon(Icons.download_rounded),
+              title: Text(
+                'Import Tasks',
+                style: TextStyle(
+                  fontSize: 14.0,
+                  fontWeight: FontWeight.w500,
+                ),
+                key: ValueKey(CompletedTaskPageKeys.IMPORT_DATA),
+              ),
+            ),
+            Divider(),
+          ],
           ListTile(
             onTap: () {
               context.go('/settings');
@@ -123,10 +157,8 @@ class _SideDrawerState extends State<SideDrawer> {
           ListTile(
             onTap: () {
               showSnackbar(
-                context, 
-                AppLocalizations.of(context)!.unknownNotImplemented,
-                materialColor: Colors.teal
-              );
+                  context, AppLocalizations.of(context)!.unknownNotImplemented,
+                  materialColor: Colors.teal);
             },
             leading: Icon(Icons.unarchive_sharp),
             title: Text(

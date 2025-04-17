@@ -225,10 +225,56 @@ class AppLocalizationsEn extends AppLocalizations {
   String get newFormat => 'New Format';
 
   @override
-  String get exportSuccess => 'Export successful';
+  String get export => 'Export';
 
   @override
-  String get exportError => 'Export error';
+  String get tasks => 'Tasks';
+
+  @override
+  String get delete => 'DELETE';
+
+  @override
+  String get removeProject => 'Remove Project';
+
+  @override
+  String get removeLabel => 'Remove Label';
+
+  @override
+  String get chooseOption => 'Choose an option:';
+
+  @override
+  String get removeRelatedTasks => 'Remove related tasks';
+
+  @override
+  String get onlyRemoveProject => 'Only remove project';
+
+  @override
+  String get onlyRemoveLabel => 'Only remove label';
+
+  @override
+  String get exportFormat => 'Export Format';
+
+  @override
+  String get legacyFormatV0 => 'Legacy Format (v0)';
+
+  @override
+  String get newFormatV1 => 'New Format (v1)';
+
+  @override
+  String exportSuccess(String path) {
+    return 'Export Success: $path';
+  }
+
+  @override
+  String exportError(String error) {
+    return 'Export Error: $error';
+  }
+
+  @override
+  String get storagePermissionRequired => 'Storage permissions required';
+
+  @override
+  String get count => 'Count';
 
   @override
   String get noTaskAdded => 'No Task Added';
@@ -246,4 +292,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String valueTooLong(int maxLength) {
     return 'Value cannot be longer than $maxLength characters';
   }
+
+  @override
+  String get import => 'Import';
+
+  @override
+  String get importDescription => 'Import your tasks from a JSON file exported previously.';
+
+  @override
+  String get importing => 'Importing...';
+
+  @override
+  String get importInformation => 'Import Information';
+
+  @override
+  String get importInfoLegacySupport => '• Supports both v0 (legacy) and v1 (new) format';
+
+  @override
+  String get importInfoAutoDetect => '• Import will automatically detect the format';
+
+  @override
+  String get importInfoTasksAdded => '• All imported tasks will be added to your task list';
+
+  @override
+  String get importInfoItemsCreated => '• Projects and labels will be created as needed';
+
+  @override
+  String get importingData => 'Importing data...';
+
+  @override
+  String get importingWait => 'Please wait while your data is being imported.';
+
+  @override
+  String get fileNotFound => 'File not found';
+
+  @override
+  String get cannotReadFile => 'Cannot read file';
+
+  @override
+  String get invalidJsonFormat => 'Invalid JSON format';
+
+  @override
+  String get goBack => 'Go Back';
 }

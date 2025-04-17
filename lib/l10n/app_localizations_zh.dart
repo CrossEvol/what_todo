@@ -225,10 +225,56 @@ class AppLocalizationsZh extends AppLocalizations {
   String get newFormat => '新版格式';
 
   @override
-  String get exportSuccess => '导出成功';
+  String get export => '导出';
 
   @override
-  String get exportError => '导出错误';
+  String get tasks => '任务';
+
+  @override
+  String get delete => '删除';
+
+  @override
+  String get removeProject => '删除项目';
+
+  @override
+  String get removeLabel => '删除标签';
+
+  @override
+  String get chooseOption => '选择一个选项:';
+
+  @override
+  String get removeRelatedTasks => '删除相关任务';
+
+  @override
+  String get onlyRemoveProject => '仅删除项目';
+
+  @override
+  String get onlyRemoveLabel => '仅删除标签';
+
+  @override
+  String get exportFormat => '导出格式';
+
+  @override
+  String get legacyFormatV0 => '旧版格式 (v0)';
+
+  @override
+  String get newFormatV1 => '新版格式 (v1)';
+
+  @override
+  String exportSuccess(String path) {
+    return '导出成功: $path';
+  }
+
+  @override
+  String exportError(String error) {
+    return '导出错误: $error';
+  }
+
+  @override
+  String get storagePermissionRequired => '需要存储权限';
+
+  @override
+  String get count => '数量';
 
   @override
   String get noTaskAdded => '未添加任务';
@@ -246,4 +292,46 @@ class AppLocalizationsZh extends AppLocalizations {
   String valueTooLong(int maxLength) {
     return '值不能超过$maxLength个字符';
   }
+
+  @override
+  String get import => '导入';
+
+  @override
+  String get importDescription => '从之前导出的JSON文件导入任务。';
+
+  @override
+  String get importing => '导入中...';
+
+  @override
+  String get importInformation => '导入信息';
+
+  @override
+  String get importInfoLegacySupport => '• 支持v0（旧版）和v1（新版）格式';
+
+  @override
+  String get importInfoAutoDetect => '• 导入将自动检测格式';
+
+  @override
+  String get importInfoTasksAdded => '• 所有导入的任务将添加到您的任务列表中';
+
+  @override
+  String get importInfoItemsCreated => '• 将根据需要创建项目和标签';
+
+  @override
+  String get importingData => '正在导入数据...';
+
+  @override
+  String get importingWait => '请等待数据导入完成。';
+
+  @override
+  String get fileNotFound => '文件未找到';
+
+  @override
+  String get cannotReadFile => '无法读取文件';
+
+  @override
+  String get invalidJsonFormat => '无效的JSON格式';
+
+  @override
+  String get goBack => '返回';
 }

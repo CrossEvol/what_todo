@@ -225,10 +225,56 @@ class AppLocalizationsJa extends AppLocalizations {
   String get newFormat => '新形式';
 
   @override
-  String get exportSuccess => 'エクスポートに成功しました';
+  String get export => 'エクスポート';
 
   @override
-  String get exportError => 'エクスポートエラー';
+  String get tasks => 'タスク';
+
+  @override
+  String get delete => '削除';
+
+  @override
+  String get removeProject => 'プロジェクトを削除';
+
+  @override
+  String get removeLabel => 'ラベルを削除';
+
+  @override
+  String get chooseOption => 'オプションを選択:';
+
+  @override
+  String get removeRelatedTasks => '関連タスクを削除';
+
+  @override
+  String get onlyRemoveProject => 'プロジェクトのみ削除';
+
+  @override
+  String get onlyRemoveLabel => 'ラベルのみ削除';
+
+  @override
+  String get exportFormat => 'エクスポート形式';
+
+  @override
+  String get legacyFormatV0 => 'レガシー形式 (v0)';
+
+  @override
+  String get newFormatV1 => '新形式 (v1)';
+
+  @override
+  String exportSuccess(String path) {
+    return 'エクスポート成功: $path';
+  }
+
+  @override
+  String exportError(String error) {
+    return 'エクスポートエラー: $error';
+  }
+
+  @override
+  String get storagePermissionRequired => 'ストレージ権限が必要です';
+
+  @override
+  String get count => '数';
 
   @override
   String get noTaskAdded => 'タスクが追加されていません';
@@ -246,4 +292,46 @@ class AppLocalizationsJa extends AppLocalizations {
   String valueTooLong(int maxLength) {
     return '値は$maxLength文字を超えることはできません';
   }
+
+  @override
+  String get import => 'インポート';
+
+  @override
+  String get importDescription => '以前にエクスポートしたJSONファイルからタスクをインポートします。';
+
+  @override
+  String get importing => 'インポート中...';
+
+  @override
+  String get importInformation => 'インポート情報';
+
+  @override
+  String get importInfoLegacySupport => '• v0（レガシー）とv1（新）の両方のフォーマットをサポート';
+
+  @override
+  String get importInfoAutoDetect => '• インポートは自動的にフォーマットを検出します';
+
+  @override
+  String get importInfoTasksAdded => '• インポートされたすべてのタスクがタスクリストに追加されます';
+
+  @override
+  String get importInfoItemsCreated => '• プロジェクトとラベルは必要に応じて作成されます';
+
+  @override
+  String get importingData => 'データをインポート中...';
+
+  @override
+  String get importingWait => 'データがインポートされるまでお待ちください。';
+
+  @override
+  String get fileNotFound => 'ファイルが見つかりません';
+
+  @override
+  String get cannotReadFile => 'ファイルを読み込めません';
+
+  @override
+  String get invalidJsonFormat => '無効なJSON形式';
+
+  @override
+  String get goBack => '戻る';
 }

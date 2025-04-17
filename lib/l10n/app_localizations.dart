@@ -529,17 +529,101 @@ abstract class AppLocalizations {
   /// **'New Format'**
   String get newFormat;
 
+  /// Title for the export page
+  ///
+  /// In en, this message translates to:
+  /// **'Export'**
+  String get export;
+
+  /// Title for tasks tab in export page
+  ///
+  /// In en, this message translates to:
+  /// **'Tasks'**
+  String get tasks;
+
+  /// Text for delete action button
+  ///
+  /// In en, this message translates to:
+  /// **'DELETE'**
+  String get delete;
+
+  /// Title for remove project dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Project'**
+  String get removeProject;
+
+  /// Title for remove label dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Label'**
+  String get removeLabel;
+
+  /// Text for option selection prompt
+  ///
+  /// In en, this message translates to:
+  /// **'Choose an option:'**
+  String get chooseOption;
+
+  /// Option to remove related tasks
+  ///
+  /// In en, this message translates to:
+  /// **'Remove related tasks'**
+  String get removeRelatedTasks;
+
+  /// Option to only remove project
+  ///
+  /// In en, this message translates to:
+  /// **'Only remove project'**
+  String get onlyRemoveProject;
+
+  /// Option to only remove label
+  ///
+  /// In en, this message translates to:
+  /// **'Only remove label'**
+  String get onlyRemoveLabel;
+
+  /// Title for export format dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Export Format'**
+  String get exportFormat;
+
+  /// Option for legacy format export
+  ///
+  /// In en, this message translates to:
+  /// **'Legacy Format (v0)'**
+  String get legacyFormatV0;
+
+  /// Option for new format export
+  ///
+  /// In en, this message translates to:
+  /// **'New Format (v1)'**
+  String get newFormatV1;
+
   /// Message when export is successful
   ///
   /// In en, this message translates to:
-  /// **'Export successful'**
-  String get exportSuccess;
+  /// **'Export Success: {path}'**
+  String exportSuccess(String path);
 
   /// Error message when export fails
   ///
   /// In en, this message translates to:
-  /// **'Export error'**
-  String get exportError;
+  /// **'Export Error: {error}'**
+  String exportError(String error);
+
+  /// Error message when storage permission is needed
+  ///
+  /// In en, this message translates to:
+  /// **'Storage permissions required'**
+  String get storagePermissionRequired;
+
+  /// Label for count column in grids
+  ///
+  /// In en, this message translates to:
+  /// **'Count'**
+  String get count;
 
   /// Message shown when no tasks exist
   ///
@@ -570,6 +654,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Value cannot be longer than {maxLength} characters'**
   String valueTooLong(int maxLength);
+
+  /// Title for import page
+  ///
+  /// In en, this message translates to:
+  /// **'Import'**
+  String get import;
+
+  /// Description text on import page
+  ///
+  /// In en, this message translates to:
+  /// **'Import your tasks from a JSON file exported previously.'**
+  String get importDescription;
+
+  /// Text shown during import process
+  ///
+  /// In en, this message translates to:
+  /// **'Importing...'**
+  String get importing;
+
+  /// Title for import information section
+  ///
+  /// In en, this message translates to:
+  /// **'Import Information'**
+  String get importInformation;
+
+  /// Import format support info
+  ///
+  /// In en, this message translates to:
+  /// **'• Supports both v0 (legacy) and v1 (new) format'**
+  String get importInfoLegacySupport;
+
+  /// Import auto-detection info
+  ///
+  /// In en, this message translates to:
+  /// **'• Import will automatically detect the format'**
+  String get importInfoAutoDetect;
+
+  /// Import tasks info
+  ///
+  /// In en, this message translates to:
+  /// **'• All imported tasks will be added to your task list'**
+  String get importInfoTasksAdded;
+
+  /// Import project/label creation info
+  ///
+  /// In en, this message translates to:
+  /// **'• Projects and labels will be created as needed'**
+  String get importInfoItemsCreated;
+
+  /// Message shown during data import
+  ///
+  /// In en, this message translates to:
+  /// **'Importing data...'**
+  String get importingData;
+
+  /// Wait message during import
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait while your data is being imported.'**
+  String get importingWait;
+
+  /// Error message when file is not found
+  ///
+  /// In en, this message translates to:
+  /// **'File not found'**
+  String get fileNotFound;
+
+  /// Error message when file cannot be read
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot read file'**
+  String get cannotReadFile;
+
+  /// Error message for invalid JSON format
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid JSON format'**
+  String get invalidJsonFormat;
+
+  /// Text for go back button
+  ///
+  /// In en, this message translates to:
+  /// **'Go Back'**
+  String get goBack;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
