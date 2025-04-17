@@ -31,8 +31,7 @@ import 'package:window_manager/window_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  setupLogger();
-  logger.info("TodoApp boostraping....");
+  await setupLogger();
   if (Platform.isWindows) {
     setupWindow();
   }
