@@ -153,6 +153,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get projectNameCannotBeEmpty => '项目名称不能为空';
 
   @override
+  String get projectAlreadyExists => '项目已存在';
+
+  @override
   String get completedTasks => '已完成任务';
 
   @override

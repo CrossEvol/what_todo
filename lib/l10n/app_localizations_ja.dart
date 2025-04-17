@@ -153,6 +153,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get projectNameCannotBeEmpty => 'プロジェクト名を入力してください';
 
   @override
+  String get projectAlreadyExists => 'プロジェクトは既に存在します';
+
+  @override
   String get completedTasks => '完了したタスク';
 
   @override

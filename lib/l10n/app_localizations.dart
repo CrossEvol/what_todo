@@ -385,6 +385,12 @@ abstract class AppLocalizations {
   /// **'Project name cannot be empty'**
   String get projectNameCannotBeEmpty;
 
+  /// Error message when creating duplicate project
+  ///
+  /// In en, this message translates to:
+  /// **'Project already exists'**
+  String get projectAlreadyExists;
+
   /// Text for completed tasks menu item
   ///
   /// In en, this message translates to:

@@ -39,3 +39,19 @@ class ProjectError extends ProjectState {
   @override
   List<Object> get props => [message];
 }
+
+class ProjectExistenceChecked extends ProjectState {
+  final bool exists;
+
+  const ProjectExistenceChecked(this.exists);
+
+  @override
+  List<Object> get props => [exists];
+}
+
+class ProjectCreateSuccess extends ProjectState {
+  const ProjectCreateSuccess();
+
+  @override
+  List<Object> get props => [];
+}

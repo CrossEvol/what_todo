@@ -91,6 +91,10 @@
   "@addProject": {
     "description": "プロジェクト追加ボタンのテキスト"
   },
+  "projectAlreadyExists": "プロジェクトは既に存在します",
+  "@projectAlreadyExists": {
+    "description": "重複するプロジェクトを作成しようとした際のエラーメッセージ"
+  },
   "labels": "ラベル",
   "@labels": {
     "description": "ラベルセクションのタイトル"
