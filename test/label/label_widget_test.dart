@@ -22,7 +22,7 @@ void main() {
     return MaterialApp(
       home: BlocProvider<LabelBloc>.value(
         value: mockLabelBloc,
-        child: LabelPage().withLocalizedMaterialApp().withThemeProvider(),
+        child: LabelsExpansionTile().withLocalizedMaterialApp().withThemeProvider(),
       ),
     );
   }
@@ -50,7 +50,7 @@ void main() {
     await pumpLabelWidget(tester);
 
     expect(find.byType(LabelExpansionTileWidget), findsNothing);
-    expect(find.byType(LabelPage), findsOneWidget);
+    expect(find.byType(LabelsExpansionTile), findsOneWidget);
     expect(find.text('Failed to load labels'), findsOneWidget);
   });
 
@@ -60,7 +60,7 @@ void main() {
     await pumpLabelWidget(tester);
 
     expect(find.byType(LabelExpansionTileWidget), findsNothing);
-    expect(find.byType(LabelPage), findsOneWidget);
+    expect(find.byType(LabelsExpansionTile), findsOneWidget);
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 

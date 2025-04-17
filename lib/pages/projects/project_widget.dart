@@ -13,7 +13,7 @@ import 'package:go_router/go_router.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter_app/l10n/app_localizations.dart';
 
-class ProjectPage extends StatelessWidget {
+class ProjectsExpansionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProjectBloc, ProjectState>(

@@ -10,7 +10,7 @@ import 'package:flutter_app/utils/extension.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_app/l10n/app_localizations.dart';
 
-class LabelPage extends StatelessWidget {
+class LabelsExpansionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     context.read<LabelBloc>().add(RefreshLabelsEvent());
