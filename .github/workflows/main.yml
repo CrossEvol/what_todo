@@ -21,6 +21,7 @@ jobs:
         with:
           flutter-version: '3.29.2' # Consider using a specific patch version if needed, or keep as is
           channel: 'stable'
+          java-version: '17'
       - run: flutter --version
 
       - name: Get Packages
@@ -45,6 +46,7 @@ jobs:
         with:
           flutter-version: '3.29.2'
           channel: 'stable'
+          java-version: '17'
 
       - name: Get Packages
         run: flutter pub get

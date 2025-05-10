@@ -91,7 +91,7 @@ void main() {
     blocTest<AdminBloc, AdminState>(
       'updates label when AdminUpdateLabelEvent is added',
       build: () {
-        when(labelDB.insertLabel(testLabel)).thenAnswer((_) async => null);
+        when(labelDB.updateLabel(testLabel)).thenAnswer((_) async => null);
         when(labelDB.getLabelsWithCount())
             .thenAnswer((_) async => [testLabelWithCount]);
         return adminBloc;
@@ -102,7 +102,7 @@ void main() {
             (state) => state.labels, 'labels', [testLabelWithCount]),
       ],
       verify: (_) {
-        verify(labelDB.insertLabel(testLabel)).called(1);
+        verify(labelDB.updateLabel(testLabel)).called(1);
         verify(labelDB.getLabelsWithCount()).called(1);
       },
     );
