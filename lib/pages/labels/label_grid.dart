@@ -285,14 +285,6 @@ class _LabelGridPageState extends State<LabelGridPage> {
     );
   }
 
-  RegExp _makeRegExp(TextInputType keyboardType, String columnName) {
-    return keyboardType == TextInputType.number
-        ? columnName == 'Freight' || columnName == 'Price'
-            ? RegExp('[0-9.]')
-            : RegExp('[0-9]')
-        : RegExp('[a-zA-Z ]');
-  }
-
   /// Building the each field with label and TextFormField
   Widget _buildRow(
       {required TextEditingController controller, required String columnName}) {

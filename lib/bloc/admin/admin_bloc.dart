@@ -52,9 +52,8 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
   FutureOr<void> _updateLabel(
       AdminUpdateLabelEvent event, Emitter<AdminState> emit) async {
     try {
-      await _labelDB.insertLabel(event.label);
-      final labels = await _labelDB.getLabelsWithCount();
-      emit(state.copyWith(labels: labels));
+      await _labelDB.updateLabel(event.label);
+      add(AdminLoadLabelsEvent());
     } catch (e) {
       emit(state);
     }

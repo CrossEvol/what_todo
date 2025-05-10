@@ -116,43 +116,52 @@ class _MyAppState extends State<MyApp> with RouteAware {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => LabelBloc(LabelDB.get())..add(LoadLabelsEvent()),
+          create: (_) =>
+          LabelBloc(LabelDB.get())
+            ..add(LoadLabelsEvent()),
         ),
         BlocProvider(
           create: (context) =>
-              ProjectBloc(ProjectDB.get())..add(LoadProjectsEvent()),
+          ProjectBloc(ProjectDB.get())
+            ..add(LoadProjectsEvent()),
         ),
         BlocProvider(
-          create: (context) => HomeBloc(TaskDB.get())
+          create: (context) =>
+          HomeBloc(TaskDB.get())
             ..add(ApplyFilterEvent("Today", Filter.byToday())),
         ),
         BlocProvider(
-          create: (context) => TaskBloc(TaskDB.get())
+          create: (context) =>
+          TaskBloc(TaskDB.get())
             ..add(FilterTasksEvent(filter: Filter.byToday())),
         ),
         // TODO: it did not load projects at the first time on mobile device
         BlocProvider(
-          create: (_) => AdminBloc(
+          create: (_) =>
+          AdminBloc(
             LabelDB.get(),
             ProjectDB.get(),
           )
-            ..add(AdminLoadProjectsEvent())
-            ..add(AdminLoadLabelsEvent()),
+            ..add(AdminLoadProjectsEvent())..add(AdminLoadLabelsEvent()),
         ),
         BlocProvider(
-          create: (_) => ProfileBloc(
+          create: (_) =>
+          ProfileBloc(
             ProfileDB.get(),
-          )..add(ProfileLoadEvent()),
+          )
+            ..add(ProfileLoadEvent()),
         ),
         BlocProvider(
-          create: (_) => SettingsBloc(SettingsDB.get())
-            ..add(LoadSettingsEvent())
-            ..add(AddSetLocaleFunction(setLocale: setLocale)),
+          create: (_) =>
+          SettingsBloc(SettingsDB.get())
+            ..add(LoadSettingsEvent())..add(
+              AddSetLocaleFunction(setLocale: setLocale)),
+          lazy: false,
         ),
         BlocProvider(
             create: (_) =>
-                ExportBloc(ProjectDB.get(), LabelDB.get(), TaskDB.get())
-                  ..add(LoadExportDataEvent())),
+            ExportBloc(ProjectDB.get(), LabelDB.get(), TaskDB.get())
+              ..add(LoadExportDataEvent())),
         BlocProvider(
             create: (_) =>
                 ImportBloc(ProjectDB.get(), LabelDB.get(), TaskDB.get())),
@@ -171,7 +180,9 @@ class _MyAppState extends State<MyApp> with RouteAware {
           Locale('zh'),
         ],
         debugShowCheckedModeBanner: false,
-        theme: Provider.of<ThemeProvider>(context).themeDataStyle,
+        theme: Provider
+            .of<ThemeProvider>(context)
+            .themeDataStyle,
         routerConfig: goRouter,
       ),
     );

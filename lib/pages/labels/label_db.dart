@@ -36,6 +36,17 @@ class LabelDB {
         );
   }
 
+  Future updateLabel(Label label) async {
+    await _db.into(_db.label).insertOnConflictUpdate(
+          LabelCompanion(
+            id: label.id != null ? Value(label.id!) : Value.absent(),
+            name: Value(label.name),
+            colorCode: Value(label.colorValue),
+            colorName: Value(label.colorName),
+          ),
+        );
+  }
+
   Future<List<Label>> getLabels() async {
     var result = await _db.select(_db.label).get();
     return result.map((item) => Label.fromMap(item.toJson())).toList();

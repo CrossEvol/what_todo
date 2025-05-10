@@ -130,3 +130,31 @@ for windows , in `main.dart`, convert `setupLogger();`  to `await setupLogger();
 but in android , it is not enough, so I comment the `logger.info("TodoApp boostraping....");` in `main.dart`
 
 it seems that it works.
+
+## 2025/04/18
+```dart
+class BlocProvider<T extends StateStreamableSource<Object?>>
+    extends SingleChildStatelessWidget {
+  /// {@macro bloc_provider}
+  const BlocProvider({
+    required T Function(BuildContext context) create,
+    Key? key,
+    this.child,
+    this.lazy = true,
+  })  : _create = create,
+        _value = null,
+        super(key: key, child: child);
+  // ...
+}
+```
+Some BlocProvider should set lazy to false , 
+```dart
+BlocProvider(
+    create: (_) =>
+    SettingsBloc(SettingsDB.get())
+    ..add(LoadSettingsEvent())..add(
+    AddSetLocaleFunction(setLocale: setLocale)),
+    lazy: false,
+)
+```
+although it will load the settings state eagerly on windows 
