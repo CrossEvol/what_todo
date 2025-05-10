@@ -151,7 +151,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     }
   }
 
-  Future<List<Task>> _filterTodayTasks() async {
+  Future<List<Task>> _filterTodayTasks({TaskStatus? taskStatus}) async {
     final dateTime = DateTime.now();
 
     var startDate = DateTime(dateTime.year, dateTime.month, dateTime.day);
@@ -162,13 +162,11 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
     // Read all today's tasks from database
     var tasks = await _taskDB.getTasks(
-        startDate: taskStartTime,
-        endDate: taskEndTime,
-        taskStatus: TaskStatus.PENDING);
+        startDate: taskStartTime, endDate: taskEndTime, taskStatus: taskStatus);
     return tasks;
   }
 
-  Future<List<Task>> _filterTasksForNextWeek() async {
+  Future<List<Task>> _filterTasksForNextWeek({TaskStatus? taskStatus}) async {
     var dateTime = DateTime.now();
     var taskStartTime =
         DateTime(dateTime.year, dateTime.month, dateTime.day, 23, 59)
@@ -178,25 +176,20 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
             .millisecondsSinceEpoch;
     // Read all next week tasks from database
     var tasks = await _taskDB.getTasks(
-        startDate: taskStartTime,
-        endDate: taskEndTime,
-        taskStatus: TaskStatus.PENDING);
+        startDate: taskStartTime, endDate: taskEndTime, taskStatus: taskStatus);
     return tasks;
   }
 
-  Future<List<Task>> _filterByProject(
-    int projectId,
-  ) async {
-    var tasks =
-        await _taskDB.getTasksByProject(projectId, status: TaskStatus.PENDING);
+  Future<List<Task>> _filterByProject(int projectId, TaskStatus status) async {
+    var tasks = await _taskDB.getTasksByProject(projectId, status: status);
     return tasks;
   }
 
   Future<List<Task>> _filterByLabel(
     String labelName,
+    TaskStatus status,
   ) async {
-    var tasks =
-        await _taskDB.getTasksByLabel(labelName, status: TaskStatus.COMPLETE);
+    var tasks = await _taskDB.getTasksByLabel(labelName, status: status);
     return tasks;
   }
 
@@ -207,18 +200,21 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     return tasks;
   }
 
-  Future<List<Task>> _filterTasks(Filter _lastFilterStatus) async {
-    switch (_lastFilterStatus.filterStatus!) {
+  Future<List<Task>> _filterTasks(Filter _lastFilter) async {
+    var taskStatus =
+        _lastFilter.status != null ? _lastFilter.status! : TaskStatus.PENDING;
+
+    switch (_lastFilter.filterStatus!) {
       case FilterStatus.BY_TODAY:
-        return await _filterTodayTasks();
+        return await _filterTodayTasks(taskStatus: taskStatus);
       case FilterStatus.BY_WEEK:
-        return await _filterTasksForNextWeek();
+        return await _filterTasksForNextWeek(taskStatus: taskStatus);
       case FilterStatus.BY_LABEL:
-        return await _filterByLabel(_lastFilterStatus.labelName!);
+        return await _filterByLabel(_lastFilter.labelName!, taskStatus);
       case FilterStatus.BY_PROJECT:
-        return await _filterByProject(_lastFilterStatus.projectId!);
+        return await _filterByProject(_lastFilter.projectId!, taskStatus);
       case FilterStatus.BY_STATUS:
-        return await _filterByStatus(_lastFilterStatus.status!);
+        return await _filterByStatus(_lastFilter.status!);
     }
   }
 

@@ -185,6 +185,8 @@ class _HomePageState extends State<HomePage> {
 // This menu button widget updates a _selection field (of type WhyFarther,
   Widget buildPopupMenu(BuildContext context, String title) {
     final homeBloc = context.read<HomeBloc>();
+    final homeState = homeBloc.state;
+    final taskBloc = context.read<TaskBloc>();
 
     return PopupMenuButton<MenuItem>(
       icon: Icon(Icons.adaptive.more),
@@ -192,24 +194,26 @@ class _HomePageState extends State<HomePage> {
       onSelected: (MenuItem result) async {
         switch (result) {
           case MenuItem.TASK_COMPLETED:
-            homeBloc.add(ApplyFilterEvent(homeBloc.state.title,
-                homeBloc.state.filter!.copyWith(status: TaskStatus.COMPLETE)));
-            context.read<TaskBloc>().add(
-                FilterTasksEvent(filter: Filter.byStatus(TaskStatus.COMPLETE)));
+            homeBloc.add(ApplyFilterEvent(homeState.title,
+                homeState.filter!.copyWith(status: TaskStatus.COMPLETE)));
+            taskBloc.add(FilterTasksEvent(
+                filter:
+                    homeState.filter!.copyWith(status: TaskStatus.COMPLETE)));
             // context.go('/task/completed'); // should be removed in later version
             break;
           case MenuItem.TASK_UNCOMPLETED:
-            homeBloc.add(ApplyFilterEvent(homeBloc.state.title,
-                homeBloc.state.filter!.copyWith(status: TaskStatus.PENDING)));
-            context.read<TaskBloc>().add(
-                FilterTasksEvent(filter: Filter.byStatus(TaskStatus.PENDING)));
+            homeBloc.add(ApplyFilterEvent(homeState.title,
+                homeState.filter!.copyWith(status: TaskStatus.PENDING)));
+            taskBloc.add(FilterTasksEvent(
+                filter:
+                    homeState.filter!.copyWith(status: TaskStatus.PENDING)));
             // context.go('/task/uncompleted'); // should be removed in later version
             break;
           case MenuItem.TASK_POSTPONE:
-            context.read<TaskBloc>().add(PostponeTasksEvent());
+            taskBloc.add(PostponeTasksEvent());
             break;
           case MenuItem.ALL_TO_TODAY:
-            context.read<TaskBloc>().add(PushAllToTodayEvent());
+            taskBloc.add(PushAllToTodayEvent());
             context
                 .read<HomeBloc>()
                 .add(ApplyFilterEvent("Today", Filter.byToday()));

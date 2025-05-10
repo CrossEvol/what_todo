@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/pages/projects/project_widget.dart';
@@ -23,6 +24,7 @@ void main() {
   late MockProjectBloc mockProjectBloc;
   late MockAdminBloc mockAdminBloc;
   late MockSettingsBloc mockSettingsBloc;
+  late MockHomeBloc mockHomeBloc;
 
   Widget createWidgetUnderTest() {
     return MaterialApp(
@@ -31,8 +33,11 @@ void main() {
           BlocProvider<ProjectBloc>.value(value: mockProjectBloc),
           BlocProvider<AdminBloc>.value(value: mockAdminBloc),
           BlocProvider<SettingsBloc>.value(value: mockSettingsBloc),
+          BlocProvider<HomeBloc>.value(value: mockHomeBloc),
         ],
-        child: ProjectsExpansionTile().withLocalizedMaterialApp().withThemeProvider(),
+        child: ProjectsExpansionTile()
+            .withLocalizedMaterialApp()
+            .withThemeProvider(),
       ),
     );
   }
@@ -41,6 +46,7 @@ void main() {
     mockProjectBloc = MockProjectBloc();
     mockAdminBloc = MockAdminBloc();
     mockSettingsBloc = MockSettingsBloc();
+    mockHomeBloc = MockHomeBloc();
   });
 
   Future<void> pumpProjectWidget(WidgetTester tester) async {

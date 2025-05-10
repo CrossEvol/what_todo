@@ -77,8 +77,8 @@ class Task {
   Task.fromImport(Map<String, dynamic> map)
       : this(
           title: map[dbTitle],
-          projectId: map['projectId'] ??
-              1, // Use provided projectId if available, otherwise use Inbox (ID 1)
+          projectId: map['projectId'] ?? 1,
+          // Use provided projectId if available, otherwise use Inbox (ID 1)
           comment: map[dbComment],
           dueDate: map[dbDueDate] is int
               ? map[dbDueDate]
@@ -113,6 +113,28 @@ class Task {
     this.tasksStatus,
     required this.order,
   });
+
+  Task copyWith({
+    String? title,
+    String? comment,
+    int? id,
+    int? dueDate,
+    int? projectId,
+    int? order,
+    PriorityStatus? priority,
+    TaskStatus? tasksStatus,
+  }) {
+    return Task(
+      title: title ?? this.title,
+      comment: comment ?? this.comment,
+      id: id ?? this.id,
+      dueDate: dueDate ?? this.dueDate,
+      projectId: projectId ?? this.projectId,
+      order: order ?? this.order,
+      priority: priority ?? this.priority,
+      tasksStatus: tasksStatus ?? this.tasksStatus,
+    );
+  }
 }
 
 enum TaskStatus {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/pages/labels/label_widget.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,18 +18,29 @@ LabelState defaultLabelState() {
 void main() {
   setupTest();
   late MockLabelBloc mockLabelBloc;
+  late MockHomeBloc mockHomeBloc;
 
   Widget createWidgetUnderTest() {
     return MaterialApp(
-      home: BlocProvider<LabelBloc>.value(
-        value: mockLabelBloc,
-        child: LabelsExpansionTile().withLocalizedMaterialApp().withThemeProvider(),
+      home: MultiBlocProvider(
+        providers: [
+          BlocProvider<LabelBloc>.value(
+            value: mockLabelBloc,
+          ),
+          BlocProvider<HomeBloc>.value(
+            value: mockHomeBloc,
+          )
+        ],
+        child: LabelsExpansionTile()
+            .withLocalizedMaterialApp()
+            .withThemeProvider(),
       ),
     );
   }
 
   setUp(() {
     mockLabelBloc = MockLabelBloc();
+    mockHomeBloc = MockHomeBloc();
   });
 
   Future<void> pumpLabelWidget(WidgetTester tester) async {

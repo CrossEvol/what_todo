@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
+import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/pages/labels/label.dart';
@@ -21,7 +22,8 @@ class LabelsExpansionTile extends StatelessWidget {
         } else if (state is LabelLoading) {
           return Center(child: CircularProgressIndicator());
         } else {
-          return Center(child: Text(AppLocalizations.of(context)!.failedToLoadLabels));
+          return Center(
+              child: Text(AppLocalizations.of(context)!.failedToLoadLabels));
         }
       },
     );
@@ -38,10 +40,8 @@ class LabelExpansionTileWidget extends StatelessWidget {
     return ExpansionTile(
       key: ValueKey(SideDrawerKeys.DRAWER_LABELS),
       leading: Icon(Icons.label),
-      title: Text(
-        AppLocalizations.of(context)!.labels,
-        style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold)
-      ),
+      title: Text(AppLocalizations.of(context)!.labels,
+          style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold)),
       children: buildLabels(context),
     );
   }
@@ -70,14 +70,15 @@ class LabelRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final homeBloc = context.read<HomeBloc>();
+
     return ListTile(
       key: ValueKey("tile_${label.name}_${label.id}"),
       onTap: () {
-        context.read<HomeBloc>().add(
-            ApplyFilterEvent("@ ${label.name}", Filter.byLabel(label.name)));
-        context
-            .read<TaskBloc>()
-            .add(LoadTasksByLabelEvent(labelName: label.name));
+        homeBloc.add(ApplyFilterEvent("@ ${label.name}",
+            Filter.byLabel(label.name).copyWith(status: TaskStatus.PENDING)));
+        context.read<TaskBloc>().add(LoadTasksByLabelEvent(
+            labelName: label.name, status: TaskStatus.PENDING));
         context.safePop();
       },
       leading: Container(

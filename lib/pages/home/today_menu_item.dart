@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
+import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
@@ -30,12 +31,11 @@ class _TodayMenuItemState extends State<TodayMenuItem> {
         return useCountBadges && todayCount > 0
             ? ListTile(
                 onTap: () {
-                  context
-                      .read<HomeBloc>()
-                      .add(ApplyFilterEvent("Today", Filter.byToday()));
-                  context
-                      .read<TaskBloc>()
-                      .add(FilterTasksEvent(filter: Filter.byToday()));
+                  context.read<HomeBloc>().add(ApplyFilterEvent("Today",
+                      Filter.byToday().copyWith(status: TaskStatus.PENDING)));
+                  context.read<TaskBloc>().add(FilterTasksEvent(
+                      filter: Filter.byToday()
+                          .copyWith(status: TaskStatus.PENDING)));
                   context.safePop();
                 },
                 leading: badges.Badge(
