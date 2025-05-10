@@ -11,6 +11,7 @@ import 'package:flutter_app/pages/labels/label_widget.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_widget.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
+import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,6 +34,8 @@ class _SideDrawerState extends State<SideDrawer> {
   @override
   Widget build(BuildContext context) {
     final environment = context.read<SettingsBloc>().state.environment;
+    final homeBloc = context.read<HomeBloc>();
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.all(0.0),
@@ -46,21 +49,24 @@ class _SideDrawerState extends State<SideDrawer> {
               ),
               onTap: () {
                 var project = Project.inbox();
-                context.read<HomeBloc>().add(ApplyFilterEvent(
-                    project.name, Filter.byProject(project.id!)));
-                context.read<TaskBloc>().add(
-                    FilterTasksEvent(filter: Filter.byProject(project.id)));
+                homeBloc.add(ApplyFilterEvent(
+                    project.name,
+                    Filter.byProject(project.id!)
+                        .copyWith(status: TaskStatus.PENDING)));
+                context.read<TaskBloc>().add(FilterTasksEvent(
+                    filter: Filter.byProject(project.id)
+                        .copyWith(status: TaskStatus.PENDING)));
                 context.safePop();
               }),
           TodayMenuItem(),
           ListTile(
             onTap: () {
-              context.read<HomeBloc>().add(ApplyFilterEvent(
+              homeBloc.add(ApplyFilterEvent(
                   AppLocalizations.of(context)!.next7Days,
-                  Filter.byNextWeek()));
-              context
-                  .read<TaskBloc>()
-                  .add(FilterTasksEvent(filter: Filter.byNextWeek()));
+                  Filter.byNextWeek().copyWith(status: TaskStatus.PENDING)));
+              context.read<TaskBloc>().add(FilterTasksEvent(
+                  filter: Filter.byNextWeek()
+                      .copyWith(status: TaskStatus.PENDING)));
               context.safePop();
             },
             leading: Icon(Icons.calendar_view_day_rounded),

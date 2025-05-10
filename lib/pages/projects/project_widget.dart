@@ -4,6 +4,7 @@ import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
+import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/pages/projects/project.dart';
@@ -44,10 +45,8 @@ class ProjectExpansionTileWidget extends StatelessWidget {
     return ExpansionTile(
       key: ValueKey(SideDrawerKeys.DRAWER_PROJECTS),
       leading: Icon(Icons.book),
-      title: Text(
-        AppLocalizations.of(context)!.projects,
-        style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold)
-      ),
+      title: Text(AppLocalizations.of(context)!.projects,
+          style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold)),
       children: buildProjects(context),
     );
   }
@@ -75,18 +74,20 @@ class ProjectRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final homeBloc = context.read<HomeBloc>();
     final state = context.read<AdminBloc>().state;
     bool useCountBadges = context.read<SettingsBloc>().state.useCountBadges;
     final count = state.getProjectCount(project.id);
     return ListTile(
       key: ValueKey("tile_${project.name}_${project.id}"),
       onTap: () {
-        context
-            .read<HomeBloc>()
-            .add(ApplyFilterEvent(project.name, Filter.byProject(project.id!)));
-        context
-            .read<TaskBloc>()
-            .add(LoadTasksByProjectEvent(projectId: project.id!));
+        homeBloc.add(ApplyFilterEvent(
+            project.name,
+            Filter.byProject(project.id!)
+                .copyWith(status: TaskStatus.PENDING)));
+
+        context.read<TaskBloc>().add(LoadTasksByProjectEvent(
+            projectId: project.id!, status: TaskStatus.PENDING));
         context.safePop();
       },
       leading: Container(

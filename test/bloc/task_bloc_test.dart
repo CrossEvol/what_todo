@@ -25,7 +25,7 @@ void main() {
       title: 'Test Task',
       projectId: 1,
       dueDate: DateTime.now().millisecondsSinceEpoch,
-    );
+    ).copyWith(tasksStatus: TaskStatus.PENDING);
 
     final List<Task> testTasks = [testTask];
 
@@ -70,7 +70,7 @@ void main() {
         when(mockTaskDB.getTasks(
           startDate: anyNamed('startDate'),
           endDate: anyNamed('endDate'),
-          taskStatus: TaskStatus.PENDING,
+          taskStatus: anyNamed("taskStatus"),
         )).thenAnswer((_) async => testTasks);
         return taskBloc;
       },
@@ -89,7 +89,7 @@ void main() {
         when(mockTaskDB.getTasks(
           startDate: anyNamed('startDate'),
           endDate: anyNamed('endDate'),
-          taskStatus: TaskStatus.PENDING,
+          taskStatus: anyNamed("taskStatus"),
         )).thenAnswer((_) async => testTasks);
         return taskBloc;
       },
@@ -107,7 +107,7 @@ void main() {
           when(mockTaskDB.getTasks(
             startDate: anyNamed('startDate'),
             endDate: anyNamed('endDate'),
-            taskStatus: TaskStatus.PENDING,
+            taskStatus: anyNamed("taskStatus"),
           )).thenAnswer((_) async => testTasks);
           return taskBloc;
         },
