@@ -31,6 +31,9 @@ class HomeState extends Equatable {
     );
   }
 
+  bool get showPendingTasks =>
+      filter != null ? filter?.status == TaskStatus.PENDING : false;
+
   @override
   List<Object?> get props => [
         title,
@@ -38,6 +41,7 @@ class HomeState extends Equatable {
         screen,
         todayCount,
         scrollPosition,
+        showPendingTasks,
       ];
 }
 

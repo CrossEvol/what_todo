@@ -30,8 +30,29 @@ class Filter {
 
   bool operator ==(o) =>
       o is Filter &&
-          o.labelName == labelName &&
-          o.projectId == projectId &&
-          o.filterStatus == filterStatus &&
-          o.status == status;
+      o.labelName == labelName &&
+      o.projectId == projectId &&
+      o.filterStatus == filterStatus &&
+      o.status == status;
+
+  Filter copyWith({
+    String? labelName,
+    int? projectId,
+    FilterStatus? filterStatus,
+    TaskStatus? status,
+  }) {
+    return Filter(
+      labelName: labelName ?? this.labelName,
+      projectId: projectId ?? this.projectId,
+      filterStatus: filterStatus ?? this.filterStatus,
+      status: status ?? this.status,
+    );
+  }
+
+  Filter({
+    this.labelName,
+    this.projectId,
+    this.filterStatus,
+    this.status,
+  });
 }

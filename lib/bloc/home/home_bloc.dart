@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_app/pages/home/screen_enum.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
+import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/utils/logger_util.dart';
 
 import '../../pages/tasks/task_db.dart';
