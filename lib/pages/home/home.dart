@@ -184,20 +184,26 @@ class _HomePageState extends State<HomePage> {
 
 // This menu button widget updates a _selection field (of type WhyFarther,
   Widget buildPopupMenu(BuildContext context, String title) {
+    final homeBloc = context.read<HomeBloc>();
+
     return PopupMenuButton<MenuItem>(
       icon: Icon(Icons.adaptive.more),
       key: ValueKey(CompletedTaskPageKeys.POPUP_ACTION),
       onSelected: (MenuItem result) async {
         switch (result) {
           case MenuItem.TASK_COMPLETED:
+            homeBloc.add(ApplyFilterEvent(homeBloc.state.title,
+                homeBloc.state.filter!.copyWith(status: TaskStatus.COMPLETE)));
             context.read<TaskBloc>().add(
                 FilterTasksEvent(filter: Filter.byStatus(TaskStatus.COMPLETE)));
-            context.go('/task/completed');
+            // context.go('/task/completed'); // should be removed in later version
             break;
           case MenuItem.TASK_UNCOMPLETED:
+            homeBloc.add(ApplyFilterEvent(homeBloc.state.title,
+                homeBloc.state.filter!.copyWith(status: TaskStatus.PENDING)));
             context.read<TaskBloc>().add(
                 FilterTasksEvent(filter: Filter.byStatus(TaskStatus.PENDING)));
-            context.go('/task/uncompleted');
+            // context.go('/task/uncompleted'); // should be removed in later version
             break;
           case MenuItem.TASK_POSTPONE:
             context.read<TaskBloc>().add(PostponeTasksEvent());

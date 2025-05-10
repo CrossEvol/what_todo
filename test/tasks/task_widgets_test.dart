@@ -38,6 +38,15 @@ void main() {
       Stream.fromIterable([TaskInitial()]),
       initialState: TaskInitial(),
     );
+    whenListen(
+      mockHomeBloc,
+      Stream.fromIterable([
+        HomeInitial()
+            .copyWith(filter: Filter().copyWith(status: TaskStatus.PENDING))
+      ]),
+      initialState: HomeInitial()
+          .copyWith(filter: Filter().copyWith(status: TaskStatus.PENDING)),
+    );
   });
 
   testWidgets('TasksPage should show loading indicator when loading',
@@ -79,7 +88,13 @@ void main() {
         ..projectName = "Test Project"
         ..projectColor = Colors.blue.value
         ..dueDate = DateTime.now().millisecondsSinceEpoch
-        ..labelList = [Label.update(id: 1, name: "Label 1", colorCode: Colors.orange.value, colorName: "Orange")],
+        ..labelList = [
+          Label.update(
+              id: 1,
+              name: "Label 1",
+              colorCode: Colors.orange.value,
+              colorName: "Orange")
+        ],
       Task.create(
         title: "Test Task 2",
         projectId: 1,
@@ -89,7 +104,13 @@ void main() {
         ..projectName = "Test Project"
         ..projectColor = Colors.blue.value
         ..dueDate = DateTime.now().millisecondsSinceEpoch
-        ..labelList = [Label.update(id: 1, name: "Label 1", colorCode: Colors.orange.value, colorName: "Orange")],
+        ..labelList = [
+          Label.update(
+              id: 1,
+              name: "Label 1",
+              colorCode: Colors.orange.value,
+              colorName: "Orange")
+        ],
     ];
 
     whenListen(
@@ -117,7 +138,13 @@ void main() {
       ..projectName = "Test Project"
       ..projectColor = Colors.blue.value
       ..dueDate = DateTime.now().millisecondsSinceEpoch
-      ..labelList = [Label.update(id: 1, name: "Label 1", colorCode: Colors.orange.value, colorName: "Orange")];
+      ..labelList = [
+        Label.update(
+            id: 1,
+            name: "Label 1",
+            colorCode: Colors.orange.value,
+            colorName: "Orange")
+      ];
 
     whenListen(
       mockTaskBloc,
@@ -148,7 +175,13 @@ void main() {
       ..projectName = "Test Project"
       ..projectColor = Colors.blue.value
       ..dueDate = DateTime.now().millisecondsSinceEpoch
-      ..labelList = [Label.update(id: 1, name: "Label 1", colorCode: Colors.orange.value, colorName: "Orange")];
+      ..labelList = [
+        Label.update(
+            id: 1,
+            name: "Label 1",
+            colorCode: Colors.orange.value,
+            colorName: "Orange")
+      ];
 
     whenListen(
       mockTaskBloc,
@@ -177,7 +210,6 @@ void main() {
       ]),
       initialState: TaskLoaded([]),
     );
-
 
     final homeState = HomeInitial().copyWith(filter: Filter.byToday());
     whenListen(
