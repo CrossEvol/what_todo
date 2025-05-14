@@ -186,6 +186,7 @@ class _HomePageState extends State<HomePage> {
     final homeBloc = context.read<HomeBloc>();
     final homeState = homeBloc.state;
     final taskBloc = context.read<TaskBloc>();
+    final undone = homeState.showPendingTasks;
 
     return PopupMenuButton<MenuItem>(
       icon: Icon(Icons.adaptive.more),
@@ -216,10 +217,59 @@ class _HomePageState extends State<HomePage> {
             context.read<HomeBloc>().add(ApplyFilterEvent("Today",
                 Filter.byToday().copyWith(status: TaskStatus.PENDING)));
             break;
+          case MenuItem.TOGGLE_COMPLETED:
+            final status = undone ? TaskStatus.COMPLETE : TaskStatus.PENDING;
+            homeBloc.add(ApplyFilterEvent(
+                homeState.title, homeState.filter!.copyWith(status: status)));
+            taskBloc.add(FilterTasksEvent(
+                filter: homeState.filter!.copyWith(status: status)));
+            break;
         }
       },
       itemBuilder: (BuildContext context) {
         return <PopupMenuEntry<MenuItem>>[
+          PopupMenuItem<MenuItem>(
+            value: MenuItem.TOGGLE_COMPLETED,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  // Text depends on the current state: if showing pending, show option to see completed
+                  undone
+                      ? AppLocalizations.of(context)!
+                          .undone // Text for "Show Pending Tasks"
+                      : AppLocalizations.of(context)!
+                          .done, // Text for "Show Completed Tasks",
+                  key: ValueKey(CompletedTaskPageKeys
+                      .TOGGLE_COMPLETED), // Use the correct key
+                ),
+                Container(
+                  width: 28, // Adjust size as needed
+                  height: 16, // Adjust size as needed
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: undone // Color based on current state
+                        ? Colors.grey[300] // "Off" color
+                        : Colors.green, // "On" color
+                  ),
+                  child: Align(
+                    alignment:
+                        undone ? Alignment.centerLeft : Alignment.centerRight,
+                    child: Container(
+                      width: 14, // Adjust size as needed
+                      height: 14, // Adjust size as needed
+                      margin: EdgeInsets.all(1),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Keeping the original items as requested
           PopupMenuItem<MenuItem>(
             value: MenuItem.TASK_COMPLETED,
             child: Text(
@@ -262,4 +312,5 @@ enum MenuItem {
   TASK_UNCOMPLETED,
   TASK_POSTPONE,
   ALL_TO_TODAY,
+  TOGGLE_COMPLETED,
 }
