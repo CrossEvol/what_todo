@@ -94,7 +94,6 @@ class _HomePageState extends State<HomePage> {
   final ScrollController _scrollController = ScrollController();
   late final VoidCallback _scrollListener;
 
-  @override
   String get restorationId => 'home_page';
 
   @override

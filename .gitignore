@@ -93,3 +93,7 @@ unlinked_spec.ds
 .fvm/flutter_sdk
 .aider*
 .env
+
+
+# NodeJS related
+node_modules

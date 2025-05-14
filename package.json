@@ -1,0 +1,25 @@
+{
+  "author": "",
+  "description": "",
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@release-it/conventional-changelog": "^10.0.1",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.0.0",
+    "release-it": "^19.0.2"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "what_todo",
+  "packageManager": "pnpm@10.10.0",
+  "scripts": {
+    "commitlint": "commitlint --config commitlint.config.cjs -e -V",
+    "pre-commit": "lint-staged",
+    "prepare": "husky",
+    "release": "release-it",
+    "test": "echo \"Error: no test specified\" \u0026\u0026 exit 1"
+  },
+  "version": "1.0.11"
+}
