@@ -116,11 +116,10 @@ class CompletedTaskListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dismissible(
         key: ValueKey("swipe_completed_${task.id}_$index"),
-        direction: DismissDirection.endToStart,
-        background: Container(),
-        onDismissed: (DismissDirection directions) {
-          if (directions == DismissDirection.endToStart) {
-            final taskID = task.id!;
+        direction: DismissDirection.horizontal,
+        onDismissed: (DismissDirection direction) {
+          final taskID = task.id!;
+          if (direction == DismissDirection.endToStart) {
             context
                 .read<TaskBloc>()
                 .add(UpdateTaskStatusEvent(taskID, TaskStatus.PENDING));
@@ -128,8 +127,25 @@ class CompletedTaskListItem extends StatelessWidget {
                 FilterTasksEvent(filter: Filter.byStatus(TaskStatus.COMPLETE)));
             ScaffoldMessenger.of(context)
                 .showSnackBar(SnackBar(content: Text("Task Undo")));
+          } else {
+            context.read<TaskBloc>().add(DeleteTaskEvent(taskID));
+            context.read<HomeBloc>().add(LoadTodayCountEvent());
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(AppLocalizations.of(context)!.taskDeleted),
+              backgroundColor: Colors.red[300],
+            ));
           }
         },
+        background: Container(
+          color: Colors.red[300],
+          child: Align(
+            alignment: Alignment(-0.95, 0.0),
+            child: Icon(
+              Icons.delete,
+              color: Colors.white,
+            ),
+          ),
+        ),
         secondaryBackground: Container(
           color: Colors.grey[500],
           child: Align(
@@ -157,6 +173,7 @@ class PendingTaskListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Dismissible(
         key: ValueKey("swipe_${task.id}_$index"),
+        direction: DismissDirection.horizontal,
         onDismissed: (DismissDirection direction) {
           var taskID = task.id!;
           String message = direction == DismissDirection.endToStart
