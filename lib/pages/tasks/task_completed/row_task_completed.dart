@@ -4,20 +4,22 @@ import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_app/constants/app_constant.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../labels/label.dart';
 
 class TaskCompletedRow extends StatelessWidget {
-  final Task tasks;
+  final Task task;
   static final dateLabel = "Date";
 
-  TaskCompletedRow(this.tasks);
+  TaskCompletedRow(this.task);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        showSnackbar(context, 'Task Details not implemented.');
+        context.go('/task/edit', extra: this.task);
+        // showSnackbar(context, 'Task Details not implemented.');
       },
       child: Column(
         children: <Widget>[
@@ -27,7 +29,7 @@ class TaskCompletedRow extends StatelessWidget {
               border: Border(
                 left: BorderSide(
                   width: 4.0,
-                  color: priorityColor[tasks.priority.index],
+                  color: priorityColor[task.priority.index],
                 ),
               ),
             ),
@@ -39,21 +41,21 @@ class TaskCompletedRow extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(
                         left: PADDING_SMALL, bottom: PADDING_VERY_SMALL),
-                    child: Text(tasks.title,
-                        key: ValueKey("task_completed_${tasks.id}"),
+                    child: Text(task.title,
+                        key: ValueKey("task_completed_${task.id}"),
                         style: TextStyle(
                             decoration: TextDecoration.lineThrough,
                             fontSize: FONT_SIZE_TITLE,
                             fontWeight: FontWeight.bold)),
                   ),
-                  getLabels(tasks.labelList),
+                  getLabels(task.labelList),
                   Padding(
                     padding: const EdgeInsets.only(
                         left: PADDING_SMALL, bottom: PADDING_VERY_SMALL),
                     child: Row(
                       children: <Widget>[
                         Text(
-                          getFormattedDate(tasks.dueDate),
+                          getFormattedDate(task.dueDate),
                           style: TextStyle(
                               color: Colors.grey, fontSize: FONT_SIZE_DATE),
                           key: Key(dateLabel),
@@ -65,7 +67,7 @@ class TaskCompletedRow extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
-                                  Text(tasks.projectName!,
+                                  Text(task.projectName!,
                                       style: TextStyle(
                                           color: Colors.grey,
                                           fontSize: FONT_SIZE_LABEL)),
@@ -76,7 +78,7 @@ class TaskCompletedRow extends StatelessWidget {
                                     height: 8.0,
                                     child: CircleAvatar(
                                       backgroundColor:
-                                          Color(tasks.projectColor!),
+                                          Color(task.projectColor!),
                                     ),
                                   )
                                 ],
@@ -113,7 +115,7 @@ class TaskCompletedRow extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.only(
             left: PADDING_SMALL, bottom: PADDING_VERY_SMALL),
-        child: Text(tasks.labelList.join("  "),
+        child: Text(task.labelList.join("  "),
             style: TextStyle(
                 decoration: TextDecoration.lineThrough,
                 fontSize: FONT_SIZE_LABEL)),
