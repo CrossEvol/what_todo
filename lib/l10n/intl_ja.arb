@@ -203,6 +203,14 @@
   "@uncompletedTasks": {
     "description": "未完了のタスクメニュー項目のテキスト"
   },
+  "done": "完了",
+  "@done": {
+    "description": "タスクが完了ステータスです"
+  },
+  "undone": "未完了",
+  "@undone": {
+    "description": "タスクが保留ステータスです"
+  },
   "allToToday": "すべて今日へ",
   "@allToToday": {
     "description": "すべてのタスクを今日に移動するメニュー項目のテキスト"

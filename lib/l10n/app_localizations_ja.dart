@@ -162,6 +162,12 @@ class AppLocalizationsJa extends AppLocalizations {
   String get uncompletedTasks => '未完了のタスク';
 
   @override
+  String get done => '完了';
+
+  @override
+  String get undone => '未完了';
+
+  @override
   String get allToToday => 'すべて今日へ';
 
   @override

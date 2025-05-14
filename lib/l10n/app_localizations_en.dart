@@ -162,6 +162,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get uncompletedTasks => 'Uncompleted Tasks';
 
   @override
+  String get done => 'done';
+
+  @override
+  String get undone => 'undone';
+
+  @override
   String get allToToday => 'All to Today';
 
   @override

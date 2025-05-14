@@ -403,6 +403,18 @@ abstract class AppLocalizations {
   /// **'Uncompleted Tasks'**
   String get uncompletedTasks;
 
+  /// task has the completed status
+  ///
+  /// In en, this message translates to:
+  /// **'done'**
+  String get done;
+
+  /// task has the pending status
+  ///
+  /// In en, this message translates to:
+  /// **'undone'**
+  String get undone;
+
   /// Text for moving all tasks to today menu item
   ///
   /// In en, this message translates to:

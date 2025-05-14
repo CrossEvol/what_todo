@@ -162,6 +162,12 @@ class AppLocalizationsZh extends AppLocalizations {
   String get uncompletedTasks => '未完成任务';
 
   @override
+  String get done => '完成';
+
+  @override
+  String get undone => '未完成';
+
+  @override
   String get allToToday => '全部移至今天';
 
   @override

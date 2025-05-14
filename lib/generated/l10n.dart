@@ -566,6 +566,26 @@ class S {
     );
   }
 
+  /// `done`
+  String get done {
+    return Intl.message(
+      'done',
+      name: 'done',
+      desc: 'task has the completed status',
+      args: [],
+    );
+  }
+
+  /// `undone`
+  String get undone {
+    return Intl.message(
+      'undone',
+      name: 'undone',
+      desc: 'task has the pending status',
+      args: [],
+    );
+  }
+
   /// `All to Today`
   String get allToToday {
     return Intl.message(

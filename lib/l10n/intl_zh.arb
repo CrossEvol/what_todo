@@ -203,6 +203,14 @@
   "@uncompletedTasks": {
     "description": "未完成任务菜单项的文本"
   },
+  "done": "完成",
+  "@done": {
+    "description": "任务已完成"
+  },
+  "undone": "未完成",
+  "@undone": {
+    "description": "任务处于待处理状态"
+  },
   "allToToday": "全部移至今天",
   "@allToToday": {
     "description": "将所有任务移至今天菜单项的文本"

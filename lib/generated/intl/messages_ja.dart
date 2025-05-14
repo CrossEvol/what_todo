@@ -49,6 +49,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "confirm": MessageLookupByLibrary.simpleMessage("確認"),
     "count": MessageLookupByLibrary.simpleMessage("数"),
     "delete": MessageLookupByLibrary.simpleMessage("削除"),
+    "done": MessageLookupByLibrary.simpleMessage("完了"),
     "dueDate": MessageLookupByLibrary.simpleMessage("期限"),
     "editTask": MessageLookupByLibrary.simpleMessage("タスクを編集"),
     "email": MessageLookupByLibrary.simpleMessage("メールアドレス"),
@@ -157,6 +158,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "titleCannotBeEmpty": MessageLookupByLibrary.simpleMessage("タイトルを入力してください"),
     "today": MessageLookupByLibrary.simpleMessage("今日"),
     "uncompletedTasks": MessageLookupByLibrary.simpleMessage("未完了のタスク"),
+    "undone": MessageLookupByLibrary.simpleMessage("未完了"),
     "unknown": MessageLookupByLibrary.simpleMessage("不明"),
     "unknownNotImplemented": MessageLookupByLibrary.simpleMessage(
       "不明な機能は実装されていません。",

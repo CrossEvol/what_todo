@@ -52,6 +52,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
     "count": MessageLookupByLibrary.simpleMessage("Count"),
     "delete": MessageLookupByLibrary.simpleMessage("DELETE"),
+    "done": MessageLookupByLibrary.simpleMessage("done"),
     "dueDate": MessageLookupByLibrary.simpleMessage("Due Date"),
     "editTask": MessageLookupByLibrary.simpleMessage("Edit Task"),
     "email": MessageLookupByLibrary.simpleMessage("Email"),
@@ -182,6 +183,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "uncompletedTasks": MessageLookupByLibrary.simpleMessage(
       "Uncompleted Tasks",
     ),
+    "undone": MessageLookupByLibrary.simpleMessage("undone"),
     "unknown": MessageLookupByLibrary.simpleMessage("UNKNOWN"),
     "unknownNotImplemented": MessageLookupByLibrary.simpleMessage(
       "Unknown has not implemented.",

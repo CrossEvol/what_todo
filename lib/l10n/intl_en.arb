@@ -203,6 +203,14 @@
   "@uncompletedTasks": {
     "description": "Text for uncompleted tasks menu item"
   },
+  "done": "done",
+  "@done": {
+    "description": "task has the completed status"
+  },
+  "undone": "undone",
+  "@undone": {
+    "description": "task has the pending status"
+  },
   "allToToday": "All to Today",
   "@allToToday": {
     "description": "Text for moving all tasks to today menu item"
