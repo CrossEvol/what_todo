@@ -213,9 +213,8 @@ class _HomePageState extends State<HomePage> {
             break;
           case MenuItem.ALL_TO_TODAY:
             taskBloc.add(PushAllToTodayEvent());
-            context
-                .read<HomeBloc>()
-                .add(ApplyFilterEvent("Today", Filter.byToday()));
+            context.read<HomeBloc>().add(ApplyFilterEvent("Today",
+                Filter.byToday().copyWith(status: TaskStatus.PENDING)));
             break;
         }
       },
