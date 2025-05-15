@@ -36,6 +36,7 @@ class SettingKeys {
   static const ENABLE_CUSTOM_THEME = 'enable_custom_theme';
   static const LABEL_LEN = 'label_len';
   static const PROJECT_LEN = 'project_len';
+  static const CONFIRM_DELETION = 'confirm_deletion';
 }
 
 class AddProjectKeys {

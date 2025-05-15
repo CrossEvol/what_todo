@@ -123,6 +123,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: const Text('Enable Import/Export'),
                   ),
                   SettingsTile.switchTile(
+                    key: ValueKey(SettingKeys.CONFIRM_DELETION),
+                    onToggle: (value) {
+                      context
+                          .read<SettingsBloc>()
+                          .add(ToggleConfirmDeletion());
+                    },
+                    initialValue: state.confirmDeletion,
+                    leading: const Icon(Icons.delete_forever),
+                    title: const Text('Confirm Deletion'),
+                    description: const Text('Show confirmation dialog before deleting items'),
+                  ),
+                  SettingsTile.switchTile(
                     key: ValueKey(SettingKeys.ENABLE_DARK_MODE),
                     onToggle: (value) {
                       themeProvider.changeTheme();

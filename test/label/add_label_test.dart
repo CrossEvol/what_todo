@@ -28,6 +28,7 @@ SettingsState defaultSettingState() {
     setLocale: (Locale) {},
     labelLen: 16,
     projectLen: 16,
+    confirmDeletion: false,
   );
 }
 

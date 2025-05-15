@@ -22,6 +22,7 @@ SettingsState defaultSettingState() {
     setLocale: (Locale) {},
     labelLen: 8,
     projectLen: 8,
+    confirmDeletion: false,
   );
 }
 
@@ -98,11 +99,11 @@ void main() async {
     expect(enableCustomThemeSwitch.initialValue, equals(false));
 
     final labelMaxLengthTile =
-    tester.findWidgetByKey<SettingsTile>(SettingKeys.LABEL_LEN);
+        tester.findWidgetByKey<SettingsTile>(SettingKeys.LABEL_LEN);
     expect((labelMaxLengthTile.value as Text).data, equals('8'));
 
     final projectMaxLengthTile =
-    tester.findWidgetByKey<SettingsTile>(SettingKeys.PROJECT_LEN);
+        tester.findWidgetByKey<SettingsTile>(SettingKeys.PROJECT_LEN);
     expect((projectMaxLengthTile.value as Text).data, equals('8'));
   });
 
@@ -229,32 +230,44 @@ void main() async {
         (WidgetTester tester) async {
       // Arrange: Set up the initial and updated states for the SettingsBloc
       arrangeSettingsBlocStream([
-        defaultSettingState(), // Initial state
-        defaultSettingState().copyWith(labelLen: 12), // Updated state after selection
+        defaultSettingState(),
+        // Initial state
+        defaultSettingState().copyWith(labelLen: 12),
+        // Updated state after selection
       ]);
       await pumpSettingsWidget(tester);
 
       // Act & Assert: Verify initial state
       expect(
-        ((tester.findWidgetByKey<SettingsTile>(SettingKeys.LABEL_LEN).value) as Text).data,
+        ((tester.findWidgetByKey<SettingsTile>(SettingKeys.LABEL_LEN).value)
+        as Text)
+            .data,
         equals('8'), // Assuming defaultSettingState has labelLen = 8
       );
 
+      // Scroll to ensure the Label Max Length tile is visible
+      await tester.ensureVisible(find.byKey(ValueKey(SettingKeys.LABEL_LEN)));
+      await tester.pumpAndSettle(); // Wait for scrolling to complete
+
       // Tap the Label Max Length tile to open the dialog
       await tester.tap(find.byKey(ValueKey(SettingKeys.LABEL_LEN)));
-      await tester.pump();
+      await tester.pumpAndSettle(); // Wait for dialog to appear
 
       // Verify the dialog appears with options
       expect(find.byType(AlertDialog), findsOneWidget);
-      expect(find.byKey(ValueKey('${SettingKeys.LABEL_LEN}-12')), findsOneWidget);
+      expect(find.byKey(ValueKey('${SettingKeys.LABEL_LEN}-12')),
+          findsOneWidget);
 
       // Tap the option for 12 characters
       await tester.tap(find.byKey(ValueKey('${SettingKeys.LABEL_LEN}-12')));
-      await tester.pump();
+      await tester
+          .pumpAndSettle(); // Wait for dialog to close and state to update
 
       // Verify the updated state
       expect(
-        ((tester.findWidgetByKey<SettingsTile>(SettingKeys.LABEL_LEN).value) as Text).data,
+        ((tester.findWidgetByKey<SettingsTile>(SettingKeys.LABEL_LEN).value)
+                as Text)
+            .data,
         equals('12'),
       );
     },
@@ -262,17 +275,21 @@ void main() async {
 
   testWidgets(
     'SettingsScreen should update project max length when a length option is selected',
-        (WidgetTester tester) async {
+    (WidgetTester tester) async {
       // Arrange: Set up the initial and updated states for the SettingsBloc
       arrangeSettingsBlocStream([
-        defaultSettingState(), // Initial state
-        defaultSettingState().copyWith(projectLen: 16), // Updated state after selection
+        defaultSettingState(),
+        // Initial state
+        defaultSettingState().copyWith(projectLen: 16),
+        // Updated state after selection
       ]);
       await pumpSettingsWidget(tester);
 
       // Act & Assert: Verify initial state
       expect(
-        ((tester.findWidgetByKey<SettingsTile>(SettingKeys.PROJECT_LEN).value) as Text).data,
+        ((tester.findWidgetByKey<SettingsTile>(SettingKeys.PROJECT_LEN).value)
+                as Text)
+            .data,
         equals('8'), // Assuming defaultSettingState has projectLen = 8
       );
 
@@ -286,15 +303,19 @@ void main() async {
 
       // Verify the dialog appears with options
       expect(find.byType(AlertDialog), findsOneWidget);
-      expect(find.byKey(ValueKey('${SettingKeys.PROJECT_LEN}-16')), findsOneWidget);
+      expect(find.byKey(ValueKey('${SettingKeys.PROJECT_LEN}-16')),
+          findsOneWidget);
 
       // Tap the option for 16 characters
       await tester.tap(find.byKey(ValueKey('${SettingKeys.PROJECT_LEN}-16')));
-      await tester.pumpAndSettle(); // Wait for dialog to close and state to update
+      await tester
+          .pumpAndSettle(); // Wait for dialog to close and state to update
 
       // Verify the updated state
       expect(
-        ((tester.findWidgetByKey<SettingsTile>(SettingKeys.PROJECT_LEN).value) as Text).data,
+        ((tester.findWidgetByKey<SettingsTile>(SettingKeys.PROJECT_LEN).value)
+                as Text)
+            .data,
         equals('16'),
       );
     },

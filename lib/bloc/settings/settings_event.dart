@@ -65,3 +65,8 @@ final class AddSetLocaleFunction extends SettingsEvent {
   @override
   List<Object?> get props => [];
 }
+
+final class ToggleConfirmDeletion extends SettingsEvent {
+  @override
+  List<Object?> get props => [];
+}

@@ -20,6 +20,7 @@ extension on String {
 class SettingsState extends Equatable {
   final bool useCountBadges;
   final bool enableImportExport;
+  final bool confirmDeletion;
   final ResultStatus status;
   final String updatedKey;
   final Environment environment;
@@ -33,6 +34,7 @@ class SettingsState extends Equatable {
     required this.status,
     required this.updatedKey,
     required this.enableImportExport,
+    required this.confirmDeletion,
     required this.environment,
     required this.language,
     required this.labelLen, // Added
@@ -46,6 +48,7 @@ class SettingsState extends Equatable {
         status,
         updatedKey,
         enableImportExport,
+        confirmDeletion,
         environment,
         language,
         labelLen, // Added
@@ -57,6 +60,7 @@ class SettingsState extends Equatable {
     ResultStatus? status,
     String? updatedKey,
     bool? enableImportExport,
+    bool? confirmDeletion,
     Environment? environment,
     Language? language,
     int? labelLen, // Added
@@ -68,6 +72,7 @@ class SettingsState extends Equatable {
       status: status ?? this.status,
       updatedKey: updatedKey ?? this.updatedKey,
       enableImportExport: enableImportExport ?? this.enableImportExport,
+      confirmDeletion: confirmDeletion ?? this.confirmDeletion,
       environment: environment ?? this.environment,
       language: language ?? this.language,
       labelLen: labelLen ?? this.labelLen, // Added
@@ -84,6 +89,7 @@ class SettingsState extends Equatable {
           runtimeType == other.runtimeType &&
           useCountBadges == other.useCountBadges &&
           enableImportExport == other.enableImportExport &&
+          confirmDeletion == other.confirmDeletion &&
           status == other.status &&
           updatedKey == other.updatedKey &&
           environment == other.environment &&
@@ -96,6 +102,7 @@ class SettingsState extends Equatable {
       super.hashCode ^
       useCountBadges.hashCode ^
       enableImportExport.hashCode ^
+      confirmDeletion.hashCode ^
       status.hashCode ^
       updatedKey.hashCode ^
       environment.hashCode ^

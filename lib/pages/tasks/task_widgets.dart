@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
+import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/row_task.dart';
@@ -45,6 +46,7 @@ class TasksPage extends StatelessWidget {
   Widget _buildTaskList(BuildContext context, List<Task> tasks, bool undone) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final Color draggableItemColor = colorScheme.tertiary;
+    final confirmDeletion = context.read<SettingsBloc>().state.confirmDeletion;
 
     Widget proxyDecorator(
         Widget child, int index, Animation<double> animation) {
@@ -114,9 +116,42 @@ class CompletedTaskListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final confirmDeletion = context.read<SettingsBloc>().state.confirmDeletion;
+
     return Dismissible(
         key: ValueKey("swipe_completed_${task.id}_$index"),
         direction: DismissDirection.horizontal,
+        confirmDismiss: (DismissDirection direction) async {
+          if (direction == DismissDirection.startToEnd && confirmDeletion) {
+            // Show confirmation dialog for deletion
+            return await showDialog<bool>(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(AppLocalizations.of(context)!.delete),
+                  content: Text(
+                      "${AppLocalizations.of(context)!.delete} ${task.title}?"),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      style: TextButton.styleFrom(foregroundColor: Colors.grey),
+                      // Make cancel button gray
+                      child: Text(AppLocalizations.of(context)!.cancel),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      style: TextButton.styleFrom(
+                          foregroundColor: Colors.red[300]),
+                      // Make confirm button red
+                      child: Text(AppLocalizations.of(context)!.confirm),
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+          return true;
+        },
         onDismissed: (DismissDirection direction) {
           final taskID = task.id!;
           if (direction == DismissDirection.endToStart) {
@@ -171,9 +206,41 @@ class PendingTaskListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final confirmDeletion = context.read<SettingsBloc>().state.confirmDeletion;
+
     return Dismissible(
         key: ValueKey("swipe_${task.id}_$index"),
         direction: DismissDirection.horizontal,
+        confirmDismiss: (DismissDirection direction) async {
+          if (direction == DismissDirection.startToEnd && confirmDeletion) {
+            // Show confirmation dialog for deletion
+            return await showDialog<bool>(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: Text(AppLocalizations.of(context)!.delete),
+                  content: Text(
+                      "${AppLocalizations.of(context)!.delete} ${task.title}?"),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      style: TextButton.styleFrom(foregroundColor: Colors.grey[700]),
+                      // Make cancel button gray
+                      child: Text(AppLocalizations.of(context)!.cancel),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      style: TextButton.styleFrom(foregroundColor: Colors.red),
+                      // Make confirm button red
+                      child: Text(AppLocalizations.of(context)!.confirm),
+                    ),
+                  ],
+                );
+              },
+            );
+          }
+          return true;
+        },
         onDismissed: (DismissDirection direction) {
           var taskID = task.id!;
           String message = direction == DismissDirection.endToStart

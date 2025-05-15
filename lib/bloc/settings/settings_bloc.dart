@@ -23,6 +23,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       : super(SettingsState(
           useCountBadges: false,
           enableImportExport: false,
+          confirmDeletion: true,
           status: ResultStatus.none,
           updatedKey: '',
           environment: Environment.development,
@@ -39,6 +40,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<ToggleLabelLen>(_toggleLabelLen); // Added
     on<ToggleProjectLen>(_toggleProjectLen); // Added
     on<AddSetLocaleFunction>(_addSetLocaleFunction);
+    on<ToggleConfirmDeletion>(_toggleConfirmDeletion);
   }
 
   FutureOr<void> _toggleUseCountBadges(
@@ -83,6 +85,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
     bool enableImportExport = await _getEnableImportExport(_settingsDB);
     emit(state.copyWith(enableImportExport: enableImportExport));
+    
+    bool confirmDeletion = await _getConfirmDeletion(_settingsDB);
+    emit(state.copyWith(confirmDeletion: confirmDeletion));
 
     var environment = await _getEnvironment(_settingsDB);
     emit(state.copyWith(environment: environment));
@@ -220,6 +225,30 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     }
   }
 
+  Future<bool> _getConfirmDeletion(SettingsDB settingsDB) async {
+    const defaultValue = true; // Default to true for safety
+    final setting = await _settingsDB.findByName(SettingKeys.CONFIRM_DELETION);
+    if (setting == null) {
+      var created = await _settingsDB.createSetting(Setting.create(
+          key: SettingKeys.CONFIRM_DELETION,
+          value: '$defaultValue',
+          updatedAt: DateTime.now(),
+          type: SettingType.Bool));
+      if (created) {
+        final newSetting =
+            await _settingsDB.findByName(SettingKeys.CONFIRM_DELETION);
+        if (newSetting == null) {
+          _logger.warn('Insert ${SettingKeys.CONFIRM_DELETION} failed.');
+          return defaultValue;
+        }
+        return bool.parse(newSetting.value);
+      }
+      return defaultValue;
+    } else {
+      return bool.parse(setting.value);
+    }
+  }
+
   FutureOr<void> _toggleEnvironment(
       ToggleEnvironment event, Emitter<SettingsState> emit) async {
     final setting = await _settingsDB.findByName(SettingKeys.Environment);
@@ -344,6 +373,23 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     emit(state.copyWith(
       projectLen: event.len,
       updatedKey: SettingKeys.PROJECT_LEN,
+      status: ResultStatus.success,
+    ));
+  }
+  
+  FutureOr<void> _toggleConfirmDeletion(
+      ToggleConfirmDeletion event, Emitter<SettingsState> emit) async {
+    final setting = await _settingsDB.findByName(SettingKeys.CONFIRM_DELETION);
+    if (setting == null) return;
+    _settingsDB.updateSetting(Setting.update(
+        id: setting.id,
+        key: setting.key,
+        value: '${!bool.parse(setting.value)}',
+        updatedAt: DateTime.now(),
+        type: setting.type));
+    emit(state.copyWith(
+      confirmDeletion: !state.confirmDeletion,
+      updatedKey: SettingKeys.CONFIRM_DELETION,
       status: ResultStatus.success,
     ));
   }

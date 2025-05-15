@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,16 +14,33 @@ import 'package:flutter_app/pages/labels/label.dart'; // Import Label
 import '../mocks/fake-bloc.dart';
 import '../test_helpers.dart';
 
+SettingsState defaultSettingState() {
+  return SettingsState(
+    useCountBadges: false,
+    enableImportExport: false,
+    status: ResultStatus.none,
+    updatedKey: '',
+    environment: Environment.development,
+    language: Language.english,
+    setLocale: (Locale) {},
+    labelLen: 8,
+    projectLen: 8,
+    confirmDeletion: false,
+  );
+}
+
 void main() {
   setupTest();
   late MockTaskBloc mockTaskBloc;
   late MockHomeBloc mockHomeBloc;
+  late MockSettingsBloc mockSettingsBloc;
 
   Widget createWidgetUnderTest() {
     return MultiBlocProvider(
       providers: [
         BlocProvider<TaskBloc>.value(value: mockTaskBloc),
         BlocProvider<HomeBloc>.value(value: mockHomeBloc),
+        BlocProvider<SettingsBloc>.value(value: mockSettingsBloc)
       ],
       child: TasksPage().withLocalizedMaterialApp().withThemeProvider(),
     );
@@ -31,6 +49,7 @@ void main() {
   setUp(() {
     mockTaskBloc = MockTaskBloc();
     mockHomeBloc = MockHomeBloc();
+    mockSettingsBloc = MockSettingsBloc();
 
     // Setup default states
     whenListen(
@@ -46,6 +65,11 @@ void main() {
       ]),
       initialState: HomeInitial()
           .copyWith(filter: Filter().copyWith(status: TaskStatus.PENDING)),
+    );
+    whenListen(
+      mockSettingsBloc,
+      Stream.fromIterable([defaultSettingState()]),
+      initialState: defaultSettingState(),
     );
   });
 

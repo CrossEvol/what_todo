@@ -28,9 +28,9 @@ SettingsState defaultSettingState() {
     setLocale: (Locale) {},
     labelLen: 16,
     projectLen: 16,
+    confirmDeletion: false,
   );
 }
-
 
 void main() async {
   setupTest();
@@ -102,25 +102,25 @@ void main() async {
   });
 
   testWidgets('Should show error when project already exists',
-          (WidgetTester tester) async {
-            arrangeProjectBlocStream([
-          defaultProjectState(),
-          ColorSelectionUpdated(ColorPalette("Blue", Colors.blue.value)),
-          ProjectExistenceChecked(true),
-        ]);
-        arrangeSettingsBlocStream([defaultSettingState()]);
-        await pumpAddProjectWidget(tester);
+      (WidgetTester tester) async {
+    arrangeProjectBlocStream([
+      defaultProjectState(),
+      ColorSelectionUpdated(ColorPalette("Blue", Colors.blue.value)),
+      ProjectExistenceChecked(true),
+    ]);
+    arrangeSettingsBlocStream([defaultSettingState()]);
+    await pumpAddProjectWidget(tester);
 
-        await tester.enterText(
-            find.byKey(ValueKey(AddProjectKeys.TEXT_FORM_PROJECT_NAME)),
-            'Existing Project');
-        await tester.pump();
+    await tester.enterText(
+        find.byKey(ValueKey(AddProjectKeys.TEXT_FORM_PROJECT_NAME)),
+        'Existing Project');
+    await tester.pump();
 
-        await tester.tap(find.byKey(ValueKey(AddProjectKeys.ADD_PROJECT_BUTTON)));
-        await tester.pump();
+    await tester.tap(find.byKey(ValueKey(AddProjectKeys.ADD_PROJECT_BUTTON)));
+    await tester.pump();
 
-        expect(find.text('Project already exists'), findsOneWidget);
-      });
+    expect(find.text('Project already exists'), findsOneWidget);
+  });
 
   testWidgets('Should create project when form is valid',
       (WidgetTester tester) async {
