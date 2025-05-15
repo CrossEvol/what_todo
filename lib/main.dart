@@ -16,6 +16,7 @@ import 'package:flutter_app/l10n/app_localizations.dart';
 import 'package:flutter_app/pages/drift_schema/drift_schema_db.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/profile/profile_db.dart';
+import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/settings/settings_db.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
@@ -114,6 +115,8 @@ class _MyAppState extends State<MyApp> with RouteAware {
 
   @override
   Widget build(BuildContext context) {
+    var project = Project.inbox();
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(
@@ -125,12 +128,16 @@ class _MyAppState extends State<MyApp> with RouteAware {
         ),
         BlocProvider(
           create: (context) => HomeBloc(TaskDB.get())
-            ..add(ApplyFilterEvent("Today",
-                Filter.byToday().copyWith(status: TaskStatus.PENDING))),
+            ..add(ApplyFilterEvent(
+                project.name,
+                Filter.byProject(project.id!)
+                    .copyWith(status: TaskStatus.PENDING))),
         ),
         BlocProvider(
           create: (context) => TaskBloc(TaskDB.get())
-            ..add(FilterTasksEvent(filter: Filter.byToday())),
+            ..add(FilterTasksEvent(
+                filter: Filter.byProject(project.id)
+                    .copyWith(status: TaskStatus.PENDING))),
         ),
         // TODO: it did not load projects at the first time on mobile device
         BlocProvider(
