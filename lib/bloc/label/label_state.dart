@@ -1,31 +1,37 @@
 part of 'label_bloc.dart';
 
 abstract class LabelState extends Equatable {
-  final List<Label> labels = const [];
-
-  const LabelState();
+  final List<Label> labels;
 
   @override
   List<Object> get props => [labels];
+
+  const LabelState({
+    required this.labels,
+  });
+
 }
 
-class LabelInitial extends LabelState {}
+class LabelInitial extends LabelState {
+  LabelInitial({required super.labels});
 
-class LabelLoading extends LabelState {}
+}
+
+class LabelLoading extends LabelState {
+  LabelLoading({required super.labels});
+}
 
 class LabelsLoaded extends LabelState {
-  final List<Label> labels;
-
-  const LabelsLoaded(this.labels);
-
-  @override
-  List<Object> get props => [this.labels];
+  LabelsLoaded({required super.labels});
 }
 
 class LabelExistenceChecked extends LabelState {
   final bool exists;
 
-  const LabelExistenceChecked(this.exists);
+  const LabelExistenceChecked({
+    required super.labels,
+    required this.exists,
+  });
 
   @override
   List<Object> get props => [exists];
@@ -34,14 +40,17 @@ class LabelExistenceChecked extends LabelState {
 class ColorSelectionUpdated extends LabelState {
   final ColorPalette colorPalette;
 
-  const ColorSelectionUpdated(this.colorPalette);
+  const ColorSelectionUpdated({
+    required super.labels,
+    required this.colorPalette,
+  });
 
   @override
   List<Object> get props => [colorPalette];
 }
 
 class LabelCreateSuccess extends LabelState {
-  const LabelCreateSuccess();
+  const LabelCreateSuccess({required super.labels});
 
   @override
   List<Object> get props => [];
@@ -50,7 +59,10 @@ class LabelCreateSuccess extends LabelState {
 class LabelError extends LabelState {
   final String message;
 
-  const LabelError(this.message);
+  const LabelError({
+    required super.labels,
+    required this.message,
+  });
 
   @override
   List<Object> get props => [message];

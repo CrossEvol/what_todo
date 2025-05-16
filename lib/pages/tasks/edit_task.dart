@@ -102,7 +102,12 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
         : Project.inbox();
     selectedDueDate = widget.task.dueDate;
     selectedLabels = widget.task.labelList.isNotEmpty
-        ? labels.where((l) => widget.task.labelList.contains(l.name)).toList()
+        ? labels
+            .where((l) => widget.task.labelList
+                .map((item) => item.name)
+                .toList()
+                .contains(l.name))
+            .toList()
         : [];
   }
 

@@ -97,8 +97,8 @@ void main() {
 
     whenListen(
       mockLabelBloc,
-      Stream.fromIterable([LabelsLoaded([])]),
-      initialState: LabelsLoaded([]),
+      Stream.fromIterable([LabelsLoaded(labels: [])]),
+      initialState: LabelsLoaded(labels: []),
     );
 
     final homeState = HomeInitial().copyWith(
@@ -218,18 +218,20 @@ void main() {
 
     whenListen(
       mockLabelBloc,
-      Stream.fromIterable([LabelsLoaded(labels)]),
-      initialState: LabelsLoaded(labels),
+      Stream.fromIterable([LabelsLoaded(labels: labels)]),
+      initialState: LabelsLoaded(labels: labels),
     );
 
     await tester.pumpWidget(createWidgetUnderTest());
     await tester.pumpAndSettle();
 
+    expect(find.text('Label 1'), findsOneWidget);
+    expect(find.text('Label 2'), findsNothing);
     await tester.tap(find.text('Labels'));
     await tester.pumpAndSettle();
 
     expect(find.text('Select Labels'), findsOneWidget);
-    expect(find.text('Label 1'), findsOneWidget);
+    expect(find.text('Label 1'), findsNWidgets(2));
     expect(find.text('Label 2'), findsOneWidget);
   });
 

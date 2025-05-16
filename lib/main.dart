@@ -121,6 +121,7 @@ class _MyAppState extends State<MyApp> with RouteAware {
       providers: [
         BlocProvider(
           create: (_) => LabelBloc(LabelDB.get())..add(LoadLabelsEvent()),
+          lazy: false,
         ),
         BlocProvider(
           create: (context) =>

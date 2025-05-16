@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_app/pages/labels/label.dart';
@@ -11,7 +13,7 @@ part 'label_state.dart';
 class LabelBloc extends Bloc<LabelEvent, LabelState> {
   final LabelDB _labelDB;
 
-  LabelBloc(this._labelDB) : super(LabelInitial()) {
+  LabelBloc(this._labelDB) : super(LabelInitial(labels: [])) {
     on<LoadLabelsEvent>(_onLoadLabels);
     on<CreateLabelEvent>(_onCreateLabel);
     on<UpdateColorSelectionEvent>(_onUpdateColorSelection);
@@ -20,12 +22,12 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
 
   Future<void> _onLoadLabels(
       LoadLabelsEvent event, Emitter<LabelState> emit) async {
-    emit(LabelLoading());
+    emit(LabelLoading(labels: []));
     try {
       final labels = await _labelDB.getLabels();
-      emit(LabelsLoaded(labels));
+      emit(LabelsLoaded(labels: labels));
     } catch (e) {
-      emit(LabelError('Failed to load labels'));
+      emit(LabelError(labels: state.labels, message: 'Failed to load labels'));
     }
   }
 
@@ -35,18 +37,20 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
       final isExist = await _labelDB.isLabelExists(event.label);
       if (!isExist) {
         await _labelDB.insertLabel(event.label);
-        emit(LabelCreateSuccess());
+        emit(LabelCreateSuccess(labels: state.labels));
       } else {
-        emit(LabelExistenceChecked(isExist));
+        emit(LabelExistenceChecked(exists: isExist, labels: state.labels));
       }
     } catch (e) {
-      emit(LabelError('Failed to check label existence'));
+      emit(LabelError(
+          message: 'Failed to check label existence', labels: state.labels));
     }
   }
 
   void _onUpdateColorSelection(
       UpdateColorSelectionEvent event, Emitter<LabelState> emit) {
-    emit(ColorSelectionUpdated(event.colorPalette));
+    emit(ColorSelectionUpdated(
+        colorPalette: event.colorPalette, labels: state.labels));
   }
 
   Future<void> _onRefreshLabels(

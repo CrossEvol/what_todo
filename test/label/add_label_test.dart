@@ -14,7 +14,7 @@ import '../mocks/fake-bloc.dart';
 import '../test_helpers.dart';
 
 LabelState defaultLabelState() {
-  return LabelInitial();
+  return LabelInitial(labels: []);
 }
 
 SettingsState defaultSettingState() {
@@ -104,8 +104,9 @@ void main() {
       (WidgetTester tester) async {
     arrangeLabelBlocStream([
       defaultLabelState(),
-      ColorSelectionUpdated(ColorPalette("Blue", Colors.blue.value)),
-      LabelExistenceChecked(false),
+      ColorSelectionUpdated(
+          colorPalette: ColorPalette("Blue", Colors.blue.value), labels: []),
+      LabelExistenceChecked(exists: false, labels: []),
     ]);
     arrangeSettingsBlocStream([defaultSettingState()]);
     await pumpAddLabelWidget(tester);
@@ -122,8 +123,9 @@ void main() {
       (WidgetTester tester) async {
     arrangeLabelBlocStream([
       defaultLabelState(),
-      ColorSelectionUpdated(ColorPalette("Blue", Colors.blue.value)),
-      LabelExistenceChecked(true),
+      ColorSelectionUpdated(
+          labels: [], colorPalette: ColorPalette("Blue", Colors.blue.value)),
+      LabelExistenceChecked(exists: true, labels: []),
     ]);
     arrangeSettingsBlocStream([defaultSettingState()]);
     await pumpAddLabelWidget(tester);
@@ -143,7 +145,8 @@ void main() {
       (WidgetTester tester) async {
     arrangeLabelBlocStream([
       defaultLabelState(),
-      ColorSelectionUpdated(ColorPalette("Blue", Colors.blue.value)),
+      ColorSelectionUpdated(
+          labels: [], colorPalette: ColorPalette("Blue", Colors.blue.value)),
     ]);
     arrangeSettingsBlocStream([defaultSettingState()]);
     await pumpAddLabelWidget(tester);

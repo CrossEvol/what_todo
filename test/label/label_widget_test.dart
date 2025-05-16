@@ -12,7 +12,7 @@ import '../mocks/fake-bloc.dart';
 import '../test_helpers.dart';
 
 LabelState defaultLabelState() {
-  return LabelInitial();
+  return LabelInitial(labels: []);
 }
 
 void main() {
@@ -58,7 +58,7 @@ void main() {
 
   testWidgets('LabelWidget should render properly with LabelInitial state',
       (WidgetTester tester) async {
-    arrangeLabelBlocStream([LabelInitial()]);
+    arrangeLabelBlocStream([LabelInitial(labels: [])]);
     await pumpLabelWidget(tester);
 
     expect(find.byType(LabelExpansionTileWidget), findsNothing);
@@ -68,7 +68,7 @@ void main() {
 
   testWidgets('LabelWidget should render properly with LabelLoading state',
       (WidgetTester tester) async {
-    arrangeLabelBlocStream([], initialState: LabelLoading());
+    arrangeLabelBlocStream([], initialState: LabelLoading(labels: []));
     await pumpLabelWidget(tester);
 
     expect(find.byType(LabelExpansionTileWidget), findsNothing);
@@ -78,7 +78,7 @@ void main() {
 
   testWidgets('LabelWidget should display labels when available',
       (WidgetTester tester) async {
-    final labelsLoaded = LabelsLoaded([
+    final labelsLoaded = LabelsLoaded(labels: [
       Label.update(
           id: 1, name: 'Grey', colorCode: Colors.grey.value, colorName: 'Grey'),
       Label.update(

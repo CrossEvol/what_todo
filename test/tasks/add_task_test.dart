@@ -68,8 +68,8 @@ void main() {
 
     whenListen(
       mockLabelBloc,
-      Stream.fromIterable([LabelsLoaded([])]),
-      initialState: LabelsLoaded([]),
+      Stream.fromIterable([LabelsLoaded(labels: [])]),
+      initialState: LabelsLoaded(labels: []),
     );
   });
 
@@ -134,16 +134,15 @@ void main() {
     );
 
     whenListen(
-      mockAdminBloc,
-      Stream.fromIterable([
-        AdminLoadedState(
-          labels: [],
-          projects: projects,
-          colorPalette: ColorPalette.none(),
-        )
-      ]),
-      initialState: adminLoadedState
-    );
+        mockAdminBloc,
+        Stream.fromIterable([
+          AdminLoadedState(
+            labels: [],
+            projects: projects,
+            colorPalette: ColorPalette.none(),
+          )
+        ]),
+        initialState: adminLoadedState);
 
     await tester.pumpWidget(createWidgetUnderTest());
     await tester.pumpAndSettle();
@@ -154,7 +153,8 @@ void main() {
 
     // Verify dialog content
     expect(find.text('Select Project'), findsOneWidget);
-    expect(find.text('Inbox'), findsNWidgets(2)); // one is in the selection, one is in the form
+    expect(find.text('Inbox'),
+        findsNWidgets(2)); // one is in the selection, one is in the form
     expect(find.text('Project 2'), findsOneWidget);
   });
 
@@ -175,8 +175,8 @@ void main() {
 
     whenListen(
       mockLabelBloc,
-      Stream.fromIterable([LabelsLoaded(labels)]),
-      initialState: LabelsLoaded(labels),
+      Stream.fromIterable([LabelsLoaded(labels: labels)]),
+      initialState: LabelsLoaded(labels: labels),
     );
 
     await tester.pumpWidget(createWidgetUnderTest());
@@ -206,6 +206,7 @@ void main() {
     expect(find.text('Priority 1'), findsOneWidget);
     expect(find.text('Priority 2'), findsOneWidget);
     expect(find.text('Priority 3'), findsOneWidget);
-    expect(find.text('Priority 4'), findsNWidgets(2)); // one is in the selection, one is in the form
+    expect(find.text('Priority 4'),
+        findsNWidgets(2)); // one is in the selection, one is in the form
   });
 }
