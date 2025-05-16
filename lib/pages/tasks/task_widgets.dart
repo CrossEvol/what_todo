@@ -83,10 +83,12 @@ class TasksPage extends StatelessWidget {
                         ? PendingTaskListItem(
                             task: task,
                             index: index,
+                            confirmDeletion: confirmDeletion,
                           )
                         : CompletedTaskListItem(
                             task: task,
                             index: index,
+                            confirmDeletion: confirmDeletion,
                           ),
                   );
                 },
@@ -109,15 +111,15 @@ class CompletedTaskListItem extends StatelessWidget {
     super.key,
     required this.task,
     required this.index,
+    required this.confirmDeletion,
   });
 
   final Task task;
   final int index;
+  final bool confirmDeletion;
 
   @override
   Widget build(BuildContext context) {
-    final confirmDeletion = context.read<SettingsBloc>().state.confirmDeletion;
-
     return Dismissible(
         key: ValueKey("swipe_completed_${task.id}_$index"),
         direction: DismissDirection.horizontal,
@@ -199,15 +201,15 @@ class PendingTaskListItem extends StatelessWidget {
     super.key,
     required this.task,
     required this.index,
+    required this.confirmDeletion,
   });
 
   final Task task;
   final int index;
+  final bool confirmDeletion;
 
   @override
   Widget build(BuildContext context) {
-    final confirmDeletion = context.read<SettingsBloc>().state.confirmDeletion;
-
     return Dismissible(
         key: ValueKey("swipe_${task.id}_$index"),
         direction: DismissDirection.horizontal,
@@ -224,7 +226,8 @@ class PendingTaskListItem extends StatelessWidget {
                   actions: <Widget>[
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(false),
-                      style: TextButton.styleFrom(foregroundColor: Colors.grey[700]),
+                      style: TextButton.styleFrom(
+                          foregroundColor: Colors.grey[700]),
                       // Make cancel button gray
                       child: Text(AppLocalizations.of(context)!.cancel),
                     ),
