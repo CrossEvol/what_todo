@@ -445,5 +445,9 @@
   "goBack": "戻る",
   "@goBack": {
     "description": "Text for go back button"
+  },
+  "controls": "コントロール",
+  "@controls": {
+    "description": "Text for Control ExpandTile in SideDrawer"
   }
 }

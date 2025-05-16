@@ -50,6 +50,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "comments": MessageLookupByLibrary.simpleMessage("Comments"),
     "completedTasks": MessageLookupByLibrary.simpleMessage("Completed Tasks"),
     "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+    "controls": MessageLookupByLibrary.simpleMessage("Controls"),
     "count": MessageLookupByLibrary.simpleMessage("Count"),
     "delete": MessageLookupByLibrary.simpleMessage("DELETE"),
     "done": MessageLookupByLibrary.simpleMessage("done"),

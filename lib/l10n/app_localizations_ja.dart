@@ -340,4 +340,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get goBack => '戻る';
+
+  @override
+  String get controls => 'コントロール';
 }

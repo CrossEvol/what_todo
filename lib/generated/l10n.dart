@@ -1145,6 +1145,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Controls`
+  String get controls {
+    return Intl.message(
+      'Controls',
+      name: 'controls',
+      desc: 'Text for Control ExpandTile in SideDrawer',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

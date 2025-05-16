@@ -77,68 +77,7 @@ class _SideDrawerState extends State<SideDrawer> {
           ),
           ProjectsExpansionTile(),
           LabelsExpansionTile(),
-          ListTile(
-            onTap: () {
-              context.go('/project/grid');
-            },
-            leading: Icon(Icons.grid_view_outlined),
-            title: Text(
-              AppLocalizations.of(context)!.projectGrid,
-              style: TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.w500,
-              ),
-              key: ValueKey(SideDrawerKeys.PROJECT_GRID),
-            ),
-          ),
-          ListTile(
-            onTap: () {
-              context.go('/label/grid');
-            },
-            leading: Icon(Icons.view_comfortable_outlined),
-            title: Text(
-              AppLocalizations.of(context)!.labelGrid,
-              style: TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.w500,
-              ),
-              key: ValueKey(SideDrawerKeys.LABEL_GRID),
-            ),
-          ),
-          Divider(),
-          if (context.read<SettingsBloc>().state.enableImportExport) ...[
-            ListTile(
-              onTap: () {
-                context.go('/export');
-                context.safePop();
-              },
-              leading: Icon(Icons.upload_file),
-              title: Text(
-                'Export Tasks',
-                style: TextStyle(
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w500,
-                ),
-                key: ValueKey(CompletedTaskPageKeys.EXPORT_DATA),
-              ),
-            ),
-            ListTile(
-              onTap: () {
-                context.go('/import');
-                context.safePop();
-              },
-              leading: Icon(Icons.download_rounded),
-              title: Text(
-                'Import Tasks',
-                style: TextStyle(
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w500,
-                ),
-                key: ValueKey(CompletedTaskPageKeys.IMPORT_DATA),
-              ),
-            ),
-            Divider(),
-          ],
+          GridsExpansionTile(),
           ListTile(
             onTap: () {
               context.go('/settings');
@@ -177,3 +116,105 @@ class _SideDrawerState extends State<SideDrawer> {
     );
   }
 }
+
+class GridsExpansionTile extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ExpansionTile(
+      key: ValueKey(SideDrawerKeys.DRAWER_GRIDS),
+      leading: Icon(Icons.account_tree),
+      title: Text(
+        AppLocalizations.of(context)!.controls,
+        style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+      ),
+      children: buildGridItems(context),
+    );
+  }
+
+  List<Widget> buildGridItems(BuildContext context) {
+    List<Widget> gridItems = [];
+
+    // Project Grid
+    gridItems.add(
+      ListTile(
+        onTap: () {
+          context.go('/project/grid');
+        },
+        leading: Icon(Icons.grid_view_outlined),
+        title: Text(
+          AppLocalizations.of(context)!.projectGrid,
+          style: TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.w500,
+          ),
+          key: ValueKey(SideDrawerKeys.PROJECT_GRID),
+        ),
+      ),
+    );
+
+    // Label Grid
+    gridItems.add(
+      ListTile(
+        onTap: () {
+          context.go('/label/grid');
+        },
+        leading: Icon(Icons.view_comfortable_outlined),
+        title: Text(
+          AppLocalizations.of(context)!.labelGrid,
+          style: TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.w500,
+          ),
+          key: ValueKey(SideDrawerKeys.LABEL_GRID),
+        ),
+      ),
+    );
+
+    // Divider
+    gridItems.add(Divider());
+
+    // Import/Export section (conditional)
+    if (context.read<SettingsBloc>().state.enableImportExport) {
+      // Export Tasks
+      gridItems.add(
+        ListTile(
+          onTap: () {
+            context.go('/export');
+            context.safePop();
+          },
+          leading: Icon(Icons.upload_file),
+          title: Text(
+            'Export Tasks',
+            style: TextStyle(
+              fontSize: 14.0,
+              fontWeight: FontWeight.w500,
+            ),
+            key: ValueKey(CompletedTaskPageKeys.EXPORT_DATA),
+          ),
+        ),
+      );
+
+      // Import Tasks
+      gridItems.add(
+        ListTile(
+          onTap: () {
+            context.go('/import');
+            context.safePop();
+          },
+          leading: Icon(Icons.download_rounded),
+          title: Text(
+            'Import Tasks',
+            style: TextStyle(
+              fontSize: 14.0,
+              fontWeight: FontWeight.w500,
+            ),
+            key: ValueKey(CompletedTaskPageKeys.IMPORT_DATA),
+          ),
+        ),
+      );
+    }
+
+    return gridItems;
+  }
+}
+

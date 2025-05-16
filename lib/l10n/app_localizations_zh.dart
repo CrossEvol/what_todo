@@ -340,4 +340,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get goBack => '返回';
+
+  @override
+  String get controls => '控制項';
 }

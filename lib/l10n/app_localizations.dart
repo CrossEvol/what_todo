@@ -750,6 +750,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Go Back'**
   String get goBack;
+
+  /// Text for Control ExpandTile in SideDrawer
+  ///
+  /// In en, this message translates to:
+  /// **'Controls'**
+  String get controls;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

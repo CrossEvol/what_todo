@@ -20,6 +20,7 @@ class SideDrawerKeys {
   static const NEXT_7_DAYS = 'next7Days';
   static const LABEL_GRID = 'label_grid';
   static const PROJECT_GRID = 'project_grid';
+  static const DRAWER_GRIDS = 'drawerGrids';
   static const UNKNOWN = 'unknown';
 }
 

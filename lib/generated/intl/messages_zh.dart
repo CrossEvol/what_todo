@@ -47,6 +47,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "comments": MessageLookupByLibrary.simpleMessage("评论"),
     "completedTasks": MessageLookupByLibrary.simpleMessage("已完成任务"),
     "confirm": MessageLookupByLibrary.simpleMessage("确认"),
+    "controls": MessageLookupByLibrary.simpleMessage("控制項"),
     "count": MessageLookupByLibrary.simpleMessage("数量"),
     "delete": MessageLookupByLibrary.simpleMessage("删除"),
     "done": MessageLookupByLibrary.simpleMessage("完成"),
