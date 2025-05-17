@@ -149,7 +149,7 @@ class _HomePageState extends State<HomePage> {
         actions: <Widget>[
           BlocBuilder<HomeBloc, HomeState>(
             builder: (context, state) {
-              return buildPopupMenu(context, state.title);
+              return HomePopupMenu(title: state.title);
             },
           ),
         ],
@@ -180,9 +180,25 @@ class _HomePageState extends State<HomePage> {
       body: TasksPage(scrollController: _scrollController),
     );
   }
+}
 
-// This menu button widget updates a _selection field (of type WhyFarther,
-  Widget buildPopupMenu(BuildContext context, String title) {
+// This is the type used by the popup menu below.
+enum MenuItem {
+  TASK_COMPLETED,
+  TASK_UNCOMPLETED,
+  TASK_POSTPONE,
+  ALL_TO_TODAY,
+  TOGGLE_COMPLETED,
+}
+
+// Extracted StatelessWidget for the popup menu
+class HomePopupMenu extends StatelessWidget {
+  const HomePopupMenu({Key? key, required this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
     final homeBloc = context.read<HomeBloc>();
     final homeState = homeBloc.state;
     final taskBloc = context.read<TaskBloc>();
@@ -304,13 +320,4 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-}
-
-// This is the type used by the popup menu below.
-enum MenuItem {
-  TASK_COMPLETED,
-  TASK_UNCOMPLETED,
-  TASK_POSTPONE,
-  ALL_TO_TODAY,
-  TOGGLE_COMPLETED,
 }
