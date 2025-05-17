@@ -30,7 +30,7 @@ jobs:
       - name: Run Tests
         run: flutter test test/
 
-  build-and-release:
+  build-android:
     name: Build Signed APK and Release
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') # Only run on tag push
     runs-on: ubuntu-latest
@@ -100,3 +100,73 @@ jobs:
         run: |
           rm -f android/app/upload-keystore.jks
           rm -f android/key.properties
+
+  build-windows:
+    name: Build Windows Installer and Release
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') # Only run on tag push
+    runs-on: windows-latest
+    needs: test # Run after tests succeed
+    permissions:
+      contents: write # Required to create releases
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.2'
+          channel: 'stable'
+
+      - name: Get Packages
+        run: flutter pub get
+
+      - name: Enable Windows Desktop
+        run: flutter config --enable-windows-desktop
+
+      - name: Build Windows Application
+        run: flutter build windows --release --build-name=${{ github.ref_name }} --build-number=${{ github.run_number }}
+
+      - name: Install Inno Setup
+        run: |
+          choco install innosetup -y
+
+      - name: Create Inno Setup Script
+        run: |
+          echo '[Setup]' > installer.iss
+          echo 'AppName=WhatTodo' >> installer.iss
+          echo 'AppVersion=${{ github.ref_name }}' >> installer.iss
+          echo 'DefaultDirName={pf}\WhatTodo' >> installer.iss
+          echo 'DefaultGroupName=WhatTodo' >> installer.iss
+          echo 'UninstallDisplayIcon={app}\what_todo.exe' >> installer.iss
+          echo 'Compression=lzma2' >> installer.iss
+          echo 'SolidCompression=yes' >> installer.iss
+          echo 'OutputDir=.' >> installer.iss
+          echo 'OutputBaseFilename=WhatTodo_${{ github.ref_name }}_Setup' >> installer.iss
+          echo '; Uncomment the following line to run the app after installation' >> installer.iss
+          echo '; RunAtEnd={app}\what_todo.exe' >> installer.iss
+          echo '' >> installer.iss
+          echo '[Files]' >> installer.iss
+          echo 'Source: "build\windows\x64\runner\Release\what_todo.exe"; DestDir: "{app}"' >> installer.iss
+          echo 'Source: "build\windows\x64\runner\Release\*.dll"; DestDir: "{app}"' >> installer.iss
+          echo 'Source: "build\windows\x64\runner\Release\data\*"; DestDir: "{app}\data"; Flags: recursesubdirs' >> installer.iss
+          echo '' >> installer.iss
+          echo '[Icons]' >> installer.iss
+          echo 'Name: "{group}\WhatTodo"; Filename: "{app}\what_todo.exe"' >> installer.iss
+          echo 'Name: "{commondesktop}\WhatTodo"; Filename: "{app}\what_todo.exe"' >> installer.iss
+
+      - name: Build Installer
+        run: |
+          & 'C:\Program Files (x86)\Inno Setup 6\ISCC.exe' installer.iss
+
+      - name: Verify Installer Exists
+        run: Get-ChildItem -Path WhatTodo_${{ github.ref_name }}_Setup.exe
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: WhatTodo_${{ github.ref_name }}_Setup.exe
+          name: Release ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GITHUB_TOKEN is automatically available
