@@ -5,6 +5,7 @@ import 'package:flutter_app/pages/settings/settings_screen.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_test/bloc_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 // Import your settings screen
@@ -318,6 +319,46 @@ void main() async {
             .data,
         equals('16'),
       );
+    },
+  );
+  
+  testWidgets(
+    'SettingsScreen should display and toggle confirm deletion setting',
+    (WidgetTester tester) async {
+      // Arrange: Set up the initial and updated states for the SettingsBloc
+      arrangeSettingsBlocStream([
+        defaultSettingState(),
+        // Initial state (confirmDeletion is false by default)
+        defaultSettingState().copyWith(confirmDeletion: true),
+        // Updated state after toggling
+      ]);
+      await pumpSettingsWidget(tester);
+
+      // Verify the Confirm Deletion tile is displayed
+      expect(find.byKey(ValueKey(SettingKeys.CONFIRM_DELETION)), findsOneWidget);
+      
+      // Find the Confirm Deletion switch tile and verify initial state
+      final confirmDeletionSwitch = 
+          tester.findWidgetByKey<SettingsTile>(SettingKeys.CONFIRM_DELETION);
+      expect(confirmDeletionSwitch.initialValue, equals(false));
+      
+      // Verify the title and description are displayed correctly
+      expect(find.text('Confirm Deletion'), findsOneWidget);
+      expect(find.text('Show confirmation dialog before deleting items'), findsOneWidget);
+      
+      // Scroll to ensure the Confirm Deletion tile is visible
+      await tester.ensureVisible(find.byKey(ValueKey(SettingKeys.CONFIRM_DELETION)));
+      await tester.pumpAndSettle(); // Wait for scrolling to complete
+      
+      // Tap the Confirm Deletion switch to toggle it
+      await tester.tap(find.byKey(ValueKey(SettingKeys.CONFIRM_DELETION)));
+      await tester.pumpAndSettle(); // Wait for state to update
+      
+      // Since we've set up the stream to emit a state with confirmDeletion: true,
+      // we should now see the updated switch value
+      final updatedConfirmDeletionSwitch = 
+          tester.findWidgetByKey<SettingsTile>(SettingKeys.CONFIRM_DELETION);
+      expect(updatedConfirmDeletionSwitch.initialValue, equals(true));
     },
   );
 }
