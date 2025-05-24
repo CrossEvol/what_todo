@@ -19,6 +19,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<UpdateSortFieldEvent>(_onUpdateSortField);
     on<UpdateSortOrderEvent>(_onUpdateSortOrder);
     on<NavigateToPageEvent>(_onNavigateToPage);
+    on<MarkTaskAsDoneEvent>(_onMarkTaskAsDone);
+    on<MarkTaskAsUndoneEvent>(_onMarkTaskAsUndone);
+    on<DeleteTaskEvent>(_onDeleteTask);
   }
 
   Future<void> _onSearchTasks(
@@ -122,5 +125,97 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       order: order,
       page: page,
     ));
+  }
+
+  Future<void> _onMarkTaskAsDone(
+      MarkTaskAsDoneEvent event, Emitter<SearchState> emit) async {
+    final prevState = state;
+    try {
+      emit(SearchLoadingState());
+
+      // Update the task status in the database
+      await _searchDB.markTaskAsDone(event.task.id!);
+
+      // Refresh the current search results
+      final currentState = state;
+      if (prevState is SearchResultsState &&
+          currentState is SearchLoadingState) {
+        await _updateSearchWithNewParams(
+          emit: emit,
+          keyword: prevState.keyword,
+          searchInTitle: prevState.searchInTitle,
+          searchInComment: prevState.searchInComment,
+          filteredField: prevState.filteredField,
+          order: prevState.order,
+          page: prevState.currentPage,
+        );
+      } else {
+        emit(SearchInitial());
+      }
+    } catch (e) {
+      _logger.error(e, message: 'Error marking task as done');
+      emit(SearchErrorState('Failed to mark task as done: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _onMarkTaskAsUndone(
+      MarkTaskAsUndoneEvent event, Emitter<SearchState> emit) async {
+    final prevState = state;
+    try {
+      emit(SearchLoadingState());
+
+      // Update the task status in the database
+      await _searchDB.markTaskAsUndone(event.task.id!);
+
+      // Refresh the current search results
+      final currentState = state;
+      if (prevState is SearchResultsState &&
+          currentState is SearchLoadingState) {
+        await _updateSearchWithNewParams(
+          emit: emit,
+          keyword: prevState.keyword,
+          searchInTitle: prevState.searchInTitle,
+          searchInComment: prevState.searchInComment,
+          filteredField: prevState.filteredField,
+          order: prevState.order,
+          page: prevState.currentPage,
+        );
+      } else {
+        emit(SearchInitial());
+      }
+    } catch (e) {
+      _logger.error(e, message: 'Error marking task as undone');
+      emit(SearchErrorState('Failed to mark task as undone: ${e.toString()}'));
+    }
+  }
+
+  Future<void> _onDeleteTask(
+      DeleteTaskEvent event, Emitter<SearchState> emit) async {
+    final prevState = state;
+    try {
+      emit(SearchLoadingState());
+
+      // Delete the task from the database
+      await _searchDB.deleteTask(event.task.id!);
+
+      // Refresh the current search results
+      final currState = state;
+      if (prevState is SearchResultsState && currState is SearchLoadingState) {
+        await _updateSearchWithNewParams(
+          emit: emit,
+          keyword: prevState.keyword,
+          searchInTitle: prevState.searchInTitle,
+          searchInComment: prevState.searchInComment,
+          filteredField: prevState.filteredField,
+          order: prevState.order,
+          page: prevState.currentPage,
+        );
+      } else {
+        emit(SearchInitial());
+      }
+    } catch (e) {
+      _logger.error(e, message: 'Error deleting task');
+      emit(SearchErrorState('Failed to delete task: ${e.toString()}'));
+    }
   }
 }

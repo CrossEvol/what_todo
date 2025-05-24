@@ -56,3 +56,30 @@ class NavigateToPageEvent extends SearchEvent {
   @override
   List<Object> get props => [page];
 }
+
+class MarkTaskAsDoneEvent extends SearchEvent {
+  final Task task;
+  
+  const MarkTaskAsDoneEvent(this.task);
+  
+  @override
+  List<Object> get props => [task];
+}
+
+class MarkTaskAsUndoneEvent extends SearchEvent {
+  final Task task;
+  
+  const MarkTaskAsUndoneEvent(this.task);
+  
+  @override
+  List<Object> get props => [task];
+}
+
+class DeleteTaskEvent extends SearchEvent {
+  final Task task;
+  
+  const DeleteTaskEvent(this.task);
+  
+  @override
+  List<Object> get props => [task];
+}

@@ -374,4 +374,49 @@ class SearchDB {
 
     return labels;
   }
+  
+  /// Mark a task as done (completed)
+  Future<bool> markTaskAsDone(int taskId) async {
+    try {
+      // Update the task status to COMPLETE (1)
+      await (_db.update(_db.task)..where((t) => t.id.equals(taskId)))
+          .write(const TaskCompanion(
+        status: Value(1), // 1 = COMPLETE
+      ));
+      return true;
+    } catch (e) {
+      print('Error marking task as done: $e');
+      return false;
+    }
+  }
+
+  /// Mark a task as undone (not completed)
+  Future<bool> markTaskAsUndone(int taskId) async {
+    try {
+      // Update the task status to NOT_COMPLETED (0)
+      await (_db.update(_db.task)..where((t) => t.id.equals(taskId)))
+          .write(const TaskCompanion(
+        status: Value(0), // 0 = NOT_COMPLETED
+      ));
+      return true;
+    } catch (e) {
+      print('Error marking task as undone: $e');
+      return false;
+    }
+  }
+
+  /// Delete a task by its ID
+  Future<bool> deleteTask(int taskId) async {
+    try {
+      // First delete any related task-label associations
+      await (_db.delete(_db.taskLabel)..where((tl) => tl.taskId.equals(taskId))).go();
+      
+      // Then delete the task itself
+      await (_db.delete(_db.task)..where((t) => t.id.equals(taskId))).go();
+      return true;
+    } catch (e) {
+      print('Error deleting task: $e');
+      return false;
+    }
+  }
 }

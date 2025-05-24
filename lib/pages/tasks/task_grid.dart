@@ -4,6 +4,8 @@ import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:go_router/go_router.dart';
 
 import 'models/task.dart';
 
@@ -525,12 +527,82 @@ class DoneTaskCard extends StatelessWidget {
                     width: 2,
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(2),
-                  child: Icon(
-                    Icons.roundabout_right_outlined,
-                    color: const Color(0xFF678580),
-                    size: 20,
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton2(
+                    customButton: Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: Icon(
+                        Icons.roundabout_right_outlined,
+                        color: const Color(0xFF678580),
+                        size: 20,
+                      ),
+                    ),
+                    items: [
+                      DropdownMenuItem<String>(
+                        value: 'edit',
+                        child: Row(
+                          children: const [
+                            Icon(Icons.edit, color: Colors.blue, size: 20),
+                            SizedBox(width: 8),
+                            Text('Edit', style: TextStyle(fontSize: 14)),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem<String>(
+                        value: 'undone',
+                        child: Row(
+                          children: const [
+                            Icon(Icons.replay_circle_filled, color: Colors.orange, size: 20),
+                            SizedBox(width: 8),
+                            Text('Undo', style: TextStyle(fontSize: 14)),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem<String>(
+                        value: 'delete',
+                        child: Row(
+                          children: const [
+                            Icon(Icons.delete, color: Colors.red, size: 20),
+                            SizedBox(width: 8),
+                            Text('Delete', style: TextStyle(fontSize: 14)),
+                          ],
+                        ),
+                      ),
+                    ],
+                    onChanged: (value) async {
+                      if (value == 'edit') {
+                        context.go('/task/edit', extra: task);
+                      } else if (value == 'undone') {
+                        context.read<SearchBloc>().add(MarkTaskAsUndoneEvent(task!));
+                      } else if (value == 'delete') {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => DeleteConfirmationDialog(task: task!),
+                        );
+                        if (confirm == true) {
+                          context.read<SearchBloc>().add(DeleteTaskEvent(task!));
+                        }
+                      }
+                    },
+                    dropdownStyleData: DropdownStyleData(
+                      width: 160,
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 8,
+                          ),
+                        ],
+                      ),
+                      offset: const Offset(0, 8),
+                    ),
+                    menuItemStyleData: const MenuItemStyleData(
+                      height: 40,
+                      padding: EdgeInsets.only(left: 16, right: 16),
+                    ),
                   ),
                 ),
               ),
@@ -767,12 +839,82 @@ class UndoneTaskCard extends StatelessWidget {
                     width: 2,
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(2),
-                  child: Icon(
-                    Icons.document_scanner_rounded,
-                    color: const Color(0xFF6F61EF),
-                    size: 20,
+                child: DropdownButtonHideUnderline(
+                  child: DropdownButton2(
+                    customButton: Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: Icon(
+                        Icons.document_scanner_rounded,
+                        color: const Color(0xFF6F61EF),
+                        size: 20,
+                      ),
+                    ),
+                    items: [
+                      DropdownMenuItem<String>(
+                        value: 'edit',
+                        child: Row(
+                          children: const [
+                            Icon(Icons.edit, color: Colors.blue, size: 20),
+                            SizedBox(width: 8),
+                            Text('Edit', style: TextStyle(fontSize: 14)),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem<String>(
+                        value: 'done',
+                        child: Row(
+                          children: const [
+                            Icon(Icons.check_circle, color: Colors.green, size: 20),
+                            SizedBox(width: 8),
+                            Text('Done', style: TextStyle(fontSize: 14)),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem<String>(
+                        value: 'delete',
+                        child: Row(
+                          children: const [
+                            Icon(Icons.delete, color: Colors.red, size: 20),
+                            SizedBox(width: 8),
+                            Text('Delete', style: TextStyle(fontSize: 14)),
+                          ],
+                        ),
+                      ),
+                    ],
+                    onChanged: (value) async {
+                      if (value == 'edit') {
+                        context.go('/task/edit', extra: task);
+                      } else if (value == 'done') {
+                        context.read<SearchBloc>().add(MarkTaskAsDoneEvent(task));
+                      } else if (value == 'delete') {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => DeleteConfirmationDialog(task: task),
+                        );
+                        if (confirm == true) {
+                          context.read<SearchBloc>().add(DeleteTaskEvent(task));
+                        }
+                      }
+                    },
+                    dropdownStyleData: DropdownStyleData(
+                      width: 160,
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 8,
+                          ),
+                        ],
+                      ),
+                      offset: const Offset(0, 8),
+                    ),
+                    menuItemStyleData: const MenuItemStyleData(
+                      height: 40,
+                      padding: EdgeInsets.only(left: 16, right: 16),
+                    ),
                   ),
                 ),
               ),
@@ -1172,6 +1314,48 @@ class _SortDialogState extends State<SortDialog> {
           });
         }
       },
+    );
+  }
+}
+
+class DeleteConfirmationDialog extends StatelessWidget {
+  final Task task;
+
+  const DeleteConfirmationDialog({
+    Key? key,
+    required this.task,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(
+        'Delete Task',
+        style: GoogleFonts.interTight(
+          fontSize: 20,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      content: Text(
+        'Are you sure you want to delete "${task.title}"? This action cannot be undone.',
+        style: GoogleFonts.plusJakartaSans(
+          fontSize: 16,
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+          ),
+          onPressed: () => Navigator.pop(context, true),
+          child: const Text('Delete'),
+        ),
+      ],
     );
   }
 }
