@@ -17,7 +17,7 @@ class TaskCompletedRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        context.go('/task/edit', extra: this.task);
+        context.push('/task/edit', extra: this.task);
         // showSnackbar(context, 'Task Details not implemented.');
       },
       child: Column(

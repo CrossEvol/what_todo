@@ -59,7 +59,7 @@ class ProjectExpansionTileWidget extends StatelessWidget {
       leading: Icon(Icons.add),
       title: Text(AppLocalizations.of(context)!.addProject),
       onTap: () async {
-        context.go('/project/add');
+        context.push('/project/add');
         context.read<ProjectBloc>().add(RefreshProjectsEvent());
       },
     ));

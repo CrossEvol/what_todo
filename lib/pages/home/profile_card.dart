@@ -21,7 +21,7 @@ class _ProfileCardState extends State<ProfileCard> {
     return GestureDetector(
       key: ValueKey(SideDrawerKeys.PROFILE),
       onTap: () {
-        context.go('/profile');
+        context.push('/profile');
       },
       child: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
@@ -37,7 +37,7 @@ class _ProfileCardState extends State<ProfileCard> {
                       size: 36.0,
                     ),
                     onPressed: () async {
-                      context.go('/about');
+                      context.push('/about');
                     })
               ],
               currentAccountPicture: MouseRegion(
@@ -58,7 +58,7 @@ class _ProfileCardState extends State<ProfileCard> {
                     size: 36.0,
                   ),
                   onPressed: () async {
-                    context.go('/about');
+                    context.push('/about');
                   })
             ],
             currentAccountPicture: MouseRegion(

@@ -81,7 +81,7 @@ class _SideDrawerState extends State<SideDrawer> {
           GridsExpansionTile(),
           ListTile(
             onTap: () {
-              context.go('/settings');
+              context.push('/settings');
             },
             leading: Icon(Icons.settings_sharp),
             title: Text(
@@ -92,7 +92,7 @@ class _SideDrawerState extends State<SideDrawer> {
           if (environment == Environment.test)
             ListTile(
               onTap: () {
-                context.go('/order');
+                context.push('/order');
               },
               leading: Icon(Icons.unarchive_sharp),
               title: Text(
@@ -139,7 +139,7 @@ class GridsExpansionTile extends StatelessWidget {
     gridItems.add(
       ListTile(
         onTap: () {
-          context.go('/task/grid');
+          context.push('/task/grid');
           context.read<SearchBloc>().add(ResetSearchEvent());
         },
         leading: Icon(Icons.task_alt_outlined),
@@ -158,7 +158,7 @@ class GridsExpansionTile extends StatelessWidget {
     gridItems.add(
       ListTile(
         onTap: () {
-          context.go('/project/grid');
+          context.push('/project/grid');
         },
         leading: Icon(Icons.grid_view_outlined),
         title: Text(
@@ -176,7 +176,7 @@ class GridsExpansionTile extends StatelessWidget {
     gridItems.add(
       ListTile(
         onTap: () {
-          context.go('/label/grid');
+          context.push('/label/grid');
         },
         leading: Icon(Icons.view_comfortable_outlined),
         title: Text(
@@ -199,7 +199,7 @@ class GridsExpansionTile extends StatelessWidget {
       gridItems.add(
         ListTile(
           onTap: () {
-            context.go('/export');
+            context.push('/export');
             context.safePop();
           },
           leading: Icon(Icons.upload_file),
@@ -218,7 +218,7 @@ class GridsExpansionTile extends StatelessWidget {
       gridItems.add(
         ListTile(
           onTap: () {
-            context.go('/import');
+            context.push('/import');
             context.safePop();
           },
           leading: Icon(Icons.download_rounded),

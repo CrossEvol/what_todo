@@ -171,7 +171,7 @@ class _HomePageState extends State<HomePage> {
         ),
         backgroundColor: Colors.purple,
         onPressed: () async {
-          context.go('/task/add');
+          context.push('/task/add');
           // await context.adaptiveNavigate(SCREEN.ADD_TASK, AddTaskProvider());
           // _taskBloc.refresh();
         },
@@ -215,7 +215,7 @@ class HomePopupMenu extends StatelessWidget {
             taskBloc.add(FilterTasksEvent(
                 filter:
                     homeState.filter!.copyWith(status: TaskStatus.COMPLETE)));
-            // context.go('/task/completed'); // should be removed in later version
+            // context.push('/task/completed'); // should be removed in later version
             break;
           case MenuItem.TASK_UNCOMPLETED:
             homeBloc.add(ApplyFilterEvent(homeState.title,
@@ -223,7 +223,7 @@ class HomePopupMenu extends StatelessWidget {
             taskBloc.add(FilterTasksEvent(
                 filter:
                     homeState.filter!.copyWith(status: TaskStatus.PENDING)));
-            // context.go('/task/uncompleted'); // should be removed in later version
+            // context.push('/task/uncompleted'); // should be removed in later version
             break;
           case MenuItem.TASK_POSTPONE:
             taskBloc.add(PostponeTasksEvent());

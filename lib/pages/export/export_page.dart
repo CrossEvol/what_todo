@@ -69,7 +69,7 @@ class ExportView extends StatelessWidget {
                 countdown--;
                 if (countdown <= 0) {
                   timer.cancel();
-                  context.go('/');
+                  context.push('/');
                   context.read<ExportBloc>().add(ResetExportDataEvent());
                 }
               });

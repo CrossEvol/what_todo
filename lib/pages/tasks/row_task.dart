@@ -16,7 +16,7 @@ class TaskRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        context.go('/task/edit', extra: this.task);
+        context.push('/task/edit', extra: this.task);
       },
       child: Column(
         children: <Widget>[

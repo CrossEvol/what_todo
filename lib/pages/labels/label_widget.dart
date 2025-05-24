@@ -56,7 +56,7 @@ class LabelExpansionTileWidget extends StatelessWidget {
           key: ValueKey(SideDrawerKeys.ADD_LABEL),
         ),
         onTap: () async {
-          context.go('/label/add');
+          context.push('/label/add');
           context.read<LabelBloc>().add(RefreshLabelsEvent());
         }));
     return labelWidgetList;

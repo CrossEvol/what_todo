@@ -571,7 +571,7 @@ class DoneTaskCard extends StatelessWidget {
                     ],
                     onChanged: (value) async {
                       if (value == 'edit') {
-                        context.go('/task/edit', extra: task);
+                        context.push('/task/edit', extra: task);
                       } else if (value == 'undone') {
                         context.read<SearchBloc>().add(MarkTaskAsUndoneEvent(task!));
                       } else if (value == 'delete') {
@@ -883,7 +883,7 @@ class UndoneTaskCard extends StatelessWidget {
                     ],
                     onChanged: (value) async {
                       if (value == 'edit') {
-                        context.go('/task/edit', extra: task);
+                        context.push('/task/edit', extra: task);
                       } else if (value == 'done') {
                         context.read<SearchBloc>().add(MarkTaskAsDoneEvent(task));
                       } else if (value == 'delete') {
