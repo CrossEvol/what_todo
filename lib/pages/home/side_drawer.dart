@@ -134,6 +134,24 @@ class GridsExpansionTile extends StatelessWidget {
   List<Widget> buildGridItems(BuildContext context) {
     List<Widget> gridItems = [];
 
+    // Task Grid
+    gridItems.add(
+      ListTile(
+        onTap: () {
+          context.go('/task/grid');
+        },
+        leading: Icon(Icons.task_alt_outlined),
+        title: Text(
+          "Task Grid",
+          style: TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.w500,
+          ),
+          key: ValueKey(SideDrawerKeys.TASK_GRID),
+        ),
+      ),
+    );
+
     // Project Grid
     gridItems.add(
       ListTile(
@@ -217,4 +235,3 @@ class GridsExpansionTile extends StatelessWidget {
     return gridItems;
   }
 }
-
