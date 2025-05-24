@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
+import 'package:flutter_app/bloc/search/search_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/constants/keys.dart';
@@ -139,6 +140,7 @@ class GridsExpansionTile extends StatelessWidget {
       ListTile(
         onTap: () {
           context.go('/task/grid');
+          context.read<SearchBloc>().add(ResetSearchEvent());
         },
         leading: Icon(Icons.task_alt_outlined),
         title: Text(

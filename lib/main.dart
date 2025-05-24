@@ -9,8 +9,10 @@ import 'package:flutter_app/bloc/import/import_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/profile/profile_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
+import 'package:flutter_app/bloc/search/search_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
+import 'package:flutter_app/dao/search_db.dart';
 import 'package:flutter_app/db/app_db.dart';
 import 'package:flutter_app/l10n/app_localizations.dart';
 import 'package:flutter_app/pages/drift_schema/drift_schema_db.dart';
@@ -167,6 +169,8 @@ class _MyAppState extends State<MyApp> with RouteAware {
         BlocProvider(
             create: (_) =>
                 ImportBloc(ProjectDB.get(), LabelDB.get(), TaskDB.get())),
+        BlocProvider(
+            create: (_) => SearchBloc(SearchDB.get())..add(ResetSearchEvent())),
       ],
       child: MaterialApp.router(
         locale: _locale,
