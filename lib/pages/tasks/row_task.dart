@@ -50,7 +50,7 @@ class TaskRow extends StatelessWidget {
                       ),
                     ),
                   ),
-                  getLabels(task.labelList),
+                  PendingTaskLabels(task.labelList), // Use the new widget
                   Padding(
                     padding: const EdgeInsets.only(
                         left: PADDING_SMALL, bottom: PADDING_VERY_SMALL),
@@ -111,8 +111,15 @@ class TaskRow extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget getLabels(List<Label> labelList) { // Changed parameter type
+class PendingTaskLabels extends StatelessWidget {
+  final List<Label> labelList;
+
+  const PendingTaskLabels(this.labelList, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     if (labelList.isEmpty) {
       return Container();
     } else {

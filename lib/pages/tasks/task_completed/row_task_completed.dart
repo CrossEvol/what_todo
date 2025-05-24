@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/constants/color_constant.dart';
-import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_app/constants/app_constant.dart';
 import 'package:go_router/go_router.dart';
@@ -48,7 +47,7 @@ class TaskCompletedRow extends StatelessWidget {
                             fontSize: FONT_SIZE_TITLE,
                             fontWeight: FontWeight.bold)),
                   ),
-                  getLabels(task.labelList),
+                  CompletedTaskLabels(task.labelList),
                   Padding(
                     padding: const EdgeInsets.only(
                         left: PADDING_SMALL, bottom: PADDING_VERY_SMALL),
@@ -107,9 +106,15 @@ class TaskCompletedRow extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget getLabels(List<Label> labelList) {
-    // Changed parameter type
+class CompletedTaskLabels extends StatelessWidget {
+  final List<Label> labelList;
+
+  const CompletedTaskLabels(this.labelList, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
     if (labelList.isEmpty) {
       return Container();
     } else {
