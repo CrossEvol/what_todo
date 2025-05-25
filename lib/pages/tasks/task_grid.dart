@@ -201,7 +201,7 @@ class _TaskGridState extends State<TaskGrid> {
               _buildMenuItem(
                   context, FilteredField.priority, 'Priority', selectedField),
               _buildMenuItem(
-                  context, FilteredField.priority, 'Order', selectedField),
+                  context, FilteredField.order, 'Order', selectedField),
             ];
           },
         ),
@@ -345,6 +345,7 @@ class _TaskGridState extends State<TaskGrid> {
             searchInTitle: result.searchInTitle,
             searchInComment: result.searchInComment,
             filteredField: FilteredField.order,
+            order: SearchResultsOrder.asc,
           ));
     }
   }
