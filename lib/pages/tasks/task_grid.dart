@@ -200,6 +200,8 @@ class _TaskGridState extends State<TaskGrid> {
                   context, FilteredField.status, 'Status', selectedField),
               _buildMenuItem(
                   context, FilteredField.priority, 'Priority', selectedField),
+              _buildMenuItem(
+                  context, FilteredField.priority, 'Order', selectedField),
             ];
           },
         ),
@@ -208,16 +210,18 @@ class _TaskGridState extends State<TaskGrid> {
           onTap: () {
             if (state is SearchResultsState) {
               // Toggle between ascending and descending
-              final currentOrder = state.order ?? Order.asc;
-              final newOrder =
-                  currentOrder == Order.asc ? Order.desc : Order.asc;
+              final currentOrder = state.order ?? SearchResultsOrder.asc;
+              final newOrder = currentOrder == SearchResultsOrder.asc
+                  ? SearchResultsOrder.desc
+                  : SearchResultsOrder.asc;
               context.read<SearchBloc>().add(UpdateSortOrderEvent(newOrder));
             }
           },
           child: Padding(
             padding: const EdgeInsets.only(right: 24),
             child: Icon(
-              state is SearchResultsState && state.order == Order.desc
+              state is SearchResultsState &&
+                      state.order == SearchResultsOrder.desc
                   ? Icons.arrow_downward
                   : Icons.arrow_upward,
               color: Theme.of(context).colorScheme.background,
@@ -340,6 +344,7 @@ class _TaskGridState extends State<TaskGrid> {
             keyword: result.keyword,
             searchInTitle: result.searchInTitle,
             searchInComment: result.searchInComment,
+            filteredField: FilteredField.order,
           ));
     }
   }
@@ -552,7 +557,8 @@ class DoneTaskCard extends StatelessWidget {
                         value: 'undone',
                         child: Row(
                           children: const [
-                            Icon(Icons.replay_circle_filled, color: Colors.orange, size: 20),
+                            Icon(Icons.replay_circle_filled,
+                                color: Colors.orange, size: 20),
                             SizedBox(width: 8),
                             Text('Undo', style: TextStyle(fontSize: 14)),
                           ],
@@ -573,14 +579,19 @@ class DoneTaskCard extends StatelessWidget {
                       if (value == 'edit') {
                         context.push('/task/edit', extra: task);
                       } else if (value == 'undone') {
-                        context.read<SearchBloc>().add(MarkTaskAsUndoneEvent(task!));
+                        context
+                            .read<SearchBloc>()
+                            .add(MarkTaskAsUndoneEvent(task!));
                       } else if (value == 'delete') {
                         final confirm = await showDialog<bool>(
                           context: context,
-                          builder: (context) => DeleteConfirmationDialog(task: task!),
+                          builder: (context) =>
+                              DeleteConfirmationDialog(task: task!),
                         );
                         if (confirm == true) {
-                          context.read<SearchBloc>().add(DeleteTaskEvent(task!));
+                          context
+                              .read<SearchBloc>()
+                              .add(DeleteTaskEvent(task!));
                         }
                       }
                     },
@@ -864,7 +875,8 @@ class UndoneTaskCard extends StatelessWidget {
                         value: 'done',
                         child: Row(
                           children: const [
-                            Icon(Icons.check_circle, color: Colors.green, size: 20),
+                            Icon(Icons.check_circle,
+                                color: Colors.green, size: 20),
                             SizedBox(width: 8),
                             Text('Done', style: TextStyle(fontSize: 14)),
                           ],
@@ -885,11 +897,14 @@ class UndoneTaskCard extends StatelessWidget {
                       if (value == 'edit') {
                         context.push('/task/edit', extra: task);
                       } else if (value == 'done') {
-                        context.read<SearchBloc>().add(MarkTaskAsDoneEvent(task));
+                        context
+                            .read<SearchBloc>()
+                            .add(MarkTaskAsDoneEvent(task));
                       } else if (value == 'delete') {
                         final confirm = await showDialog<bool>(
                           context: context,
-                          builder: (context) => DeleteConfirmationDialog(task: task),
+                          builder: (context) =>
+                              DeleteConfirmationDialog(task: task),
                         );
                         if (confirm == true) {
                           context.read<SearchBloc>().add(DeleteTaskEvent(task));

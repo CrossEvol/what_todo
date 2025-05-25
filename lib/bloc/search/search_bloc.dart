@@ -114,7 +114,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     required bool searchInTitle,
     required bool searchInComment,
     required FilteredField? filteredField,
-    required Order? order,
+    required SearchResultsOrder? order,
     required int page,
   }) async {
     add(SearchTasksEvent(

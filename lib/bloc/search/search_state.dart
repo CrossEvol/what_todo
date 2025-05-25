@@ -7,9 +7,10 @@ enum FilteredField {
   dueDate,
   status,
   priority,
+  order,
 }
 
-enum Order {
+enum SearchResultsOrder {
   asc,
   desc,
 }
@@ -34,7 +35,7 @@ final class SearchResultsState extends SearchState {
   final int totalPages;
   final int totalItems;
   final FilteredField? filteredField;
-  final Order? order;
+  final SearchResultsOrder? order;
 
   const SearchResultsState({
     required this.keyword,

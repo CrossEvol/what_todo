@@ -12,7 +12,7 @@ class SearchTasksEvent extends SearchEvent {
   final bool searchInTitle;
   final bool searchInComment;
   final FilteredField? filteredField;
-  final Order? order;
+  final SearchResultsOrder? order;
   final int page;
 
   const SearchTasksEvent({
@@ -40,7 +40,7 @@ class UpdateSortFieldEvent extends SearchEvent {
 }
 
 class UpdateSortOrderEvent extends SearchEvent {
-  final Order order;
+  final SearchResultsOrder order;
   
   const UpdateSortOrderEvent(this.order);
   

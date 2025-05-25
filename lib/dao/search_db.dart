@@ -42,7 +42,7 @@ class SearchDB {
     required bool searchInTitle,
     required bool searchInComment,
     FilteredField? filteredField,
-    Order? order,
+    SearchResultsOrder? order,
     required int page,
     required int itemsPerPage,
   }) async {
@@ -84,37 +84,43 @@ class SearchDB {
         case FilteredField.id:
           orderingTerm = OrderingTerm(
             expression: _db.task.id,
-            mode: order == Order.asc ? OrderingMode.asc : OrderingMode.desc,
+            mode: order == SearchResultsOrder.asc ? OrderingMode.asc : OrderingMode.desc,
           );
           break;
         case FilteredField.title:
           orderingTerm = OrderingTerm(
             expression: _db.task.title,
-            mode: order == Order.asc ? OrderingMode.asc : OrderingMode.desc,
+            mode: order == SearchResultsOrder.asc ? OrderingMode.asc : OrderingMode.desc,
           );
           break;
         case FilteredField.project:
           orderingTerm = OrderingTerm(
             expression: _db.project.name,
-            mode: order == Order.asc ? OrderingMode.asc : OrderingMode.desc,
+            mode: order == SearchResultsOrder.asc ? OrderingMode.asc : OrderingMode.desc,
           );
           break;
         case FilteredField.dueDate:
           orderingTerm = OrderingTerm(
             expression: _db.task.dueDate,
-            mode: order == Order.asc ? OrderingMode.asc : OrderingMode.desc,
+            mode: order == SearchResultsOrder.asc ? OrderingMode.asc : OrderingMode.desc,
           );
           break;
         case FilteredField.status:
           orderingTerm = OrderingTerm(
             expression: _db.task.status,
-            mode: order == Order.asc ? OrderingMode.asc : OrderingMode.desc,
+            mode: order == SearchResultsOrder.asc ? OrderingMode.asc : OrderingMode.desc,
           );
           break;
         case FilteredField.priority:
           orderingTerm = OrderingTerm(
             expression: _db.task.priority,
-            mode: order == Order.asc ? OrderingMode.asc : OrderingMode.desc,
+            mode: order == SearchResultsOrder.asc ? OrderingMode.asc : OrderingMode.desc,
+          );
+          break;
+        case FilteredField.order:
+          orderingTerm = OrderingTerm(
+            expression: _db.task.order,
+            mode: order == SearchResultsOrder.asc ? OrderingMode.asc : OrderingMode.desc,
           );
           break;
       }
@@ -229,7 +235,7 @@ class SearchDB {
         conditions.add(_db.task.title.like('%$keyword%'));
       }
 
-      if (searchInComment && _db.task.comment != null) {
+      if (searchInComment) {
         conditions.add(_db.task.comment.like('%$keyword%'));
       }
 
@@ -374,7 +380,7 @@ class SearchDB {
 
     return labels;
   }
-  
+
   /// Mark a task as done (completed)
   Future<bool> markTaskAsDone(int taskId) async {
     try {
@@ -409,8 +415,9 @@ class SearchDB {
   Future<bool> deleteTask(int taskId) async {
     try {
       // First delete any related task-label associations
-      await (_db.delete(_db.taskLabel)..where((tl) => tl.taskId.equals(taskId))).go();
-      
+      await (_db.delete(_db.taskLabel)..where((tl) => tl.taskId.equals(taskId)))
+          .go();
+
       // Then delete the task itself
       await (_db.delete(_db.task)..where((t) => t.id.equals(taskId))).go();
       return true;
