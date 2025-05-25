@@ -78,52 +78,20 @@ class SearchDB {
 
     // Apply sorting
     if (filteredField != null) {
-      OrderingTerm orderingTerm;
-
-      switch (filteredField) {
-        case FilteredField.id:
-          orderingTerm = OrderingTerm(
-            expression: _db.task.id,
-            mode: order == SearchResultsOrder.asc ? OrderingMode.asc : OrderingMode.desc,
-          );
-          break;
-        case FilteredField.title:
-          orderingTerm = OrderingTerm(
-            expression: _db.task.title,
-            mode: order == SearchResultsOrder.asc ? OrderingMode.asc : OrderingMode.desc,
-          );
-          break;
-        case FilteredField.project:
-          orderingTerm = OrderingTerm(
-            expression: _db.project.name,
-            mode: order == SearchResultsOrder.asc ? OrderingMode.asc : OrderingMode.desc,
-          );
-          break;
-        case FilteredField.dueDate:
-          orderingTerm = OrderingTerm(
-            expression: _db.task.dueDate,
-            mode: order == SearchResultsOrder.asc ? OrderingMode.asc : OrderingMode.desc,
-          );
-          break;
-        case FilteredField.status:
-          orderingTerm = OrderingTerm(
-            expression: _db.task.status,
-            mode: order == SearchResultsOrder.asc ? OrderingMode.asc : OrderingMode.desc,
-          );
-          break;
-        case FilteredField.priority:
-          orderingTerm = OrderingTerm(
-            expression: _db.task.priority,
-            mode: order == SearchResultsOrder.asc ? OrderingMode.asc : OrderingMode.desc,
-          );
-          break;
-        case FilteredField.order:
-          orderingTerm = OrderingTerm(
-            expression: _db.task.order,
-            mode: order == SearchResultsOrder.asc ? OrderingMode.asc : OrderingMode.desc,
-          );
-          break;
-      }
+      final orderingTerm = OrderingTerm(
+        mode: order == SearchResultsOrder.asc
+            ? OrderingMode.asc
+            : OrderingMode.desc,
+        expression: switch (filteredField) {
+          FilteredField.id => _db.task.id,
+          FilteredField.title => _db.task.title,
+          FilteredField.project => _db.project.name,
+          FilteredField.dueDate => _db.task.dueDate,
+          FilteredField.status => _db.task.status,
+          FilteredField.priority => _db.task.priority,
+          FilteredField.order => _db.task.order,
+        },
+      );
 
       query.orderBy([orderingTerm]);
     } else {
