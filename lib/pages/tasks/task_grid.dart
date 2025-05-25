@@ -174,7 +174,7 @@ class _TaskGridState extends State<TaskGrid> {
         PopupMenuButton<FilteredField>(
           icon: Icon(
             Icons.sort,
-            color: Theme.of(context).colorScheme.background,
+            color: Theme.of(context).colorScheme.surface,
             size: 36,
           ),
           padding: const EdgeInsets.only(top: -8, right: 24),
@@ -224,7 +224,7 @@ class _TaskGridState extends State<TaskGrid> {
                       state.order == SearchResultsOrder.desc
                   ? Icons.arrow_downward
                   : Icons.arrow_upward,
-              color: Theme.of(context).colorScheme.background,
+              color: Theme.of(context).colorScheme.surface,
               size: 36,
             ),
           ),
