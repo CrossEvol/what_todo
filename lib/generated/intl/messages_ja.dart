@@ -154,6 +154,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "takePhoto": MessageLookupByLibrary.simpleMessage("写真を撮影"),
     "taskCompleted": MessageLookupByLibrary.simpleMessage("タスクを完了しました"),
     "taskDeleted": MessageLookupByLibrary.simpleMessage("タスクを削除しました"),
+    "taskGrid": MessageLookupByLibrary.simpleMessage("タスクグリッド"),
     "taskTitle": MessageLookupByLibrary.simpleMessage("タイトル"),
     "tasks": MessageLookupByLibrary.simpleMessage("タスク"),
     "titleCannotBeEmpty": MessageLookupByLibrary.simpleMessage("タイトルを入力してください"),

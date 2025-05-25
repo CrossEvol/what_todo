@@ -175,6 +175,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "takePhoto": MessageLookupByLibrary.simpleMessage("Take Photo"),
     "taskCompleted": MessageLookupByLibrary.simpleMessage("Task completed"),
     "taskDeleted": MessageLookupByLibrary.simpleMessage("Task deleted"),
+    "taskGrid": MessageLookupByLibrary.simpleMessage("Task Grid"),
     "taskTitle": MessageLookupByLibrary.simpleMessage("Title"),
     "tasks": MessageLookupByLibrary.simpleMessage("Tasks"),
     "titleCannotBeEmpty": MessageLookupByLibrary.simpleMessage(

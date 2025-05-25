@@ -756,6 +756,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Controls'**
   String get controls;
+
+  /// Title for the task grid view
+  ///
+  /// In en, this message translates to:
+  /// **'Task Grid'**
+  String get taskGrid;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

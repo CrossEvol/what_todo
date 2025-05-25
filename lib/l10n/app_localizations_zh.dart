@@ -343,4 +343,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get controls => '控制項';
+
+  @override
+  String get taskGrid => '任务网格';
 }

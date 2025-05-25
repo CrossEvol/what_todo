@@ -144,12 +144,12 @@ class GridsExpansionTile extends StatelessWidget {
         },
         leading: Icon(Icons.task_alt_outlined),
         title: Text(
-          "Task Grid",
+          AppLocalizations.of(context)!.taskGrid,
           style: TextStyle(
             fontSize: 14.0,
             fontWeight: FontWeight.w500,
           ),
-          key: ValueKey(SideDrawerKeys.TASK_GRID),
+          key: ValueKey(SideDrawerKeys.TASK_GRID_TITLE),
         ),
       ),
     );

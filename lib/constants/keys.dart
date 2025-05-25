@@ -23,6 +23,7 @@ class SideDrawerKeys {
   static const TASK_GRID = 'task_grid';
   static const DRAWER_GRIDS = 'drawerGrids';
   static const UNKNOWN = 'unknown';
+  static const TASK_GRID_TITLE = 'taskGridTitle';
 }
 
 class ShardPrefKeys {

@@ -140,6 +140,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "takePhoto": MessageLookupByLibrary.simpleMessage("拍照"),
     "taskCompleted": MessageLookupByLibrary.simpleMessage("任务已完成"),
     "taskDeleted": MessageLookupByLibrary.simpleMessage("任务已删除"),
+    "taskGrid": MessageLookupByLibrary.simpleMessage("任务网格"),
     "taskTitle": MessageLookupByLibrary.simpleMessage("标题"),
     "tasks": MessageLookupByLibrary.simpleMessage("任务"),
     "titleCannotBeEmpty": MessageLookupByLibrary.simpleMessage("标题不能为空"),

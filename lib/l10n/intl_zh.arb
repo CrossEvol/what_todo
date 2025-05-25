@@ -449,5 +449,9 @@
   "controls": "控制項",
   "@controls": {
     "description": "Text for Control ExpandTile in SideDrawer"
+  },
+  "taskGrid": "任务网格",
+  "@taskGrid": {
+    "description": "任务网格视图的标题"
   }
 }

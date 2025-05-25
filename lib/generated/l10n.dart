@@ -1155,6 +1155,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Task Grid`
+  String get taskGrid {
+    return Intl.message(
+      'Task Grid',
+      name: 'taskGrid',
+      desc: 'Title for the task grid view',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

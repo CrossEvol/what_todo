@@ -449,5 +449,9 @@
   "controls": "コントロール",
   "@controls": {
     "description": "Text for Control ExpandTile in SideDrawer"
+  },
+  "taskGrid": "タスクグリッド",
+  "@taskGrid": {
+    "description": "タスクグリッドビューのタイトル"
   }
 }

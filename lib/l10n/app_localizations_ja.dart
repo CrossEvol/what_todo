@@ -343,4 +343,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get controls => 'コントロール';
+
+  @override
+  String get taskGrid => 'タスクグリッド';
 }

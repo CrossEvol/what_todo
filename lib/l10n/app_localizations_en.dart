@@ -343,4 +343,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get controls => 'Controls';
+
+  @override
+  String get taskGrid => 'Task Grid';
 }
