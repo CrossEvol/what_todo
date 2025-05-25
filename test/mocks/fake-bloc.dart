@@ -4,6 +4,7 @@ import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/profile/profile_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
+import 'package:flutter_app/bloc/search/search_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -27,6 +28,9 @@ class MockSettingsBloc extends MockBloc<SettingsEvent, SettingsState>
 
 class MockTaskBloc extends MockBloc<TaskEvent, TaskState> implements TaskBloc {}
 
+class MockSearchBloc extends MockBloc<SearchEvent, SearchState>
+    implements SearchBloc {}
+
 void main() {
   test('create mock BLOCs', () {
     var adminBloc = MockAdminBloc();
@@ -36,5 +40,6 @@ void main() {
     var projectBloc = MockProjectBloc();
     var settingsBloc = MockSettingsBloc();
     var taskBloc = MockTaskBloc();
+    var searchBloc = MockTaskBloc();
   });
 }

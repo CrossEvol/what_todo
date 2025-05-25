@@ -3,18 +3,20 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i4;
+import 'dart:async' as _i5;
 
-import 'package:flutter_app/pages/labels/label.dart' as _i5;
-import 'package:flutter_app/pages/labels/label_db.dart' as _i3;
-import 'package:flutter_app/pages/profile/profile.dart' as _i8;
-import 'package:flutter_app/pages/profile/profile_db.dart' as _i7;
+import 'package:flutter_app/bloc/search/search_bloc.dart' as _i14;
+import 'package:flutter_app/dao/search_db.dart' as _i3;
+import 'package:flutter_app/pages/labels/label.dart' as _i6;
+import 'package:flutter_app/pages/labels/label_db.dart' as _i4;
+import 'package:flutter_app/pages/profile/profile.dart' as _i9;
+import 'package:flutter_app/pages/profile/profile_db.dart' as _i8;
 import 'package:flutter_app/pages/projects/project.dart' as _i2;
-import 'package:flutter_app/pages/projects/project_db.dart' as _i6;
-import 'package:flutter_app/pages/settings/setting.dart' as _i10;
-import 'package:flutter_app/pages/settings/settings_db.dart' as _i9;
-import 'package:flutter_app/pages/tasks/models/task.dart' as _i12;
-import 'package:flutter_app/pages/tasks/task_db.dart' as _i11;
+import 'package:flutter_app/pages/projects/project_db.dart' as _i7;
+import 'package:flutter_app/pages/settings/setting.dart' as _i11;
+import 'package:flutter_app/pages/settings/settings_db.dart' as _i10;
+import 'package:flutter_app/pages/tasks/models/task.dart' as _i13;
+import 'package:flutter_app/pages/tasks/task_db.dart' as _i12;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -41,114 +43,124 @@ class _FakeProject_0 extends _i1.SmartFake implements _i2.Project {
         );
 }
 
+class _FakeSearchResult_1 extends _i1.SmartFake implements _i3.SearchResult {
+  _FakeSearchResult_1(
+    Object parent,
+    Invocation parentInvocation,
+  ) : super(
+          parent,
+          parentInvocation,
+        );
+}
+
 /// A class which mocks [LabelDB].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockLabelDB extends _i1.Mock implements _i3.LabelDB {
+class MockLabelDB extends _i1.Mock implements _i4.LabelDB {
   @override
-  _i4.Future<bool> isLabelExists(_i5.Label? label) => (super.noSuchMethod(
+  _i5.Future<bool> isLabelExists(_i6.Label? label) => (super.noSuchMethod(
         Invocation.method(
           #isLabelExists,
           [label],
         ),
-        returnValue: _i4.Future<bool>.value(false),
-        returnValueForMissingStub: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i4.Future<dynamic> insertLabel(_i5.Label? label) => (super.noSuchMethod(
+  _i5.Future<dynamic> insertLabel(_i6.Label? label) => (super.noSuchMethod(
         Invocation.method(
           #insertLabel,
           [label],
         ),
-        returnValue: _i4.Future<dynamic>.value(),
-        returnValueForMissingStub: _i4.Future<dynamic>.value(),
-      ) as _i4.Future<dynamic>);
+        returnValue: _i5.Future<dynamic>.value(),
+        returnValueForMissingStub: _i5.Future<dynamic>.value(),
+      ) as _i5.Future<dynamic>);
 
   @override
-  _i4.Future<dynamic> updateLabel(_i5.Label? label) => (super.noSuchMethod(
+  _i5.Future<dynamic> updateLabel(_i6.Label? label) => (super.noSuchMethod(
         Invocation.method(
           #updateLabel,
           [label],
         ),
-        returnValue: _i4.Future<dynamic>.value(),
-        returnValueForMissingStub: _i4.Future<dynamic>.value(),
-      ) as _i4.Future<dynamic>);
+        returnValue: _i5.Future<dynamic>.value(),
+        returnValueForMissingStub: _i5.Future<dynamic>.value(),
+      ) as _i5.Future<dynamic>);
 
   @override
-  _i4.Future<List<_i5.Label>> getLabels() => (super.noSuchMethod(
+  _i5.Future<List<_i6.Label>> getLabels() => (super.noSuchMethod(
         Invocation.method(
           #getLabels,
           [],
         ),
-        returnValue: _i4.Future<List<_i5.Label>>.value(<_i5.Label>[]),
+        returnValue: _i5.Future<List<_i6.Label>>.value(<_i6.Label>[]),
         returnValueForMissingStub:
-            _i4.Future<List<_i5.Label>>.value(<_i5.Label>[]),
-      ) as _i4.Future<List<_i5.Label>>);
+            _i5.Future<List<_i6.Label>>.value(<_i6.Label>[]),
+      ) as _i5.Future<List<_i6.Label>>);
 
   @override
-  _i4.Future<List<_i5.LabelWithCount>> getLabelsWithCount() =>
+  _i5.Future<List<_i6.LabelWithCount>> getLabelsWithCount() =>
       (super.noSuchMethod(
         Invocation.method(
           #getLabelsWithCount,
           [],
         ),
         returnValue:
-            _i4.Future<List<_i5.LabelWithCount>>.value(<_i5.LabelWithCount>[]),
+            _i5.Future<List<_i6.LabelWithCount>>.value(<_i6.LabelWithCount>[]),
         returnValueForMissingStub:
-            _i4.Future<List<_i5.LabelWithCount>>.value(<_i5.LabelWithCount>[]),
-      ) as _i4.Future<List<_i5.LabelWithCount>>);
+            _i5.Future<List<_i6.LabelWithCount>>.value(<_i6.LabelWithCount>[]),
+      ) as _i5.Future<List<_i6.LabelWithCount>>);
 
   @override
-  _i4.Future<List<_i5.Label>> getLabelsByNames(List<String>? labelNames) =>
+  _i5.Future<List<_i6.Label>> getLabelsByNames(List<String>? labelNames) =>
       (super.noSuchMethod(
         Invocation.method(
           #getLabelsByNames,
           [labelNames],
         ),
-        returnValue: _i4.Future<List<_i5.Label>>.value(<_i5.Label>[]),
+        returnValue: _i5.Future<List<_i6.Label>>.value(<_i6.Label>[]),
         returnValueForMissingStub:
-            _i4.Future<List<_i5.Label>>.value(<_i5.Label>[]),
-      ) as _i4.Future<List<_i5.Label>>);
+            _i5.Future<List<_i6.Label>>.value(<_i6.Label>[]),
+      ) as _i5.Future<List<_i6.Label>>);
 
   @override
-  _i4.Future<bool> deleteLabel(int? labelId) => (super.noSuchMethod(
+  _i5.Future<bool> deleteLabel(int? labelId) => (super.noSuchMethod(
         Invocation.method(
           #deleteLabel,
           [labelId],
         ),
-        returnValue: _i4.Future<bool>.value(false),
-        returnValueForMissingStub: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 }
 
 /// A class which mocks [ProjectDB].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockProjectDB extends _i1.Mock implements _i6.ProjectDB {
+class MockProjectDB extends _i1.Mock implements _i7.ProjectDB {
   @override
-  _i4.Future<bool> isProjectExists(_i2.Project? project) => (super.noSuchMethod(
+  _i5.Future<bool> isProjectExists(_i2.Project? project) => (super.noSuchMethod(
         Invocation.method(
           #isProjectExists,
           [project],
         ),
-        returnValue: _i4.Future<bool>.value(false),
-        returnValueForMissingStub: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i4.Future<dynamic> insertProject(_i2.Project? project) =>
+  _i5.Future<dynamic> insertProject(_i2.Project? project) =>
       (super.noSuchMethod(
         Invocation.method(
           #insertProject,
           [project],
         ),
-        returnValue: _i4.Future<dynamic>.value(),
-        returnValueForMissingStub: _i4.Future<dynamic>.value(),
-      ) as _i4.Future<dynamic>);
+        returnValue: _i5.Future<dynamic>.value(),
+        returnValueForMissingStub: _i5.Future<dynamic>.value(),
+      ) as _i5.Future<dynamic>);
 
   @override
-  _i4.Future<_i2.Project> getProject({
+  _i5.Future<_i2.Project> getProject({
     required int? id,
     bool? isInboxVisible = true,
   }) =>
@@ -161,7 +173,7 @@ class MockProjectDB extends _i1.Mock implements _i6.ProjectDB {
             #isInboxVisible: isInboxVisible,
           },
         ),
-        returnValue: _i4.Future<_i2.Project>.value(_FakeProject_0(
+        returnValue: _i5.Future<_i2.Project>.value(_FakeProject_0(
           this,
           Invocation.method(
             #getProject,
@@ -172,7 +184,7 @@ class MockProjectDB extends _i1.Mock implements _i6.ProjectDB {
             },
           ),
         )),
-        returnValueForMissingStub: _i4.Future<_i2.Project>.value(_FakeProject_0(
+        returnValueForMissingStub: _i5.Future<_i2.Project>.value(_FakeProject_0(
           this,
           Invocation.method(
             #getProject,
@@ -183,181 +195,181 @@ class MockProjectDB extends _i1.Mock implements _i6.ProjectDB {
             },
           ),
         )),
-      ) as _i4.Future<_i2.Project>);
+      ) as _i5.Future<_i2.Project>);
 
   @override
-  _i4.Future<List<_i2.Project>> getProjects({bool? isInboxVisible = true}) =>
+  _i5.Future<List<_i2.Project>> getProjects({bool? isInboxVisible = true}) =>
       (super.noSuchMethod(
         Invocation.method(
           #getProjects,
           [],
           {#isInboxVisible: isInboxVisible},
         ),
-        returnValue: _i4.Future<List<_i2.Project>>.value(<_i2.Project>[]),
+        returnValue: _i5.Future<List<_i2.Project>>.value(<_i2.Project>[]),
         returnValueForMissingStub:
-            _i4.Future<List<_i2.Project>>.value(<_i2.Project>[]),
-      ) as _i4.Future<List<_i2.Project>>);
+            _i5.Future<List<_i2.Project>>.value(<_i2.Project>[]),
+      ) as _i5.Future<List<_i2.Project>>);
 
   @override
-  _i4.Future<List<_i2.ProjectWithCount>> getProjectsWithCount() =>
+  _i5.Future<List<_i2.ProjectWithCount>> getProjectsWithCount() =>
       (super.noSuchMethod(
         Invocation.method(
           #getProjectsWithCount,
           [],
         ),
-        returnValue: _i4.Future<List<_i2.ProjectWithCount>>.value(
+        returnValue: _i5.Future<List<_i2.ProjectWithCount>>.value(
             <_i2.ProjectWithCount>[]),
-        returnValueForMissingStub: _i4.Future<List<_i2.ProjectWithCount>>.value(
+        returnValueForMissingStub: _i5.Future<List<_i2.ProjectWithCount>>.value(
             <_i2.ProjectWithCount>[]),
-      ) as _i4.Future<List<_i2.ProjectWithCount>>);
+      ) as _i5.Future<List<_i2.ProjectWithCount>>);
 
   @override
-  _i4.Future<dynamic> upsertProject(_i2.Project? project) =>
+  _i5.Future<dynamic> upsertProject(_i2.Project? project) =>
       (super.noSuchMethod(
         Invocation.method(
           #upsertProject,
           [project],
         ),
-        returnValue: _i4.Future<dynamic>.value(),
-        returnValueForMissingStub: _i4.Future<dynamic>.value(),
-      ) as _i4.Future<dynamic>);
+        returnValue: _i5.Future<dynamic>.value(),
+        returnValueForMissingStub: _i5.Future<dynamic>.value(),
+      ) as _i5.Future<dynamic>);
 
   @override
-  _i4.Future<bool> moveTasksToInbox(int? projectID) => (super.noSuchMethod(
+  _i5.Future<bool> moveTasksToInbox(int? projectID) => (super.noSuchMethod(
         Invocation.method(
           #moveTasksToInbox,
           [projectID],
         ),
-        returnValue: _i4.Future<bool>.value(false),
-        returnValueForMissingStub: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i4.Future<bool> deleteProject(int? projectID) => (super.noSuchMethod(
+  _i5.Future<bool> deleteProject(int? projectID) => (super.noSuchMethod(
         Invocation.method(
           #deleteProject,
           [projectID],
         ),
-        returnValue: _i4.Future<bool>.value(false),
-        returnValueForMissingStub: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i4.Future<void> importProjects(Set<String>? projectNames) =>
+  _i5.Future<void> importProjects(Set<String>? projectNames) =>
       (super.noSuchMethod(
         Invocation.method(
           #importProjects,
           [projectNames],
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 }
 
 /// A class which mocks [ProfileDB].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockProfileDB extends _i1.Mock implements _i7.ProfileDB {
+class MockProfileDB extends _i1.Mock implements _i8.ProfileDB {
   @override
-  _i4.Future<_i8.UserProfile?> findByID(int? profileId) => (super.noSuchMethod(
+  _i5.Future<_i9.UserProfile?> findByID(int? profileId) => (super.noSuchMethod(
         Invocation.method(
           #findByID,
           [profileId],
         ),
-        returnValue: _i4.Future<_i8.UserProfile?>.value(),
-        returnValueForMissingStub: _i4.Future<_i8.UserProfile?>.value(),
-      ) as _i4.Future<_i8.UserProfile?>);
+        returnValue: _i5.Future<_i9.UserProfile?>.value(),
+        returnValueForMissingStub: _i5.Future<_i9.UserProfile?>.value(),
+      ) as _i5.Future<_i9.UserProfile?>);
 
   @override
-  _i4.Future<bool> updateOne(_i8.UserProfile? profile) => (super.noSuchMethod(
+  _i5.Future<bool> updateOne(_i9.UserProfile? profile) => (super.noSuchMethod(
         Invocation.method(
           #updateOne,
           [profile],
         ),
-        returnValue: _i4.Future<bool>.value(false),
-        returnValueForMissingStub: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 }
 
 /// A class which mocks [SettingsDB].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSettingsDB extends _i1.Mock implements _i9.SettingsDB {
+class MockSettingsDB extends _i1.Mock implements _i10.SettingsDB {
   @override
-  _i4.Future<_i10.Setting?> findByName(String? settingKey) =>
+  _i5.Future<_i11.Setting?> findByName(String? settingKey) =>
       (super.noSuchMethod(
         Invocation.method(
           #findByName,
           [settingKey],
         ),
-        returnValue: _i4.Future<_i10.Setting?>.value(),
-        returnValueForMissingStub: _i4.Future<_i10.Setting?>.value(),
-      ) as _i4.Future<_i10.Setting?>);
+        returnValue: _i5.Future<_i11.Setting?>.value(),
+        returnValueForMissingStub: _i5.Future<_i11.Setting?>.value(),
+      ) as _i5.Future<_i11.Setting?>);
 
   @override
-  _i4.Future<bool> updateSetting(_i10.Setting? setting) => (super.noSuchMethod(
+  _i5.Future<bool> updateSetting(_i11.Setting? setting) => (super.noSuchMethod(
         Invocation.method(
           #updateSetting,
           [setting],
         ),
-        returnValue: _i4.Future<bool>.value(false),
-        returnValueForMissingStub: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i4.Future<bool> createSetting(_i10.Setting? setting) => (super.noSuchMethod(
+  _i5.Future<bool> createSetting(_i11.Setting? setting) => (super.noSuchMethod(
         Invocation.method(
           #createSetting,
           [setting],
         ),
-        returnValue: _i4.Future<bool>.value(false),
-        returnValueForMissingStub: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 }
 
 /// A class which mocks [TaskDB].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockTaskDB extends _i1.Mock implements _i11.TaskDB {
+class MockTaskDB extends _i1.Mock implements _i12.TaskDB {
   @override
-  _i4.Future<int> countToday() => (super.noSuchMethod(
+  _i5.Future<int> countToday() => (super.noSuchMethod(
         Invocation.method(
           #countToday,
           [],
         ),
-        returnValue: _i4.Future<int>.value(0),
-        returnValueForMissingStub: _i4.Future<int>.value(0),
-      ) as _i4.Future<int>);
+        returnValue: _i5.Future<int>.value(0),
+        returnValueForMissingStub: _i5.Future<int>.value(0),
+      ) as _i5.Future<int>);
 
   @override
-  _i4.Future<List<_i12.ExportTask>> getExports() => (super.noSuchMethod(
+  _i5.Future<List<_i13.ExportTask>> getExports() => (super.noSuchMethod(
         Invocation.method(
           #getExports,
           [],
         ),
         returnValue:
-            _i4.Future<List<_i12.ExportTask>>.value(<_i12.ExportTask>[]),
+            _i5.Future<List<_i13.ExportTask>>.value(<_i13.ExportTask>[]),
         returnValueForMissingStub:
-            _i4.Future<List<_i12.ExportTask>>.value(<_i12.ExportTask>[]),
-      ) as _i4.Future<List<_i12.ExportTask>>);
+            _i5.Future<List<_i13.ExportTask>>.value(<_i13.ExportTask>[]),
+      ) as _i5.Future<List<_i13.ExportTask>>);
 
   @override
-  _i4.Future<Map<String, dynamic>> getExportDataV1() => (super.noSuchMethod(
+  _i5.Future<Map<String, dynamic>> getExportDataV1() => (super.noSuchMethod(
         Invocation.method(
           #getExportDataV1,
           [],
         ),
         returnValue:
-            _i4.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+            _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
         returnValueForMissingStub:
-            _i4.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
-      ) as _i4.Future<Map<String, dynamic>>);
+            _i5.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
+      ) as _i5.Future<Map<String, dynamic>>);
 
   @override
-  _i4.Future<List<_i12.Task>> getTasks({
+  _i5.Future<List<_i13.Task>> getTasks({
     int? startDate = 0,
     int? endDate = 0,
-    _i12.TaskStatus? taskStatus,
+    _i13.TaskStatus? taskStatus,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -369,15 +381,15 @@ class MockTaskDB extends _i1.Mock implements _i11.TaskDB {
             #taskStatus: taskStatus,
           },
         ),
-        returnValue: _i4.Future<List<_i12.Task>>.value(<_i12.Task>[]),
+        returnValue: _i5.Future<List<_i13.Task>>.value(<_i13.Task>[]),
         returnValueForMissingStub:
-            _i4.Future<List<_i12.Task>>.value(<_i12.Task>[]),
-      ) as _i4.Future<List<_i12.Task>>);
+            _i5.Future<List<_i13.Task>>.value(<_i13.Task>[]),
+      ) as _i5.Future<List<_i13.Task>>);
 
   @override
-  _i4.Future<List<_i12.Task>> getTasksByProject(
+  _i5.Future<List<_i13.Task>> getTasksByProject(
     int? projectId, {
-    _i12.TaskStatus? status,
+    _i13.TaskStatus? status,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -385,15 +397,15 @@ class MockTaskDB extends _i1.Mock implements _i11.TaskDB {
           [projectId],
           {#status: status},
         ),
-        returnValue: _i4.Future<List<_i12.Task>>.value(<_i12.Task>[]),
+        returnValue: _i5.Future<List<_i13.Task>>.value(<_i13.Task>[]),
         returnValueForMissingStub:
-            _i4.Future<List<_i12.Task>>.value(<_i12.Task>[]),
-      ) as _i4.Future<List<_i12.Task>>);
+            _i5.Future<List<_i13.Task>>.value(<_i13.Task>[]),
+      ) as _i5.Future<List<_i13.Task>>);
 
   @override
-  _i4.Future<List<_i12.Task>> getTasksByLabel(
+  _i5.Future<List<_i13.Task>> getTasksByLabel(
     String? labelName, {
-    _i12.TaskStatus? status,
+    _i13.TaskStatus? status,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -401,25 +413,25 @@ class MockTaskDB extends _i1.Mock implements _i11.TaskDB {
           [labelName],
           {#status: status},
         ),
-        returnValue: _i4.Future<List<_i12.Task>>.value(<_i12.Task>[]),
+        returnValue: _i5.Future<List<_i13.Task>>.value(<_i13.Task>[]),
         returnValueForMissingStub:
-            _i4.Future<List<_i12.Task>>.value(<_i12.Task>[]),
-      ) as _i4.Future<List<_i12.Task>>);
+            _i5.Future<List<_i13.Task>>.value(<_i13.Task>[]),
+      ) as _i5.Future<List<_i13.Task>>);
 
   @override
-  _i4.Future<bool> deleteTask(int? taskID) => (super.noSuchMethod(
+  _i5.Future<bool> deleteTask(int? taskID) => (super.noSuchMethod(
         Invocation.method(
           #deleteTask,
           [taskID],
         ),
-        returnValue: _i4.Future<bool>.value(false),
-        returnValueForMissingStub: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i4.Future<bool> updateTaskStatus(
+  _i5.Future<bool> updateTaskStatus(
     int? taskID,
-    _i12.TaskStatus? status,
+    _i13.TaskStatus? status,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -429,12 +441,12 @@ class MockTaskDB extends _i1.Mock implements _i11.TaskDB {
             status,
           ],
         ),
-        returnValue: _i4.Future<bool>.value(false),
-        returnValueForMissingStub: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i4.Future<bool> updateOrder({
+  _i5.Future<bool> updateOrder({
     required int? taskID,
     required int? order,
     required bool? findPrev,
@@ -449,13 +461,13 @@ class MockTaskDB extends _i1.Mock implements _i11.TaskDB {
             #findPrev: findPrev,
           },
         ),
-        returnValue: _i4.Future<bool>.value(false),
-        returnValueForMissingStub: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i4.Future<int> createTask(
-    _i12.Task? task, {
+  _i5.Future<int> createTask(
+    _i13.Task? task, {
     List<int>? labelIDs,
   }) =>
       (super.noSuchMethod(
@@ -464,13 +476,13 @@ class MockTaskDB extends _i1.Mock implements _i11.TaskDB {
           [task],
           {#labelIDs: labelIDs},
         ),
-        returnValue: _i4.Future<int>.value(0),
-        returnValueForMissingStub: _i4.Future<int>.value(0),
-      ) as _i4.Future<int>);
+        returnValue: _i5.Future<int>.value(0),
+        returnValueForMissingStub: _i5.Future<int>.value(0),
+      ) as _i5.Future<int>);
 
   @override
-  _i4.Future<bool> updateTask(
-    _i12.Task? task, {
+  _i5.Future<bool> updateTask(
+    _i13.Task? task, {
     List<int>? labelIDs,
   }) =>
       (super.noSuchMethod(
@@ -479,50 +491,207 @@ class MockTaskDB extends _i1.Mock implements _i11.TaskDB {
           [task],
           {#labelIDs: labelIDs},
         ),
-        returnValue: _i4.Future<bool>.value(false),
-        returnValueForMissingStub: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i4.Future<bool> updateExpiredTasks(int? todayStartTime) =>
+  _i5.Future<bool> updateExpiredTasks(int? todayStartTime) =>
       (super.noSuchMethod(
         Invocation.method(
           #updateExpiredTasks,
           [todayStartTime],
         ),
-        returnValue: _i4.Future<bool>.value(false),
-        returnValueForMissingStub: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i4.Future<bool> updateInboxTasksToToday() => (super.noSuchMethod(
+  _i5.Future<bool> updateInboxTasksToToday() => (super.noSuchMethod(
         Invocation.method(
           #updateInboxTasksToToday,
           [],
         ),
-        returnValue: _i4.Future<bool>.value(false),
-        returnValueForMissingStub: _i4.Future<bool>.value(false),
-      ) as _i4.Future<bool>);
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 
   @override
-  _i4.Future<void> importTasks(List<Map<String, dynamic>>? taskMaps) =>
+  _i5.Future<void> importTasks(List<Map<String, dynamic>>? taskMaps) =>
       (super.noSuchMethod(
         Invocation.method(
           #importTasks,
           [taskMaps],
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
 
   @override
-  _i4.Future<void> importDataV1(Map<String, dynamic>? data) =>
+  _i5.Future<void> importDataV1(Map<String, dynamic>? data) =>
       (super.noSuchMethod(
         Invocation.method(
           #importDataV1,
           [data],
         ),
-        returnValue: _i4.Future<void>.value(),
-        returnValueForMissingStub: _i4.Future<void>.value(),
-      ) as _i4.Future<void>);
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+}
+
+/// A class which mocks [SearchDB].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockSearchDB extends _i1.Mock implements _i3.SearchDB {
+  @override
+  _i5.Future<_i3.SearchResult> searchTasks({
+    required String? keyword,
+    required bool? searchInTitle,
+    required bool? searchInComment,
+    _i14.FilteredField? filteredField,
+    _i14.SearchResultsOrder? order,
+    required int? page,
+    required int? itemsPerPage,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #searchTasks,
+          [],
+          {
+            #keyword: keyword,
+            #searchInTitle: searchInTitle,
+            #searchInComment: searchInComment,
+            #filteredField: filteredField,
+            #order: order,
+            #page: page,
+            #itemsPerPage: itemsPerPage,
+          },
+        ),
+        returnValue: _i5.Future<_i3.SearchResult>.value(_FakeSearchResult_1(
+          this,
+          Invocation.method(
+            #searchTasks,
+            [],
+            {
+              #keyword: keyword,
+              #searchInTitle: searchInTitle,
+              #searchInComment: searchInComment,
+              #filteredField: filteredField,
+              #order: order,
+              #page: page,
+              #itemsPerPage: itemsPerPage,
+            },
+          ),
+        )),
+        returnValueForMissingStub:
+            _i5.Future<_i3.SearchResult>.value(_FakeSearchResult_1(
+          this,
+          Invocation.method(
+            #searchTasks,
+            [],
+            {
+              #keyword: keyword,
+              #searchInTitle: searchInTitle,
+              #searchInComment: searchInComment,
+              #filteredField: filteredField,
+              #order: order,
+              #page: page,
+              #itemsPerPage: itemsPerPage,
+            },
+          ),
+        )),
+      ) as _i5.Future<_i3.SearchResult>);
+
+  @override
+  _i5.Future<int> countSearchResults({
+    required String? keyword,
+    required bool? searchInTitle,
+    required bool? searchInComment,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #countSearchResults,
+          [],
+          {
+            #keyword: keyword,
+            #searchInTitle: searchInTitle,
+            #searchInComment: searchInComment,
+          },
+        ),
+        returnValue: _i5.Future<int>.value(0),
+        returnValueForMissingStub: _i5.Future<int>.value(0),
+      ) as _i5.Future<int>);
+
+  @override
+  _i5.Future<List<_i13.Task>> getTasksByKeyword({
+    required String? keyword,
+    required bool? searchInTitle,
+    required bool? searchInComment,
+    _i13.TaskStatus? status,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getTasksByKeyword,
+          [],
+          {
+            #keyword: keyword,
+            #searchInTitle: searchInTitle,
+            #searchInComment: searchInComment,
+            #status: status,
+          },
+        ),
+        returnValue: _i5.Future<List<_i13.Task>>.value(<_i13.Task>[]),
+        returnValueForMissingStub:
+            _i5.Future<List<_i13.Task>>.value(<_i13.Task>[]),
+      ) as _i5.Future<List<_i13.Task>>);
+
+  @override
+  _i5.Future<bool> hasSearchResults({
+    required String? keyword,
+    required bool? searchInTitle,
+    required bool? searchInComment,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #hasSearchResults,
+          [],
+          {
+            #keyword: keyword,
+            #searchInTitle: searchInTitle,
+            #searchInComment: searchInComment,
+          },
+        ),
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
+
+  @override
+  _i5.Future<bool> markTaskAsDone(int? taskId) => (super.noSuchMethod(
+        Invocation.method(
+          #markTaskAsDone,
+          [taskId],
+        ),
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
+
+  @override
+  _i5.Future<bool> markTaskAsUndone(int? taskId) => (super.noSuchMethod(
+        Invocation.method(
+          #markTaskAsUndone,
+          [taskId],
+        ),
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
+
+  @override
+  _i5.Future<bool> deleteTask(int? taskId) => (super.noSuchMethod(
+        Invocation.method(
+          #deleteTask,
+          [taskId],
+        ),
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
 }
