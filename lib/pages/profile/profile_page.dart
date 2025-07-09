@@ -2,11 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/profile/profile_bloc.dart';
+import 'package:flutter_app/l10n/app_localizations.dart';
 import 'package:flutter_app/pages/profile/profile.dart';
 import 'package:flutter_app/utils/logger_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_app/l10n/app_localizations.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -20,7 +21,7 @@ class _ProfilePageState extends State<ProfilePage> {
   late TextEditingController _emailController;
   late TextEditingController _avatarUrlController;
   String? _id;
-  XFile? _imageFile;
+  File? _imageFile;
   final ImagePicker _picker = ImagePicker();
 
   @override
@@ -41,19 +42,40 @@ class _ProfilePageState extends State<ProfilePage> {
     }
   }
 
+  Future<void> _cropImage(XFile imageFile) async {
+    final croppedFile = await ImageCropper().cropImage(
+      sourcePath: imageFile.path,
+      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+      uiSettings: [
+        AndroidUiSettings(
+            toolbarTitle: 'Crop Your Avatar',
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            lockAspectRatio: true),
+        IOSUiSettings(
+          title: 'Crop Your Avatar',
+          aspectRatioLockEnabled: true,
+        ),
+      ],
+    );
+    if (croppedFile != null) {
+      setState(() {
+        _imageFile = File(croppedFile.path);
+        _avatarUrlController.text = croppedFile.path;
+      });
+    }
+  }
+
   Future<void> _onImageButtonPressed(ImageSource source) async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
         source: source,
-        maxWidth: 300,
-        maxHeight: 300,
-        imageQuality: 95,
+        maxWidth: 800,
+        maxHeight: 800,
+        imageQuality: 100,
       );
       if (pickedFile != null) {
-        setState(() {
-          _imageFile = pickedFile;
-          _avatarUrlController.text = pickedFile.path;
-        });
+        _cropImage(pickedFile);
       }
     } catch (e) {
       // Handle any errors here
@@ -78,7 +100,7 @@ class _ProfilePageState extends State<ProfilePage> {
             );
           } else if (state.status == ProfileStateStatus.updateFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
+              const SnackBar(
                 backgroundColor: Colors.red,
                 content: Text('Profile updated failed'),
               ),
@@ -97,7 +119,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     border: Border.all(color: Colors.grey),
                     borderRadius: BorderRadius.circular(4),
                   ),
-                  child: Text('ID: $_id', style: TextStyle(fontSize: 16)),
+                  child: Text('ID: $_id', style: const TextStyle(fontSize: 16)),
                 ),
                 TextFormField(
                   controller: _nameController,
@@ -125,13 +147,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: FileImage(File(_imageFile!.path)),
+                        fit: BoxFit.scaleDown,
+                        image: FileImage(_imageFile!),
                       ),
                     ),
                   )
                 else if (_avatarUrlController.text.isNotEmpty)
-                  _buildAvatarWidget(),
+                  _buildAvatarWidget(_avatarUrlController.text),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
@@ -170,8 +192,8 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildAvatarWidget() {
-    final avatarUrl = _avatarUrlController.text;
+  Widget _buildAvatarWidget(String avatarUrl) {
+    // final avatarUrl = _avatarUrlController.text;
     if (avatarUrl.startsWith('http://') || avatarUrl.startsWith('https://')) {
       return Container(
         width: 150,
@@ -191,12 +213,17 @@ class _ProfilePageState extends State<ProfilePage> {
         backgroundImage: AssetImage(avatarUrl),
       );
     } else {
-      var file = File(_avatarUrlController.text);
-      var fileImage = FileImage(file);
-      return CircleAvatar(
-        radius: 75,
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        backgroundImage: fileImage,
+      final file = File(_avatarUrlController.text);
+      return Container(
+        width: 150,
+        height: 150,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          image: DecorationImage(
+            fit: BoxFit.scaleDown,
+            image: FileImage(file),
+          ),
+        ),
       );
     }
   }
