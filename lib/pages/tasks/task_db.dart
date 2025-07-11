@@ -212,17 +212,25 @@ class TaskDB {
 
   Future<List<Task>> getTasksByLabel(String labelName,
       {TaskStatus? status}) async {
+    final tasksWithLabelQuery = _db.selectOnly(_db.taskLabel, distinct: true)
+      ..addColumns([_db.taskLabel.taskId])
+      ..join([
+        innerJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId))
+      ])
+      ..where(_db.label.name.equals(labelName));
+
     var query = _db.select(_db.task).join([
       leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
       leftOuterJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId)),
       innerJoin(_db.project, _db.project.id.equalsExp(_db.task.projectId)),
     ]);
 
+    query.where(_db.task.id.isInQuery(tasksWithLabelQuery));
+
     if (status != null) {
       query.where(_db.task.status.equals(status.index));
     }
 
-    query.where(_db.label.name.like('%$labelName%'));
     query.orderBy([
       OrderingTerm.desc(_db.task.order),
       OrderingTerm.desc(_db.task.dueDate),
