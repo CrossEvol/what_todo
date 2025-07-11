@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart'; // Import SettingsBloc
 import 'package:flutter_app/pages/home/screen_enum.dart';
@@ -26,9 +27,7 @@ class AddProject extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Access SettingsBloc state here
-    final settingsState = context
-        .watch<SettingsBloc>()
-        .state;
+    final settingsState = context.watch<SettingsBloc>().state;
     final projectMaxLength = settingsState.projectLen;
 
     late ColorPalette currentSelectedPalette;
@@ -36,11 +35,14 @@ class AddProject extends StatelessWidget {
 
     return BlocConsumer<ProjectBloc, ProjectState>(
       listener: (context, state) {
-        if(state is ProjectExistenceChecked){
-          if(state.exists){
-            showSnackbar(context, AppLocalizations.of(context)!.projectAlreadyExists);
+        if (state is ProjectExistenceChecked) {
+          if (state.exists) {
+            showSnackbar(
+                context, AppLocalizations.of(context)!.projectAlreadyExists);
           }
-        }else if (state is ProjectCreateSuccess) {
+        } else if (state is ProjectCreateSuccess) {
+          context.read<ProjectBloc>().add(LoadProjectsEvent());
+          context.read<AdminBloc>().add(AdminLoadProjectsEvent());
           context.safePop();
         }
       },
@@ -119,8 +121,8 @@ class AddProject extends StatelessWidget {
                         width: 12.0,
                         height: 12.0,
                         child: CircleAvatar(
-                          backgroundColor: Color(
-                              currentSelectedPalette.colorValue),
+                          backgroundColor:
+                              Color(currentSelectedPalette.colorValue),
                         ),
                       ),
                       title: Text(currentSelectedPalette.colorName),
@@ -151,10 +153,10 @@ class AddProject extends StatelessWidget {
         onTap: () {
           expansionTile.currentState!.collapse();
           context.read<ProjectBloc>().add(
-            UpdateColorSelectionEvent(
-              ColorPalette(colors.colorName, colors.colorValue),
-            ),
-          );
+                UpdateColorSelectionEvent(
+                  ColorPalette(colors.colorName, colors.colorValue),
+                ),
+              );
         },
       ));
     });
