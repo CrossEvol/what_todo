@@ -12,10 +12,10 @@ import 'package:flutter_app/models/priority.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
-import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'models/task.dart';
 
@@ -157,7 +157,8 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             subtitle: Text(AppLocalizations.of(context)!.noReminder),
             hoverColor: _grey,
             onTap: () {
-              showSnackbar(context, AppLocalizations.of(context)!.comingSoon);
+              context.push("/reminder/create");
+              // showSnackbar(context, AppLocalizations.of(context)!.comingSoon); // TODO: remove here after reminder functionality completed
             },
           )
         ],

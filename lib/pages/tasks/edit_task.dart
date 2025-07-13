@@ -16,6 +16,7 @@ import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'models/task.dart';
 
@@ -212,7 +213,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
             subtitle: Text(AppLocalizations.of(context)!.noReminder),
             hoverColor: _grey,
             onTap: () {
-              showSnackbar(context, AppLocalizations.of(context)!.comingSoon);
+              context.push("/reminder/update");
+              // showSnackbar(context, AppLocalizations.of(context)!.comingSoon); // TODO: remove here after reminder functionality completed
             },
           )
         ],

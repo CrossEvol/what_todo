@@ -11,6 +11,8 @@ import 'package:flutter_app/pages/order/order_page.dart';
 import 'package:flutter_app/pages/profile/profile_page.dart';
 import 'package:flutter_app/pages/projects/add_project.dart';
 import 'package:flutter_app/pages/projects/project_grid.dart';
+import 'package:flutter_app/pages/reminder/reminder_create_page.dart';
+import 'package:flutter_app/pages/reminder/reminder_update_page.dart';
 import 'package:flutter_app/pages/settings/settings_screen.dart';
 import 'package:flutter_app/pages/tasks/add_task.dart';
 import 'package:flutter_app/pages/tasks/edit_task.dart';
@@ -125,6 +127,26 @@ final GoRouter goRouter = GoRouter(
           builder: (BuildContext context, GoRouterState state) {
             return TaskGrid();
           },
+        ),
+        GoRoute(
+          path: 'reminder',
+          builder: (BuildContext context, GoRouterState state) {
+            return TaskGrid();
+          },
+          routes: <RouteBase>[
+            GoRoute(
+              path: 'create',
+              builder: (BuildContext context, GoRouterState state) {
+                return ReminderCreatePage();
+              },
+            ),
+            GoRoute(
+              path: 'update',
+              builder: (BuildContext context, GoRouterState state) {
+                return ReminderUpdatePage();
+              },
+            ),
+          ],
         ),
       ],
     ),
