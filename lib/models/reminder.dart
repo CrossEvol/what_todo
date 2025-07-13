@@ -38,7 +38,13 @@ class Reminder {
     }
   }
 
-  bool operator ==(o) => o is Reminder && o.id == id;
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Reminder && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 
   Reminder.fromMap(Map<String, dynamic> map)
       : this.update(

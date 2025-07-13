@@ -1,11 +1,12 @@
-import 'package:flutter_app/dao/reminder_db.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/reminder/reminder_bloc.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
+import 'package:flutter_app/models/reminder.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/l10n/app_localizations.dart';
@@ -208,84 +209,32 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
               _showCommentDialog(context);
             },
           ),
-          ListTile(
-            leading: Icon(Icons.timer),
-            title: Text(AppLocalizations.of(context)!.reminder),
-            subtitle: Text(AppLocalizations.of(context)!.noReminder),
-            hoverColor: _grey,
-            onTap: () async {
-              final reminders =
-                  await ReminderDB.get().getRemindersForTask(widget.task.id!);
-              if (reminders.isEmpty) {
-                context.push("/reminder/create",
-                    extra: {"taskId": widget.task.id});
-              } else {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return Column(
-                      children: [
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: reminders.length,
-                            itemBuilder: (context, index) {
-                              final reminder = reminders[index];
-                              return ListTile(
-                                title: Text('Reminder #${reminder.id}'),
-                                subtitle: Text(reminder.remindTime.toString()),
-                                trailing: Checkbox(
-                                    value: reminder.enable, onChanged: (_) {}),
-                                onTap: () {
-                                  context.push("/reminder/update",
-                                      extra: reminder);
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              context.push("/reminder/create",
-                                  extra: {"taskId": widget.task.id});
-                            },
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  WidgetStateProperty.resolveWith<Color?>(
-                                (Set<WidgetState> states) {
-                                  if (states.contains(WidgetState.hovered)) {
-                                    return Colors.blue; // Color when hovered
-                                  }
-                                  if (states.contains(WidgetState.pressed)) {
-                                    return Colors.blue; // Color when hovered
-                                  }
-                                  return Theme.of(context)
-                                      .colorScheme
-                                      .onInverseSurface; // Default color
-                                },
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              // To keep content centered
-                              children: <Widget>[
-                                Text("Add Reminder"),
-                                SizedBox(width: 8),
-                                // Add some spacing between text and icon
-                                Icon(Icons.add),
-                                // Replace with your desired icon
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              }
+          BlocBuilder<ReminderBloc, ReminderState>(
+            builder: (context, state) {
+              final reminders = state.remindersByTask[widget.task.id] ?? [];
+              final hasReminders = reminders.isNotEmpty;
+
+              return ListTile(
+                leading: Icon(Icons.timer),
+                title: Text(AppLocalizations.of(context)!.reminder),
+                subtitle: Text(hasReminders
+                    ? 'has ${reminders.length} reminders'
+                    : AppLocalizations.of(context)!.noReminder),
+                hoverColor: _grey,
+                onTap: () {
+                  context
+                      .read<ReminderBloc>()
+                      .add(LoadRemindersForTask(widget.task.id!));
+                  if (!hasReminders) {
+                    context.push("/reminder/create",
+                        extra: {"taskId": widget.task.id});
+                  } else {
+                    _showRemindersBottomSheet(context, reminders);
+                  }
+                },
+              );
             },
-          )
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -318,6 +267,70 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
               }
             }
           }),
+    );
+  }
+
+  void _showRemindersBottomSheet(
+      BuildContext context, List<Reminder> reminders) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: reminders.length,
+                itemBuilder: (context, index) {
+                  final reminder = reminders[index];
+                  return ListTile(
+                    title: Text('Reminder #${reminder.id}'),
+                    subtitle: Text(reminder.remindTime.toString()),
+                    trailing:
+                        Checkbox(value: reminder.enable, onChanged: (_) {}),
+                    onTap: () {
+                      context.push("/reminder/update", extra: reminder);
+                    },
+                  );
+                },
+              ),
+            ),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  context.push("/reminder/create",
+                      extra: {"taskId": widget.task.id});
+                },
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+                    (Set<WidgetState> states) {
+                      if (states.contains(WidgetState.hovered)) {
+                        return Colors.blue; // Color when hovered
+                      }
+                      if (states.contains(WidgetState.pressed)) {
+                        return Colors.blue; // Color when hovered
+                      }
+                      return Theme.of(context)
+                          .colorScheme
+                          .onInverseSurface; // Default color
+                    },
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min, // To keep content centered
+                  children: <Widget>[
+                    Text("Add Reminder"),
+                    SizedBox(width: 8),
+                    // Add some spacing between text and icon
+                    Icon(Icons.add),
+                    // Replace with your desired icon
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
