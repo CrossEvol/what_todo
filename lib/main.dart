@@ -29,9 +29,34 @@ import 'package:flutter_app/router/router.dart';
 import 'package:flutter_app/utils/logger_util.dart';
 import 'package:flutter_app/utils/shard_prefs_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:workmanager/workmanager.dart';
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    // This is where you would handle your background task.
+    // For example, you can send a notification.
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails('your channel id', 'your channel name',
+            channelDescription: 'your channel description',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker');
+    const NotificationDetails notificationDetails =
+        NotificationDetails(android: androidNotificationDetails);
+    await flutterLocalNotificationsPlugin.show(
+        0, 'plain title', 'plain body', notificationDetails,
+        payload: 'item x');
+    return Future.value(true);
+  });
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,6 +69,42 @@ void main() async {
       ValueSerializer.defaults(serializeDateTimeValuesAsString: true);
   await _migrate();
   await setupSharedPreference();
+
+  // Initialize workmanager
+  Workmanager().initialize(
+    callbackDispatcher,
+    isInDebugMode: true, // Set to false for production
+  );
+
+  // Register a periodic task
+  Workmanager().registerPeriodicTask(
+    "1", // uniqueName
+    "simplePeriodicTask", // taskName
+    frequency: const Duration(minutes: 15), // Android minimum is 15 minutes
+    initialDelay: const Duration(minutes: 1),
+    constraints: Constraints(
+      networkType: NetworkType.not_required,
+      requiresBatteryNotLow: false,
+      requiresCharging: false,
+      requiresDeviceIdle: false,
+      requiresStorageNotLow: false,
+    ),
+  );
+
+  // Initialize flutter_local_notifications for the foreground app
+  const AndroidInitializationSettings initializationSettingsAndroid =
+      AndroidInitializationSettings('@mipmap/ic_launcher');
+  const InitializationSettings initializationSettings =
+      InitializationSettings(android: initializationSettingsAndroid);
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse notificationResponse) async {
+    // Handle notification tap
+    if (notificationResponse.payload != null) {
+      debugPrint('notification payload: ${notificationResponse.payload}');
+      // You can navigate to the task details page here
+    }
+  });
+
   runApp(ChangeNotifierProvider(
     create: (context) => ThemeProvider(),
     child: MyApp(),

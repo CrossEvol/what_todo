@@ -40,9 +40,11 @@ android {
         versionCode 6
         versionName '1.4.0'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        multiDexEnabled = true
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
@@ -90,6 +92,7 @@ flutter {
 }
 
 dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
     // Test dependencies
     testImplementation 'junit:junit:4.13.2'  // Updated to latest stable version
     androidTestImplementation 'androidx.test:runner:1.5.2'  // Updated to latest stable version

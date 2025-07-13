@@ -43,6 +43,8 @@ dependencies:
   google_fonts: ^6.2.1
   dropdown_button2: ^2.3.9
   image_cropper: ^9.1.0
+  flutter_local_notifications: ^19.3.0
+  workmanager: ^0.7.0
 
 dev_dependencies:
   flutter_driver:
