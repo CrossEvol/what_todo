@@ -1918,6 +1918,310 @@ class DriftSchemaCompanion extends UpdateCompanion<DriftSchemaData> {
   }
 }
 
+class $ReminderTable extends Reminder
+    with TableInfo<$ReminderTable, ReminderData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ReminderTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  @override
+  late final GeneratedColumnWithTypeConverter<ReminderType, String> type =
+      GeneratedColumn<String>('type', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<ReminderType>($ReminderTable.$convertertype);
+  static const VerificationMeta _remindTimeMeta =
+      const VerificationMeta('remindTime');
+  @override
+  late final GeneratedColumn<DateTime> remindTime = GeneratedColumn<DateTime>(
+      'remind_time', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  static const VerificationMeta _enableMeta = const VerificationMeta('enable');
+  @override
+  late final GeneratedColumn<bool> enable = GeneratedColumn<bool>(
+      'enable', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("enable" IN (0, 1))'),
+      defaultValue: const Constant(true));
+  static const VerificationMeta _taskIdMeta = const VerificationMeta('taskId');
+  @override
+  late final GeneratedColumn<int> taskId = GeneratedColumn<int>(
+      'task_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'REFERENCES task(id) ON DELETE CASCADE');
+  @override
+  List<GeneratedColumn> get $columns => [id, type, remindTime, enable, taskId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'reminder';
+  @override
+  VerificationContext validateIntegrity(Insertable<ReminderData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('remind_time')) {
+      context.handle(
+          _remindTimeMeta,
+          remindTime.isAcceptableOrUnknown(
+              data['remind_time']!, _remindTimeMeta));
+    }
+    if (data.containsKey('enable')) {
+      context.handle(_enableMeta,
+          enable.isAcceptableOrUnknown(data['enable']!, _enableMeta));
+    }
+    if (data.containsKey('task_id')) {
+      context.handle(_taskIdMeta,
+          taskId.isAcceptableOrUnknown(data['task_id']!, _taskIdMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ReminderData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ReminderData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      type: $ReminderTable.$convertertype.fromSql(attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}type'])!),
+      remindTime: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}remind_time']),
+      enable: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}enable'])!,
+      taskId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}task_id']),
+    );
+  }
+
+  @override
+  $ReminderTable createAlias(String alias) {
+    return $ReminderTable(attachedDatabase, alias);
+  }
+
+  static JsonTypeConverter2<ReminderType, String, String> $convertertype =
+      const EnumNameConverter<ReminderType>(ReminderType.values);
+}
+
+class ReminderData extends DataClass implements Insertable<ReminderData> {
+  final int id;
+  final ReminderType type;
+  final DateTime? remindTime;
+  final bool enable;
+  final int? taskId;
+  const ReminderData(
+      {required this.id,
+      required this.type,
+      this.remindTime,
+      required this.enable,
+      this.taskId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    {
+      map['type'] = Variable<String>($ReminderTable.$convertertype.toSql(type));
+    }
+    if (!nullToAbsent || remindTime != null) {
+      map['remind_time'] = Variable<DateTime>(remindTime);
+    }
+    map['enable'] = Variable<bool>(enable);
+    if (!nullToAbsent || taskId != null) {
+      map['task_id'] = Variable<int>(taskId);
+    }
+    return map;
+  }
+
+  ReminderCompanion toCompanion(bool nullToAbsent) {
+    return ReminderCompanion(
+      id: Value(id),
+      type: Value(type),
+      remindTime: remindTime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(remindTime),
+      enable: Value(enable),
+      taskId:
+          taskId == null && nullToAbsent ? const Value.absent() : Value(taskId),
+    );
+  }
+
+  factory ReminderData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ReminderData(
+      id: serializer.fromJson<int>(json['id']),
+      type: $ReminderTable.$convertertype
+          .fromJson(serializer.fromJson<String>(json['type'])),
+      remindTime: serializer.fromJson<DateTime?>(json['remindTime']),
+      enable: serializer.fromJson<bool>(json['enable']),
+      taskId: serializer.fromJson<int?>(json['taskId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'type':
+          serializer.toJson<String>($ReminderTable.$convertertype.toJson(type)),
+      'remindTime': serializer.toJson<DateTime?>(remindTime),
+      'enable': serializer.toJson<bool>(enable),
+      'taskId': serializer.toJson<int?>(taskId),
+    };
+  }
+
+  ReminderData copyWith(
+          {int? id,
+          ReminderType? type,
+          Value<DateTime?> remindTime = const Value.absent(),
+          bool? enable,
+          Value<int?> taskId = const Value.absent()}) =>
+      ReminderData(
+        id: id ?? this.id,
+        type: type ?? this.type,
+        remindTime: remindTime.present ? remindTime.value : this.remindTime,
+        enable: enable ?? this.enable,
+        taskId: taskId.present ? taskId.value : this.taskId,
+      );
+  ReminderData copyWithCompanion(ReminderCompanion data) {
+    return ReminderData(
+      id: data.id.present ? data.id.value : this.id,
+      type: data.type.present ? data.type.value : this.type,
+      remindTime:
+          data.remindTime.present ? data.remindTime.value : this.remindTime,
+      enable: data.enable.present ? data.enable.value : this.enable,
+      taskId: data.taskId.present ? data.taskId.value : this.taskId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReminderData(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('remindTime: $remindTime, ')
+          ..write('enable: $enable, ')
+          ..write('taskId: $taskId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, type, remindTime, enable, taskId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ReminderData &&
+          other.id == this.id &&
+          other.type == this.type &&
+          other.remindTime == this.remindTime &&
+          other.enable == this.enable &&
+          other.taskId == this.taskId);
+}
+
+class ReminderCompanion extends UpdateCompanion<ReminderData> {
+  final Value<int> id;
+  final Value<ReminderType> type;
+  final Value<DateTime?> remindTime;
+  final Value<bool> enable;
+  final Value<int?> taskId;
+  const ReminderCompanion({
+    this.id = const Value.absent(),
+    this.type = const Value.absent(),
+    this.remindTime = const Value.absent(),
+    this.enable = const Value.absent(),
+    this.taskId = const Value.absent(),
+  });
+  ReminderCompanion.insert({
+    this.id = const Value.absent(),
+    required ReminderType type,
+    this.remindTime = const Value.absent(),
+    this.enable = const Value.absent(),
+    this.taskId = const Value.absent(),
+  }) : type = Value(type);
+  static Insertable<ReminderData> custom({
+    Expression<int>? id,
+    Expression<String>? type,
+    Expression<DateTime>? remindTime,
+    Expression<bool>? enable,
+    Expression<int>? taskId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (type != null) 'type': type,
+      if (remindTime != null) 'remind_time': remindTime,
+      if (enable != null) 'enable': enable,
+      if (taskId != null) 'task_id': taskId,
+    });
+  }
+
+  ReminderCompanion copyWith(
+      {Value<int>? id,
+      Value<ReminderType>? type,
+      Value<DateTime?>? remindTime,
+      Value<bool>? enable,
+      Value<int?>? taskId}) {
+    return ReminderCompanion(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      remindTime: remindTime ?? this.remindTime,
+      enable: enable ?? this.enable,
+      taskId: taskId ?? this.taskId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (type.present) {
+      map['type'] =
+          Variable<String>($ReminderTable.$convertertype.toSql(type.value));
+    }
+    if (remindTime.present) {
+      map['remind_time'] = Variable<DateTime>(remindTime.value);
+    }
+    if (enable.present) {
+      map['enable'] = Variable<bool>(enable.value);
+    }
+    if (taskId.present) {
+      map['task_id'] = Variable<int>(taskId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReminderCompanion(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('remindTime: $remindTime, ')
+          ..write('enable: $enable, ')
+          ..write('taskId: $taskId')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -1928,12 +2232,21 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $ProfileTable profile = $ProfileTable(this);
   late final $SettingTable setting = $SettingTable(this);
   late final $DriftSchemaTable driftSchema = $DriftSchemaTable(this);
+  late final $ReminderTable reminder = $ReminderTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [project, task, label, taskLabel, profile, setting, driftSchema];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        project,
+        task,
+        label,
+        taskLabel,
+        profile,
+        setting,
+        driftSchema,
+        reminder
+      ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
         [
@@ -1956,6 +2269,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.delete),
             result: [
               TableUpdate('task_label', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('task',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('reminder', kind: UpdateKind.delete),
             ],
           ),
         ],
@@ -2245,6 +2565,20 @@ final class $$TaskTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$ReminderTable, List<ReminderData>>
+      _reminderRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.reminder,
+              aliasName: $_aliasNameGenerator(db.task.id, db.reminder.taskId));
+
+  $$ReminderTableProcessedTableManager get reminderRefs {
+    final manager = $$ReminderTableTableManager($_db, $_db.reminder)
+        .filter((f) => f.taskId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_reminderRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$TaskTableFilterComposer extends Composer<_$AppDatabase, $TaskTable> {
@@ -2309,6 +2643,27 @@ class $$TaskTableFilterComposer extends Composer<_$AppDatabase, $TaskTable> {
             $$TaskLabelTableFilterComposer(
               $db: $db,
               $table: $db.taskLabel,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> reminderRefs(
+      Expression<bool> Function($$ReminderTableFilterComposer f) f) {
+    final $$ReminderTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.reminder,
+        getReferencedColumn: (t) => t.taskId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ReminderTableFilterComposer(
+              $db: $db,
+              $table: $db.reminder,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -2438,6 +2793,27 @@ class $$TaskTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> reminderRefs<T extends Object>(
+      Expression<T> Function($$ReminderTableAnnotationComposer a) f) {
+    final $$ReminderTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.reminder,
+        getReferencedColumn: (t) => t.taskId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ReminderTableAnnotationComposer(
+              $db: $db,
+              $table: $db.reminder,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$TaskTableTableManager extends RootTableManager<
@@ -2451,7 +2827,8 @@ class $$TaskTableTableManager extends RootTableManager<
     $$TaskTableUpdateCompanionBuilder,
     (TaskData, $$TaskTableReferences),
     TaskData,
-    PrefetchHooks Function({bool projectId, bool taskLabelRefs})> {
+    PrefetchHooks Function(
+        {bool projectId, bool taskLabelRefs, bool reminderRefs})> {
   $$TaskTableTableManager(_$AppDatabase db, $TaskTable table)
       : super(TableManagerState(
           db: db,
@@ -2506,10 +2883,16 @@ class $$TaskTableTableManager extends RootTableManager<
               .map((e) =>
                   (e.readTable(table), $$TaskTableReferences(db, table, e)))
               .toList(),
-          prefetchHooksCallback: ({projectId = false, taskLabelRefs = false}) {
+          prefetchHooksCallback: (
+              {projectId = false,
+              taskLabelRefs = false,
+              reminderRefs = false}) {
             return PrefetchHooks(
               db: db,
-              explicitlyWatchedTables: [if (taskLabelRefs) db.taskLabel],
+              explicitlyWatchedTables: [
+                if (taskLabelRefs) db.taskLabel,
+                if (reminderRefs) db.reminder
+              ],
               addJoins: <
                   T extends TableManagerState<
                       dynamic,
@@ -2548,6 +2931,18 @@ class $$TaskTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.taskId == item.id),
+                        typedResults: items),
+                  if (reminderRefs)
+                    await $_getPrefetchedData<TaskData, $TaskTable,
+                            ReminderData>(
+                        currentTable: table,
+                        referencedTable:
+                            $$TaskTableReferences._reminderRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$TaskTableReferences(db, table, p0).reminderRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.taskId == item.id),
                         typedResults: items)
                 ];
               },
@@ -2567,7 +2962,8 @@ typedef $$TaskTableProcessedTableManager = ProcessedTableManager<
     $$TaskTableUpdateCompanionBuilder,
     (TaskData, $$TaskTableReferences),
     TaskData,
-    PrefetchHooks Function({bool projectId, bool taskLabelRefs})>;
+    PrefetchHooks Function(
+        {bool projectId, bool taskLabelRefs, bool reminderRefs})>;
 typedef $$LabelTableCreateCompanionBuilder = LabelCompanion Function({
   Value<int> id,
   required String name,
@@ -3548,6 +3944,271 @@ typedef $$DriftSchemaTableProcessedTableManager = ProcessedTableManager<
     ),
     DriftSchemaData,
     PrefetchHooks Function()>;
+typedef $$ReminderTableCreateCompanionBuilder = ReminderCompanion Function({
+  Value<int> id,
+  required ReminderType type,
+  Value<DateTime?> remindTime,
+  Value<bool> enable,
+  Value<int?> taskId,
+});
+typedef $$ReminderTableUpdateCompanionBuilder = ReminderCompanion Function({
+  Value<int> id,
+  Value<ReminderType> type,
+  Value<DateTime?> remindTime,
+  Value<bool> enable,
+  Value<int?> taskId,
+});
+
+final class $$ReminderTableReferences
+    extends BaseReferences<_$AppDatabase, $ReminderTable, ReminderData> {
+  $$ReminderTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $TaskTable _taskIdTable(_$AppDatabase db) =>
+      db.task.createAlias($_aliasNameGenerator(db.reminder.taskId, db.task.id));
+
+  $$TaskTableProcessedTableManager? get taskId {
+    final $_column = $_itemColumn<int>('task_id');
+    if ($_column == null) return null;
+    final manager = $$TaskTableTableManager($_db, $_db.task)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_taskIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$ReminderTableFilterComposer
+    extends Composer<_$AppDatabase, $ReminderTable> {
+  $$ReminderTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<ReminderType, ReminderType, String> get type =>
+      $composableBuilder(
+          column: $table.type,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnFilters<DateTime> get remindTime => $composableBuilder(
+      column: $table.remindTime, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get enable => $composableBuilder(
+      column: $table.enable, builder: (column) => ColumnFilters(column));
+
+  $$TaskTableFilterComposer get taskId {
+    final $$TaskTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.taskId,
+        referencedTable: $db.task,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TaskTableFilterComposer(
+              $db: $db,
+              $table: $db.task,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$ReminderTableOrderingComposer
+    extends Composer<_$AppDatabase, $ReminderTable> {
+  $$ReminderTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get type => $composableBuilder(
+      column: $table.type, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get remindTime => $composableBuilder(
+      column: $table.remindTime, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get enable => $composableBuilder(
+      column: $table.enable, builder: (column) => ColumnOrderings(column));
+
+  $$TaskTableOrderingComposer get taskId {
+    final $$TaskTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.taskId,
+        referencedTable: $db.task,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TaskTableOrderingComposer(
+              $db: $db,
+              $table: $db.task,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$ReminderTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ReminderTable> {
+  $$ReminderTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<ReminderType, String> get type =>
+      $composableBuilder(column: $table.type, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get remindTime => $composableBuilder(
+      column: $table.remindTime, builder: (column) => column);
+
+  GeneratedColumn<bool> get enable =>
+      $composableBuilder(column: $table.enable, builder: (column) => column);
+
+  $$TaskTableAnnotationComposer get taskId {
+    final $$TaskTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.taskId,
+        referencedTable: $db.task,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TaskTableAnnotationComposer(
+              $db: $db,
+              $table: $db.task,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$ReminderTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ReminderTable,
+    ReminderData,
+    $$ReminderTableFilterComposer,
+    $$ReminderTableOrderingComposer,
+    $$ReminderTableAnnotationComposer,
+    $$ReminderTableCreateCompanionBuilder,
+    $$ReminderTableUpdateCompanionBuilder,
+    (ReminderData, $$ReminderTableReferences),
+    ReminderData,
+    PrefetchHooks Function({bool taskId})> {
+  $$ReminderTableTableManager(_$AppDatabase db, $ReminderTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ReminderTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ReminderTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ReminderTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<ReminderType> type = const Value.absent(),
+            Value<DateTime?> remindTime = const Value.absent(),
+            Value<bool> enable = const Value.absent(),
+            Value<int?> taskId = const Value.absent(),
+          }) =>
+              ReminderCompanion(
+            id: id,
+            type: type,
+            remindTime: remindTime,
+            enable: enable,
+            taskId: taskId,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required ReminderType type,
+            Value<DateTime?> remindTime = const Value.absent(),
+            Value<bool> enable = const Value.absent(),
+            Value<int?> taskId = const Value.absent(),
+          }) =>
+              ReminderCompanion.insert(
+            id: id,
+            type: type,
+            remindTime: remindTime,
+            enable: enable,
+            taskId: taskId,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) =>
+                  (e.readTable(table), $$ReminderTableReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: ({taskId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (taskId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.taskId,
+                    referencedTable: $$ReminderTableReferences._taskIdTable(db),
+                    referencedColumn:
+                        $$ReminderTableReferences._taskIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$ReminderTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $ReminderTable,
+    ReminderData,
+    $$ReminderTableFilterComposer,
+    $$ReminderTableOrderingComposer,
+    $$ReminderTableAnnotationComposer,
+    $$ReminderTableCreateCompanionBuilder,
+    $$ReminderTableUpdateCompanionBuilder,
+    (ReminderData, $$ReminderTableReferences),
+    ReminderData,
+    PrefetchHooks Function({bool taskId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -3565,4 +4226,6 @@ class $AppDatabaseManager {
       $$SettingTableTableManager(_db, _db.setting);
   $$DriftSchemaTableTableManager get driftSchema =>
       $$DriftSchemaTableTableManager(_db, _db.driftSchema);
+  $$ReminderTableTableManager get reminder =>
+      $$ReminderTableTableManager(_db, _db.reminder);
 }

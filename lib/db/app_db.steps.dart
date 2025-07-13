@@ -1,3 +1,4 @@
+// dart format width=80
 import 'package:drift/internal/versioned_schema.dart' as i0;
 import 'package:drift/drift.dart' as i1;
 import 'package:drift/drift.dart'; // ignore_for_file: type=lint,unused_import
@@ -920,6 +921,192 @@ class Shape9 extends i0.VersionedTable {
 i1.GeneratedColumn<int> _column_23(String aliasedName) =>
     i1.GeneratedColumn<int>('order', aliasedName, false,
         type: i1.DriftSqlType.int, defaultValue: const Constant(0));
+
+final class Schema8 extends i0.VersionedSchema {
+  Schema8({required super.database}) : super(version: 8);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    project,
+    task,
+    label,
+    taskLabel,
+    profile,
+    setting,
+    driftSchema,
+    reminder,
+  ];
+  late final Shape0 project = Shape0(
+      source: i0.VersionedTable(
+        entityName: 'project',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape9 task = Shape9(
+      source: i0.VersionedTable(
+        entityName: 'task',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_4,
+          _column_5,
+          _column_21,
+          _column_8,
+          _column_9,
+          _column_10,
+          _column_24,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape0 label = Shape0(
+      source: i0.VersionedTable(
+        entityName: 'label',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape2 taskLabel = Shape2(
+      source: i0.VersionedTable(
+        entityName: 'task_label',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_11,
+          _column_12,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape3 profile = Shape3(
+      source: i0.VersionedTable(
+        entityName: 'profile',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_25,
+          _column_14,
+          _column_26,
+          _column_16,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape4 setting = Shape4(
+      source: i0.VersionedTable(
+        entityName: 'setting',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_17,
+          _column_27,
+          _column_19,
+          _column_20,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape8 driftSchema = Shape8(
+      source: i0.VersionedTable(
+        entityName: 'drift_schema',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_28,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape10 reminder = Shape10(
+      source: i0.VersionedTable(
+        entityName: 'reminder',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_20,
+          _column_29,
+          _column_30,
+          _column_31,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+}
+
+i1.GeneratedColumn<int> _column_24(String aliasedName) =>
+    i1.GeneratedColumn<int>('order', aliasedName, false,
+        type: i1.DriftSqlType.int, defaultValue: const CustomExpression('0'));
+i1.GeneratedColumn<String> _column_25(String aliasedName) =>
+    i1.GeneratedColumn<String>('name', aliasedName, false,
+        type: i1.DriftSqlType.string,
+        defaultValue: const CustomExpression('\'\''));
+i1.GeneratedColumn<String> _column_26(String aliasedName) =>
+    i1.GeneratedColumn<String>('avatar_url', aliasedName, false,
+        type: i1.DriftSqlType.string,
+        defaultValue: const CustomExpression('\'\''));
+i1.GeneratedColumn<String> _column_27(String aliasedName) =>
+    i1.GeneratedColumn<String>('value', aliasedName, false,
+        type: i1.DriftSqlType.string,
+        defaultValue: const CustomExpression('\'\''));
+i1.GeneratedColumn<int> _column_28(String aliasedName) =>
+    i1.GeneratedColumn<int>('version', aliasedName, false,
+        type: i1.DriftSqlType.int, defaultValue: const CustomExpression('0'));
+
+class Shape10 extends i0.VersionedTable {
+  Shape10({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<String> get type =>
+      columnsByName['type']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<DateTime> get remindTime =>
+      columnsByName['remind_time']! as i1.GeneratedColumn<DateTime>;
+  i1.GeneratedColumn<bool> get enable =>
+      columnsByName['enable']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<int> get taskId =>
+      columnsByName['task_id']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<DateTime> _column_29(String aliasedName) =>
+    i1.GeneratedColumn<DateTime>('remind_time', aliasedName, true,
+        type: i1.DriftSqlType.dateTime);
+i1.GeneratedColumn<bool> _column_30(String aliasedName) =>
+    i1.GeneratedColumn<bool>('enable', aliasedName, false,
+        type: i1.DriftSqlType.bool,
+        defaultConstraints:
+            i1.GeneratedColumn.constraintIsAlways('CHECK ("enable" IN (0, 1))'),
+        defaultValue: const CustomExpression('1'));
+i1.GeneratedColumn<int> _column_31(String aliasedName) =>
+    i1.GeneratedColumn<int>('task_id', aliasedName, true,
+        type: i1.DriftSqlType.int,
+        $customConstraints: 'REFERENCES task(id) ON DELETE CASCADE');
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
@@ -927,6 +1114,7 @@ i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema5 schema) from4To5,
   required Future<void> Function(i1.Migrator m, Schema6 schema) from5To6,
   required Future<void> Function(i1.Migrator m, Schema7 schema) from6To7,
+  required Future<void> Function(i1.Migrator m, Schema8 schema) from7To8,
 }) {
   return (currentVersion, database) async {
     switch (currentVersion) {
@@ -960,6 +1148,11 @@ i0.MigrationStepWithVersion migrationSteps({
         final migrator = i1.Migrator(database, schema);
         await from6To7(migrator, schema);
         return 7;
+      case 7:
+        final schema = Schema8(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from7To8(migrator, schema);
+        return 8;
       default:
         throw ArgumentError.value('Unknown migration from $currentVersion');
     }
@@ -973,6 +1166,7 @@ i1.OnUpgrade stepByStep({
   required Future<void> Function(i1.Migrator m, Schema5 schema) from4To5,
   required Future<void> Function(i1.Migrator m, Schema6 schema) from5To6,
   required Future<void> Function(i1.Migrator m, Schema7 schema) from6To7,
+  required Future<void> Function(i1.Migrator m, Schema8 schema) from7To8,
 }) =>
     i0.VersionedSchema.stepByStepHelper(
         step: migrationSteps(
@@ -982,4 +1176,5 @@ i1.OnUpgrade stepByStep({
       from4To5: from4To5,
       from5To6: from5To6,
       from6To7: from6To7,
+      from7To8: from7To8,
     ));

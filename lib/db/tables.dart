@@ -1,4 +1,5 @@
 import 'package:drift/drift.dart';
+import 'package:flutter_app/models/reminder_type.dart';
 import 'package:flutter_app/models/setting_type.dart';
 
 class Project extends Table {
@@ -36,6 +37,20 @@ class Task extends Table {
 
   // v7
   IntColumn get order => integer().withDefault(const Constant(0))();
+}
+
+class Reminder extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  TextColumn get type => textEnum<ReminderType>()();
+
+  DateTimeColumn get remindTime => dateTime().nullable()();
+
+  BoolColumn get enable => boolean().withDefault(const Constant(true))();
+
+  IntColumn get taskId => integer()
+      .nullable()
+      .customConstraint('REFERENCES task(id) ON DELETE CASCADE')();
 }
 
 class Label extends Table {
@@ -80,8 +95,7 @@ class Setting extends Table {
   DateTimeColumn get updatedAt =>
       dateTime().customConstraint("DEFAULT CURRENT_TIMESTAMP")();
 
-  TextColumn get type => textEnum<SettingType>()
-      .customConstraint('DEFAULT ${SettingType.Text.name}')();
+  TextColumn get type => textEnum<SettingType>()();
 }
 
 class DriftSchema extends Table {

@@ -252,9 +252,14 @@ class Task extends Table with TableInfo<Task, TaskData> {
   late final GeneratedColumn<int> status = GeneratedColumn<int>(
       'status', aliasedName, false,
       type: DriftSqlType.int, requiredDuringInsert: true);
+  late final GeneratedColumn<int> order = GeneratedColumn<int>(
+      'order', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const CustomExpression('0'));
   @override
   List<GeneratedColumn> get $columns =>
-      [id, title, comment, dueDate, priority, projectId, status];
+      [id, title, comment, dueDate, priority, projectId, status, order];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -280,6 +285,8 @@ class Task extends Table with TableInfo<Task, TaskData> {
           .read(DriftSqlType.int, data['${effectivePrefix}project_id'])!,
       status: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}status'])!,
+      order: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}order'])!,
     );
   }
 
@@ -297,6 +304,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
   final int? priority;
   final int projectId;
   final int status;
+  final int order;
   const TaskData(
       {required this.id,
       required this.title,
@@ -304,7 +312,8 @@ class TaskData extends DataClass implements Insertable<TaskData> {
       this.dueDate,
       this.priority,
       required this.projectId,
-      required this.status});
+      required this.status,
+      required this.order});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -321,6 +330,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
     }
     map['project_id'] = Variable<int>(projectId);
     map['status'] = Variable<int>(status);
+    map['order'] = Variable<int>(order);
     return map;
   }
 
@@ -339,6 +349,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
           : Value(priority),
       projectId: Value(projectId),
       status: Value(status),
+      order: Value(order),
     );
   }
 
@@ -353,6 +364,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
       priority: serializer.fromJson<int?>(json['priority']),
       projectId: serializer.fromJson<int>(json['projectId']),
       status: serializer.fromJson<int>(json['status']),
+      order: serializer.fromJson<int>(json['order']),
     );
   }
   @override
@@ -366,6 +378,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
       'priority': serializer.toJson<int?>(priority),
       'projectId': serializer.toJson<int>(projectId),
       'status': serializer.toJson<int>(status),
+      'order': serializer.toJson<int>(order),
     };
   }
 
@@ -376,7 +389,8 @@ class TaskData extends DataClass implements Insertable<TaskData> {
           Value<DateTime?> dueDate = const Value.absent(),
           Value<int?> priority = const Value.absent(),
           int? projectId,
-          int? status}) =>
+          int? status,
+          int? order}) =>
       TaskData(
         id: id ?? this.id,
         title: title ?? this.title,
@@ -385,6 +399,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
         priority: priority.present ? priority.value : this.priority,
         projectId: projectId ?? this.projectId,
         status: status ?? this.status,
+        order: order ?? this.order,
       );
   TaskData copyWithCompanion(TaskCompanion data) {
     return TaskData(
@@ -395,6 +410,7 @@ class TaskData extends DataClass implements Insertable<TaskData> {
       priority: data.priority.present ? data.priority.value : this.priority,
       projectId: data.projectId.present ? data.projectId.value : this.projectId,
       status: data.status.present ? data.status.value : this.status,
+      order: data.order.present ? data.order.value : this.order,
     );
   }
 
@@ -407,14 +423,15 @@ class TaskData extends DataClass implements Insertable<TaskData> {
           ..write('dueDate: $dueDate, ')
           ..write('priority: $priority, ')
           ..write('projectId: $projectId, ')
-          ..write('status: $status')
+          ..write('status: $status, ')
+          ..write('order: $order')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, title, comment, dueDate, priority, projectId, status);
+  int get hashCode => Object.hash(
+      id, title, comment, dueDate, priority, projectId, status, order);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -425,7 +442,8 @@ class TaskData extends DataClass implements Insertable<TaskData> {
           other.dueDate == this.dueDate &&
           other.priority == this.priority &&
           other.projectId == this.projectId &&
-          other.status == this.status);
+          other.status == this.status &&
+          other.order == this.order);
 }
 
 class TaskCompanion extends UpdateCompanion<TaskData> {
@@ -436,6 +454,7 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
   final Value<int?> priority;
   final Value<int> projectId;
   final Value<int> status;
+  final Value<int> order;
   const TaskCompanion({
     this.id = const Value.absent(),
     this.title = const Value.absent(),
@@ -444,6 +463,7 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
     this.priority = const Value.absent(),
     this.projectId = const Value.absent(),
     this.status = const Value.absent(),
+    this.order = const Value.absent(),
   });
   TaskCompanion.insert({
     this.id = const Value.absent(),
@@ -453,6 +473,7 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
     this.priority = const Value.absent(),
     required int projectId,
     required int status,
+    this.order = const Value.absent(),
   })  : title = Value(title),
         projectId = Value(projectId),
         status = Value(status);
@@ -464,6 +485,7 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
     Expression<int>? priority,
     Expression<int>? projectId,
     Expression<int>? status,
+    Expression<int>? order,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -473,6 +495,7 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
       if (priority != null) 'priority': priority,
       if (projectId != null) 'project_id': projectId,
       if (status != null) 'status': status,
+      if (order != null) 'order': order,
     });
   }
 
@@ -483,7 +506,8 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
       Value<DateTime?>? dueDate,
       Value<int?>? priority,
       Value<int>? projectId,
-      Value<int>? status}) {
+      Value<int>? status,
+      Value<int>? order}) {
     return TaskCompanion(
       id: id ?? this.id,
       title: title ?? this.title,
@@ -492,6 +516,7 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
       priority: priority ?? this.priority,
       projectId: projectId ?? this.projectId,
       status: status ?? this.status,
+      order: order ?? this.order,
     );
   }
 
@@ -519,6 +544,9 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
     if (status.present) {
       map['status'] = Variable<int>(status.value);
     }
+    if (order.present) {
+      map['order'] = Variable<int>(order.value);
+    }
     return map;
   }
 
@@ -531,7 +559,8 @@ class TaskCompanion extends UpdateCompanion<TaskData> {
           ..write('dueDate: $dueDate, ')
           ..write('priority: $priority, ')
           ..write('projectId: $projectId, ')
-          ..write('status: $status')
+          ..write('status: $status, ')
+          ..write('order: $order')
           ..write(')'))
         .toString();
   }
@@ -958,7 +987,7 @@ class Profile extends Table with TableInfo<Profile, ProfileData> {
       'name', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultValue: const Constant(""));
+      defaultValue: const CustomExpression('\'\''));
   late final GeneratedColumn<String> email = GeneratedColumn<String>(
       'email', aliasedName, false,
       type: DriftSqlType.string,
@@ -968,7 +997,7 @@ class Profile extends Table with TableInfo<Profile, ProfileData> {
       'avatar_url', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultValue: const Constant(""));
+      defaultValue: const CustomExpression('\'\''));
   late final GeneratedColumn<int> updatedAt = GeneratedColumn<int>(
       'updated_at', aliasedName, true,
       type: DriftSqlType.int, requiredDuringInsert: false);
@@ -1218,7 +1247,7 @@ class Setting extends Table with TableInfo<Setting, SettingData> {
       'value', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultValue: const Constant(""));
+      defaultValue: const CustomExpression('\'\''));
   late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
       'updated_at', aliasedName, false,
       type: DriftSqlType.dateTime,
@@ -1450,22 +1479,450 @@ class SettingCompanion extends UpdateCompanion<SettingData> {
   }
 }
 
-class DatabaseAtV5 extends GeneratedDatabase {
-  DatabaseAtV5(QueryExecutor e) : super(e);
+class DriftSchema extends Table with TableInfo<DriftSchema, DriftSchemaData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  DriftSchema(this.attachedDatabase, [this._alias]);
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+      'version', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const CustomExpression('0'));
+  @override
+  List<GeneratedColumn> get $columns => [id, version];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'drift_schema';
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DriftSchemaData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DriftSchemaData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      version: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}version'])!,
+    );
+  }
+
+  @override
+  DriftSchema createAlias(String alias) {
+    return DriftSchema(attachedDatabase, alias);
+  }
+}
+
+class DriftSchemaData extends DataClass implements Insertable<DriftSchemaData> {
+  final int id;
+  final int version;
+  const DriftSchemaData({required this.id, required this.version});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['version'] = Variable<int>(version);
+    return map;
+  }
+
+  DriftSchemaCompanion toCompanion(bool nullToAbsent) {
+    return DriftSchemaCompanion(
+      id: Value(id),
+      version: Value(version),
+    );
+  }
+
+  factory DriftSchemaData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DriftSchemaData(
+      id: serializer.fromJson<int>(json['id']),
+      version: serializer.fromJson<int>(json['version']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'version': serializer.toJson<int>(version),
+    };
+  }
+
+  DriftSchemaData copyWith({int? id, int? version}) => DriftSchemaData(
+        id: id ?? this.id,
+        version: version ?? this.version,
+      );
+  DriftSchemaData copyWithCompanion(DriftSchemaCompanion data) {
+    return DriftSchemaData(
+      id: data.id.present ? data.id.value : this.id,
+      version: data.version.present ? data.version.value : this.version,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftSchemaData(')
+          ..write('id: $id, ')
+          ..write('version: $version')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, version);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DriftSchemaData &&
+          other.id == this.id &&
+          other.version == this.version);
+}
+
+class DriftSchemaCompanion extends UpdateCompanion<DriftSchemaData> {
+  final Value<int> id;
+  final Value<int> version;
+  const DriftSchemaCompanion({
+    this.id = const Value.absent(),
+    this.version = const Value.absent(),
+  });
+  DriftSchemaCompanion.insert({
+    this.id = const Value.absent(),
+    this.version = const Value.absent(),
+  });
+  static Insertable<DriftSchemaData> custom({
+    Expression<int>? id,
+    Expression<int>? version,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (version != null) 'version': version,
+    });
+  }
+
+  DriftSchemaCompanion copyWith({Value<int>? id, Value<int>? version}) {
+    return DriftSchemaCompanion(
+      id: id ?? this.id,
+      version: version ?? this.version,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DriftSchemaCompanion(')
+          ..write('id: $id, ')
+          ..write('version: $version')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class Reminder extends Table with TableInfo<Reminder, ReminderData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  Reminder(this.attachedDatabase, [this._alias]);
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  late final GeneratedColumn<String> type = GeneratedColumn<String>(
+      'type', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<DateTime> remindTime = GeneratedColumn<DateTime>(
+      'remind_time', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  late final GeneratedColumn<bool> enable = GeneratedColumn<bool>(
+      'enable', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("enable" IN (0, 1))'),
+      defaultValue: const CustomExpression('1'));
+  late final GeneratedColumn<int> taskId = GeneratedColumn<int>(
+      'task_id', aliasedName, true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      $customConstraints: 'REFERENCES task(id) ON DELETE CASCADE');
+  @override
+  List<GeneratedColumn> get $columns => [id, type, remindTime, enable, taskId];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'reminder';
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ReminderData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ReminderData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      type: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}type'])!,
+      remindTime: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}remind_time']),
+      enable: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}enable'])!,
+      taskId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}task_id']),
+    );
+  }
+
+  @override
+  Reminder createAlias(String alias) {
+    return Reminder(attachedDatabase, alias);
+  }
+}
+
+class ReminderData extends DataClass implements Insertable<ReminderData> {
+  final int id;
+  final String type;
+  final DateTime? remindTime;
+  final bool enable;
+  final int? taskId;
+  const ReminderData(
+      {required this.id,
+      required this.type,
+      this.remindTime,
+      required this.enable,
+      this.taskId});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['type'] = Variable<String>(type);
+    if (!nullToAbsent || remindTime != null) {
+      map['remind_time'] = Variable<DateTime>(remindTime);
+    }
+    map['enable'] = Variable<bool>(enable);
+    if (!nullToAbsent || taskId != null) {
+      map['task_id'] = Variable<int>(taskId);
+    }
+    return map;
+  }
+
+  ReminderCompanion toCompanion(bool nullToAbsent) {
+    return ReminderCompanion(
+      id: Value(id),
+      type: Value(type),
+      remindTime: remindTime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(remindTime),
+      enable: Value(enable),
+      taskId:
+          taskId == null && nullToAbsent ? const Value.absent() : Value(taskId),
+    );
+  }
+
+  factory ReminderData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ReminderData(
+      id: serializer.fromJson<int>(json['id']),
+      type: serializer.fromJson<String>(json['type']),
+      remindTime: serializer.fromJson<DateTime?>(json['remindTime']),
+      enable: serializer.fromJson<bool>(json['enable']),
+      taskId: serializer.fromJson<int?>(json['taskId']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'type': serializer.toJson<String>(type),
+      'remindTime': serializer.toJson<DateTime?>(remindTime),
+      'enable': serializer.toJson<bool>(enable),
+      'taskId': serializer.toJson<int?>(taskId),
+    };
+  }
+
+  ReminderData copyWith(
+          {int? id,
+          String? type,
+          Value<DateTime?> remindTime = const Value.absent(),
+          bool? enable,
+          Value<int?> taskId = const Value.absent()}) =>
+      ReminderData(
+        id: id ?? this.id,
+        type: type ?? this.type,
+        remindTime: remindTime.present ? remindTime.value : this.remindTime,
+        enable: enable ?? this.enable,
+        taskId: taskId.present ? taskId.value : this.taskId,
+      );
+  ReminderData copyWithCompanion(ReminderCompanion data) {
+    return ReminderData(
+      id: data.id.present ? data.id.value : this.id,
+      type: data.type.present ? data.type.value : this.type,
+      remindTime:
+          data.remindTime.present ? data.remindTime.value : this.remindTime,
+      enable: data.enable.present ? data.enable.value : this.enable,
+      taskId: data.taskId.present ? data.taskId.value : this.taskId,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReminderData(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('remindTime: $remindTime, ')
+          ..write('enable: $enable, ')
+          ..write('taskId: $taskId')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, type, remindTime, enable, taskId);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ReminderData &&
+          other.id == this.id &&
+          other.type == this.type &&
+          other.remindTime == this.remindTime &&
+          other.enable == this.enable &&
+          other.taskId == this.taskId);
+}
+
+class ReminderCompanion extends UpdateCompanion<ReminderData> {
+  final Value<int> id;
+  final Value<String> type;
+  final Value<DateTime?> remindTime;
+  final Value<bool> enable;
+  final Value<int?> taskId;
+  const ReminderCompanion({
+    this.id = const Value.absent(),
+    this.type = const Value.absent(),
+    this.remindTime = const Value.absent(),
+    this.enable = const Value.absent(),
+    this.taskId = const Value.absent(),
+  });
+  ReminderCompanion.insert({
+    this.id = const Value.absent(),
+    required String type,
+    this.remindTime = const Value.absent(),
+    this.enable = const Value.absent(),
+    this.taskId = const Value.absent(),
+  }) : type = Value(type);
+  static Insertable<ReminderData> custom({
+    Expression<int>? id,
+    Expression<String>? type,
+    Expression<DateTime>? remindTime,
+    Expression<bool>? enable,
+    Expression<int>? taskId,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (type != null) 'type': type,
+      if (remindTime != null) 'remind_time': remindTime,
+      if (enable != null) 'enable': enable,
+      if (taskId != null) 'task_id': taskId,
+    });
+  }
+
+  ReminderCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? type,
+      Value<DateTime?>? remindTime,
+      Value<bool>? enable,
+      Value<int?>? taskId}) {
+    return ReminderCompanion(
+      id: id ?? this.id,
+      type: type ?? this.type,
+      remindTime: remindTime ?? this.remindTime,
+      enable: enable ?? this.enable,
+      taskId: taskId ?? this.taskId,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (type.present) {
+      map['type'] = Variable<String>(type.value);
+    }
+    if (remindTime.present) {
+      map['remind_time'] = Variable<DateTime>(remindTime.value);
+    }
+    if (enable.present) {
+      map['enable'] = Variable<bool>(enable.value);
+    }
+    if (taskId.present) {
+      map['task_id'] = Variable<int>(taskId.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ReminderCompanion(')
+          ..write('id: $id, ')
+          ..write('type: $type, ')
+          ..write('remindTime: $remindTime, ')
+          ..write('enable: $enable, ')
+          ..write('taskId: $taskId')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class DatabaseAtV8 extends GeneratedDatabase {
+  DatabaseAtV8(QueryExecutor e) : super(e);
   late final Project project = Project(this);
   late final Task task = Task(this);
   late final Label label = Label(this);
   late final TaskLabel taskLabel = TaskLabel(this);
   late final Profile profile = Profile(this);
   late final Setting setting = Setting(this);
+  late final DriftSchema driftSchema = DriftSchema(this);
+  late final Reminder reminder = Reminder(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
   @override
-  List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [project, task, label, taskLabel, profile, setting];
+  List<DatabaseSchemaEntity> get allSchemaEntities => [
+        project,
+        task,
+        label,
+        taskLabel,
+        profile,
+        setting,
+        driftSchema,
+        reminder
+      ];
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 8;
   @override
   DriftDatabaseOptions get options =>
       const DriftDatabaseOptions(storeDateTimeAsText: true);

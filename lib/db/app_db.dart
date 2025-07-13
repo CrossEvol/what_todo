@@ -6,13 +6,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'dart:io';
 import '../models/setting_type.dart';
+import '../models/reminder_type.dart';
 import 'tables.dart';
 import 'package:flutter/material.dart' hide Table;
 
 part 'app_db.g.dart';
 
 @DriftDatabase(
-    tables: [Project, Task, Label, TaskLabel, Profile, Setting, DriftSchema])
+    tables: [Project, Task, Label, TaskLabel, Profile, Setting, DriftSchema, Reminder])
 class AppDatabase extends _$AppDatabase {
   AppDatabase._internal() : super(_openConnection());
 
@@ -25,7 +26,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.test(super.connection);
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -44,6 +45,8 @@ class AppDatabase extends _$AppDatabase {
         m.createTable(schema.driftSchema);
       }, from6To7: (Migrator m, Schema7 schema) async {
         m.addColumn(schema.task, schema.task.order);
+      }, from7To8: (Migrator m, Schema8 schema) async {
+        await m.createTable(schema.reminder);
       }),
       beforeOpen: (details) async {
         // initial creation

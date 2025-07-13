@@ -537,6 +537,16 @@ class MockTaskDB extends _i1.Mock implements _i12.TaskDB {
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<_i13.Task?> getRandomTask() => (super.noSuchMethod(
+        Invocation.method(
+          #getRandomTask,
+          [],
+        ),
+        returnValue: _i5.Future<_i13.Task?>.value(),
+        returnValueForMissingStub: _i5.Future<_i13.Task?>.value(),
+      ) as _i5.Future<_i13.Task?>);
 }
 
 /// A class which mocks [SearchDB].
