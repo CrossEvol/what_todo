@@ -11,6 +11,19 @@ to `flutter_bloc`
 
 # Todo:
 
+## 2025/7/13
+
+- Add a new table `reminder`, which has a many-to-one relationship with the `task` table. The `reminder_id` in the `task` table should have a default value of `null`.
+- The `reminder` table should have the following fields: `id`, `type` (once, daily, work day, holiday, custom - choose from Monday to Sunday), `remind_time`, `enable` (true/false), and `task_id`.
+- Implement a background notification service to push reminders at specified times. Use a queue to manage the reminders, with a limit of 5 to 9 reminders in the queue at any given time.
+- The notification service should be disable-able through settings.
+- When a notification is tapped, if the app is not running, it should launch the app and display the details of the corresponding task.
+- Include reminder data in the import/export functionality.
+- Consider whether to query all reminder information when querying tasks, or only when viewing the details of a specific task.
+- Add a grid to manage reminders.
+
+## Before 2025/7/13
+
 - ~~mobile can not update title properly, it will commit updateTask several times, and preserve the
   origin at the db level~~
 - ~~the desktop can update title, but the mobile will flashback~~
@@ -28,20 +41,27 @@ to `flutter_bloc`
 - ~~export data~~
 - ~~import data~~
 - ~~dateTime in db from int -> string~~
-- tidy up tests 
+- tidy up tests
 
 # Update
+
 ## 2025/04/05
+
 ### flutter-generate-i10n-source
+
 see [breaking-changes/flutter-generate-i10n-source](https://docs.flutter.dev/release/breaking-changes/flutter-generate-i10n-source)
-besides the migrate guide, should use the flutter-intl tool to generate the code , this tool has been integrated into android studio 
+besides the migrate guide, should use the flutter-intl tool to generate the code , this tool has
+been integrated into android studio
 
 ### not rely on `.flutter-plugins` any more
+
 see [flutter-plugins-configuration]https://docs.flutter.dev/release/breaking-changes/flutter-plugins-configuration
 
 ## 2025/04/17
+
 fix a crash issue.
 see the output of `git log`
+
 ```shell
 $ git log 
 commit 5243cfb0649215f96e81337b6703fd8b82b00677 (HEAD -> master, tag: v1.0.6, origin/master)
@@ -119,42 +139,55 @@ Date:   Sat Apr 12 21:06:26 2025 +0800
     use `with RestorationMixin` && `ScrollController` && `RestorableDouble` to impl remember scroll position for HomePage
 ```
 
-from the start of commit in the time of `Apr 12`, the app only can run in the debug mode. the release app can bootstrap, but in windows, it only run in the background , in android, it only render the empty page and can not do any operations
+from the start of commit in the time of `Apr 12`, the app only can run in the debug mode. the
+release app can bootstrap, but in windows, it only run in the background , in android, it only
+render the empty page and can not do any operations
 
-the commit between `Apr 12` and `Apr 13` has two key changes, one is I ignore the `android/app/.cxx`, the other is I add the `logger.info()` in the main.dart
+the commit between `Apr 12` and `Apr 13` has two key changes, one is I ignore the
+`android/app/.cxx`, the other is I add the `logger.info()` in the main.dart
 
-finally, I found that the reason why the app crash is that it can not setup Logger correctly 
+finally, I found that the reason why the app crash is that it can not setup Logger correctly
 
-for windows , in `main.dart`, convert `setupLogger();`  to `await setupLogger();` can solve the problem 
+for windows , in `main.dart`, convert `setupLogger();`  to `await setupLogger();` can solve the
+problem
 
-but in android , it is not enough, so I comment the `logger.info("TodoApp boostraping....");` in `main.dart`
+but in android , it is not enough, so I comment the `logger.info("TodoApp boostraping....");` in
+`main.dart`
 
 it seems that it works.
 
 ## 2025/04/18
+
 ```dart
-class BlocProvider<T extends StateStreamableSource<Object?>>
-    extends SingleChildStatelessWidget {
+class BlocProvider<T extends StateStreamableSource<Object?>> extends SingleChildStatelessWidget {
   /// {@macro bloc_provider}
   const BlocProvider({
     required T Function(BuildContext context) create,
     Key? key,
     this.child,
     this.lazy = true,
-  })  : _create = create,
+  })
+      : _create = create,
         _value = null,
         super(key: key, child: child);
-  // ...
+// ...
 }
 ```
-Some BlocProvider should set lazy to false , 
+
+Some BlocProvider should set lazy to false ,
+
 ```dart
-BlocProvider(
-    create: (_) =>
-    SettingsBloc(SettingsDB.get())
-    ..add(LoadSettingsEvent())..add(
-    AddSetLocaleFunction(setLocale: setLocale)),
-    lazy: false,
+BlocProvider
+(
+create: (_) =>
+SettingsBloc(SettingsDB.get())
+..add(LoadSettingsEvent())..add(
+AddSetLocaleFunction(setLocale: setLocale)),
+lazy
+:
+false
+,
 )
 ```
+
 although it will load the settings state eagerly on windows 
