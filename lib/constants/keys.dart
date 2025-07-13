@@ -82,3 +82,7 @@ class CompletedTaskPageKeys {
   static const IMPORT_DATA = 'import_data';
   static const ALL_TO_TODAY = 'all_to_today';
 }
+
+class ReminderPageKeys {
+  static const CREATE_REMINDER = 'create_reminder';
+}

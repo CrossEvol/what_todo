@@ -137,7 +137,8 @@ final GoRouter goRouter = GoRouter(
             GoRoute(
               path: 'create',
               builder: (BuildContext context, GoRouterState state) {
-                return ReminderCreatePage();
+                final map = state.extra as Map<String, int?>?;
+                return ReminderCreatePage(taskId: map!["taskId"]!);
               },
             ),
             GoRoute(

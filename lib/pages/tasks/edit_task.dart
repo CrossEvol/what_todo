@@ -213,7 +213,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
             subtitle: Text(AppLocalizations.of(context)!.noReminder),
             hoverColor: _grey,
             onTap: () {
-              context.push("/reminder/update");
+              context
+                  .push("/reminder/create", extra: {"taskId": widget.task.id});
               // showSnackbar(context, AppLocalizations.of(context)!.comingSoon); // TODO: remove here after reminder functionality completed
             },
           )
