@@ -1,3 +1,4 @@
+import 'package:enum_to_string/enum_to_string.dart';
 import 'package:flutter_app/models/reminder_type.dart';
 
 class Reminder {
@@ -42,9 +43,11 @@ class Reminder {
   Reminder.fromMap(Map<String, dynamic> map)
       : this.update(
             id: map[dbId],
-            type: ReminderType.values[map[dbType]], // Assuming type is stored as int index
-            remindTime: map[dbRemindTime] != null ? DateTime.fromMillisecondsSinceEpoch(map[dbRemindTime]) : null,
-            enable: map[dbEnable] == 1, // Assuming boolean is stored as 0 or 1
+            type: EnumToString.fromString(ReminderType.values, map[dbType]),
+            remindTime: map[dbRemindTime] != null
+                ? DateTime.parse(map[dbRemindTime])
+                : null,
+            enable: map[dbEnable],
             taskId: map[dbTaskId]);
 
   Map<String, dynamic> toMap() {

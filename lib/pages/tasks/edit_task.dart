@@ -1,3 +1,4 @@
+import 'package:flutter_app/dao/reminder_db.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -212,10 +213,77 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
             title: Text(AppLocalizations.of(context)!.reminder),
             subtitle: Text(AppLocalizations.of(context)!.noReminder),
             hoverColor: _grey,
-            onTap: () {
-              context
-                  .push("/reminder/create", extra: {"taskId": widget.task.id});
-              // showSnackbar(context, AppLocalizations.of(context)!.comingSoon); // TODO: remove here after reminder functionality completed
+            onTap: () async {
+              final reminders =
+                  await ReminderDB.get().getRemindersForTask(widget.task.id!);
+              if (reminders.isEmpty) {
+                context.push("/reminder/create",
+                    extra: {"taskId": widget.task.id});
+              } else {
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) {
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: reminders.length,
+                            itemBuilder: (context, index) {
+                              final reminder = reminders[index];
+                              return ListTile(
+                                title: Text('Reminder #${reminder.id}'),
+                                subtitle: Text(reminder.remindTime.toString()),
+                                trailing: Checkbox(
+                                    value: reminder.enable, onChanged: (_) {}),
+                                onTap: () {
+                                  context.push("/reminder/update",
+                                      extra: reminder);
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              context.push("/reminder/create",
+                                  extra: {"taskId": widget.task.id});
+                            },
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  WidgetStateProperty.resolveWith<Color?>(
+                                (Set<WidgetState> states) {
+                                  if (states.contains(WidgetState.hovered)) {
+                                    return Colors.blue; // Color when hovered
+                                  }
+                                  if (states.contains(WidgetState.pressed)) {
+                                    return Colors.blue; // Color when hovered
+                                  }
+                                  return Theme.of(context)
+                                      .colorScheme
+                                      .onInverseSurface; // Default color
+                                },
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              // To keep content centered
+                              children: <Widget>[
+                                Text("Add Reminder"),
+                                SizedBox(width: 8),
+                                // Add some spacing between text and icon
+                                Icon(Icons.add),
+                                // Replace with your desired icon
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                );
+              }
             },
           )
         ],

@@ -22,6 +22,7 @@ import 'package:flutter_app/pages/tasks/task_uncompleted/task_uncompleted.dart';
 import 'package:flutter_app/pages/tasks/task_grid.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_app/models/reminder.dart';
 
 /// The route configuration.
 final GoRouter goRouter = GoRouter(
@@ -144,7 +145,10 @@ final GoRouter goRouter = GoRouter(
             GoRoute(
               path: 'update',
               builder: (BuildContext context, GoRouterState state) {
-                return ReminderUpdatePage();
+                final reminder = state.extra as Reminder;
+                return ReminderUpdatePage(
+                  reminder: reminder,
+                );
               },
             ),
           ],

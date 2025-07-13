@@ -74,6 +74,20 @@ class _ReminderCreatePageState extends State<ReminderCreatePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
                     Text(
+                      'For Task',
+                      style: textStyle,
+                    ),
+                    Text(
+                      '#${widget.taskId}',
+                      style: textStyle,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
                       'Repetition',
                       style: textStyle,
                     ),
