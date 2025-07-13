@@ -435,6 +435,23 @@ class TaskDB {
     }
   }
 
+  Future<Task?> getTaskById(int taskId) async {
+    var query = _db.select(_db.task).join([
+      leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
+      leftOuterJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId)),
+      innerJoin(_db.project, _db.project.id.equalsExp(_db.task.projectId)),
+    ]);
+
+    query.where(_db.task.id.equals(taskId));
+    query.limit(1);
+
+    var result = await query.get();
+    if (result.isNotEmpty) {
+      return _bindData(result).first;
+    }
+    return null;
+  }
+
   Future<void> importDataV1(Map<String, dynamic> data) async {
     // Version check
     final version = data['__v'] as int? ?? 0;

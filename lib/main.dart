@@ -117,11 +117,20 @@ void main() async {
   const InitializationSettings initializationSettings =
       InitializationSettings(android: initializationSettingsAndroid);
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse notificationResponse) async {
+      onDidReceiveNotificationResponse:
+          (NotificationResponse notificationResponse) async {
     // Handle notification tap
-    if (notificationResponse.payload != null) {
+    if (notificationResponse.payload != null &&
+        notificationResponse.payload!.startsWith('task_id=')) {
       debugPrint('notification payload: ${notificationResponse.payload}');
-      // You can navigate to the task details page here
+      final taskIdString = notificationResponse.payload!.split('=')[1];
+      final taskId = int.tryParse(taskIdString);
+      if (taskId != null) {
+        final task = await TaskDB.get().getTaskById(taskId);
+        if (task != null) {
+          goRouter.push('/task/edit', extra: task);
+        }
+      }
     }
   });
 
