@@ -41,6 +41,10 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 @pragma('vm:entry-point')
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
+    WidgetsFlutterBinding.ensureInitialized();
+    driftRuntimeOptions.defaultSerializer =
+        ValueSerializer.defaults(serializeDateTimeValuesAsString: true);
+
     // This is where you would handle your background task.
     // For example, you can send a notification.
     const AndroidNotificationDetails androidNotificationDetails =
@@ -51,9 +55,25 @@ void callbackDispatcher() {
             ticker: 'ticker');
     const NotificationDetails notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
-    await flutterLocalNotificationsPlugin.show(
-        0, 'plain title', 'plain body', notificationDetails,
-        payload: 'item x');
+
+    final taskDb = TaskDB.get();
+    final randomTask = await taskDb.getRandomTask();
+
+    if (randomTask != null) {
+      final title = randomTask.title;
+      final project = randomTask.projectName;
+      final labels = randomTask.labelList.map((e) => e.name).join(', ');
+      final body = 'Project: $project\nLabels: $labels';
+
+      await flutterLocalNotificationsPlugin.show(
+          randomTask.id!, title, body, notificationDetails,
+          payload: 'task_id=${randomTask.id}');
+    } else {
+      await flutterLocalNotificationsPlugin.show(
+          0, 'WhatTodo', 'You have no tasks.', notificationDetails,
+          payload: 'no_tasks');
+    }
+
     return Future.value(true);
   });
 }

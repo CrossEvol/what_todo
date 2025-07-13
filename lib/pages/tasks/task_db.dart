@@ -531,4 +531,19 @@ class TaskDB {
       }
     }
   }
+
+  // TODO: will remove this method at last , currently for test convenience
+  Future<Task?> getRandomTask() async {
+    final query = _db.select(_db.task).join([
+      leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
+      leftOuterJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId)),
+      innerJoin(_db.project, _db.project.id.equalsExp(_db.task.projectId)),
+    ])
+      ..orderBy([OrderingTerm(expression: CustomExpression('RANDOM()'))])
+      ..limit(1);
+
+    final result = await query.get();
+    final tasks = _bindData(result);
+    return tasks.isNotEmpty ? tasks.first : null;
+  }
 }
