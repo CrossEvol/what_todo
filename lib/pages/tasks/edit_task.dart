@@ -502,8 +502,27 @@ class _RemindersBottomSheet extends StatelessWidget {
                   return ListTile(
                     title: Text('Reminder #${reminder.id}'),
                     subtitle: Text(reminder.remindTime.toString()),
-                    trailing: Checkbox(value: reminder.enable, onChanged: (_) {}),
+                    trailing: Checkbox(
+                      value: reminder.enable,
+                      onChanged: (bool? newValue) {
+                        if (newValue != null) {
+                          // Create an updated reminder object with toggled enable state
+                          final updatedReminder = Reminder.update(
+                            id: reminder.id,
+                            type: reminder.type,
+                            remindTime: reminder.remindTime,
+                            enable: newValue, // Use the new value
+                            taskId: reminder.taskId,
+                          );
+                          // Dispatch the update event to the ReminderBloc
+                          context
+                              .read<ReminderBloc>()
+                              .add(UpdateReminderEvent(updatedReminder));
+                        }
+                      },
+                    ),
                     onTap: () {
+                      // Navigate to the update page for the reminder
                       context.push("/reminder/update", extra: reminder);
                     },
                   );
@@ -514,6 +533,7 @@ class _RemindersBottomSheet extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
+                  // Navigate to the create reminder page for the current task
                   context.push("/reminder/create", extra: {"taskId": taskId});
                 },
                 style: ButtonStyle(
@@ -523,7 +543,7 @@ class _RemindersBottomSheet extends StatelessWidget {
                         return Colors.blue; // Color when hovered
                       }
                       if (states.contains(WidgetState.pressed)) {
-                        return Colors.blue; // Color when hovered
+                        return Colors.blue; // Color when pressed
                       }
                       return Theme.of(context)
                           .colorScheme
