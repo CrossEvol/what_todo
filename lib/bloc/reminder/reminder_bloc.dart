@@ -18,6 +18,7 @@ class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
     on<LoadRemindersForTask>(_onLoadRemindersForTask);
     on<RemindersInitialEvent>(_onInitializeReminders);
     on<AddReminderEvent>(_onAddReminder);
+    on<RemoveReminderEvent>(_onRemoveReminder);
   }
 
   void _onLoadRemindersForTask(
@@ -57,6 +58,36 @@ class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
           List<Reminder>.from(newRemindersByTask[event.reminder.taskId] ?? []);
       taskReminders.add(newReminder);
       newRemindersByTask[event.reminder.taskId!] = taskReminders;
+      emit(ReminderLoaded(remindersByTask: newRemindersByTask));
+    } catch (e) {
+      emit(ReminderError(e.toString(), remindersByTask: state.remindersByTask));
+    }
+  }
+
+  Future<void> _onRemoveReminder(
+      RemoveReminderEvent event, Emitter<ReminderState> emit) async {
+    emit(ReminderLoading(remindersByTask: state.remindersByTask));
+    try {
+      await _reminderDB.deleteReminder(event.reminderId);
+
+      final newRemindersByTask =
+          Map<int, List<Reminder>>.from(state.remindersByTask);
+      // Find the task ID for the reminder to be removed
+      int? taskIdToRemoveFrom;
+      newRemindersByTask.forEach((taskId, reminders) {
+        if (reminders.any((r) => r.id == event.reminderId)) {
+          taskIdToRemoveFrom = taskId;
+          return; // Found it, stop iterating
+        }
+      });
+
+      if (taskIdToRemoveFrom != null) {
+        final taskReminders =
+            List<Reminder>.from(newRemindersByTask[taskIdToRemoveFrom!] ?? []);
+        taskReminders.removeWhere((r) => r.id == event.reminderId);
+        newRemindersByTask[taskIdToRemoveFrom!] = taskReminders;
+      }
+
       emit(ReminderLoaded(remindersByTask: newRemindersByTask));
     } catch (e) {
       emit(ReminderError(e.toString(), remindersByTask: state.remindersByTask));

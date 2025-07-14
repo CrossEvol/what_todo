@@ -31,3 +31,12 @@ class AddReminderEvent extends ReminderEvent {
   @override
   List<Object?> get props => [reminder];
 }
+
+class RemoveReminderEvent extends ReminderEvent {
+  final int reminderId;
+
+  const RemoveReminderEvent(this.reminderId);
+
+  @override
+  List<Object?> get props => [reminderId];
+}
