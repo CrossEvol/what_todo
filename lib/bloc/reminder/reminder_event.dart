@@ -40,3 +40,12 @@ class RemoveReminderEvent extends ReminderEvent {
   @override
   List<Object?> get props => [reminderId];
 }
+
+class UpdateReminderEvent extends ReminderEvent {
+  final Reminder updatedReminder;
+
+  const UpdateReminderEvent(this.updatedReminder);
+
+  @override
+  List<Object?> get props => [updatedReminder];
+}

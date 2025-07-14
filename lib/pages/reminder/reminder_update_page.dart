@@ -15,9 +15,19 @@ class ReminderUpdatePage extends StatefulWidget {
 }
 
 class _ReminderUpdatePageState extends State<ReminderUpdatePage> {
-  ReminderType _selectedType = ReminderType.once;
-  TimeOfDay? _selectedTime;
-  bool _isEnabled = true;
+  late ReminderType _selectedType;
+  late TimeOfDay? _selectedTime;
+  late bool _isEnabled;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedType = widget.reminder.type;
+    _selectedTime = widget.reminder.remindTime != null
+        ? TimeOfDay.fromDateTime(widget.reminder.remindTime!)
+        : null;
+    _isEnabled = widget.reminder.enable;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -132,28 +142,38 @@ class _ReminderUpdatePageState extends State<ReminderUpdatePage> {
                       );
                       return;
                     }
+                    // Construct the updated reminder object
                     final now = DateTime.now();
                     final remindTime = DateTime(now.year, now.month, now.day,
                         _selectedTime!.hour, _selectedTime!.minute);
-                    final reminder = Reminder.create(
-                      _selectedType,
-                      remindTime,
-                      _isEnabled,
-                      widget.reminder.taskId,
+
+                    final updatedReminder = Reminder.update(
+                      id: widget.reminder.id!, // Use the existing ID
+                      type: _selectedType,
+                      remindTime: remindTime,
+                      enable: _isEnabled,
+                      taskId: widget.reminder.taskId, // Use the existing Task ID
                     );
-                    try {
-                      await ReminderDB.get().insertReminder(reminder);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Reminder created successfully')),
-                      );
-                      Navigator.pop(context);
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text('Failed to create reminder: $e')),
-                      );
-                    }
+
+                    // Dispatch update event instead of direct DB insert
+                    context
+                        .read<ReminderBloc>()
+                        .add(UpdateReminderEvent(updatedReminder));
+
+                    // Handle potential state changes or show immediate feedback
+                    // BlocBuilder or listener might be needed for more robust error handling,
+                    // but for simple feedback and navigation, we can show success and pop.
+                    // Real error handling from bloc would be better.
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text('Updating reminder...')), // Indicate update is in progress
+                    );
+                    // Optionally wait for bloc state change or pop immediately
+                    Navigator.pop(context); // Navigate back after dispatching event
+
+                    // Note: For more robust error/success feedback,
+                    // consider using a BlocListener or BlocConsumer around this widget
+                    // to react to ReminderLoaded or ReminderError states.
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue, // 蓝色背景

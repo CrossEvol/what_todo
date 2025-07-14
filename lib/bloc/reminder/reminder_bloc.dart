@@ -19,6 +19,7 @@ class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
     on<RemindersInitialEvent>(_onInitializeReminders);
     on<AddReminderEvent>(_onAddReminder);
     on<RemoveReminderEvent>(_onRemoveReminder);
+    on<UpdateReminderEvent>(_onUpdateReminder);
   }
 
   void _onLoadRemindersForTask(
@@ -86,6 +87,38 @@ class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
             List<Reminder>.from(newRemindersByTask[taskIdToRemoveFrom!] ?? []);
         taskReminders.removeWhere((r) => r.id == event.reminderId);
         newRemindersByTask[taskIdToRemoveFrom!] = taskReminders;
+      }
+
+      emit(ReminderLoaded(remindersByTask: newRemindersByTask));
+    } catch (e) {
+      emit(ReminderError(e.toString(), remindersByTask: state.remindersByTask));
+    }
+  }
+
+  Future<void> _onUpdateReminder(
+      UpdateReminderEvent event, Emitter<ReminderState> emit) async {
+    emit(ReminderLoading(remindersByTask: state.remindersByTask));
+    try {
+      await _reminderDB.updateReminder(event.updatedReminder);
+
+      final newRemindersByTask =
+          Map<int, List<Reminder>>.from(state.remindersByTask);
+      final taskId = event.updatedReminder.taskId!; // TaskId should not be null for an existing reminder
+      final taskReminders =
+          List<Reminder>.from(newRemindersByTask[taskId] ?? []);
+
+      // Find the index of the reminder to update
+      final indexToUpdate =
+          taskReminders.indexWhere((r) => r.id == event.updatedReminder.id);
+
+      if (indexToUpdate != -1) {
+        // Replace the old reminder with the updated one
+        taskReminders[indexToUpdate] = event.updatedReminder;
+        newRemindersByTask[taskId] = taskReminders;
+      } else {
+        // This case might happen if the state is not fully synced,
+        // but for robustness, we could potentially add it if not found.
+        // For now, we assume it exists.
       }
 
       emit(ReminderLoaded(remindersByTask: newRemindersByTask));
