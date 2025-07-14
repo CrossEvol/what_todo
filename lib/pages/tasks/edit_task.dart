@@ -499,32 +499,99 @@ class _RemindersBottomSheet extends StatelessWidget {
                 itemCount: reminders.length,
                 itemBuilder: (context, index) {
                   final reminder = reminders[index];
-                  return ListTile(
-                    title: Text('Reminder #${reminder.id}'),
-                    subtitle: Text(reminder.remindTime.toString()),
-                    trailing: Checkbox(
-                      value: reminder.enable,
-                      onChanged: (bool? newValue) {
-                        if (newValue != null) {
-                          // Create an updated reminder object with toggled enable state
-                          final updatedReminder = Reminder.update(
-                            id: reminder.id,
-                            type: reminder.type,
-                            remindTime: reminder.remindTime,
-                            enable: newValue, // Use the new value
-                            taskId: reminder.taskId,
+                  return Dismissible(
+                    key: Key(
+                        'reminder_${reminder.id}_${reminder.remindTime?.millisecondsSinceEpoch ?? 0}'),
+                    // Unique key for Dismissible
+                    direction: DismissDirection.startToEnd,
+                    // Swipe from right to left
+                    background: Container(
+                      color: Colors.red,
+                      // Red background when swiping
+                      alignment: Alignment.centerRight,
+                      // Align content to the right
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        // Make the Row size just big enough for its children
+                        children: <Widget>[
+                          Text(
+                            // Use reminder ID and time string
+                            '提醒 #${reminder.id} (${reminder.remindTime.toString()})',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(width: 8.0),
+                          // Spacing between icon and text
+                          Icon(Icons.delete, color: Colors.white),
+                          // Delete icon
+                        ],
+                      ),
+                    ),
+                    confirmDismiss: (direction) async {
+                      // Show confirmation dialog before dismissing
+                      return await showDialog(
+                        context: context,
+                        builder: (BuildContext dialogContext) {
+                          return AlertDialog(
+                            title: const Text('确认删除'),
+                            content: const Text('您确定要删除此提醒吗？'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(dialogContext).pop(false),
+                                child: const Text('取消'),
+                              ),
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.of(dialogContext).pop(true),
+                                child: const Text('删除'),
+                              ),
+                            ],
                           );
-                          // Dispatch the update event to the ReminderBloc
-                          context
-                              .read<ReminderBloc>()
-                              .add(UpdateReminderEvent(updatedReminder));
-                        }
+                        },
+                      );
+                    },
+                    onDismissed: (direction) {
+                      // Dispatch the remove event after dismissal is confirmed
+                      context
+                          .read<ReminderBloc>()
+                          .add(RemoveReminderEvent(reminder.id!));
+
+                      // Optionally show a Snackbar
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('提醒 ${reminder.id} 已删除')),
+                      );
+                    },
+                    child: ListTile(
+                      title: Text('Reminder #${reminder.id}'),
+                      subtitle: Text(reminder.remindTime.toString()),
+                      trailing: Checkbox(
+                        value: reminder.enable,
+                        onChanged: (bool? newValue) {
+                          if (newValue != null) {
+                            // Create an updated reminder object with toggled enable state
+                            final updatedReminder = Reminder.update(
+                              id: reminder.id,
+                              type: reminder.type,
+                              remindTime: reminder.remindTime,
+                              enable: newValue,
+                              // Use the new value
+                              taskId: reminder.taskId,
+                            );
+                            // Dispatch the update event to the ReminderBloc
+                            context
+                                .read<ReminderBloc>()
+                                .add(UpdateReminderEvent(updatedReminder));
+                          }
+                        },
+                      ),
+                      onTap: () {
+                        // Navigate to the update page for the reminder
+                        context.push("/reminder/update", extra: reminder);
                       },
                     ),
-                    onTap: () {
-                      // Navigate to the update page for the reminder
-                      context.push("/reminder/update", extra: reminder);
-                    },
                   );
                 },
               ),
