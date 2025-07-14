@@ -1,8 +1,9 @@
-import 'package:flutter_app/dao/reminder_db.dart';
-import 'package:flutter_app/models/reminder.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/reminder/reminder_bloc.dart';
 import 'package:flutter_app/constants/keys.dart';
+import 'package:flutter_app/models/reminder.dart';
 import 'package:flutter_app/models/reminder_type.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ReminderCreatePage extends StatefulWidget {
   final int taskId;
@@ -51,17 +52,8 @@ class _ReminderCreatePageState extends State<ReminderCreatePage> {
             _isEnabled,
             widget.taskId,
           );
-          try {
-            await ReminderDB.get().insertReminder(reminder);
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Reminder created successfully')),
-            );
-            Navigator.pop(context);
-          } catch (e) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Failed to create reminder: $e')),
-            );
-          }
+          context.read<ReminderBloc>().add(AddReminderEvent(reminder));
+          Navigator.pop(context);
         },
       ),
       body: Padding(

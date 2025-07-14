@@ -17,6 +17,7 @@ class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
         super(const ReminderInitial()) {
     on<LoadRemindersForTask>(_onLoadRemindersForTask);
     on<RemindersInitialEvent>(_onInitializeReminders);
+    on<AddReminderEvent>(_onAddReminder);
   }
 
   void _onLoadRemindersForTask(
@@ -35,6 +36,30 @@ class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
 
   FutureOr<void> _onInitializeReminders(
       RemindersInitialEvent event, Emitter<ReminderState> emit) async {
-    emit(ReminderInitial());
+    emit(const ReminderInitial());
+  }
+
+  Future<void> _onAddReminder(
+      AddReminderEvent event, Emitter<ReminderState> emit) async {
+    try {
+      final newId = await _reminderDB.insertReminder(event.reminder);
+      final newReminder = Reminder.update(
+        id: newId,
+        type: event.reminder.type,
+        remindTime: event.reminder.remindTime,
+        enable: event.reminder.enable,
+        taskId: event.reminder.taskId,
+      );
+
+      final newRemindersByTask =
+          Map<int, List<Reminder>>.from(state.remindersByTask);
+      final taskReminders =
+          List<Reminder>.from(newRemindersByTask[event.reminder.taskId] ?? []);
+      taskReminders.add(newReminder);
+      newRemindersByTask[event.reminder.taskId!] = taskReminders;
+      emit(ReminderLoaded(remindersByTask: newRemindersByTask));
+    } catch (e) {
+      emit(ReminderError(e.toString(), remindersByTask: state.remindersByTask));
+    }
   }
 }

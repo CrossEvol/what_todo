@@ -22,3 +22,12 @@ class LoadRemindersForTask extends ReminderEvent {
   @override
   List<Object?> get props => [taskId];
 }
+
+class AddReminderEvent extends ReminderEvent {
+  final Reminder reminder;
+
+  const AddReminderEvent(this.reminder);
+
+  @override
+  List<Object?> get props => [reminder];
+}
