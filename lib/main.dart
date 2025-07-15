@@ -65,125 +65,130 @@ void callbackDispatcher() {
     const NotificationDetails notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
 
-    final reminderDb = ReminderDB.get();
-    final taskDb = TaskDB.get();
-    final now = tz.TZDateTime.now(tz.local);
-    final weekday = now.weekday;
-
-    if (kDebugMode) {
-      debugPrint('CallbackDispatcher: 开始过滤提醒事项...');
-    }
-
-    // 1. Get all enabled reminders
-    final allReminders = await reminderDb.getAllReminders();
-    if (kDebugMode) {
-      debugPrint(
-          'CallbackDispatcher: 所有提醒事项 (${allReminders.length}): ${allReminders.map((reminder) => reminder.toMap()).map((map) => jsonEncode(map)).toList()}');
-    }
-
-    final enabledReminders = allReminders.where((r) => r.enable).toList();
-    if (kDebugMode) {
-      debugPrint(
-          'CallbackDispatcher: 启用的提醒事项 (${enabledReminders.length}): ${enabledReminders.map((reminder) => reminder.toMap()).map((map) => jsonEncode(map)).toList()}');
-    }
-
-    // 6. Filter by type (daily, weekday, holiday)
-    final remindersFilteredByType = enabledReminders.where((r) {
-      switch (r.type) {
-        case ReminderType.daily:
-          return true;
-        case ReminderType.workDay:
-          return weekday >= 1 && weekday <= 5;
-        case ReminderType.holiday:
-          return weekday == 6 || weekday == 7;
-        case ReminderType.once:
-          return true;
-        default:
-          return false;
-      }
-    }).toList();
-    if (kDebugMode) {
-      debugPrint(
-          'CallbackDispatcher: 按类型过滤后 (${remindersFilteredByType.length}): ${remindersFilteredByType.map((reminder) => reminder.toMap()).map((map) => jsonEncode(map)).toList()}');
-    }
-
-    // 4. Filter by time (within 15 minutes)
-    final remindersToSend = remindersFilteredByType.where((r) {
-      if (r.remindTime == null) return false;
-      final reminderTime = r.remindTime!;
-      final reminderTimeAsToday = tz.TZDateTime(
-          tz.local,
-          now.year,
-          now.month,
-          now.day,
-          reminderTime.hour,
-          reminderTime.minute);
-      final difference = now.difference(reminderTimeAsToday);
-      return difference.inMinutes.abs() <= 15;
-    }).toList();
-    if (kDebugMode) {
-      debugPrint('CallbackDispatcher: 当前时间为 (${now.toIso8601String()})');
-      debugPrint('CallbackDispatcher: 当前时间为 (${now.toString()})');
-      debugPrint('CallbackDispatcher: 当前时间为 (${now.millisecondsSinceEpoch})');
-      debugPrint(
-          'CallbackDispatcher: 按时间过滤后 (${remindersToSend.length}): ${remindersToSend.map((reminder) => reminder.toMap()).map((map) => jsonEncode(map)).toList()}');
-    }
-
-    // 3. Group by taskId and get the latest one by updateTime
-    final remindersByTask = <int, Reminder>{};
-    for (final reminder in remindersToSend) {
-      if (reminder.taskId != null) {
-        if (!remindersByTask.containsKey(reminder.taskId!) ||
-            reminder.updateTime!
-                .isAfter(remindersByTask[reminder.taskId!]!.updateTime!)) {
-          remindersByTask[reminder.taskId!] = reminder;
-        }
-      }
-    }
-    if (kDebugMode) {
-      debugPrint(
-          'CallbackDispatcher: 按任务分组并取最新 (${remindersByTask.values.length}): ${remindersByTask.values.map((reminder) => reminder.toMap()).map((map) => jsonEncode(map)).toList().toList()}');
-    }
-
-    var finalReminders = remindersByTask.values.toList();
-
-    // 2. Sort by updateTime and take top 5
-    finalReminders.sort((a, b) => b.updateTime!.compareTo(a.updateTime!));
-    if (kDebugMode) {
-      debugPrint(
-          'CallbackDispatcher: 排序前5个 (${finalReminders.length}): ${finalReminders.map((reminder) => reminder.toMap()).map((map) => jsonEncode(map)).toList()}');
-    }
-    if (finalReminders.length > 5) {
-      finalReminders = finalReminders.sublist(0, 5);
-    }
-
-    if (finalReminders.isNotEmpty) {
-      for (final reminder in finalReminders) {
-        final task = await taskDb.getTaskById(reminder.taskId!);
-        if (task != null) {
-          final title = task.title;
-          final project = task.projectName;
-          final labels = task.labelList.map((e) => e.name).join(', ');
-          final body = 'Project: $project Labels: $labels';
-
-          await flutterLocalNotificationsPlugin.show(
-              task.id!, title, body, notificationDetails,
-              payload: 'task_id=${task.id}');
-
-          // 5. Disable reminder if type is "once"
-          if (reminder.type == ReminderType.once) {
-            await reminderDb.updateReminder(reminder..enable = false);
-          }
-        }
-      }
-    } else {
-      await flutterLocalNotificationsPlugin.show(
-          0, 'WhatTodo', 'You have no tasks.', notificationDetails,
-          payload: 'no_tasks');
-    }
+    await _processRemindersAndShowNotifications(notificationDetails);
 
     return Future.value(true);
   });
+}
+
+Future<void> _processRemindersAndShowNotifications(
+    NotificationDetails notificationDetails) async {
+  final reminderDb = ReminderDB.get();
+  final taskDb = TaskDB.get();
+  final now = tz.TZDateTime.now(tz.local);
+  final weekday = now.weekday;
+
+  if (kDebugMode) {
+    debugPrint('CallbackDispatcher: 开始过滤提醒事项...');
+  }
+
+  // 1. Get all enabled reminders
+  final allReminders = await reminderDb.getAllReminders();
+  if (kDebugMode) {
+    debugPrint(
+        'CallbackDispatcher: 所有提醒事项 (${allReminders.length}): ${allReminders.map((reminder) => reminder.toMap()).map((map) => jsonEncode(map)).toList()}');
+  }
+
+  final enabledReminders = allReminders.where((r) => r.enable).toList();
+  if (kDebugMode) {
+    debugPrint(
+        'CallbackDispatcher: 启用的提醒事项 (${enabledReminders.length}): ${enabledReminders.map((reminder) => reminder.toMap()).map((map) => jsonEncode(map)).toList()}');
+  }
+
+  // 6. Filter by type (daily, weekday, holiday)
+  final remindersFilteredByType = enabledReminders.where((r) {
+    switch (r.type) {
+      case ReminderType.daily:
+        return true;
+      case ReminderType.workDay:
+        return weekday >= 1 && weekday <= 5;
+      case ReminderType.holiday:
+        return weekday == 6 || weekday == 7;
+      case ReminderType.once:
+        return true;
+      default:
+        return false;
+    }
+  }).toList();
+  if (kDebugMode) {
+    debugPrint(
+        'CallbackDispatcher: 按类型过滤后 (${remindersFilteredByType.length}): ${remindersFilteredByType.map((reminder) => reminder.toMap()).map((map) => jsonEncode(map)).toList()}');
+  }
+
+  // 4. Filter by time (within 15 minutes)
+  final remindersToSend = remindersFilteredByType.where((r) {
+    if (r.remindTime == null) return false;
+    final reminderTime = r.remindTime!;
+    final reminderTimeAsToday = tz.TZDateTime(
+        tz.local,
+        now.year,
+        now.month,
+        now.day,
+        reminderTime.hour,
+        reminderTime.minute);
+    final difference = now.difference(reminderTimeAsToday);
+    return difference.inMinutes.abs() <= 15;
+  }).toList();
+  if (kDebugMode) {
+    debugPrint('CallbackDispatcher: 当前时间为 (${now.toIso8601String()})');
+    debugPrint('CallbackDispatcher: 当前时间为 (${now.toString()})');
+    debugPrint('CallbackDispatcher: 当前时间为 (${now.millisecondsSinceEpoch})');
+    debugPrint(
+        'CallbackDispatcher: 按时间过滤后 (${remindersToSend.length}): ${remindersToSend.map((reminder) => reminder.toMap()).map((map) => jsonEncode(map)).toList()}');
+  }
+
+  // 3. Group by taskId and get the latest one by updateTime
+  final remindersByTask = <int, Reminder>{};
+  for (final reminder in remindersToSend) {
+    if (reminder.taskId != null) {
+      if (!remindersByTask.containsKey(reminder.taskId!) ||
+          reminder.updateTime!
+              .isAfter(remindersByTask[reminder.taskId!]!.updateTime!)) {
+        remindersByTask[reminder.taskId!] = reminder;
+      }
+    }
+  }
+  if (kDebugMode) {
+    debugPrint(
+        'CallbackDispatcher: 按任务分组并取最新 (${remindersByTask.values.length}): ${remindersByTask.values.map((reminder) => reminder.toMap()).map((map) => jsonEncode(map)).toList().toList()}');
+  }
+
+  var finalReminders = remindersByTask.values.toList();
+
+  // 2. Sort by updateTime and take top 5
+  finalReminders.sort((a, b) => b.updateTime!.compareTo(a.updateTime!));
+  if (kDebugMode) {
+    debugPrint(
+        'CallbackDispatcher: 排序前5个 (${finalReminders.length}): ${finalReminders.map((reminder) => reminder.toMap()).map((map) => jsonEncode(map)).toList()}');
+  }
+  if (finalReminders.length > 5) {
+    finalReminders = finalReminders.sublist(0, 5);
+  }
+
+  if (finalReminders.isNotEmpty) {
+    for (final reminder in finalReminders) {
+      final task = await taskDb.getTaskById(reminder.taskId!);
+      if (task != null) {
+        final title = task.title;
+        final project = task.projectName;
+        final labels = task.labelList.map((e) => e.name).join(', ');
+        final body = 'Project: $project Labels: $labels';
+
+        await flutterLocalNotificationsPlugin.show(
+            task.id!, title, body, notificationDetails,
+            payload: 'task_id=${task.id}');
+
+        // 5. Disable reminder if type is "once"
+        if (reminder.type == ReminderType.once) {
+          await reminderDb.updateReminder(reminder..enable = false);
+        }
+      }
+    }
+  } else {
+    await flutterLocalNotificationsPlugin.show(
+        0, 'WhatTodo', 'You have no tasks.', notificationDetails,
+        payload: 'no_tasks');
+  }
 }
 
 void main() async {
