@@ -1960,8 +1960,15 @@ class $ReminderTable extends Reminder
       type: DriftSqlType.int,
       requiredDuringInsert: false,
       $customConstraints: 'REFERENCES task(id) ON DELETE CASCADE');
+  static const VerificationMeta _updateTimeMeta =
+      const VerificationMeta('updateTime');
   @override
-  List<GeneratedColumn> get $columns => [id, type, remindTime, enable, taskId];
+  late final GeneratedColumn<DateTime> updateTime = GeneratedColumn<DateTime>(
+      'update_time', aliasedName, true,
+      type: DriftSqlType.dateTime, requiredDuringInsert: false);
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, type, remindTime, enable, taskId, updateTime];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1989,6 +1996,12 @@ class $ReminderTable extends Reminder
       context.handle(_taskIdMeta,
           taskId.isAcceptableOrUnknown(data['task_id']!, _taskIdMeta));
     }
+    if (data.containsKey('update_time')) {
+      context.handle(
+          _updateTimeMeta,
+          updateTime.isAcceptableOrUnknown(
+              data['update_time']!, _updateTimeMeta));
+    }
     return context;
   }
 
@@ -2008,6 +2021,8 @@ class $ReminderTable extends Reminder
           .read(DriftSqlType.bool, data['${effectivePrefix}enable'])!,
       taskId: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}task_id']),
+      updateTime: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}update_time']),
     );
   }
 
@@ -2026,12 +2041,14 @@ class ReminderData extends DataClass implements Insertable<ReminderData> {
   final DateTime? remindTime;
   final bool enable;
   final int? taskId;
+  final DateTime? updateTime;
   const ReminderData(
       {required this.id,
       required this.type,
       this.remindTime,
       required this.enable,
-      this.taskId});
+      this.taskId,
+      this.updateTime});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2046,6 +2063,9 @@ class ReminderData extends DataClass implements Insertable<ReminderData> {
     if (!nullToAbsent || taskId != null) {
       map['task_id'] = Variable<int>(taskId);
     }
+    if (!nullToAbsent || updateTime != null) {
+      map['update_time'] = Variable<DateTime>(updateTime);
+    }
     return map;
   }
 
@@ -2059,6 +2079,9 @@ class ReminderData extends DataClass implements Insertable<ReminderData> {
       enable: Value(enable),
       taskId:
           taskId == null && nullToAbsent ? const Value.absent() : Value(taskId),
+      updateTime: updateTime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(updateTime),
     );
   }
 
@@ -2072,6 +2095,7 @@ class ReminderData extends DataClass implements Insertable<ReminderData> {
       remindTime: serializer.fromJson<DateTime?>(json['remindTime']),
       enable: serializer.fromJson<bool>(json['enable']),
       taskId: serializer.fromJson<int?>(json['taskId']),
+      updateTime: serializer.fromJson<DateTime?>(json['updateTime']),
     );
   }
   @override
@@ -2084,6 +2108,7 @@ class ReminderData extends DataClass implements Insertable<ReminderData> {
       'remindTime': serializer.toJson<DateTime?>(remindTime),
       'enable': serializer.toJson<bool>(enable),
       'taskId': serializer.toJson<int?>(taskId),
+      'updateTime': serializer.toJson<DateTime?>(updateTime),
     };
   }
 
@@ -2092,13 +2117,15 @@ class ReminderData extends DataClass implements Insertable<ReminderData> {
           ReminderType? type,
           Value<DateTime?> remindTime = const Value.absent(),
           bool? enable,
-          Value<int?> taskId = const Value.absent()}) =>
+          Value<int?> taskId = const Value.absent(),
+          Value<DateTime?> updateTime = const Value.absent()}) =>
       ReminderData(
         id: id ?? this.id,
         type: type ?? this.type,
         remindTime: remindTime.present ? remindTime.value : this.remindTime,
         enable: enable ?? this.enable,
         taskId: taskId.present ? taskId.value : this.taskId,
+        updateTime: updateTime.present ? updateTime.value : this.updateTime,
       );
   ReminderData copyWithCompanion(ReminderCompanion data) {
     return ReminderData(
@@ -2108,6 +2135,8 @@ class ReminderData extends DataClass implements Insertable<ReminderData> {
           data.remindTime.present ? data.remindTime.value : this.remindTime,
       enable: data.enable.present ? data.enable.value : this.enable,
       taskId: data.taskId.present ? data.taskId.value : this.taskId,
+      updateTime:
+          data.updateTime.present ? data.updateTime.value : this.updateTime,
     );
   }
 
@@ -2118,13 +2147,15 @@ class ReminderData extends DataClass implements Insertable<ReminderData> {
           ..write('type: $type, ')
           ..write('remindTime: $remindTime, ')
           ..write('enable: $enable, ')
-          ..write('taskId: $taskId')
+          ..write('taskId: $taskId, ')
+          ..write('updateTime: $updateTime')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, type, remindTime, enable, taskId);
+  int get hashCode =>
+      Object.hash(id, type, remindTime, enable, taskId, updateTime);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2133,7 +2164,8 @@ class ReminderData extends DataClass implements Insertable<ReminderData> {
           other.type == this.type &&
           other.remindTime == this.remindTime &&
           other.enable == this.enable &&
-          other.taskId == this.taskId);
+          other.taskId == this.taskId &&
+          other.updateTime == this.updateTime);
 }
 
 class ReminderCompanion extends UpdateCompanion<ReminderData> {
@@ -2142,12 +2174,14 @@ class ReminderCompanion extends UpdateCompanion<ReminderData> {
   final Value<DateTime?> remindTime;
   final Value<bool> enable;
   final Value<int?> taskId;
+  final Value<DateTime?> updateTime;
   const ReminderCompanion({
     this.id = const Value.absent(),
     this.type = const Value.absent(),
     this.remindTime = const Value.absent(),
     this.enable = const Value.absent(),
     this.taskId = const Value.absent(),
+    this.updateTime = const Value.absent(),
   });
   ReminderCompanion.insert({
     this.id = const Value.absent(),
@@ -2155,6 +2189,7 @@ class ReminderCompanion extends UpdateCompanion<ReminderData> {
     this.remindTime = const Value.absent(),
     this.enable = const Value.absent(),
     this.taskId = const Value.absent(),
+    this.updateTime = const Value.absent(),
   }) : type = Value(type);
   static Insertable<ReminderData> custom({
     Expression<int>? id,
@@ -2162,6 +2197,7 @@ class ReminderCompanion extends UpdateCompanion<ReminderData> {
     Expression<DateTime>? remindTime,
     Expression<bool>? enable,
     Expression<int>? taskId,
+    Expression<DateTime>? updateTime,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2169,6 +2205,7 @@ class ReminderCompanion extends UpdateCompanion<ReminderData> {
       if (remindTime != null) 'remind_time': remindTime,
       if (enable != null) 'enable': enable,
       if (taskId != null) 'task_id': taskId,
+      if (updateTime != null) 'update_time': updateTime,
     });
   }
 
@@ -2177,13 +2214,15 @@ class ReminderCompanion extends UpdateCompanion<ReminderData> {
       Value<ReminderType>? type,
       Value<DateTime?>? remindTime,
       Value<bool>? enable,
-      Value<int?>? taskId}) {
+      Value<int?>? taskId,
+      Value<DateTime?>? updateTime}) {
     return ReminderCompanion(
       id: id ?? this.id,
       type: type ?? this.type,
       remindTime: remindTime ?? this.remindTime,
       enable: enable ?? this.enable,
       taskId: taskId ?? this.taskId,
+      updateTime: updateTime ?? this.updateTime,
     );
   }
 
@@ -2206,6 +2245,9 @@ class ReminderCompanion extends UpdateCompanion<ReminderData> {
     if (taskId.present) {
       map['task_id'] = Variable<int>(taskId.value);
     }
+    if (updateTime.present) {
+      map['update_time'] = Variable<DateTime>(updateTime.value);
+    }
     return map;
   }
 
@@ -2216,7 +2258,8 @@ class ReminderCompanion extends UpdateCompanion<ReminderData> {
           ..write('type: $type, ')
           ..write('remindTime: $remindTime, ')
           ..write('enable: $enable, ')
-          ..write('taskId: $taskId')
+          ..write('taskId: $taskId, ')
+          ..write('updateTime: $updateTime')
           ..write(')'))
         .toString();
   }
@@ -3950,6 +3993,7 @@ typedef $$ReminderTableCreateCompanionBuilder = ReminderCompanion Function({
   Value<DateTime?> remindTime,
   Value<bool> enable,
   Value<int?> taskId,
+  Value<DateTime?> updateTime,
 });
 typedef $$ReminderTableUpdateCompanionBuilder = ReminderCompanion Function({
   Value<int> id,
@@ -3957,6 +4001,7 @@ typedef $$ReminderTableUpdateCompanionBuilder = ReminderCompanion Function({
   Value<DateTime?> remindTime,
   Value<bool> enable,
   Value<int?> taskId,
+  Value<DateTime?> updateTime,
 });
 
 final class $$ReminderTableReferences
@@ -4001,6 +4046,9 @@ class $$ReminderTableFilterComposer
   ColumnFilters<bool> get enable => $composableBuilder(
       column: $table.enable, builder: (column) => ColumnFilters(column));
 
+  ColumnFilters<DateTime> get updateTime => $composableBuilder(
+      column: $table.updateTime, builder: (column) => ColumnFilters(column));
+
   $$TaskTableFilterComposer get taskId {
     final $$TaskTableFilterComposer composer = $composerBuilder(
         composer: this,
@@ -4043,6 +4091,9 @@ class $$ReminderTableOrderingComposer
   ColumnOrderings<bool> get enable => $composableBuilder(
       column: $table.enable, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<DateTime> get updateTime => $composableBuilder(
+      column: $table.updateTime, builder: (column) => ColumnOrderings(column));
+
   $$TaskTableOrderingComposer get taskId {
     final $$TaskTableOrderingComposer composer = $composerBuilder(
         composer: this,
@@ -4084,6 +4135,9 @@ class $$ReminderTableAnnotationComposer
 
   GeneratedColumn<bool> get enable =>
       $composableBuilder(column: $table.enable, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updateTime => $composableBuilder(
+      column: $table.updateTime, builder: (column) => column);
 
   $$TaskTableAnnotationComposer get taskId {
     final $$TaskTableAnnotationComposer composer = $composerBuilder(
@@ -4134,6 +4188,7 @@ class $$ReminderTableTableManager extends RootTableManager<
             Value<DateTime?> remindTime = const Value.absent(),
             Value<bool> enable = const Value.absent(),
             Value<int?> taskId = const Value.absent(),
+            Value<DateTime?> updateTime = const Value.absent(),
           }) =>
               ReminderCompanion(
             id: id,
@@ -4141,6 +4196,7 @@ class $$ReminderTableTableManager extends RootTableManager<
             remindTime: remindTime,
             enable: enable,
             taskId: taskId,
+            updateTime: updateTime,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -4148,6 +4204,7 @@ class $$ReminderTableTableManager extends RootTableManager<
             Value<DateTime?> remindTime = const Value.absent(),
             Value<bool> enable = const Value.absent(),
             Value<int?> taskId = const Value.absent(),
+            Value<DateTime?> updateTime = const Value.absent(),
           }) =>
               ReminderCompanion.insert(
             id: id,
@@ -4155,6 +4212,7 @@ class $$ReminderTableTableManager extends RootTableManager<
             remindTime: remindTime,
             enable: enable,
             taskId: taskId,
+            updateTime: updateTime,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) =>

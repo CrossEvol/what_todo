@@ -26,7 +26,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.test(super.connection);
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 9;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -47,6 +47,8 @@ class AppDatabase extends _$AppDatabase {
         m.addColumn(schema.task, schema.task.order);
       }, from7To8: (Migrator m, Schema8 schema) async {
         await m.createTable(schema.reminder);
+      }, from8To9: (Migrator m, Schema9 schema) async {
+        await m.addColumn(schema.reminder, schema.reminder.updateTime);
       }),
       beforeOpen: (details) async {
         // initial creation

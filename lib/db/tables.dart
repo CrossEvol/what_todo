@@ -51,6 +51,8 @@ class Reminder extends Table {
   IntColumn get taskId => integer()
       .nullable()
       .customConstraint('REFERENCES task(id) ON DELETE CASCADE')();
+
+  DateTimeColumn get updateTime => dateTime().nullable()();
 }
 
 class Label extends Table {

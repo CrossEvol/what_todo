@@ -20,6 +20,7 @@ class ReminderDB {
           remindTime: Value(reminder.remindTime),
           enable: Value(reminder.enable),
           taskId: Value(reminder.taskId),
+          updateTime: Value(DateTime.now()),
         ));
   }
 
@@ -30,6 +31,7 @@ class ReminderDB {
           remindTime: Value(reminder.remindTime),
           enable: Value(reminder.enable),
           taskId: Value(reminder.taskId),
+          updateTime: Value(DateTime.now()),
         ));
   }
 

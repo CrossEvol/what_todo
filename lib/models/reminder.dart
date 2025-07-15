@@ -8,14 +8,17 @@ class Reminder {
   static final dbRemindTime = "remindTime";
   static final dbEnable = "enable";
   static final dbTaskId = "taskId";
+  static final dbUpdateTime = "updateTime";
 
   int? id;
   late ReminderType type;
   DateTime? remindTime;
   late bool enable;
   int? taskId;
+  DateTime? updateTime = DateTime.now();
 
-  Reminder.create(this.type, this.remindTime, this.enable, this.taskId);
+  Reminder.create(this.type, this.remindTime, this.enable, this.taskId,
+      {this.updateTime});
 
   Reminder.update({
     required this.id,
@@ -23,6 +26,7 @@ class Reminder {
     DateTime? remindTime,
     bool? enable,
     int? taskId,
+    DateTime? updateTime,
   }) {
     if (type != null) {
       this.type = type;
@@ -35,6 +39,9 @@ class Reminder {
     }
     if (taskId != null) {
       this.taskId = taskId;
+    }
+    if (updateTime != null) {
+      this.updateTime = updateTime;
     }
   }
 
@@ -54,7 +61,10 @@ class Reminder {
                 ? DateTime.parse(map[dbRemindTime])
                 : null,
             enable: map[dbEnable],
-            taskId: map[dbTaskId]);
+            taskId: map[dbTaskId],
+            updateTime: map[dbUpdateTime] != null
+                ? DateTime.parse(map[dbUpdateTime])
+                : null);
 
   Map<String, dynamic> toMap() {
     return {
@@ -63,6 +73,7 @@ class Reminder {
       Reminder.dbRemindTime: remindTime?.millisecondsSinceEpoch,
       Reminder.dbEnable: enable ? 1 : 0, // Storing boolean as 0 or 1
       Reminder.dbTaskId: taskId,
+      Reminder.dbUpdateTime: updateTime?.millisecondsSinceEpoch,
     };
   }
 }
