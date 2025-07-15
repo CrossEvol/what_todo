@@ -70,9 +70,21 @@ void main() async {
     expect(find.byKey(ValueKey(SettingKeys.USE_COUNT_BADGES)), findsOneWidget);
     expect(
         find.byKey(ValueKey(SettingKeys.ENABLE_IMPORT_EXPORT)), findsOneWidget);
+    expect(find.byKey(ValueKey(SettingKeys.CONFIRM_DELETION)), findsOneWidget);
     expect(find.byKey(ValueKey(SettingKeys.ENABLE_DARK_MODE)), findsOneWidget);
     expect(
         find.byKey(ValueKey(SettingKeys.ENABLE_CUSTOM_THEME)), findsOneWidget);
+
+    await tester.scrollThePage();
+    final enableNotificationsFinder =
+        find.widgetWithText(SettingsTile, 'Enable notifications');
+    expect(enableNotificationsFinder, findsOneWidget,
+        reason:
+            'After scrolling, "Enable notifications" tile should be uniquely visible');
+    final enableDailyReminderFinder =
+        find.widgetWithText(SettingsTile, 'Enable DailyReminder');
+    expect(enableDailyReminderFinder, findsOneWidget,
+        reason: '"Enable DailyReminder" tile should also be uniquely visible');
   });
 
   testWidgets('SettingsScreen should display initial settings state',
@@ -107,6 +119,16 @@ void main() async {
     final projectMaxLengthTile =
         tester.findWidgetByKey<SettingsTile>(SettingKeys.PROJECT_LEN);
     expect((projectMaxLengthTile.value as Text).data, equals('8'));
+
+    await tester.scrollThePage();
+
+    final enableNotifications =
+        tester.findWidgetByKey<SettingsTile>(SettingKeys.ENABLE_NOTIFICATIONS);
+    expect(enableNotifications.initialValue, equals(false));
+
+    final enableDailyReminder =
+        tester.findWidgetByKey<SettingsTile>(SettingKeys.ENABLE_DAILY_REMINDER);
+    expect(enableDailyReminder.initialValue, equals(false));
   });
 
   testWidgets(
@@ -157,6 +179,88 @@ void main() async {
     expect(
         tester
             .findWidgetByKey<SettingsTile>(SettingKeys.ENABLE_IMPORT_EXPORT)
+            .initialValue,
+        equals(true));
+  });
+
+  testWidgets(
+      'SettingsScreen should toggle confirmDeletion when switch is pressed',
+      (WidgetTester tester) async {
+    arrangeSettingsBlocStream([
+      defaultSettingState(),
+      defaultSettingState().copyWith(confirmDeletion: true),
+    ]);
+    await pumpSettingsWidget(tester);
+
+    // initial false
+    expect(
+        tester
+            .findWidgetByKey<SettingsTile>(SettingKeys.CONFIRM_DELETION)
+            .initialValue,
+        equals(false));
+
+    // set true
+    await tester.tap(find.byKey(ValueKey(SettingKeys.CONFIRM_DELETION)));
+    await tester.pump();
+    expect(
+        tester
+            .findWidgetByKey<SettingsTile>(SettingKeys.CONFIRM_DELETION)
+            .initialValue,
+        equals(true));
+  });
+
+  testWidgets(
+      'SettingsScreen should toggle enableNotifications when switch is pressed',
+      (WidgetTester tester) async {
+    arrangeSettingsBlocStream([
+      defaultSettingState(),
+      defaultSettingState().copyWith(enableNotifications: true),
+    ]);
+    await pumpSettingsWidget(tester);
+
+    await tester.scrollThePage();
+
+    // initial false
+    expect(
+        tester
+            .findWidgetByKey<SettingsTile>(SettingKeys.ENABLE_NOTIFICATIONS)
+            .initialValue,
+        equals(true));
+
+    // set true
+    await tester.tap(find.byKey(ValueKey(SettingKeys.ENABLE_NOTIFICATIONS)));
+    await tester.pump();
+    expect(
+        tester
+            .findWidgetByKey<SettingsTile>(SettingKeys.ENABLE_NOTIFICATIONS)
+            .initialValue,
+        equals(true));
+  });
+
+  testWidgets(
+      'SettingsScreen should toggle enableDailyReminder when switch is pressed',
+      (WidgetTester tester) async {
+    arrangeSettingsBlocStream([
+      defaultSettingState(),
+      defaultSettingState().copyWith(enableDailyReminder: true),
+    ]);
+    await pumpSettingsWidget(tester);
+
+    await tester.scrollThePage();
+
+    // initial true
+    expect(
+        tester
+            .findWidgetByKey<SettingsTile>(SettingKeys.ENABLE_DAILY_REMINDER)
+            .initialValue,
+        equals(true));
+
+    // set true
+    await tester.tap(find.byKey(ValueKey(SettingKeys.ENABLE_DAILY_REMINDER)));
+    await tester.pump();
+    expect(
+        tester
+            .findWidgetByKey<SettingsTile>(SettingKeys.ENABLE_DAILY_REMINDER)
             .initialValue,
         equals(true));
   });

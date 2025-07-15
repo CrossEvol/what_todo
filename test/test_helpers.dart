@@ -63,6 +63,18 @@ extension TestWidgetFinder<T> on WidgetTester {
     var findKey = find.byKey(ValueKey(key));
     return this.firstWidget(findKey) as T;
   }
+
+  Future<void> scrollThePage() async {
+    // 找到可滚动的列表视图
+    final scrollableFinder = find.byType(Scrollable).first;
+
+    // 手动向下滚动一个较大的距离，确保 "Security" 部分进入视图
+    // Offset(0, -800) 表示向下拖动800个逻辑像素
+    await drag(scrollableFinder, const Offset(0, -800));
+
+    // 等待滚动动画结束并且UI重建完成
+    await pumpAndSettle();
+  }
 }
 
 Future<void> setupTest() async {
