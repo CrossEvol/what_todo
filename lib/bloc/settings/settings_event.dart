@@ -9,6 +9,11 @@ final class LoadSettingsEvent extends SettingsEvent {
   List<Object?> get props => [];
 }
 
+final class ToggleEnableNotificationsEvent extends SettingsEvent {
+  @override
+  List<Object?> get props => [];
+}
+
 final class ToggleUseCountBadgesEvent extends SettingsEvent {
   @override
   List<Object?> get props => [];

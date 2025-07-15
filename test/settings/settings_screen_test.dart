@@ -23,6 +23,7 @@ SettingsState defaultSettingState() {
     labelLen: 8,
     projectLen: 8,
     confirmDeletion: false,
+    enableNotifications: false,
   );
 }
 
@@ -227,7 +228,7 @@ void main() async {
 
   testWidgets(
     'SettingsScreen should update label max length when a length option is selected',
-        (WidgetTester tester) async {
+    (WidgetTester tester) async {
       // Arrange: Set up the initial and updated states for the SettingsBloc
       arrangeSettingsBlocStream([
         defaultSettingState(),
@@ -240,7 +241,7 @@ void main() async {
       // Act & Assert: Verify initial state
       expect(
         ((tester.findWidgetByKey<SettingsTile>(SettingKeys.LABEL_LEN).value)
-        as Text)
+                as Text)
             .data,
         equals('8'), // Assuming defaultSettingState has labelLen = 8
       );
@@ -255,8 +256,8 @@ void main() async {
 
       // Verify the dialog appears with options
       expect(find.byType(AlertDialog), findsOneWidget);
-      expect(find.byKey(ValueKey('${SettingKeys.LABEL_LEN}-12')),
-          findsOneWidget);
+      expect(
+          find.byKey(ValueKey('${SettingKeys.LABEL_LEN}-12')), findsOneWidget);
 
       // Tap the option for 12 characters
       await tester.tap(find.byKey(ValueKey('${SettingKeys.LABEL_LEN}-12')));
@@ -320,7 +321,7 @@ void main() async {
       );
     },
   );
-  
+
   testWidgets(
     'SettingsScreen should display and toggle confirm deletion setting',
     (WidgetTester tester) async {
@@ -334,28 +335,31 @@ void main() async {
       await pumpSettingsWidget(tester);
 
       // Verify the Confirm Deletion tile is displayed
-      expect(find.byKey(ValueKey(SettingKeys.CONFIRM_DELETION)), findsOneWidget);
-      
+      expect(
+          find.byKey(ValueKey(SettingKeys.CONFIRM_DELETION)), findsOneWidget);
+
       // Find the Confirm Deletion switch tile and verify initial state
-      final confirmDeletionSwitch = 
+      final confirmDeletionSwitch =
           tester.findWidgetByKey<SettingsTile>(SettingKeys.CONFIRM_DELETION);
       expect(confirmDeletionSwitch.initialValue, equals(false));
-      
+
       // Verify the title and description are displayed correctly
       expect(find.text('Confirm Deletion'), findsOneWidget);
-      expect(find.text('Show confirmation dialog before deleting items'), findsOneWidget);
-      
+      expect(find.text('Show confirmation dialog before deleting items'),
+          findsOneWidget);
+
       // Scroll to ensure the Confirm Deletion tile is visible
-      await tester.ensureVisible(find.byKey(ValueKey(SettingKeys.CONFIRM_DELETION)));
+      await tester
+          .ensureVisible(find.byKey(ValueKey(SettingKeys.CONFIRM_DELETION)));
       await tester.pumpAndSettle(); // Wait for scrolling to complete
-      
+
       // Tap the Confirm Deletion switch to toggle it
       await tester.tap(find.byKey(ValueKey(SettingKeys.CONFIRM_DELETION)));
       await tester.pumpAndSettle(); // Wait for state to update
-      
+
       // Since we've set up the stream to emit a state with confirmDeletion: true,
       // we should now see the updated switch value
-      final updatedConfirmDeletionSwitch = 
+      final updatedConfirmDeletionSwitch =
           tester.findWidgetByKey<SettingsTile>(SettingKeys.CONFIRM_DELETION);
       expect(updatedConfirmDeletionSwitch.initialValue, equals(true));
     },

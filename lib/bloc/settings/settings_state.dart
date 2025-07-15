@@ -21,6 +21,7 @@ class SettingsState extends Equatable {
   final bool useCountBadges;
   final bool enableImportExport;
   final bool confirmDeletion;
+  final bool enableNotifications;
   final ResultStatus status;
   final String updatedKey;
   final Environment environment;
@@ -35,6 +36,7 @@ class SettingsState extends Equatable {
     required this.updatedKey,
     required this.enableImportExport,
     required this.confirmDeletion,
+    required this.enableNotifications,
     required this.environment,
     required this.language,
     required this.labelLen, // Added
@@ -49,6 +51,7 @@ class SettingsState extends Equatable {
         updatedKey,
         enableImportExport,
         confirmDeletion,
+        enableNotifications,
         environment,
         language,
         labelLen, // Added
@@ -61,6 +64,7 @@ class SettingsState extends Equatable {
     String? updatedKey,
     bool? enableImportExport,
     bool? confirmDeletion,
+    bool? enableNotifications,
     Environment? environment,
     Language? language,
     int? labelLen, // Added
@@ -73,6 +77,7 @@ class SettingsState extends Equatable {
       updatedKey: updatedKey ?? this.updatedKey,
       enableImportExport: enableImportExport ?? this.enableImportExport,
       confirmDeletion: confirmDeletion ?? this.confirmDeletion,
+      enableNotifications: enableNotifications ?? this.enableNotifications,
       environment: environment ?? this.environment,
       language: language ?? this.language,
       labelLen: labelLen ?? this.labelLen, // Added
@@ -90,6 +95,7 @@ class SettingsState extends Equatable {
           useCountBadges == other.useCountBadges &&
           enableImportExport == other.enableImportExport &&
           confirmDeletion == other.confirmDeletion &&
+          enableNotifications == other.enableNotifications &&
           status == other.status &&
           updatedKey == other.updatedKey &&
           environment == other.environment &&
@@ -103,6 +109,7 @@ class SettingsState extends Equatable {
       useCountBadges.hashCode ^
       enableImportExport.hashCode ^
       confirmDeletion.hashCode ^
+      enableNotifications.hashCode ^
       status.hashCode ^
       updatedKey.hashCode ^
       environment.hashCode ^

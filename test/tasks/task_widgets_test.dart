@@ -27,6 +27,7 @@ SettingsState defaultSettingState({bool confirmDeletion = false}) {
     labelLen: 8,
     projectLen: 8,
     confirmDeletion: confirmDeletion,
+    enableNotifications: false,
   );
 }
 
@@ -43,7 +44,6 @@ TaskState defaultTaskState() {
 class FakeTasksEvent extends Fake implements TaskEvent {}
 
 class FakeHomeEvent extends Fake implements HomeEvent {}
-
 
 void main() {
   setUpAll(() {
@@ -207,7 +207,8 @@ void main() {
       final capturedEvents = <UpdateTaskStatusEvent>[];
       when(() => mockTaskBloc.add(any(that: isA<UpdateTaskStatusEvent>())))
           .thenAnswer((invocation) {
-        final event = invocation.positionalArguments.first as UpdateTaskStatusEvent;
+        final event =
+            invocation.positionalArguments.first as UpdateTaskStatusEvent;
         capturedEvents.add(event);
       });
       when(() => mockHomeBloc.add(any(that: isA<LoadTodayCountEvent>())))
@@ -227,7 +228,7 @@ void main() {
       // This is more reliable than the drag in tests
       final dismissibleWidget = tester.widget<Dismissible>(dismissible);
       dismissibleWidget.onDismissed!(DismissDirection.endToStart);
-      
+
       // Pump to process the callback
       await tester.pump();
 
@@ -266,7 +267,7 @@ void main() {
       final dismissibleWidget = tester.widget<Dismissible>(dismissible);
       // For PendingTaskListItem, DELETE is a swipe from left to right (startToEnd)
       dismissibleWidget.onDismissed!(DismissDirection.startToEnd);
-      
+
       // Pump to process the callback
       await tester.pump();
 
@@ -299,28 +300,28 @@ void main() {
       // Find the dismissible widget
       final dismissible = find.byType(Dismissible);
       expect(dismissible, findsOneWidget);
-      
+
       // Get the dismissible widget
       final dismissibleWidget = tester.widget<Dismissible>(dismissible);
-      
+
       // Call confirmDismiss with startToEnd direction
       final _ = dismissibleWidget.confirmDismiss!(DismissDirection.startToEnd);
       await tester.pumpAndSettle();
-      
+
       // Verify the dialog is shown
       expect(find.byType(AlertDialog), findsOneWidget);
       expect(find.text('DELETE'), findsOneWidget);
       expect(find.text('Cancel'), findsOneWidget);
       expect(find.text('Confirm'), findsOneWidget);
-      
+
       // Tap confirm button
       await tester.tap(find.text('Confirm'));
       await tester.pumpAndSettle();
-      
+
       // Now manually call onDismissed since we've confirmed
       dismissibleWidget.onDismissed!(DismissDirection.startToEnd);
       await tester.pump();
-      
+
       // Verify the delete event was sent
       expect(capturedEvents.length, 1);
       expect(capturedEvents.first.taskId, task.id);
@@ -343,24 +344,24 @@ void main() {
       // Find the dismissible widget
       final dismissible = find.byType(Dismissible);
       expect(dismissible, findsOneWidget);
-      
+
       // Get the dismissible widget
       final dismissibleWidget = tester.widget<Dismissible>(dismissible);
-      
+
       // Call confirmDismiss with startToEnd direction
       final _ = dismissibleWidget.confirmDismiss!(DismissDirection.startToEnd);
       await tester.pump();
-      
+
       // Verify the dialog is shown
       expect(find.byType(AlertDialog), findsOneWidget);
-      
+
       // Tap cancel button
       await tester.tap(find.text('Cancel'));
       await tester.pumpAndSettle();
-      
+
       // Verify the dialog is dismissed
       expect(find.byType(AlertDialog), findsNothing);
-      
+
       // Verify no delete event was sent
       verifyNever(() => mockTaskBloc.add(any(that: isA<DeleteTaskEvent>())));
     });
@@ -376,7 +377,8 @@ void main() {
       final capturedEvents = <UpdateTaskStatusEvent>[];
       when(() => mockTaskBloc.add(any(that: isA<UpdateTaskStatusEvent>())))
           .thenAnswer((invocation) {
-        final event = invocation.positionalArguments.first as UpdateTaskStatusEvent;
+        final event =
+            invocation.positionalArguments.first as UpdateTaskStatusEvent;
         capturedEvents.add(event);
       });
 
@@ -394,7 +396,7 @@ void main() {
       final dismissibleWidget = tester.widget<Dismissible>(dismissible);
       // For CompletedTaskListItem, UNDO (mark as pending) is a swipe from right to left (endToStart)
       dismissibleWidget.onDismissed!(DismissDirection.endToStart);
-      
+
       // Pump to process the callback
       await tester.pump();
 
@@ -433,7 +435,7 @@ void main() {
       final dismissibleWidget = tester.widget<Dismissible>(dismissible);
       // For CompletedTaskListItem, DELETE is a swipe from left to right (startToEnd)
       dismissibleWidget.onDismissed!(DismissDirection.startToEnd);
-      
+
       // Pump to process the callback
       await tester.pump();
 
@@ -467,29 +469,29 @@ void main() {
       // Find the dismissible widget
       final dismissible = find.byType(Dismissible);
       expect(dismissible, findsOneWidget);
-      
+
       // Get the dismissible widget
       final dismissibleWidget = tester.widget<Dismissible>(dismissible);
-      
+
       // Call confirmDismiss with endToStart direction
       final _ = dismissibleWidget.confirmDismiss!(DismissDirection.startToEnd);
       await tester.pumpAndSettle();
-      
+
       // Verify the dialog is shown
       expect(find.byType(AlertDialog), findsOneWidget);
       expect(find.text('DELETE'), findsOneWidget);
       expect(find.text('Cancel'), findsOneWidget);
       expect(find.text('Confirm'), findsOneWidget);
-      
+
       // Tap confirm button
       await tester.tap(find.text('Confirm'));
       await tester.pumpAndSettle();
-      
+
       // Now manually call onDismissed since we've confirmed
       // This should match the direction that triggers deletion, which is startToEnd for CompletedTaskListItem
       dismissibleWidget.onDismissed!(DismissDirection.startToEnd);
       await tester.pump();
-      
+
       // Verify the delete event was sent
       expect(capturedEvents.length, 1);
       expect(capturedEvents.first.taskId, task.id);
@@ -512,24 +514,24 @@ void main() {
       // Find the dismissible widget
       final dismissible = find.byType(Dismissible);
       expect(dismissible, findsOneWidget);
-      
+
       // Get the dismissible widget
       final dismissibleWidget = tester.widget<Dismissible>(dismissible);
-      
+
       // Call confirmDismiss with endToStart direction
       final _ = dismissibleWidget.confirmDismiss!(DismissDirection.startToEnd);
       await tester.pumpAndSettle();
-      
+
       // Verify the dialog is shown
       expect(find.byType(AlertDialog), findsOneWidget);
-      
+
       // Tap cancel button
       await tester.tap(find.text('Cancel'));
       await tester.pumpAndSettle();
-      
+
       // Verify the dialog is dismissed
       expect(find.byType(AlertDialog), findsNothing);
-      
+
       // Verify no delete event was sent
       verifyNever(() => mockTaskBloc.add(any(that: isA<DeleteTaskEvent>())));
     });

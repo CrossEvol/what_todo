@@ -41,6 +41,7 @@ class SettingKeys {
   static const LABEL_LEN = 'label_len';
   static const PROJECT_LEN = 'project_len';
   static const CONFIRM_DELETION = 'confirm_deletion';
+  static const ENABLE_NOTIFICATIONS = 'enable_notifications';
 }
 
 class AddProjectKeys {

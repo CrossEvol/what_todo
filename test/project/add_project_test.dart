@@ -29,6 +29,7 @@ SettingsState defaultSettingState() {
     labelLen: 16,
     projectLen: 16,
     confirmDeletion: false,
+    enableNotifications: false,
   );
 }
 

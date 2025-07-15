@@ -28,9 +28,12 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           updatedKey: '',
           environment: Environment.development,
           language: Language.english,
-          labelLen: 8, // Default value changed to 8
-          projectLen: 8, // Default value changed to 8
+          labelLen: 8,
+          // Default value changed to 8
+          projectLen: 8,
+          // Default value changed to 8
           setLocale: (Locale) {},
+          enableNotifications: false,
         )) {
     on<LoadSettingsEvent>(_loadSettings);
     on<ToggleUseCountBadgesEvent>(_toggleUseCountBadges);
@@ -41,6 +44,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<ToggleProjectLen>(_toggleProjectLen); // Added
     on<AddSetLocaleFunction>(_addSetLocaleFunction);
     on<ToggleConfirmDeletion>(_toggleConfirmDeletion);
+    on<ToggleEnableNotificationsEvent>(_toggleEnableNotifications);
   }
 
   FutureOr<void> _toggleUseCountBadges(
@@ -78,28 +82,49 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     ));
   }
 
+  FutureOr<void> _toggleEnableNotifications(
+      ToggleEnableNotificationsEvent event, Emitter<SettingsState> emit) async {
+    final setting =
+        await _settingsDB.findByName(SettingKeys.ENABLE_NOTIFICATIONS);
+    if (setting == null) return;
+    _settingsDB.updateSetting(Setting.update(
+        id: setting.id,
+        key: setting.key,
+        value: '${!bool.parse(setting.value)}',
+        updatedAt: DateTime.now(),
+        type: setting.type));
+    emit(state.copyWith(
+      enableNotifications: !state.enableNotifications,
+      updatedKey: SettingKeys.ENABLE_NOTIFICATIONS,
+      status: ResultStatus.success,
+    ));
+  }
+
   FutureOr<void> _loadSettings(
       LoadSettingsEvent event, Emitter<SettingsState> emit) async {
-    bool useCountBadges = await _getUseCountBadges(_settingsDB);
+    final useCountBadges = await _getUseCountBadges(_settingsDB);
     emit(state.copyWith(useCountBadges: useCountBadges));
 
-    bool enableImportExport = await _getEnableImportExport(_settingsDB);
+    final enableImportExport = await _getEnableImportExport(_settingsDB);
     emit(state.copyWith(enableImportExport: enableImportExport));
-    
-    bool confirmDeletion = await _getConfirmDeletion(_settingsDB);
+
+    final confirmDeletion = await _getConfirmDeletion(_settingsDB);
     emit(state.copyWith(confirmDeletion: confirmDeletion));
 
-    var environment = await _getEnvironment(_settingsDB);
+    final environment = await _getEnvironment(_settingsDB);
     emit(state.copyWith(environment: environment));
 
-    var language = await _getLanguage(_settingsDB);
+    final language = await _getLanguage(_settingsDB);
     emit(state.copyWith(language: language));
 
-    var labelLen = await _getLabelLen(_settingsDB); // Added
+    final labelLen = await _getLabelLen(_settingsDB); // Added
     emit(state.copyWith(labelLen: labelLen)); // Added
 
-    var projectLen = await _getProjectLen(_settingsDB); // Added
+    final projectLen = await _getProjectLen(_settingsDB); // Added
     emit(state.copyWith(projectLen: projectLen)); // Added
+
+    final enableNotifications = await _getEnableNotifications(_settingsDB);
+    emit(state.copyWith(enableNotifications: enableNotifications));
   }
 
   Future<bool> _getUseCountBadges(SettingsDB settingsDB) async {
@@ -149,6 +174,31 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       enableImportExport = bool.parse(setting.value);
     }
     return enableImportExport;
+  }
+
+  Future<bool> _getEnableNotifications(SettingsDB settingsDB) async {
+    bool enableNotifications = false;
+    final setting =
+        await _settingsDB.findByName(SettingKeys.ENABLE_NOTIFICATIONS);
+    if (setting == null) {
+      var created = await _settingsDB.createSetting(Setting.create(
+          key: SettingKeys.ENABLE_NOTIFICATIONS,
+          value: 'true',
+          updatedAt: DateTime.now(),
+          type: SettingType.Bool));
+      if (created) {
+        final newSetting =
+            await _settingsDB.findByName(SettingKeys.ENABLE_NOTIFICATIONS);
+        if (newSetting == null) {
+          _logger.warn('Insert ${SettingKeys.ENABLE_NOTIFICATIONS} failed.');
+          return enableNotifications;
+        }
+        enableNotifications = bool.parse(newSetting.value);
+      }
+    } else {
+      enableNotifications = bool.parse(setting.value);
+    }
+    return enableNotifications;
   }
 
   Future<Environment> _getEnvironment(SettingsDB settingsDB) async {
@@ -347,7 +397,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     await _settingsDB.updateSetting(Setting.update(
       id: setting.id,
       key: setting.key,
-      value: '${event.len}', // Store as string
+      value: '${event.len}',
+      // Store as string
       updatedAt: DateTime.now(),
       type: setting.type,
     ));
@@ -366,7 +417,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     await _settingsDB.updateSetting(Setting.update(
       id: setting.id,
       key: setting.key,
-      value: '${event.len}', // Store as string
+      value: '${event.len}',
+      // Store as string
       updatedAt: DateTime.now(),
       type: setting.type,
     ));
@@ -376,7 +428,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       status: ResultStatus.success,
     ));
   }
-  
+
   FutureOr<void> _toggleConfirmDeletion(
       ToggleConfirmDeletion event, Emitter<SettingsState> emit) async {
     final setting = await _settingsDB.findByName(SettingKeys.CONFIRM_DELETION);

@@ -46,8 +46,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
         }
       },
       builder: (context, state) {
-        bool useCountBadges = state.useCountBadges;
-        bool enableImportExport = state.enableImportExport;
+        final useCountBadges = state.useCountBadges;
+        final enableImportExport = state.enableImportExport;
+        final enableNotifications = state.enableNotifications;
         final environment = state.environment;
         final themeProvider = Provider.of<ThemeProvider>(context);
         return Scaffold(
@@ -125,14 +126,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   SettingsTile.switchTile(
                     key: ValueKey(SettingKeys.CONFIRM_DELETION),
                     onToggle: (value) {
-                      context
-                          .read<SettingsBloc>()
-                          .add(ToggleConfirmDeletion());
+                      context.read<SettingsBloc>().add(ToggleConfirmDeletion());
                     },
                     initialValue: state.confirmDeletion,
                     leading: const Icon(Icons.delete_forever),
                     title: const Text('Confirm Deletion'),
-                    description: const Text('Show confirmation dialog before deleting items'),
+                    description: const Text(
+                        'Show confirmation dialog before deleting items'),
                   ),
                   SettingsTile.switchTile(
                     key: ValueKey(SettingKeys.ENABLE_DARK_MODE),
@@ -161,20 +161,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 title: const Text('Editor'),
                 tiles: <SettingsTile>[
                   SettingsTile.navigation(
-                    key: ValueKey(SettingKeys.LABEL_LEN), // Use new key
-                    leading: const Icon(Icons.label_outline), // Changed icon
-                    title: const Text('Label Max Length'), // Changed title
-                    value: Text('${state.labelLen}'), // Use state.labelLen
+                    key: ValueKey(SettingKeys.LABEL_LEN),
+                    // Use new key
+                    leading: const Icon(Icons.label_outline),
+                    // Changed icon
+                    title: const Text('Label Max Length'),
+                    // Changed title
+                    value: Text('${state.labelLen}'),
+                    // Use state.labelLen
                     onPressed: (context) => _toggleLength(
-                        context, SettingKeys.LABEL_LEN, state.labelLen), // Use new handler
+                        context,
+                        SettingKeys.LABEL_LEN,
+                        state.labelLen), // Use new handler
                   ),
                   SettingsTile.navigation(
-                    key: ValueKey(SettingKeys.PROJECT_LEN), // Use new key
-                    leading: const Icon(Icons.folder_outlined), // Changed icon
-                    title: const Text('Project Max Length'), // Changed title
-                    value: Text('${state.projectLen}'), // Use state.projectLen
+                    key: ValueKey(SettingKeys.PROJECT_LEN),
+                    // Use new key
+                    leading: const Icon(Icons.folder_outlined),
+                    // Changed icon
+                    title: const Text('Project Max Length'),
+                    // Changed title
+                    value: Text('${state.projectLen}'),
+                    // Use state.projectLen
                     onPressed: (context) => _toggleLength(
-                        context, SettingKeys.PROJECT_LEN, state.projectLen), // Use new handler
+                        context,
+                        SettingKeys.PROJECT_LEN,
+                        state.projectLen), // Use new handler
                   ),
                 ],
               ),
@@ -221,8 +233,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: const Text('Change password'),
                   ),
                   SettingsTile.switchTile(
-                    onToggle: (_) {},
-                    initialValue: true,
+                    key: ValueKey(SettingKeys.ENABLE_NOTIFICATIONS),
+                    onToggle: (value) {
+                      context
+                          .read<SettingsBloc>()
+                          .add(ToggleEnableNotificationsEvent());
+                    },
+                    initialValue: enableNotifications,
                     leading: const Icon(Icons.notifications_active),
                     title: const Text('Enable notifications'),
                   ),
