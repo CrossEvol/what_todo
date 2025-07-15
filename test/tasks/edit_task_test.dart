@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/reminder/reminder_bloc.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/pages/home/screen_enum.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
@@ -25,6 +26,7 @@ void main() {
   late MockAdminBloc mockAdminBloc;
   late MockHomeBloc mockHomeBloc;
   late MockLabelBloc mockLabelBloc;
+  late MockReminderBloc mockReminderBloc;
   late Task testTask;
 
   Widget createWidgetUnderTest() {
@@ -34,6 +36,9 @@ void main() {
         BlocProvider<AdminBloc>.value(value: mockAdminBloc),
         BlocProvider<HomeBloc>.value(value: mockHomeBloc),
         BlocProvider<LabelBloc>.value(value: mockLabelBloc),
+        BlocProvider<ReminderBloc>.value(
+          value: mockReminderBloc,
+        )
       ],
       child: EditTaskScreen(task: testTask)
           .withLocalizedMaterialApp()
@@ -46,6 +51,7 @@ void main() {
     mockAdminBloc = MockAdminBloc();
     mockHomeBloc = MockHomeBloc();
     mockLabelBloc = MockLabelBloc();
+    mockReminderBloc = MockReminderBloc();
 
     testTask = Task.update(
       id: 1,
@@ -111,6 +117,10 @@ void main() {
       Stream.fromIterable([homeState]),
       initialState: homeState,
     );
+
+    final reminderState = ReminderInitial();
+    whenListen(mockReminderBloc, Stream.fromIterable([reminderState]),
+        initialState: reminderState);
   });
 
   testWidgets(

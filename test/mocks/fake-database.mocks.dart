@@ -5,18 +5,20 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i5;
 
-import 'package:flutter_app/bloc/search/search_bloc.dart' as _i14;
+import 'package:flutter_app/bloc/search/search_bloc.dart' as _i16;
+import 'package:flutter_app/dao/reminder_db.dart' as _i7;
 import 'package:flutter_app/dao/search_db.dart' as _i3;
+import 'package:flutter_app/models/reminder.dart' as _i8;
 import 'package:flutter_app/pages/labels/label.dart' as _i6;
 import 'package:flutter_app/pages/labels/label_db.dart' as _i4;
-import 'package:flutter_app/pages/profile/profile.dart' as _i9;
-import 'package:flutter_app/pages/profile/profile_db.dart' as _i8;
+import 'package:flutter_app/pages/profile/profile.dart' as _i11;
+import 'package:flutter_app/pages/profile/profile_db.dart' as _i10;
 import 'package:flutter_app/pages/projects/project.dart' as _i2;
-import 'package:flutter_app/pages/projects/project_db.dart' as _i7;
-import 'package:flutter_app/pages/settings/setting.dart' as _i11;
-import 'package:flutter_app/pages/settings/settings_db.dart' as _i10;
-import 'package:flutter_app/pages/tasks/models/task.dart' as _i13;
-import 'package:flutter_app/pages/tasks/task_db.dart' as _i12;
+import 'package:flutter_app/pages/projects/project_db.dart' as _i9;
+import 'package:flutter_app/pages/settings/setting.dart' as _i13;
+import 'package:flutter_app/pages/settings/settings_db.dart' as _i12;
+import 'package:flutter_app/pages/tasks/models/task.dart' as _i15;
+import 'package:flutter_app/pages/tasks/task_db.dart' as _i14;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -134,10 +136,90 @@ class MockLabelDB extends _i1.Mock implements _i4.LabelDB {
       ) as _i5.Future<bool>);
 }
 
+/// A class which mocks [ReminderDB].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockReminderDB extends _i1.Mock implements _i7.ReminderDB {
+  @override
+  _i5.Future<int> insertReminder(_i8.Reminder? reminder) => (super.noSuchMethod(
+        Invocation.method(
+          #insertReminder,
+          [reminder],
+        ),
+        returnValue: _i5.Future<int>.value(0),
+        returnValueForMissingStub: _i5.Future<int>.value(0),
+      ) as _i5.Future<int>);
+
+  @override
+  _i5.Future<bool> updateReminder(_i8.Reminder? reminder) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateReminder,
+          [reminder],
+        ),
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
+
+  @override
+  _i5.Future<List<_i8.Reminder>> getAllReminders() => (super.noSuchMethod(
+        Invocation.method(
+          #getAllReminders,
+          [],
+        ),
+        returnValue: _i5.Future<List<_i8.Reminder>>.value(<_i8.Reminder>[]),
+        returnValueForMissingStub:
+            _i5.Future<List<_i8.Reminder>>.value(<_i8.Reminder>[]),
+      ) as _i5.Future<List<_i8.Reminder>>);
+
+  @override
+  _i5.Future<List<_i8.Reminder>> getReminders() => (super.noSuchMethod(
+        Invocation.method(
+          #getReminders,
+          [],
+        ),
+        returnValue: _i5.Future<List<_i8.Reminder>>.value(<_i8.Reminder>[]),
+        returnValueForMissingStub:
+            _i5.Future<List<_i8.Reminder>>.value(<_i8.Reminder>[]),
+      ) as _i5.Future<List<_i8.Reminder>>);
+
+  @override
+  _i5.Future<_i8.Reminder?> getReminderById(int? id) => (super.noSuchMethod(
+        Invocation.method(
+          #getReminderById,
+          [id],
+        ),
+        returnValue: _i5.Future<_i8.Reminder?>.value(),
+        returnValueForMissingStub: _i5.Future<_i8.Reminder?>.value(),
+      ) as _i5.Future<_i8.Reminder?>);
+
+  @override
+  _i5.Future<int> deleteReminder(int? id) => (super.noSuchMethod(
+        Invocation.method(
+          #deleteReminder,
+          [id],
+        ),
+        returnValue: _i5.Future<int>.value(0),
+        returnValueForMissingStub: _i5.Future<int>.value(0),
+      ) as _i5.Future<int>);
+
+  @override
+  _i5.Future<List<_i8.Reminder>> getRemindersForTask(int? taskId) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getRemindersForTask,
+          [taskId],
+        ),
+        returnValue: _i5.Future<List<_i8.Reminder>>.value(<_i8.Reminder>[]),
+        returnValueForMissingStub:
+            _i5.Future<List<_i8.Reminder>>.value(<_i8.Reminder>[]),
+      ) as _i5.Future<List<_i8.Reminder>>);
+}
+
 /// A class which mocks [ProjectDB].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockProjectDB extends _i1.Mock implements _i7.ProjectDB {
+class MockProjectDB extends _i1.Mock implements _i9.ProjectDB {
   @override
   _i5.Future<bool> isProjectExists(_i2.Project? project) => (super.noSuchMethod(
         Invocation.method(
@@ -269,19 +351,19 @@ class MockProjectDB extends _i1.Mock implements _i7.ProjectDB {
 /// A class which mocks [ProfileDB].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockProfileDB extends _i1.Mock implements _i8.ProfileDB {
+class MockProfileDB extends _i1.Mock implements _i10.ProfileDB {
   @override
-  _i5.Future<_i9.UserProfile?> findByID(int? profileId) => (super.noSuchMethod(
+  _i5.Future<_i11.UserProfile?> findByID(int? profileId) => (super.noSuchMethod(
         Invocation.method(
           #findByID,
           [profileId],
         ),
-        returnValue: _i5.Future<_i9.UserProfile?>.value(),
-        returnValueForMissingStub: _i5.Future<_i9.UserProfile?>.value(),
-      ) as _i5.Future<_i9.UserProfile?>);
+        returnValue: _i5.Future<_i11.UserProfile?>.value(),
+        returnValueForMissingStub: _i5.Future<_i11.UserProfile?>.value(),
+      ) as _i5.Future<_i11.UserProfile?>);
 
   @override
-  _i5.Future<bool> updateOne(_i9.UserProfile? profile) => (super.noSuchMethod(
+  _i5.Future<bool> updateOne(_i11.UserProfile? profile) => (super.noSuchMethod(
         Invocation.method(
           #updateOne,
           [profile],
@@ -294,20 +376,20 @@ class MockProfileDB extends _i1.Mock implements _i8.ProfileDB {
 /// A class which mocks [SettingsDB].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSettingsDB extends _i1.Mock implements _i10.SettingsDB {
+class MockSettingsDB extends _i1.Mock implements _i12.SettingsDB {
   @override
-  _i5.Future<_i11.Setting?> findByName(String? settingKey) =>
+  _i5.Future<_i13.Setting?> findByName(String? settingKey) =>
       (super.noSuchMethod(
         Invocation.method(
           #findByName,
           [settingKey],
         ),
-        returnValue: _i5.Future<_i11.Setting?>.value(),
-        returnValueForMissingStub: _i5.Future<_i11.Setting?>.value(),
-      ) as _i5.Future<_i11.Setting?>);
+        returnValue: _i5.Future<_i13.Setting?>.value(),
+        returnValueForMissingStub: _i5.Future<_i13.Setting?>.value(),
+      ) as _i5.Future<_i13.Setting?>);
 
   @override
-  _i5.Future<bool> updateSetting(_i11.Setting? setting) => (super.noSuchMethod(
+  _i5.Future<bool> updateSetting(_i13.Setting? setting) => (super.noSuchMethod(
         Invocation.method(
           #updateSetting,
           [setting],
@@ -317,7 +399,7 @@ class MockSettingsDB extends _i1.Mock implements _i10.SettingsDB {
       ) as _i5.Future<bool>);
 
   @override
-  _i5.Future<bool> createSetting(_i11.Setting? setting) => (super.noSuchMethod(
+  _i5.Future<bool> createSetting(_i13.Setting? setting) => (super.noSuchMethod(
         Invocation.method(
           #createSetting,
           [setting],
@@ -330,7 +412,7 @@ class MockSettingsDB extends _i1.Mock implements _i10.SettingsDB {
 /// A class which mocks [TaskDB].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockTaskDB extends _i1.Mock implements _i12.TaskDB {
+class MockTaskDB extends _i1.Mock implements _i14.TaskDB {
   @override
   _i5.Future<int> countToday() => (super.noSuchMethod(
         Invocation.method(
@@ -342,16 +424,16 @@ class MockTaskDB extends _i1.Mock implements _i12.TaskDB {
       ) as _i5.Future<int>);
 
   @override
-  _i5.Future<List<_i13.ExportTask>> getExports() => (super.noSuchMethod(
+  _i5.Future<List<_i15.ExportTask>> getExports() => (super.noSuchMethod(
         Invocation.method(
           #getExports,
           [],
         ),
         returnValue:
-            _i5.Future<List<_i13.ExportTask>>.value(<_i13.ExportTask>[]),
+            _i5.Future<List<_i15.ExportTask>>.value(<_i15.ExportTask>[]),
         returnValueForMissingStub:
-            _i5.Future<List<_i13.ExportTask>>.value(<_i13.ExportTask>[]),
-      ) as _i5.Future<List<_i13.ExportTask>>);
+            _i5.Future<List<_i15.ExportTask>>.value(<_i15.ExportTask>[]),
+      ) as _i5.Future<List<_i15.ExportTask>>);
 
   @override
   _i5.Future<Map<String, dynamic>> getExportDataV1() => (super.noSuchMethod(
@@ -366,10 +448,10 @@ class MockTaskDB extends _i1.Mock implements _i12.TaskDB {
       ) as _i5.Future<Map<String, dynamic>>);
 
   @override
-  _i5.Future<List<_i13.Task>> getTasks({
+  _i5.Future<List<_i15.Task>> getTasks({
     int? startDate = 0,
     int? endDate = 0,
-    _i13.TaskStatus? taskStatus,
+    _i15.TaskStatus? taskStatus,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -381,15 +463,15 @@ class MockTaskDB extends _i1.Mock implements _i12.TaskDB {
             #taskStatus: taskStatus,
           },
         ),
-        returnValue: _i5.Future<List<_i13.Task>>.value(<_i13.Task>[]),
+        returnValue: _i5.Future<List<_i15.Task>>.value(<_i15.Task>[]),
         returnValueForMissingStub:
-            _i5.Future<List<_i13.Task>>.value(<_i13.Task>[]),
-      ) as _i5.Future<List<_i13.Task>>);
+            _i5.Future<List<_i15.Task>>.value(<_i15.Task>[]),
+      ) as _i5.Future<List<_i15.Task>>);
 
   @override
-  _i5.Future<List<_i13.Task>> getTasksByProject(
+  _i5.Future<List<_i15.Task>> getTasksByProject(
     int? projectId, {
-    _i13.TaskStatus? status,
+    _i15.TaskStatus? status,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -397,15 +479,15 @@ class MockTaskDB extends _i1.Mock implements _i12.TaskDB {
           [projectId],
           {#status: status},
         ),
-        returnValue: _i5.Future<List<_i13.Task>>.value(<_i13.Task>[]),
+        returnValue: _i5.Future<List<_i15.Task>>.value(<_i15.Task>[]),
         returnValueForMissingStub:
-            _i5.Future<List<_i13.Task>>.value(<_i13.Task>[]),
-      ) as _i5.Future<List<_i13.Task>>);
+            _i5.Future<List<_i15.Task>>.value(<_i15.Task>[]),
+      ) as _i5.Future<List<_i15.Task>>);
 
   @override
-  _i5.Future<List<_i13.Task>> getTasksByLabel(
+  _i5.Future<List<_i15.Task>> getTasksByLabel(
     String? labelName, {
-    _i13.TaskStatus? status,
+    _i15.TaskStatus? status,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -413,10 +495,10 @@ class MockTaskDB extends _i1.Mock implements _i12.TaskDB {
           [labelName],
           {#status: status},
         ),
-        returnValue: _i5.Future<List<_i13.Task>>.value(<_i13.Task>[]),
+        returnValue: _i5.Future<List<_i15.Task>>.value(<_i15.Task>[]),
         returnValueForMissingStub:
-            _i5.Future<List<_i13.Task>>.value(<_i13.Task>[]),
-      ) as _i5.Future<List<_i13.Task>>);
+            _i5.Future<List<_i15.Task>>.value(<_i15.Task>[]),
+      ) as _i5.Future<List<_i15.Task>>);
 
   @override
   _i5.Future<bool> deleteTask(int? taskID) => (super.noSuchMethod(
@@ -431,7 +513,7 @@ class MockTaskDB extends _i1.Mock implements _i12.TaskDB {
   @override
   _i5.Future<bool> updateTaskStatus(
     int? taskID,
-    _i13.TaskStatus? status,
+    _i15.TaskStatus? status,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -467,7 +549,7 @@ class MockTaskDB extends _i1.Mock implements _i12.TaskDB {
 
   @override
   _i5.Future<int> createTask(
-    _i13.Task? task, {
+    _i15.Task? task, {
     List<int>? labelIDs,
   }) =>
       (super.noSuchMethod(
@@ -482,7 +564,7 @@ class MockTaskDB extends _i1.Mock implements _i12.TaskDB {
 
   @override
   _i5.Future<bool> updateTask(
-    _i13.Task? task, {
+    _i15.Task? task, {
     List<int>? labelIDs,
   }) =>
       (super.noSuchMethod(
@@ -528,6 +610,16 @@ class MockTaskDB extends _i1.Mock implements _i12.TaskDB {
       ) as _i5.Future<void>);
 
   @override
+  _i5.Future<_i15.Task?> getTaskById(int? taskId) => (super.noSuchMethod(
+        Invocation.method(
+          #getTaskById,
+          [taskId],
+        ),
+        returnValue: _i5.Future<_i15.Task?>.value(),
+        returnValueForMissingStub: _i5.Future<_i15.Task?>.value(),
+      ) as _i5.Future<_i15.Task?>);
+
+  @override
   _i5.Future<void> importDataV1(Map<String, dynamic>? data) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -539,14 +631,14 @@ class MockTaskDB extends _i1.Mock implements _i12.TaskDB {
       ) as _i5.Future<void>);
 
   @override
-  _i5.Future<_i13.Task?> getRandomTask() => (super.noSuchMethod(
+  _i5.Future<_i15.Task?> getRandomTask() => (super.noSuchMethod(
         Invocation.method(
           #getRandomTask,
           [],
         ),
-        returnValue: _i5.Future<_i13.Task?>.value(),
-        returnValueForMissingStub: _i5.Future<_i13.Task?>.value(),
-      ) as _i5.Future<_i13.Task?>);
+        returnValue: _i5.Future<_i15.Task?>.value(),
+        returnValueForMissingStub: _i5.Future<_i15.Task?>.value(),
+      ) as _i5.Future<_i15.Task?>);
 }
 
 /// A class which mocks [SearchDB].
@@ -558,8 +650,8 @@ class MockSearchDB extends _i1.Mock implements _i3.SearchDB {
     required String? keyword,
     required bool? searchInTitle,
     required bool? searchInComment,
-    _i14.FilteredField? filteredField,
-    _i14.SearchResultsOrder? order,
+    _i16.FilteredField? filteredField,
+    _i16.SearchResultsOrder? order,
     required int? page,
     required int? itemsPerPage,
   }) =>
@@ -633,11 +725,11 @@ class MockSearchDB extends _i1.Mock implements _i3.SearchDB {
       ) as _i5.Future<int>);
 
   @override
-  _i5.Future<List<_i13.Task>> getTasksByKeyword({
+  _i5.Future<List<_i15.Task>> getTasksByKeyword({
     required String? keyword,
     required bool? searchInTitle,
     required bool? searchInComment,
-    _i13.TaskStatus? status,
+    _i15.TaskStatus? status,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -650,10 +742,10 @@ class MockSearchDB extends _i1.Mock implements _i3.SearchDB {
             #status: status,
           },
         ),
-        returnValue: _i5.Future<List<_i13.Task>>.value(<_i13.Task>[]),
+        returnValue: _i5.Future<List<_i15.Task>>.value(<_i15.Task>[]),
         returnValueForMissingStub:
-            _i5.Future<List<_i13.Task>>.value(<_i13.Task>[]),
-      ) as _i5.Future<List<_i13.Task>>);
+            _i5.Future<List<_i15.Task>>.value(<_i15.Task>[]),
+      ) as _i5.Future<List<_i15.Task>>);
 
   @override
   _i5.Future<bool> hasSearchResults({
