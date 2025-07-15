@@ -13,14 +13,14 @@ to `flutter_bloc`
 
 ## 2025/7/13
 
-- Add a new table `reminder`, which has a many-to-one relationship with the `task` table. The `reminder_id` in the `task` table should have a default value of `null`.
-- The `reminder` table should have the following fields: `id`, `type` (once, daily, work day, holiday, custom - choose from Monday to Sunday), `remind_time`, `enable` (true/false), and `task_id`.
-- Implement a background notification service to push reminders at specified times. Use a queue to manage the reminders, with a limit of 5 to 9 reminders in the queue at any given time.
-- The notification service should be disable-able through settings.
-- When a notification is tapped, if the app is not running, it should launch the app and display the details of the corresponding task.
+- ~~Add a new table `reminder`, which has a many-to-one relationship with the `task` table. The `reminder_id` in the `task` table should have a default value of `null`.~~
+- ~~The `reminder` table should have the following fields: `id`, `type` (once, daily, work day, holiday, custom - choose from Monday to Sunday), `remind_time`, `enable` (true/false), and `task_id`.~~
+- ~~Implement a background notification service to push reminders at specified times. Use a queue to manage the reminders, with a limit of 5 to 9 reminders in the queue at any given time.~~
+- ~~The notification service should be disable-able through settings.~~
+- ~~When a notification is tapped, if the app is not running, it should launch the app and display the details of the corresponding task.~~
 - Include reminder data in the import/export functionality.
-- Consider whether to query all reminder information when querying tasks, or only when viewing the details of a specific task.
-- Add a grid to manage reminders.
+- ~~Consider whether to query all reminder information when querying tasks, or only when viewing the details of a specific task. Choose the latter.~~
+- ~~Add a grid to manage reminders.~~
 
 ## Before 2025/7/13
 
