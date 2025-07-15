@@ -12,6 +12,7 @@ import 'package:flutter_app/pages/profile/profile_page.dart';
 import 'package:flutter_app/pages/projects/add_project.dart';
 import 'package:flutter_app/pages/projects/project_grid.dart';
 import 'package:flutter_app/pages/reminder/reminder_create_page.dart';
+import 'package:flutter_app/pages/reminder/reminder_grid.dart';
 import 'package:flutter_app/pages/reminder/reminder_update_page.dart';
 import 'package:flutter_app/pages/settings/settings_screen.dart';
 import 'package:flutter_app/pages/tasks/add_task.dart';
@@ -149,6 +150,12 @@ final GoRouter goRouter = GoRouter(
                 return ReminderUpdatePage(
                   reminder: reminder,
                 );
+              },
+            ),
+            GoRoute(
+              path: 'grid',
+              builder: (BuildContext context, GoRouterState state) {
+                return ReminderGrid();
               },
             ),
           ],

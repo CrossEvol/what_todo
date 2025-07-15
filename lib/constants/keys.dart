@@ -21,6 +21,7 @@ class SideDrawerKeys {
   static const LABEL_GRID = 'label_grid';
   static const PROJECT_GRID = 'project_grid';
   static const TASK_GRID = 'task_grid';
+  static const REMINDER_GRID = 'reminder_grid';
   static const DRAWER_GRIDS = 'drawerGrids';
   static const UNKNOWN = 'unknown';
   static const TASK_GRID_TITLE = 'taskGridTitle';

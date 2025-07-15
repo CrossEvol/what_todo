@@ -15,6 +15,7 @@ class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
   ReminderBloc({ReminderDB? reminderDB})
       : _reminderDB = reminderDB ?? ReminderDB.get(),
         super(const ReminderInitial()) {
+    on<LoadAllReminders>(_onLoadAllReminders);
     on<LoadRemindersForTask>(_onLoadRemindersForTask);
     on<RemindersInitialEvent>(_onInitializeReminders);
     on<AddReminderEvent>(_onAddReminder);
@@ -30,6 +31,33 @@ class ReminderBloc extends Bloc<ReminderEvent, ReminderState> {
       final newRemindersByTask =
           Map<int, List<Reminder>>.from(state.remindersByTask);
       newRemindersByTask[event.taskId] = reminders;
+      emit(ReminderLoaded(remindersByTask: newRemindersByTask));
+    } catch (e) {
+      emit(ReminderError(e.toString(), remindersByTask: state.remindersByTask));
+    }
+  }
+
+  Future<void> _onLoadAllReminders(
+      LoadAllReminders event, Emitter<ReminderState> emit) async {
+    emit(ReminderLoading(remindersByTask: state.remindersByTask));
+    try {
+      final allReminders = await _reminderDB.getAllReminders();
+      final newRemindersByTask =
+          Map<int, List<Reminder>>.from(state.remindersByTask);
+
+      // Group reminders by taskId
+      for (var reminder in allReminders) {
+        if (reminder.taskId != null) {
+          if (!newRemindersByTask.containsKey(reminder.taskId)) {
+            newRemindersByTask[reminder.taskId!] = [];
+          }
+          // Avoid duplicates
+          if (!newRemindersByTask[reminder.taskId!]!
+              .any((r) => r.id == reminder.id)) {
+            newRemindersByTask[reminder.taskId!]!.add(reminder);
+          }
+        }
+      }
       emit(ReminderLoaded(remindersByTask: newRemindersByTask));
     } catch (e) {
       emit(ReminderError(e.toString(), remindersByTask: state.remindersByTask));

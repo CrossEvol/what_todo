@@ -33,6 +33,11 @@ class ReminderDB {
         ));
   }
 
+  Future<List<Reminder>> getAllReminders() async {
+    final result = await _db.select(_db.reminder).get();
+    return result.map((row) => Reminder.fromMap(row.toJson())).toList();
+  }
+
   Future<List<Reminder>> getReminders() async {
     var result = await _db.select(_db.reminder).get();
     return result.map((item) => Reminder.fromMap(item.toJson())).toList();

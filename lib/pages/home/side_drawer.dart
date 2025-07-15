@@ -190,6 +190,24 @@ class GridsExpansionTile extends StatelessWidget {
       ),
     );
 
+    // Reminder Grid
+    gridItems.add(
+      ListTile(
+        onTap: () {
+          context.push('/reminder/grid');
+        },
+        leading: Icon(Icons.notifications_active_outlined),
+        title: Text(
+          "Reminder Grid",
+          style: TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.w500,
+          ),
+          key: ValueKey(SideDrawerKeys.LABEL_GRID),
+        ),
+      ),
+    );
+
     // Divider
     gridItems.add(Divider());
 
