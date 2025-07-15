@@ -25,6 +25,7 @@ import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/profile/profile_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
+import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/pages/settings/settings_db.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/models/reminder.dart';
@@ -64,6 +65,18 @@ void callbackDispatcher() {
             ticker: 'ticker');
     const NotificationDetails notificationDetails =
         NotificationDetails(android: androidNotificationDetails);
+
+    final settingsDb = SettingsDB.get();
+    final notificationSetting =
+        await settingsDb.findByName(SettingKeys.ENABLE_NOTIFICATIONS);
+
+    // Only process and show notifications if the setting is explicitly 'true'
+    if (notificationSetting?.value != 'true') {
+      if (kDebugMode) {
+        debugPrint('CallbackDispatcher: 通知功能未启用，跳过处理。');
+      }
+      return Future.value(true);
+    }
 
     await _processRemindersAndShowNotifications(notificationDetails);
 
@@ -119,13 +132,8 @@ Future<void> _processRemindersAndShowNotifications(
   final remindersToSend = remindersFilteredByType.where((r) {
     if (r.remindTime == null) return false;
     final reminderTime = r.remindTime!;
-    final reminderTimeAsToday = tz.TZDateTime(
-        tz.local,
-        now.year,
-        now.month,
-        now.day,
-        reminderTime.hour,
-        reminderTime.minute);
+    final reminderTimeAsToday = tz.TZDateTime(tz.local, now.year, now.month,
+        now.day, reminderTime.hour, reminderTime.minute);
     final difference = now.difference(reminderTimeAsToday);
     return difference.inMinutes.abs() <= 15;
   }).toList();
