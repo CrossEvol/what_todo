@@ -69,6 +69,8 @@ void callbackDispatcher() {
     final settingsDb = SettingsDB.get();
     final notificationSetting =
         await settingsDb.findByName(SettingKeys.ENABLE_NOTIFICATIONS);
+    final dailyReminderSetting =
+        await settingsDb.findByName(SettingKeys.ENABLE_DAILY_REMINDER);
 
     // Only process and show notifications if the setting is explicitly 'true'
     if (notificationSetting?.value != 'true') {
@@ -76,9 +78,19 @@ void callbackDispatcher() {
         debugPrint('CallbackDispatcher: 通知功能未启用，跳过处理。');
       }
       return Future.value(true);
+    } else {
+      await _processRemindersAndShowNotifications(notificationDetails);
     }
 
-    await _processRemindersAndShowNotifications(notificationDetails);
+    // Only process and show notifications if the setting is explicitly 'true'
+    if (dailyReminderSetting?.value != 'true') {
+      if (kDebugMode) {
+        debugPrint('CallbackDispatcher: 日常提醒功能未启用，跳过处理。');
+      }
+      return Future.value(true);
+    } else {
+      await _processDailyReminder(notificationDetails);
+    }
 
     return Future.value(true);
   });
@@ -192,10 +204,23 @@ Future<void> _processRemindersAndShowNotifications(
         }
       }
     }
-  } else {
+  }
+}
+
+Future<void> _processDailyReminder(
+    NotificationDetails notificationDetails) async {
+  final taskDb = TaskDB.get();
+  final randomTask = await taskDb.getRandomTask();
+
+  if (randomTask != null) {
+    final title = randomTask.title;
+    final project = randomTask.projectName;
+    final labels = randomTask.labelList.map((e) => e.name).join(', ');
+    final body = 'Project: $project\nLabels: $labels';
+
     await flutterLocalNotificationsPlugin.show(
-        0, 'WhatTodo', 'You have no tasks.', notificationDetails,
-        payload: 'no_tasks');
+        randomTask.id!, title, body, notificationDetails,
+        payload: 'task_id=${randomTask.id}');
   }
 }
 
