@@ -28,6 +28,7 @@ SettingsState defaultSettingState({bool confirmDeletion = false}) {
     projectLen: 8,
     confirmDeletion: confirmDeletion,
     enableNotifications: false,
+    enableDailyReminder: false,
   );
 }
 

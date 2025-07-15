@@ -49,6 +49,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         final useCountBadges = state.useCountBadges;
         final enableImportExport = state.enableImportExport;
         final enableNotifications = state.enableNotifications;
+        final enableDailyReminder = state.enableDailyReminder;
         final environment = state.environment;
         final themeProvider = Provider.of<ThemeProvider>(context);
         return Scaffold(
@@ -242,6 +243,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     initialValue: enableNotifications,
                     leading: const Icon(Icons.notifications_active),
                     title: const Text('Enable notifications'),
+                  ),
+                  SettingsTile.switchTile(
+                    key: ValueKey(SettingKeys.ENABLE_DAILY_REMINDER),
+                    onToggle: (value) {
+                      context
+                          .read<SettingsBloc>()
+                          .add(ToggleEnableDailyReminderEvent());
+                    },
+                    initialValue: enableDailyReminder,
+                    leading: const Icon(Icons.notification_important_outlined),
+                    title: const Text('Enable DailyReminder'),
                   ),
                 ],
               ),

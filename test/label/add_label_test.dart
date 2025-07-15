@@ -30,6 +30,7 @@ SettingsState defaultSettingState() {
     projectLen: 16,
     confirmDeletion: false,
     enableNotifications: false,
+    enableDailyReminder: false,
   );
 }
 

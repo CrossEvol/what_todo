@@ -34,6 +34,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           // Default value changed to 8
           setLocale: (Locale) {},
           enableNotifications: false,
+          enableDailyReminder: false,
         )) {
     on<LoadSettingsEvent>(_loadSettings);
     on<ToggleUseCountBadgesEvent>(_toggleUseCountBadges);
@@ -45,6 +46,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<AddSetLocaleFunction>(_addSetLocaleFunction);
     on<ToggleConfirmDeletion>(_toggleConfirmDeletion);
     on<ToggleEnableNotificationsEvent>(_toggleEnableNotifications);
+    on<ToggleEnableDailyReminderEvent>(_toggleEnableDailyReminder);
   }
 
   FutureOr<void> _toggleUseCountBadges(
@@ -100,6 +102,24 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     ));
   }
 
+  FutureOr<void> _toggleEnableDailyReminder(
+      ToggleEnableDailyReminderEvent event, Emitter<SettingsState> emit) async {
+    final setting =
+        await _settingsDB.findByName(SettingKeys.ENABLE_DAILY_REMINDER);
+    if (setting == null) return;
+    _settingsDB.updateSetting(Setting.update(
+        id: setting.id,
+        key: setting.key,
+        value: '${!bool.parse(setting.value)}',
+        updatedAt: DateTime.now(),
+        type: setting.type));
+    emit(state.copyWith(
+      enableDailyReminder: !state.enableDailyReminder,
+      updatedKey: SettingKeys.ENABLE_DAILY_REMINDER,
+      status: ResultStatus.success,
+    ));
+  }
+
   FutureOr<void> _loadSettings(
       LoadSettingsEvent event, Emitter<SettingsState> emit) async {
     final useCountBadges = await _getUseCountBadges(_settingsDB);
@@ -125,6 +145,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
     final enableNotifications = await _getEnableNotifications(_settingsDB);
     emit(state.copyWith(enableNotifications: enableNotifications));
+
+    final enableDailyReminder = await _getEnableDailyReminder(_settingsDB);
+    emit(state.copyWith(enableDailyReminder: enableDailyReminder));
   }
 
   Future<bool> _getUseCountBadges(SettingsDB settingsDB) async {
@@ -199,6 +222,31 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       enableNotifications = bool.parse(setting.value);
     }
     return enableNotifications;
+  }
+
+  Future<bool> _getEnableDailyReminder(SettingsDB settingsDB) async {
+    var enableDailyReminder = false;
+    final setting =
+        await _settingsDB.findByName(SettingKeys.ENABLE_DAILY_REMINDER);
+    if (setting == null) {
+      var created = await _settingsDB.createSetting(Setting.create(
+          key: SettingKeys.ENABLE_DAILY_REMINDER,
+          value: 'true',
+          updatedAt: DateTime.now(),
+          type: SettingType.Bool));
+      if (created) {
+        final newSetting =
+            await _settingsDB.findByName(SettingKeys.ENABLE_DAILY_REMINDER);
+        if (newSetting == null) {
+          _logger.warn('Insert ${SettingKeys.ENABLE_DAILY_REMINDER} failed.');
+          return enableDailyReminder;
+        }
+        enableDailyReminder = bool.parse(newSetting.value);
+      }
+    } else {
+      enableDailyReminder = bool.parse(setting.value);
+    }
+    return enableDailyReminder;
   }
 
   Future<Environment> _getEnvironment(SettingsDB settingsDB) async {

@@ -14,6 +14,11 @@ final class ToggleEnableNotificationsEvent extends SettingsEvent {
   List<Object?> get props => [];
 }
 
+final class ToggleEnableDailyReminderEvent extends SettingsEvent {
+  @override
+  List<Object?> get props => [];
+}
+
 final class ToggleUseCountBadgesEvent extends SettingsEvent {
   @override
   List<Object?> get props => [];

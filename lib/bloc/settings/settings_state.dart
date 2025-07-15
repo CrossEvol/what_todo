@@ -22,6 +22,7 @@ class SettingsState extends Equatable {
   final bool enableImportExport;
   final bool confirmDeletion;
   final bool enableNotifications;
+  final bool enableDailyReminder;
   final ResultStatus status;
   final String updatedKey;
   final Environment environment;
@@ -42,6 +43,7 @@ class SettingsState extends Equatable {
     required this.labelLen, // Added
     required this.projectLen, // Added
     required this.setLocale,
+    required this.enableDailyReminder,
   });
 
   @override
@@ -65,6 +67,7 @@ class SettingsState extends Equatable {
     bool? enableImportExport,
     bool? confirmDeletion,
     bool? enableNotifications,
+    bool? enableDailyReminder,
     Environment? environment,
     Language? language,
     int? labelLen, // Added
@@ -80,9 +83,12 @@ class SettingsState extends Equatable {
       enableNotifications: enableNotifications ?? this.enableNotifications,
       environment: environment ?? this.environment,
       language: language ?? this.language,
-      labelLen: labelLen ?? this.labelLen, // Added
-      projectLen: projectLen ?? this.projectLen, // Added
+      labelLen: labelLen ?? this.labelLen,
+      // Added
+      projectLen: projectLen ?? this.projectLen,
+      // Added
       setLocale: setLocale ?? this.setLocale,
+      enableDailyReminder: enableDailyReminder ?? this.enableDailyReminder,
     );
   }
 
@@ -96,24 +102,28 @@ class SettingsState extends Equatable {
           enableImportExport == other.enableImportExport &&
           confirmDeletion == other.confirmDeletion &&
           enableNotifications == other.enableNotifications &&
+          enableDailyReminder == other.enableDailyReminder &&
           status == other.status &&
           updatedKey == other.updatedKey &&
           environment == other.environment &&
           language == other.language &&
-          labelLen == other.labelLen && // Added
-          projectLen == other.projectLen; // Added
+          labelLen == other.labelLen &&
+          projectLen == other.projectLen &&
+          setLocale == other.setLocale;
 
   @override
-  int get hashCode =>
-      super.hashCode ^
-      useCountBadges.hashCode ^
-      enableImportExport.hashCode ^
-      confirmDeletion.hashCode ^
-      enableNotifications.hashCode ^
-      status.hashCode ^
-      updatedKey.hashCode ^
-      environment.hashCode ^
-      language.hashCode ^
-      labelLen.hashCode ^ // Added
-      projectLen.hashCode; // Added
+  int get hashCode => Object.hash(
+      super.hashCode,
+      useCountBadges,
+      enableImportExport,
+      confirmDeletion,
+      enableNotifications,
+      enableDailyReminder,
+      status,
+      updatedKey,
+      environment,
+      language,
+      labelLen,
+      projectLen,
+      setLocale);
 }
