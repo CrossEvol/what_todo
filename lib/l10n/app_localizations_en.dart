@@ -69,7 +69,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get apacheLicense => 'Apache License';
 
   @override
-  String get licenseText => 'Copyright 2020 Burhanuddin Rashid\n\nLicensed under the Apache License, Version 2.0 (the \"License\") you may not use this file except in compliance with the License. You may obtain a copy of the License at\n\n\nhttp://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.';
+  String get licenseText =>
+      'Copyright 2020 Burhanuddin Rashid\n\nLicensed under the Apache License, Version 2.0 (the \"License\") you may not use this file except in compliance with the License. You may obtain a copy of the License at\n\n\nhttp://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.';
 
   @override
   String get projects => 'Projects';
@@ -303,7 +304,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get import => 'Import';
 
   @override
-  String get importDescription => 'Import your tasks from a JSON file exported previously.';
+  String get importDescription =>
+      'Import your tasks from a JSON file exported previously.';
 
   @override
   String get importing => 'Importing...';
@@ -312,16 +314,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get importInformation => 'Import Information';
 
   @override
-  String get importInfoLegacySupport => '• Supports both v0 (legacy) and v1 (new) format';
+  String get importInfoLegacySupport =>
+      '• Supports both v0 (legacy) and v1 (new) format';
 
   @override
-  String get importInfoAutoDetect => '• Import will automatically detect the format';
+  String get importInfoAutoDetect =>
+      '• Import will automatically detect the format';
 
   @override
-  String get importInfoTasksAdded => '• All imported tasks will be added to your task list';
+  String get importInfoTasksAdded =>
+      '• All imported tasks will be added to your task list';
 
   @override
-  String get importInfoItemsCreated => '• Projects and labels will be created as needed';
+  String get importInfoItemsCreated =>
+      '• Projects and labels will be created as needed';
 
   @override
   String get importingData => 'Importing data...';

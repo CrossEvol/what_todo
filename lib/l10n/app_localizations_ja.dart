@@ -69,7 +69,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get apacheLicense => 'Apacheライセンス';
 
   @override
-  String get licenseText => 'Copyright 2020 Burhanuddin Rashid\n\nApache License Version 2.0（以下「ライセンス」）に基づいてライセンスされています。あなたはライセンスに従う場合を除き、このファイルを使用することはできません。ライセンスのコピーは下記から入手できます。\n\nhttp://www.apache.org/licenses/LICENSE-2.0\n\n適用される法律で要求されるか、書面で合意されない限り、このライセンスの下で配布されるソフトウェアは、「現状のまま」で、明示または黙示を問わず、いかなる保証も条件もなしに提供されます。ライセンスの下での許可と制限を規定する特定の言語についてはライセンスを参照してください。';
+  String get licenseText =>
+      'Copyright 2020 Burhanuddin Rashid\n\nApache License Version 2.0（以下「ライセンス」）に基づいてライセンスされています。あなたはライセンスに従う場合を除き、このファイルを使用することはできません。ライセンスのコピーは下記から入手できます。\n\nhttp://www.apache.org/licenses/LICENSE-2.0\n\n適用される法律で要求されるか、書面で合意されない限り、このライセンスの下で配布されるソフトウェアは、「現状のまま」で、明示または黙示を問わず、いかなる保証も条件もなしに提供されます。ライセンスの下での許可と制限を規定する特定の言語についてはライセンスを参照してください。';
 
   @override
   String get projects => 'プロジェクト';

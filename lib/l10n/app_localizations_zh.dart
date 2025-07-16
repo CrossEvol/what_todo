@@ -69,7 +69,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get apacheLicense => 'Apache许可证';
 
   @override
-  String get licenseText => '版权所有 2020 Burhanuddin Rashid\n\n根据Apache许可证2.0版（\"许可证\"）获得许可；除非遵守许可证，否则您不得使用此文件。您可以在以下位置获取许可证副本：\n\nhttp://www.apache.org/licenses/LICENSE-2.0\n\n除非适用法律要求或书面同意，否则根据许可证分发的软件是基于\"按原样\"分发的，没有任何明示或暗示的保证或条件。有关许可证下特定语言的权限和限制，请参阅许可证。';
+  String get licenseText =>
+      '版权所有 2020 Burhanuddin Rashid\n\n根据Apache许可证2.0版（\"许可证\"）获得许可；除非遵守许可证，否则您不得使用此文件。您可以在以下位置获取许可证副本：\n\nhttp://www.apache.org/licenses/LICENSE-2.0\n\n除非适用法律要求或书面同意，否则根据许可证分发的软件是基于\"按原样\"分发的，没有任何明示或暗示的保证或条件。有关许可证下特定语言的权限和限制，请参阅许可证。';
 
   @override
   String get projects => '项目';

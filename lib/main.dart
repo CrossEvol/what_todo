@@ -239,7 +239,7 @@ void main() async {
   // Initialize workmanager
   Workmanager().initialize(
     callbackDispatcher,
-    isInDebugMode: true, // Set to false for production
+    isInDebugMode: false, // Set to false for production
   );
 
   // Register a periodic task
@@ -249,7 +249,7 @@ void main() async {
     frequency: const Duration(minutes: 15), // Android minimum is 15 minutes
     initialDelay: const Duration(minutes: 1),
     constraints: Constraints(
-      networkType: NetworkType.not_required,
+      networkType: NetworkType.notRequired,
       requiresBatteryNotLow: false,
       requiresCharging: false,
       requiresDeviceIdle: false,

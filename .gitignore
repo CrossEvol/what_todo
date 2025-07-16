@@ -90,10 +90,11 @@ unlinked_spec.ds
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
-.fvm/flutter_sdk
 .aider*
 .env
 
-
 # NodeJS related
 node_modules
+
+# FVM Version Cache
+.fvm/
