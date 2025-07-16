@@ -19,7 +19,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.2' # Consider using a specific patch version if needed, or keep as is
+          flutter-version: '3.32.4' # Consider using a specific patch version if needed, or keep as is
           channel: 'stable'
           java-version: '17'
       - run: flutter --version
@@ -44,7 +44,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.2'
+          flutter-version: '3.32.4'
           channel: 'stable'
           java-version: '17'
 
@@ -115,7 +115,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.29.2'
+          flutter-version: '3.32.4'
           channel: 'stable'
 
       - name: Get Packages
