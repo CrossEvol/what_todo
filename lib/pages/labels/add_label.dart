@@ -40,6 +40,7 @@ class AddLabel extends StatelessWidget {
                 context, AppLocalizations.of(context)!.labelAlreadyExists);
           }
         } else if (state is LabelCreateSuccess) {
+          context.read<LabelBloc>().add(LoadLabelsEvent());
           context.safePop();
         }
       },

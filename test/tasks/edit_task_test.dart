@@ -103,8 +103,16 @@ void main() {
 
     whenListen(
       mockLabelBloc,
-      Stream.fromIterable([LabelsLoaded(labels: [])]),
-      initialState: LabelsLoaded(labels: []),
+      Stream.fromIterable([
+        LabelsLoaded(
+          labels: [],
+          labelsWithCount: [],
+        )
+      ]),
+      initialState: LabelsLoaded(
+        labels: [],
+        labelsWithCount: [],
+      ),
     );
 
     final homeState = HomeInitial().copyWith(
@@ -228,8 +236,16 @@ void main() {
 
     whenListen(
       mockLabelBloc,
-      Stream.fromIterable([LabelsLoaded(labels: labels)]),
-      initialState: LabelsLoaded(labels: labels),
+      Stream.fromIterable([
+        LabelsLoaded(
+          labels: labels,
+          labelsWithCount: [],
+        )
+      ]),
+      initialState: LabelsLoaded(
+        labels: labels,
+        labelsWithCount: [],
+      ),
     );
 
     await tester.pumpWidget(createWidgetUnderTest());

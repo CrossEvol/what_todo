@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
+import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart'; // Import SettingsBloc
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/pages/labels/label.dart';
@@ -35,9 +36,9 @@ class _LabelGridPageState extends State<LabelGridPage> {
   @override
   void initState() {
     super.initState();
-    var state = context.read<AdminBloc>().state;
-    if (state is AdminLoadedState) {
-      labels = state.labels;
+    var state = context.read<LabelBloc>().state;
+    if (state is LabelsLoaded) {
+      labels = state.labelsWithCount;
     }
     labelDataSource = LabelDataSource(labelData: labels);
     _idController = TextEditingController();
@@ -47,7 +48,7 @@ class _LabelGridPageState extends State<LabelGridPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AdminBloc, AdminState>(
+    return BlocBuilder<LabelBloc, LabelState>(
       builder: (context, state) {
         // did not effect
         if (state is AdminInitialState) {
@@ -320,7 +321,8 @@ class _LabelGridPageState extends State<LabelGridPage> {
                 }
                 return null;
               },
-              maxLength: columnName == 'Name' ? labelMaxLength : null, // Apply maxLength only to Name
+              maxLength: columnName == 'Name' ? labelMaxLength : null,
+              // Apply maxLength only to Name
               controller: controller,
               keyboardType: keyboardType,
               inputFormatters: isTextInput
@@ -362,7 +364,7 @@ class _LabelGridPageState extends State<LabelGridPage> {
 
     final colorPalette = context.read<AdminBloc>().state.colorPalette;
     if (_formKey.currentState!.validate()) {
-      context.read<AdminBloc>().add(AdminUpdateLabelEvent(
+      context.read<LabelBloc>().add(LabelUpdateEvent(
               label: Label.update(
             id: _currentID,
             name: _nameController!.text,
@@ -416,7 +418,7 @@ class _LabelGridPageState extends State<LabelGridPage> {
     if (id.isEmpty) {
       return;
     }
-    context.read<AdminBloc>().add(AdminRemoveLabelEvent(
+    context.read<LabelBloc>().add(LabelRemoveEvent(
           labelID: int.parse(id),
         ));
     labelDataSource.dataGridRows.remove(row);

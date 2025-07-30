@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
+import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/bloc/search/search_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
@@ -29,7 +30,7 @@ class _SideDrawerState extends State<SideDrawer> {
   void initState() {
     super.initState();
     // Load basic data when the widget is initialized
-    context.read<AdminBloc>().add(AdminLoadLabelsEvent());
+    context.read<LabelBloc>().add(LoadLabelsEvent());
     context.read<ProjectBloc>().add(LoadProjectsEvent());
   }
 

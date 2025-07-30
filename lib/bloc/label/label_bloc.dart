@@ -1,4 +1,3 @@
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_app/pages/labels/label.dart';
@@ -12,21 +11,28 @@ part 'label_state.dart';
 class LabelBloc extends Bloc<LabelEvent, LabelState> {
   final LabelDB _labelDB;
 
-  LabelBloc(this._labelDB) : super(LabelInitial(labels: [])) {
+  LabelBloc(this._labelDB)
+      : super(LabelInitial(labels: [], labelsWithCount: [])) {
     on<LoadLabelsEvent>(_onLoadLabels);
     on<CreateLabelEvent>(_onCreateLabel);
+    on<LabelRemoveEvent>(_removeLabel);
+    on<LabelUpdateEvent>(_updateLabel);
     on<UpdateColorSelectionEvent>(_onUpdateColorSelection);
     on<RefreshLabelsEvent>(_onRefreshLabels);
   }
 
   Future<void> _onLoadLabels(
       LoadLabelsEvent event, Emitter<LabelState> emit) async {
-    emit(LabelLoading(labels: []));
+    emit(LabelLoading(labels: [], labelsWithCount: []));
     try {
       final labels = await _labelDB.getLabels();
-      emit(LabelsLoaded(labels: labels));
+      final labelsWithCount = await _labelDB.getLabelsWithCount();
+      emit(LabelsLoaded(labels: labels, labelsWithCount: labelsWithCount));
     } catch (e) {
-      emit(LabelError(labels: state.labels, message: 'Failed to load labels'));
+      emit(LabelError(
+          labels: state.labels,
+          labelsWithCount: [],
+          message: 'Failed to load labels'));
     }
   }
 
@@ -36,25 +42,52 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
       final isExist = await _labelDB.isLabelExists(event.label);
       if (!isExist) {
         await _labelDB.insertLabel(event.label);
-        emit(LabelCreateSuccess(labels: state.labels));
+        emit(LabelCreateSuccess(
+            labels: state.labels, labelsWithCount: state.labelsWithCount));
       } else {
-        emit(LabelExistenceChecked(exists: isExist, labels: state.labels));
+        emit(LabelExistenceChecked(
+            exists: isExist,
+            labels: state.labels,
+            labelsWithCount: state.labelsWithCount));
       }
     } catch (e) {
       emit(LabelError(
-          message: 'Failed to check label existence', labels: state.labels));
+        message: 'Failed to check label existence',
+        labels: state.labels,
+        labelsWithCount: state.labelsWithCount,
+      ));
+    }
+  }
+
+  Future<void> _updateLabel(
+      LabelUpdateEvent event, Emitter<LabelState> emit) async {
+    try {
+      await _labelDB.updateLabel(event.label);
+      add(LoadLabelsEvent());
+    } catch (e) {
+      emit(state);
+    }
+  }
+
+  Future<void> _removeLabel(
+      LabelRemoveEvent event, Emitter<LabelState> emit) async {
+    final hasRemoved = await _labelDB.deleteLabel(event.labelID);
+    if (hasRemoved) {
+      add(LoadLabelsEvent());
     }
   }
 
   void _onUpdateColorSelection(
       UpdateColorSelectionEvent event, Emitter<LabelState> emit) {
     emit(ColorSelectionUpdated(
-        colorPalette: event.colorPalette, labels: state.labels));
+      colorPalette: event.colorPalette,
+      labels: state.labels,
+      labelsWithCount: state.labelsWithCount,
+    ));
   }
 
   Future<void> _onRefreshLabels(
       RefreshLabelsEvent event, Emitter<LabelState> emit) async {
-    // await _onLoadLabels(LoadLabelsEvent(), emit);
     add(LoadLabelsEvent());
   }
 }

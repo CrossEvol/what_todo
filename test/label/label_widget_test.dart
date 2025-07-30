@@ -12,7 +12,10 @@ import '../mocks/fake-bloc.dart';
 import '../test_helpers.dart';
 
 LabelState defaultLabelState() {
-  return LabelInitial(labels: []);
+  return LabelInitial(
+    labels: [],
+    labelsWithCount: [],
+  );
 }
 
 void main() {
@@ -58,7 +61,12 @@ void main() {
 
   testWidgets('LabelWidget should render properly with LabelInitial state',
       (WidgetTester tester) async {
-    arrangeLabelBlocStream([LabelInitial(labels: [])]);
+    arrangeLabelBlocStream([
+      LabelInitial(
+        labels: [],
+        labelsWithCount: [],
+      )
+    ]);
     await pumpLabelWidget(tester);
 
     expect(find.byType(LabelExpansionTileWidget), findsNothing);
@@ -68,7 +76,11 @@ void main() {
 
   testWidgets('LabelWidget should render properly with LabelLoading state',
       (WidgetTester tester) async {
-    arrangeLabelBlocStream([], initialState: LabelLoading(labels: []));
+    arrangeLabelBlocStream([],
+        initialState: LabelLoading(
+          labels: [],
+          labelsWithCount: [],
+        ));
     await pumpLabelWidget(tester);
 
     expect(find.byType(LabelExpansionTileWidget), findsNothing);
@@ -78,12 +90,18 @@ void main() {
 
   testWidgets('LabelWidget should display labels when available',
       (WidgetTester tester) async {
-    final labelsLoaded = LabelsLoaded(labels: [
-      Label.update(
-          id: 1, name: 'Grey', colorCode: Colors.grey.value, colorName: 'Grey'),
-      Label.update(
-          id: 2, name: 'Red', colorCode: Colors.red.value, colorName: 'Red'),
-    ]);
+    final labelsLoaded = LabelsLoaded(
+      labels: [
+        Label.update(
+            id: 1,
+            name: 'Grey',
+            colorCode: Colors.grey.value,
+            colorName: 'Grey'),
+        Label.update(
+            id: 2, name: 'Red', colorCode: Colors.red.value, colorName: 'Red'),
+      ],
+      labelsWithCount: [],
+    );
 
     arrangeLabelBlocStream([], initialState: labelsLoaded);
     await pumpLabelWidget(tester);

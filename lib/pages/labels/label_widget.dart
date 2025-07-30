@@ -14,7 +14,6 @@ import 'package:flutter_app/l10n/app_localizations.dart';
 class LabelsExpansionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    context.read<LabelBloc>().add(RefreshLabelsEvent());
     return BlocBuilder<LabelBloc, LabelState>(
       builder: (context, state) {
         if (state is LabelsLoaded) {
