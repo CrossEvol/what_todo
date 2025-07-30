@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
+import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart'; // Import SettingsBloc
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/pages/projects/project.dart';
@@ -33,9 +34,9 @@ class _ProjectGridPageState extends State<ProjectGridPage> {
   @override
   void initState() {
     super.initState();
-    var state = context.read<AdminBloc>().state;
-    if (state is AdminLoadedState) {
-      projects = state.projects;
+    var state = context.read<ProjectBloc>().state;
+    if (state is ProjectsLoadedState) {
+      projects = state.projectsWithCount;
     }
     projectDataSource = ProjectDataSource(projectData: projects);
     _idController = TextEditingController();
@@ -45,9 +46,9 @@ class _ProjectGridPageState extends State<ProjectGridPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AdminBloc, AdminState>(
+    return BlocBuilder<ProjectBloc, ProjectState>(
       builder: (context, state) {
-        if (state is AdminInitialState) {
+        if (state is ProjectInitialState) {
           return CircularProgressIndicator();
         }
         return Scaffold(
@@ -328,7 +329,8 @@ class _ProjectGridPageState extends State<ProjectGridPage> {
                 }
                 return null;
               },
-              maxLength: columnName == 'Name' ? projectMaxLength : null, // Apply maxLength only to Name
+              maxLength: columnName == 'Name' ? projectMaxLength : null,
+              // Apply maxLength only to Name
               controller: controller,
               keyboardType: keyboardType,
               inputFormatters: isTextInput
@@ -370,7 +372,7 @@ class _ProjectGridPageState extends State<ProjectGridPage> {
 
     final colorPalette = context.read<AdminBloc>().state.colorPalette;
     if (_formKey.currentState!.validate()) {
-      context.read<AdminBloc>().add(AdminUpdateProjectEvent(
+      context.read<ProjectBloc>().add(ProjectUpdateEvent(
               project: Project.update(
             id: _currentID,
             name: _nameController!.text,
@@ -424,7 +426,7 @@ class _ProjectGridPageState extends State<ProjectGridPage> {
     if (id.isEmpty) {
       return;
     }
-    context.read<AdminBloc>().add(AdminRemoveProjectEvent(
+    context.read<ProjectBloc>().add(ProjectRemoveEvent(
           projectID: int.parse(id),
         ));
     projectDataSource.dataGridRows.remove(row);

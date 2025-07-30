@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart'; // Import SettingsBloc
 import 'package:flutter_app/pages/home/screen_enum.dart';
@@ -42,7 +41,6 @@ class AddProject extends StatelessWidget {
           }
         } else if (state is ProjectCreateSuccess) {
           context.read<ProjectBloc>().add(LoadProjectsEvent());
-          context.read<AdminBloc>().add(AdminLoadProjectsEvent());
           context.safePop();
         }
       },

@@ -14,7 +14,7 @@ import '../mocks/fake-bloc.dart';
 import '../test_helpers.dart';
 
 ProjectState defaultProjectState() {
-  return ProjectsLoaded(const []);
+  return ProjectsLoadedState(const [], const []);
 }
 
 SettingsState defaultSettingState() {

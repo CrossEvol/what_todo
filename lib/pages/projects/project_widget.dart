@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
@@ -17,12 +16,11 @@ import 'package:flutter_app/l10n/app_localizations.dart';
 class ProjectsExpansionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    context.read<ProjectBloc>().add(RefreshProjectsEvent());
     return BlocBuilder<ProjectBloc, ProjectState>(
       builder: (context, state) {
-        if (state is ProjectsLoaded) {
+        if (state is ProjectsLoadedState) {
           return ProjectExpansionTileWidget(state.projects);
-        } else if (state is ProjectLoading) {
+        } else if (state is ProjectLoadingState) {
           return Center(
             child: CircularProgressIndicator(),
           );
@@ -76,7 +74,7 @@ class ProjectRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final homeBloc = context.read<HomeBloc>();
-    final state = context.read<AdminBloc>().state;
+    final state = context.read<ProjectBloc>().state;
     bool useCountBadges = context.read<SettingsBloc>().state.useCountBadges;
     final count = state.getProjectCount(project.id);
     return ListTile(

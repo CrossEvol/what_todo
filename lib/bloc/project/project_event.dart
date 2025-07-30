@@ -35,6 +35,28 @@ class UpdateColorSelectionEvent extends ProjectEvent {
   List<Object> get props => [colorPalette];
 }
 
+class ProjectRemoveEvent extends ProjectEvent {
+  final int projectID;
+
+  const ProjectRemoveEvent({
+    required this.projectID,
+  });
+
+  @override
+  List<Object> get props => [projectID];
+}
+
+class ProjectUpdateEvent extends ProjectEvent {
+  final Project project;
+
+  const ProjectUpdateEvent({
+    required this.project,
+  });
+
+  @override
+  List<Object> get props => [project];
+}
+
 class RefreshProjectsEvent extends ProjectEvent {
   final bool isInboxVisible;
 

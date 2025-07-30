@@ -1,4 +1,3 @@
-import 'package:flutter_app/dao/reminder_db.dart';
 import 'package:flutter_app/models/reminder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/models/reminder_type.dart';

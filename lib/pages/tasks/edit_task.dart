@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/bloc/reminder/reminder_bloc.dart';
-import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
@@ -90,9 +90,9 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     super.initState();
     // if the projects is empty, will trigger no element error
     final projects = context
-        .read<AdminBloc>()
+        .read<ProjectBloc>()
         .state
-        .projects
+        .projectsWithCount
         .map((p) => p.trimCount())
         .toList();
     final labels = context.read<LabelBloc>().state.labels;
@@ -315,12 +315,12 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     return showDialog<PriorityStatus>(
         context: context,
         builder: (BuildContext dialogContext) {
-          return BlocBuilder<AdminBloc, AdminState>(
+          return BlocBuilder<ProjectBloc, ProjectState>(
             builder: (context, state) {
               return SimpleDialog(
                 title: Text(AppLocalizations.of(context)!.selectProject),
-                children: buildProjects(
-                    context, state.projects.map((p) => p.trimCount()).toList()),
+                children: buildProjects(context,
+                    state.projectsWithCount.map((p) => p.trimCount()).toList()),
               );
             },
           );

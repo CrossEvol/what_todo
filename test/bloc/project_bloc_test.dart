@@ -42,7 +42,7 @@ void main() {
     ];
 
     test('initial state is ProjectInitial', () {
-      expect(projectBloc.state, isA<ProjectInitial>());
+      expect(projectBloc.state, isA<ProjectInitialState>());
     });
 
     blocTest<ProjectBloc, ProjectState>(
@@ -54,8 +54,8 @@ void main() {
       },
       act: (bloc) => bloc.add(const LoadProjectsEvent()),
       expect: () => [
-        isA<ProjectLoading>(),
-        isA<ProjectsLoaded>().having(
+        isA<ProjectLoadingState>(),
+        isA<ProjectsLoadedState>().having(
           (state) => state.projects,
           'projects',
           equals(testProjects),
@@ -75,7 +75,7 @@ void main() {
       },
       act: (bloc) => bloc.add(const LoadProjectsEvent()),
       expect: () => [
-        isA<ProjectLoading>(),
+        isA<ProjectLoadingState>(),
         isA<ProjectError>().having(
           (state) => state.message,
           'error message',
@@ -167,8 +167,8 @@ void main() {
       },
       act: (bloc) => bloc.add(const RefreshProjectsEvent()),
       expect: () => [
-        isA<ProjectLoading>(),
-        isA<ProjectsLoaded>().having(
+        isA<ProjectLoadingState>(),
+        isA<ProjectsLoadedState>().having(
           (state) => state.projects,
           'projects',
           equals(testProjects),

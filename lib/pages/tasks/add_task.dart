@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
+import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
@@ -230,12 +230,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
     return showDialog<PriorityStatus>(
         context: context,
         builder: (BuildContext dialogContext) {
-          return BlocBuilder<AdminBloc, AdminState>(
+          return BlocBuilder<ProjectBloc, ProjectState>(
             builder: (context, state) {
               return SimpleDialog(
                 title: Text(AppLocalizations.of(context)!.selectProject),
-                children: buildProjects(
-                    context, state.projects.map((p) => p.trimCount()).toList()),
+                children: buildProjects(context,
+                    state.projectsWithCount.map((p) => p.trimCount()).toList()),
               );
             },
           );

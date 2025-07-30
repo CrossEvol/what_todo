@@ -2,24 +2,29 @@ part of 'project_bloc.dart';
 
 abstract class ProjectState extends Equatable {
   final List<Project> projects = const [];
+  final List<ProjectWithCount> projectsWithCount = const [];
 
   const ProjectState();
 
   @override
   List<Object> get props => [];
+
+  int getProjectCount(projectID) =>
+      projectsWithCount.where((p) => p.id == projectID).toList()[0].count;
 }
 
-class ProjectInitial extends ProjectState {}
+class ProjectInitialState extends ProjectState {}
 
-class ProjectLoading extends ProjectState {}
+class ProjectLoadingState extends ProjectState {}
 
-class ProjectsLoaded extends ProjectState {
+class ProjectsLoadedState extends ProjectState {
   final List<Project> projects;
+  final List<ProjectWithCount> projectsWithCount;
 
-  const ProjectsLoaded(this.projects);
+  const ProjectsLoadedState(this.projects, this.projectsWithCount);
 
   @override
-  List<Object> get props => [projects];
+  List<Object> get props => [projects, projectsWithCount];
 }
 
 class ColorSelectionUpdated extends ProjectState {

@@ -16,7 +16,7 @@ import '../settings/settings_screen_test.dart';
 import '../test_helpers.dart';
 
 ProjectState defaultProjectState() {
-  return ProjectInitial();
+  return ProjectInitialState();
 }
 
 void main() {
@@ -64,7 +64,7 @@ void main() {
 
   testWidgets('ProjectWidget should render properly with ProjectInitial state',
       (WidgetTester tester) async {
-    arrangeProjectBlocStream([ProjectInitial()]);
+    arrangeProjectBlocStream([ProjectInitialState()]);
     await pumpProjectWidget(tester);
 
     expect(find.byType(ProjectExpansionTileWidget), findsNothing);
@@ -74,7 +74,7 @@ void main() {
 
   testWidgets('ProjectWidget should render properly with ProjectLoading state',
       (WidgetTester tester) async {
-    arrangeProjectBlocStream([], initialState: ProjectLoading());
+    arrangeProjectBlocStream([], initialState: ProjectLoadingState());
     await pumpProjectWidget(tester);
 
     expect(find.byType(ProjectExpansionTileWidget), findsNothing);
@@ -86,7 +86,7 @@ void main() {
       (WidgetTester tester) async {
     // Setup mock states
 
-    final projectsLoaded = ProjectsLoaded([
+    final projectsLoaded = ProjectsLoadedState([
       Project(
         id: 1,
         name: "Project 1",
@@ -99,7 +99,7 @@ void main() {
         colorValue: Colors.red.value,
         colorName: "Red",
       ),
-    ]);
+    ], const []);
 
     final projectsWithCount = [
       ProjectWithCount(
