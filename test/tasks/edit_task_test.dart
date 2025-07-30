@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/bloc/project/project_bloc.dart'
+    show ProjectBloc, ProjectsLoadedState;
 import 'package:flutter_app/bloc/reminder/reminder_bloc.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/pages/home/screen_enum.dart';
@@ -26,6 +28,7 @@ void main() {
   late MockAdminBloc mockAdminBloc;
   late MockHomeBloc mockHomeBloc;
   late MockLabelBloc mockLabelBloc;
+  late MockProjectBloc mockProjectBloc;
   late MockReminderBloc mockReminderBloc;
   late Task testTask;
 
@@ -36,6 +39,7 @@ void main() {
         BlocProvider<AdminBloc>.value(value: mockAdminBloc),
         BlocProvider<HomeBloc>.value(value: mockHomeBloc),
         BlocProvider<LabelBloc>.value(value: mockLabelBloc),
+        BlocProvider<ProjectBloc>.value(value: mockProjectBloc),
         BlocProvider<ReminderBloc>.value(
           value: mockReminderBloc,
         )
@@ -51,6 +55,7 @@ void main() {
     mockAdminBloc = MockAdminBloc();
     mockHomeBloc = MockHomeBloc();
     mockLabelBloc = MockLabelBloc();
+    mockProjectBloc = MockProjectBloc();
     mockReminderBloc = MockReminderBloc();
 
     testTask = Task.update(
@@ -70,15 +75,7 @@ void main() {
 
     final adminLoadedState = AdminLoadedState(
       labels: [],
-      projects: [
-        ProjectWithCount(
-          id: 1,
-          name: "Inbox",
-          colorCode: Colors.grey.value,
-          colorName: "Grey",
-          count: 0,
-        ),
-      ],
+      projects: [],
       colorPalette: ColorPalette.none(),
     );
     whenListen(
@@ -86,15 +83,7 @@ void main() {
       Stream.fromIterable([
         AdminLoadedState(
           labels: [],
-          projects: [
-            ProjectWithCount(
-              id: 1,
-              name: "Inbox",
-              colorCode: Colors.grey.value,
-              colorName: "Grey",
-              count: 0,
-            ),
-          ],
+          projects: [],
           colorPalette: ColorPalette.none(),
         )
       ]),
@@ -129,6 +118,45 @@ void main() {
     final reminderState = ReminderInitial();
     whenListen(mockReminderBloc, Stream.fromIterable([reminderState]),
         initialState: reminderState);
+
+    final projectsWithCount = [
+      ProjectWithCount(
+          id: 1,
+          name: "Inbox",
+          colorCode: Colors.grey.value,
+          colorName: "Grey",
+          count: 1),
+      ProjectWithCount(
+          id: 2,
+          name: "Project 2",
+          colorCode: Colors.red.value,
+          colorName: "Red",
+          count: 2),
+    ];
+
+    final projectsLoaded = ProjectsLoadedState(
+      [
+        Project(
+          id: 1,
+          name: "Inbox",
+          colorValue: Colors.grey.value,
+          colorName: "Grey",
+        ),
+        Project(
+          id: 2,
+          name: "Project 2",
+          colorValue: Colors.red.value,
+          colorName: "Red",
+        ),
+      ],
+      projectsWithCount,
+    );
+
+    whenListen(
+      mockProjectBloc,
+      Stream.fromIterable([projectsLoaded]),
+      initialState: projectsLoaded,
+    );
   });
 
   testWidgets(

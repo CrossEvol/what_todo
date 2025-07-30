@@ -86,21 +86,6 @@ void main() {
       (WidgetTester tester) async {
     // Setup mock states
 
-    final projectsLoaded = ProjectsLoadedState([
-      Project(
-        id: 1,
-        name: "Project 1",
-        colorValue: Colors.grey.value,
-        colorName: "Grey",
-      ),
-      Project(
-        id: 2,
-        name: "Project 2",
-        colorValue: Colors.red.value,
-        colorName: "Red",
-      ),
-    ], const []);
-
     final projectsWithCount = [
       ProjectWithCount(
           id: 1,
@@ -115,6 +100,24 @@ void main() {
           colorName: "Red",
           count: 2),
     ];
+
+    final projectsLoaded = ProjectsLoadedState(
+      [
+        Project(
+          id: 1,
+          name: "Project 1",
+          colorValue: Colors.grey.value,
+          colorName: "Grey",
+        ),
+        Project(
+          id: 2,
+          name: "Project 2",
+          colorValue: Colors.red.value,
+          colorName: "Red",
+        ),
+      ],
+      projectsWithCount,
+    );
 
     arrangeProjectBlocStream([], initialState: projectsLoaded);
     whenListen(mockSettingsBloc, Stream.fromIterable([defaultSettingState()]),
