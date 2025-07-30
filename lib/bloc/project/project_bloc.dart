@@ -17,8 +17,8 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
   ProjectBloc(this._projectDB) : super(ProjectInitialState()) {
     on<LoadProjectsEvent>(_onLoadProjects);
     on<CreateProjectEvent>(_onCreateProject);
-    on<ProjectRemoveEvent>(_removeProject);
-    on<ProjectUpdateEvent>(_updateProject);
+    on<ProjectRemoveEvent>(_onRemoveProject);
+    on<ProjectUpdateEvent>(_onUpdateProject);
     on<UpdateColorSelectionEvent>(_onUpdateColorSelection);
     on<RefreshProjectsEvent>(_onRefreshProjects);
   }
@@ -51,7 +51,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     }
   }
 
-  Future<void> _removeProject(
+  Future<void> _onRemoveProject(
       ProjectRemoveEvent event, Emitter<ProjectState> emit) async {
     if (event.projectID == inboxID) return;
     try {
@@ -65,7 +65,7 @@ class ProjectBloc extends Bloc<ProjectEvent, ProjectState> {
     }
   }
 
-  Future<void> _updateProject(
+  Future<void> _onUpdateProject(
       ProjectUpdateEvent event, Emitter<ProjectState> emit) async {
     if (event.project.id == inboxID) return;
     try {
