@@ -33,8 +33,9 @@ class _TaskGridState extends State<TaskGrid> {
       child: Container(
         width: 128, // Set your desired width here
         decoration: BoxDecoration(
-          color:
-              isSelected ? theme.colorScheme.primary.withOpacity(0.15) : null,
+          color: isSelected
+              ? theme.colorScheme.primary.withValues(alpha: 0.15)
+              : null,
           borderRadius: BorderRadius.circular(6),
         ),
         child: Text(
@@ -488,11 +489,11 @@ class StatisticsRow extends StatelessWidget {
 }
 
 class DoneTaskCard extends StatelessWidget {
-  final Task? task;
+  final Task task;
 
   const DoneTaskCard({
     super.key,
-    this.task,
+    required this.task,
   });
 
   @override
@@ -582,17 +583,15 @@ class DoneTaskCard extends StatelessWidget {
                       } else if (value == 'undone') {
                         context
                             .read<SearchBloc>()
-                            .add(MarkTaskAsUndoneEvent(task!));
+                            .add(MarkTaskAsUndoneEvent(task));
                       } else if (value == 'delete') {
                         final confirm = await showDialog<bool>(
                           context: context,
                           builder: (context) =>
-                              DeleteConfirmationDialog(task: task!),
+                              DeleteConfirmationDialog(task: task),
                         );
                         if (confirm == true) {
-                          context
-                              .read<SearchBloc>()
-                              .add(DeleteTaskEvent(task!));
+                          context.read<SearchBloc>().add(DeleteTaskEvent(task));
                         }
                       }
                     },
@@ -604,7 +603,7 @@ class DoneTaskCard extends StatelessWidget {
                         color: Colors.white,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withValues(alpha: 0.1),
                             blurRadius: 8,
                           ),
                         ],
@@ -638,7 +637,7 @@ class DoneTaskCard extends StatelessWidget {
                               text: TextSpan(
                                 children: [
                                   TextSpan(
-                                    text: task?.title ?? 'FlutterFlow CRM App',
+                                    text: task.title,
                                     style: GoogleFonts.plusJakartaSans(
                                       color: const Color(0xFF15161E),
                                       fontSize: 16,
@@ -687,47 +686,48 @@ class DoneTaskCard extends StatelessWidget {
                             children: [
                               Wrap(
                                 spacing: 4,
+                                runSpacing: 4,
                                 children: [
-                                  Icon(
-                                    Icons.local_offer,
-                                    color: const Color(0xFF5EBB64),
-                                    size: 16,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: Text(
-                                      task!.labelList.length > 1
-                                          ? task!.labelList[1].name
-                                          : 'python',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
+                                  if (task.labelList.length > 1) ...[
+                                    Icon(
+                                      Icons.local_offer,
+                                      color: const Color(0xFF5EBB64),
+                                      size: 16,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: Text(
+                                        task.labelList[1].name,
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Icon(
-                                    Icons.local_offer,
-                                    color: const Color(0xFF5EC8D3),
-                                    size: 16,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8),
-                                    child: Text(
-                                      task!.labelList.isNotEmpty
-                                          ? task!.labelList[0].name
-                                          : 'java',
-                                      style: GoogleFonts.plusJakartaSans(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
+                                  ],
+                                  if (task.labelList.isNotEmpty) ...[
+                                    Icon(
+                                      Icons.local_offer,
+                                      color: const Color(0xFF5EC8D3),
+                                      size: 16,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 8),
+                                      child: Text(
+                                        task.labelList[0].name,
+                                        style: GoogleFonts.plusJakartaSans(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ),
+                                  ],
                                 ],
                               ),
                               Align(
@@ -740,12 +740,11 @@ class DoneTaskCard extends StatelessWidget {
                                     Icon(
                                       Icons.circle_sharp,
                                       color: Color(
-                                          task?.projectColor ?? 0xFF3C2858),
+                                          task.projectColor ?? 0xFF3C2858),
                                       size: 16,
                                     ),
                                     Text(
-                                      task?.projectName ??
-                                          'FlutterFlow CRM App',
+                                      task.projectName ?? 'FlutterFlow CRM App',
                                       style: GoogleFonts.plusJakartaSans(
                                         color: const Color(0xFF15161E),
                                         fontSize: 16,
@@ -759,7 +758,7 @@ class DoneTaskCard extends StatelessWidget {
                                 width: 196.3,
                                 height: 14,
                                 decoration: BoxDecoration(
-                                  color: priorityColor[task!.priority.index],
+                                  color: priorityColor[task.priority.index],
                                   shape: BoxShape.rectangle,
                                   border: Border.all(
                                     color: const Color(0xFFE9D14A),
@@ -769,8 +768,7 @@ class DoneTaskCard extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.only(top: 8),
                                 child: Text(
-                                  task?.comment ??
-                                      '"Notifications and reminders informing users about upcoming classes and training schedules will be sent to them via email, SMS or notifications within the application."',
+                                  task.comment,
                                   style: GoogleFonts.plusJakartaSans(
                                     color: const Color(0xFF606A85),
                                     fontSize: 14,
@@ -786,7 +784,7 @@ class DoneTaskCard extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
-                        getFormattedDate(task!.dueDate),
+                        getFormattedDate(task.dueDate),
                         style: GoogleFonts.plusJakartaSans(
                           color: const Color(0xFF606A85),
                           fontSize: 14,
@@ -920,7 +918,7 @@ class UndoneTaskCard extends StatelessWidget {
                         color: Colors.white,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withValues(alpha: 0.1),
                             blurRadius: 8,
                           ),
                         ],
