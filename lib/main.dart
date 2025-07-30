@@ -380,10 +380,7 @@ class _MyAppState extends State<MyApp> with RouteAware {
         ),
         // TODO: it did not load projects at the first time on mobile device
         BlocProvider(
-          create: (_) => AdminBloc(
-            LabelDB.get(),
-            ProjectDB.get(),
-          )
+          create: (_) => AdminBloc()
             ..add(AdminLoadProjectsEvent())
             ..add(AdminLoadLabelsEvent()),
         ),

@@ -56,8 +56,6 @@ void main() {
       mockAdminBloc,
       Stream.fromIterable([
         AdminLoadedState(
-          labels: [],
-          projects: [],
           colorPalette: ColorPalette.none(),
         )
       ]),
@@ -155,8 +153,6 @@ void main() {
   testWidgets('Should show project selection dialog',
       (WidgetTester tester) async {
     final adminLoadedState = AdminLoadedState(
-      labels: [],
-      projects: [],
       colorPalette: ColorPalette.none(),
     );
 
@@ -164,8 +160,6 @@ void main() {
         mockAdminBloc,
         Stream.fromIterable([
           AdminLoadedState(
-            labels: [],
-            projects: [],
             colorPalette: ColorPalette.none(),
           )
         ]),

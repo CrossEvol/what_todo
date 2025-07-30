@@ -122,10 +122,7 @@ void main() {
     arrangeProjectBlocStream([], initialState: projectsLoaded);
     whenListen(mockSettingsBloc, Stream.fromIterable([defaultSettingState()]),
         initialState: defaultSettingState());
-    var adminLoadedState = AdminLoadedState(
-        labels: [],
-        projects: projectsWithCount,
-        colorPalette: ColorPalette.none());
+    var adminLoadedState = AdminLoadedState(colorPalette: ColorPalette.none());
     whenListen(mockAdminBloc, Stream.fromIterable([adminLoadedState]),
         initialState: adminLoadedState);
     await pumpProjectWidget(tester);

@@ -74,16 +74,12 @@ void main() {
     );
 
     final adminLoadedState = AdminLoadedState(
-      labels: [],
-      projects: [],
       colorPalette: ColorPalette.none(),
     );
     whenListen(
       mockAdminBloc,
       Stream.fromIterable([
         AdminLoadedState(
-          labels: [],
-          projects: [],
           colorPalette: ColorPalette.none(),
         )
       ]),
@@ -224,8 +220,6 @@ void main() {
       mockAdminBloc,
       Stream.fromIterable([
         AdminLoadedState(
-          labels: [],
-          projects: projects,
           colorPalette: ColorPalette.none(),
         )
       ]),
