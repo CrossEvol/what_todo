@@ -15,8 +15,8 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
       : super(LabelInitial(labels: [], labelsWithCount: [])) {
     on<LoadLabelsEvent>(_onLoadLabels);
     on<CreateLabelEvent>(_onCreateLabel);
-    on<LabelRemoveEvent>(_removeLabel);
-    on<LabelUpdateEvent>(_updateLabel);
+    on<LabelRemoveEvent>(_onRemoveLabel);
+    on<LabelUpdateEvent>(_onUpdateLabel);
     on<UpdateColorSelectionEvent>(_onUpdateColorSelection);
     on<RefreshLabelsEvent>(_onRefreshLabels);
   }
@@ -59,7 +59,7 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
     }
   }
 
-  Future<void> _updateLabel(
+  Future<void> _onUpdateLabel(
       LabelUpdateEvent event, Emitter<LabelState> emit) async {
     try {
       await _labelDB.updateLabel(event.label);
@@ -69,7 +69,7 @@ class LabelBloc extends Bloc<LabelEvent, LabelState> {
     }
   }
 
-  Future<void> _removeLabel(
+  Future<void> _onRemoveLabel(
       LabelRemoveEvent event, Emitter<LabelState> emit) async {
     final hasRemoved = await _labelDB.deleteLabel(event.labelID);
     if (hasRemoved) {
