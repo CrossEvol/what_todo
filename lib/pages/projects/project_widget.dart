@@ -17,6 +17,7 @@ import 'package:flutter_app/l10n/app_localizations.dart';
 class ProjectsExpansionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    context.read<ProjectBloc>().add(RefreshProjectsEvent());
     return BlocBuilder<ProjectBloc, ProjectState>(
       builder: (context, state) {
         if (state is ProjectsLoaded) {
