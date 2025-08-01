@@ -546,6 +546,17 @@ class DoneTaskCard extends StatelessWidget {
                     ),
                     items: [
                       DropdownMenuItem<String>(
+                        value: 'show',
+                        child: Row(
+                          children: const [
+                            Icon(Icons.smart_display_outlined,
+                                color: Colors.purple, size: 20),
+                            SizedBox(width: 8),
+                            Text('Show', style: TextStyle(fontSize: 14)),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem<String>(
                         value: 'edit',
                         child: Row(
                           children: const [
@@ -578,7 +589,9 @@ class DoneTaskCard extends StatelessWidget {
                       ),
                     ],
                     onChanged: (value) async {
-                      if (value == 'edit') {
+                      if (value == 'show') {
+                        context.push('/task/${task.id}/detail');
+                      } else if (value == 'edit') {
                         context.push('/task/edit', extra: task);
                       } else if (value == 'undone') {
                         context
@@ -861,6 +874,17 @@ class UndoneTaskCard extends StatelessWidget {
                     ),
                     items: [
                       DropdownMenuItem<String>(
+                        value: 'show',
+                        child: Row(
+                          children: const [
+                            Icon(Icons.smart_display_outlined,
+                                color: Colors.purple, size: 20),
+                            SizedBox(width: 8),
+                            Text('Show', style: TextStyle(fontSize: 14)),
+                          ],
+                        ),
+                      ),
+                      DropdownMenuItem<String>(
                         value: 'edit',
                         child: Row(
                           children: const [
@@ -893,7 +917,9 @@ class UndoneTaskCard extends StatelessWidget {
                       ),
                     ],
                     onChanged: (value) async {
-                      if (value == 'edit') {
+                      if (value == 'show') {
+                        context.push('/task/${task.id}/detail');
+                      } else if (value == 'edit') {
                         context.push('/task/edit', extra: task);
                       } else if (value == 'done') {
                         context

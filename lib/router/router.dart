@@ -19,6 +19,7 @@ import 'package:flutter_app/pages/tasks/add_task.dart';
 import 'package:flutter_app/pages/tasks/edit_task.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_completed/task_completed.dart';
+import 'package:flutter_app/pages/tasks/task_detail.dart';
 import 'package:flutter_app/pages/tasks/task_uncompleted/task_uncompleted.dart';
 import 'package:flutter_app/pages/tasks/task_grid.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -128,6 +129,15 @@ final GoRouter goRouter = GoRouter(
           path: 'task/grid',
           builder: (BuildContext context, GoRouterState state) {
             return TaskGrid();
+          },
+        ),
+        GoRoute(
+          path: '/task/:id/detail', // 使用 :id 定义动态参数
+          builder: (BuildContext context, GoRouterState state) {
+            // 从 state.pathParameters 中获取 id 参数
+            final String taskId = state.pathParameters['id'] ?? '';
+            print(taskId);
+            return TaskDetailPage(); // 将 id 传递给 TaskDetail widget
           },
         ),
         GoRoute(
