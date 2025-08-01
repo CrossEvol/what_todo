@@ -1,3 +1,5 @@
+import 'package:flutter_app/dao/reminder_db.dart';
+import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
@@ -134,10 +136,33 @@ final GoRouter goRouter = GoRouter(
         GoRoute(
           path: '/task/:id/detail', // 使用 :id 定义动态参数
           builder: (BuildContext context, GoRouterState state) {
-            // 从 state.pathParameters 中获取 id 参数
-            final String taskId = state.pathParameters['id'] ?? '';
-            print(taskId);
-            return TaskDetailPage(); // 将 id 传递给 TaskDetail widget
+            final String taskIdValue = state.pathParameters['id'] ?? '';
+            final int taskId = int.parse(taskIdValue);
+            return FutureBuilder(
+              future: Future.wait([
+                TaskDB.get().getTaskById(taskId),
+                ReminderDB.get().getRemindersForTask(taskId)
+              ]),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                }
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+                if (!snapshot.hasData || snapshot.data == null) {
+                  return const Text('Task not found');
+                }
+                final task = snapshot.data![0] as Task?;
+                final reminders = snapshot.data![1] as List<Reminder>;
+
+                if (task == null) {
+                  return const Text('Task not found');
+                }
+
+                return TaskDetailPage(task: task, reminders: reminders);
+              },
+            );
           },
         ),
         GoRoute(
