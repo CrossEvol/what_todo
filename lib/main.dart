@@ -272,10 +272,7 @@ void main() async {
       final taskIdString = notificationResponse.payload!.split('=')[1];
       final taskId = int.tryParse(taskIdString);
       if (taskId != null) {
-        final task = await TaskDB.get().getTaskById(taskId);
-        if (task != null) {
-          goRouter.push('/task/edit', extra: task);
-        }
+        goRouter.push('/task/$taskId/edit');
       }
     }
   });
