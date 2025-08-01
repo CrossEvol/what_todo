@@ -1,0 +1,130 @@
+# 设置默认行为
+# text=auto 自动检测文本文件并进行规范化
+# eol=lf 确保检出时使用 LF 作为换行符
+* text=auto eol=lf
+
+# Dart/Flutter 相关文件
+*.dart       text eol=lf
+*.freezed    text eol=lf
+*.g.dart     text eol=lf
+*.yaml       text eol=lf
+*.yml        text eol=lf
+*.json       text eol=lf
+pubspec.lock text eol=lf
+
+# Android 开发文件
+*.java       text eol=lf
+*.kt         text eol=lf
+*.gradle     text eol=lf
+*.xml        text eol=lf
+*.properties text eol=lf
+
+# iOS/MacOS 开发文件
+*.swift      text eol=lf
+*.h          text eol=lf
+*.m          text eol=lf
+*.mm         text eol=lf
+*.plist      text eol=lf
+*.pbxproj    text eol=lf
+*.strings    text eol=lf
+Podfile      text eol=lf
+*.storyboard text eol=lf
+*.xib        text eol=lf
+
+# Web 开发文件
+*.html       text eol=lf
+*.css        text eol=lf
+*.scss       text eol=lf
+*.sass       text eol=lf
+*.js         text eol=lf
+*.jsx        text eol=lf
+*.ts         text eol=lf
+*.tsx        text eol=lf
+*.vue        text eol=lf
+*.map        text eol=lf
+
+# 文档和配置文件
+*.md         text eol=lf
+*.txt        text eol=lf
+*.rst        text eol=lf
+*.conf       text eol=lf
+*.config     text eol=lf
+*.toml      text eol=lf
+*.lock       text eol=lf
+.env*        text eol=lf
+.gitignore   text eol=lf
+.gitattributes text eol=lf
+.editorconfig text eol=lf
+
+# 脚本文件
+*.sh         text eol=lf
+*.bash       text eol=lf
+*.zsh        text eol=lf
+*.fish       text eol=lf
+*.bat        text eol=crlf
+*.cmd        text eol=crlf
+*.ps1        text eol=crlf
+
+# 二进制文件 - 这些文件不应该被修改
+# 图片
+*.png        binary
+*.jpg        binary
+*.jpeg       binary
+*.gif        binary
+*.ico        binary
+*.svg        binary
+*.webp       binary
+
+# 字体
+*.ttf        binary
+*.eot        binary
+*.woff       binary
+*.woff2      binary
+*.otf        binary
+
+# 音频
+*.mp3        binary
+*.wav        binary
+*.ogg        binary
+
+# 视频
+*.mp4        binary
+*.webm       binary
+*.avi        binary
+
+# 压缩文件
+*.zip        binary
+*.rar        binary
+*.7z         binary
+*.gz         binary
+*.tar        binary
+
+# 其他二进制文件
+*.pdf        binary
+*.exe        binary
+*.dll        binary
+*.so         binary
+*.dylib      binary
+*.jar        binary
+*.aar        binary
+*.db         binary
+*.sqlite     binary
+
+# 特殊处理的文件
+# 确保 Gradle wrapper 在 Windows 上也能正常工作
+gradlew      text eol=lf
+*.bat        text eol=crlf
+
+# Flutter/Dart 特定的生成文件
+*.g.dart     text eol=lf
+*.freezed.dart text eol=lf
+*.mocks.dart text eol=lf
+
+# IDE 特定文件
+*.iml        text eol=lf
+.idea/       text eol=lf
+.vscode/     text eol=lf
+
+# 确保这些文件不被 Git 修改
+# 适用于一些自动生成的文件
+*.generated.* -text
