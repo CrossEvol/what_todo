@@ -272,7 +272,7 @@ void main() async {
       final taskIdString = notificationResponse.payload!.split('=')[1];
       final taskId = int.tryParse(taskIdString);
       if (taskId != null) {
-        goRouter.push('/task/$taskId/edit');
+        goRouter.push('/task/$taskId/detail');
       }
     }
   });
