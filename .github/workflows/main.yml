@@ -85,10 +85,13 @@ jobs:
       - name: Verify APK Exists # Optional but helpful for debugging
         run: ls -l build/app/outputs/flutter-apk/
 
+      - name: Rename APK
+        run: mv build/app/outputs/flutter-apk/app-release.apk build/app/outputs/flutter-apk/WhatTodo-${{ github.ref_name }}.apk
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: build/app/outputs/flutter-apk/app-release.apk # Path remains the same
+          files: build/app/outputs/flutter-apk/WhatTodo-${{ github.ref_name }}.apk
           name: Release ${{ github.ref_name }}
           tag_name: ${{ github.ref_name }}
         env:
