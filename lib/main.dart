@@ -16,9 +16,7 @@ import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/dao/reminder_db.dart';
 import 'package:flutter_app/dao/search_db.dart';
-import 'package:flutter_app/db/app_db.dart';
 import 'package:flutter_app/l10n/app_localizations.dart';
-import 'package:flutter_app/pages/drift_schema/drift_schema_db.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/profile/profile_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
@@ -29,6 +27,7 @@ import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_app/providers/theme_provider.dart';
 import 'package:flutter_app/router/router.dart';
+import 'package:flutter_app/utils/drift_util.dart' show migrate;
 import 'package:flutter_app/utils/logger_util.dart';
 import 'package:flutter_app/utils/shard_prefs_util.dart';
 import 'package:flutter_app/utils/window_util.dart' show setupWindow;
@@ -46,7 +45,7 @@ void main() async {
   // https://drift.simonbinder.eu/docs/getting-started/advanced_dart_tables/#datetime-options
   driftRuntimeOptions.defaultSerializer =
       ValueSerializer.defaults(serializeDateTimeValuesAsString: true);
-  await _migrate();
+  await migrate();
   await setupSharedPreference();
 
   // Initialize workmanager
@@ -57,34 +56,6 @@ void main() async {
     create: (context) => ThemeProvider(),
     child: MyApp(),
   ));
-}
-
-Future<void> _migrate() async {
-  var schemaDB = DriftSchemaDB.get();
-  var existsSchema = await schemaDB.exists();
-  if (!existsSchema) {
-    schemaDB.createSchema(1);
-  }
-  // 1->2
-  if ((await schemaDB.getMaximalVersion()) == 1) {
-    if ((await schemaDB.shouldMigrate(1))) {
-      schemaDB.createSchema(2);
-      AppDatabase().customStatement(r'''
-      WITH numbered_rows AS (
-        SELECT 
-          id,
-          ROW_NUMBER() OVER (ORDER BY id) AS row_num
-        FROM task
-      )
-      UPDATE task
-      SET "order" = (
-        SELECT row_num * 1000 
-        FROM numbered_rows 
-        WHERE numbered_rows.id = task.id
-      );
-      ''');
-    }
-  }
 }
 
 class MyApp extends StatefulWidget {
