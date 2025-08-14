@@ -31,17 +31,17 @@ import 'package:flutter_app/providers/theme_provider.dart';
 import 'package:flutter_app/router/router.dart';
 import 'package:flutter_app/utils/logger_util.dart';
 import 'package:flutter_app/utils/shard_prefs_util.dart';
+import 'package:flutter_app/utils/window_util.dart' show setupWindow;
 import 'package:flutter_app/utils/work_manager_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:window_manager/window_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setupLogger();
   if (Platform.isWindows) {
-    setupWindow();
+    await setupWindow();
   }
   // https://drift.simonbinder.eu/docs/getting-started/advanced_dart_tables/#datetime-options
   driftRuntimeOptions.defaultSerializer =
@@ -87,29 +87,6 @@ Future<void> _migrate() async {
   }
 }
 
-const double windowWidth = 400;
-const double windowHeight = 760;
-
-void setupWindow() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  // Must add this line.
-  await windowManager.ensureInitialized();
-
-  WindowOptions windowOptions = WindowOptions(
-    title: 'WhatTodo',
-    size: Size(windowWidth, windowHeight),
-    minimumSize: Size(windowWidth, windowHeight),
-    center: false,
-    backgroundColor: Colors.transparent,
-    skipTaskbar: false,
-    titleBarStyle: TitleBarStyle.normal,
-  );
-  windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await windowManager.show();
-    await windowManager.focus();
-  });
-}
-
 class MyApp extends StatefulWidget {
   @override
   State<MyApp> createState() => _MyAppState();
@@ -151,7 +128,6 @@ class _MyAppState extends State<MyApp> with RouteAware {
                 filter: Filter.byProject(project.id)
                     .copyWith(status: TaskStatus.PENDING))),
         ),
-        // TODO: it did not load projects at the first time on mobile device
         BlocProvider(
           create: (_) => AdminBloc()
             ..add(AdminLoadProjectsEvent())
