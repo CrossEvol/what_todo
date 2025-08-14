@@ -6,22 +6,6 @@ import 'package:flutter/material.dart';
 
 /// Flutter code sample for [Dismissible].
 
-void main() => runApp(const DismissibleExampleApp());
-
-class DismissibleExampleApp extends StatelessWidget {
-  const DismissibleExampleApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Dismissible Sample')),
-        body: const DismissibleExample(),
-      ),
-    );
-  }
-}
-
 class DismissibleExample extends StatefulWidget {
   const DismissibleExample({super.key});
 

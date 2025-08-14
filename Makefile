@@ -13,6 +13,9 @@ lint:
 build-apk:
 	pwsh.exe scripts/build-apk.ps1
 
+gen-widget:
+	cd widgetbook && fvm dart run build_runner build -d
+
 test_about_use_page:
 	fvm flutter test integration_test/about_us_page_test.dart
 

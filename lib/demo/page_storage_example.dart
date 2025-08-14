@@ -6,27 +6,14 @@ import 'package:flutter/material.dart';
 
 /// Flutter code sample for [PageStorage].
 
-void main() => runApp(const PageStorageExampleApp());
-
-class PageStorageExampleApp extends StatelessWidget {
-  const PageStorageExampleApp({super.key});
+class PageStorageExample extends StatefulWidget {
+  const PageStorageExample({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyHomePage(),
-    );
-  }
+  State<PageStorageExample> createState() => _PageStorageExampleState();
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class _PageStorageExampleState extends State<PageStorageExample> {
   final List<Widget> pages = const <Widget>[
     ColorBoxPage(
       key: PageStorageKey<String>('pageOne'),
