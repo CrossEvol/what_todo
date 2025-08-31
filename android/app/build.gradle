@@ -38,7 +38,7 @@ android {
         minSdk flutter.minSdkVersion
         targetSdk 34
         versionCode 6
-        versionName '1.5.2+ci-test-rename.1'
+        versionName '1.5.3'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled = true
     }
