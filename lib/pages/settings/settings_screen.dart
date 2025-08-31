@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/constants/keys.dart';
+import 'package:flutter_app/models/reminder_interval.dart';
 import 'package:flutter_app/providers/theme_provider.dart';
 import 'package:flutter_app/styles/theme_data_style.dart';
 import 'package:flutter_app/utils/app_util.dart';
@@ -255,6 +256,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     leading: const Icon(Icons.notification_important_outlined),
                     title: const Text('Enable DailyReminder'),
                   ),
+                  SettingsTile.navigation(
+                    key: ValueKey(SettingKeys.REMINDER_INTERVAL),
+                    leading: const Icon(Icons.timer_outlined),
+                    title: const Text('Reminder Interval'),
+                    value: Text(ReminderInterval.getDisplayName(
+                        state.reminderInterval)),
+                    onPressed: (context) =>
+                        _toggleReminderInterval(context, state.reminderInterval),
+                  ),
                 ],
               ),
               SettingsSection(
@@ -385,6 +395,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           child: ListTile(
                             title: Text('$len characters'),
                             trailing: currentValue == len
+                                ? const Icon(Icons.check, color: Colors.blue)
+                                : null,
+                          ),
+                        ),
+                      ))
+                  .toList(),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _toggleReminderInterval(BuildContext context, int currentInterval) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Select Reminder Interval'),
+        content: SizedBox(
+          width: 300,
+          height: ReminderInterval.options.length *
+              60.0, // Adjust height based on options
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: ReminderInterval.options
+                  .map((interval) => GestureDetector(
+                        key: ValueKey(
+                            'reminder-interval-${interval.intervalMinutes}'),
+                        onTap: () {
+                          context.read<SettingsBloc>().add(
+                              ToggleReminderInterval(
+                                  intervalMinutes: interval.intervalMinutes));
+                          Navigator.pop(context);
+                        },
+                        child: Card(
+                          child: ListTile(
+                            title: Text(interval.displayName),
+                            trailing: currentInterval == interval.intervalMinutes
                                 ? const Icon(Icons.check, color: Colors.blue)
                                 : null,
                           ),
