@@ -10,19 +10,30 @@
   - Create ReminderInterval model class with predefined options and display names
   - _Requirements: 4.3, 4.4_
 
-- [ ] 2. Extend SettingsBloc with reminder interval functionality
-  - [ ] 2.1 Add ToggleReminderInterval event class
+- [x] 2. Extend SettingsBloc with reminder interval functionality
+
+
+
+
+
+  - [x] 2.1 Add ToggleReminderInterval event class
+
+
     - Create new event class in settings_event.dart that accepts intervalMinutes parameter
     - Add proper equality and props implementation for the event
     - _Requirements: 2.1, 2.2_
 
-  - [ ] 2.2 Add reminderInterval property to SettingsState
+  - [x] 2.2 Add reminderInterval property to SettingsState
+
+
     - Extend SettingsState class to include reminderInterval field with default value of 15
     - Update copyWith method and equality implementation
     - Update state constructor to handle the new field
     - _Requirements: 3.1, 3.2_
 
-  - [ ] 2.3 Implement reminder interval event handler in SettingsBloc
+  - [x] 2.3 Implement reminder interval event handler in SettingsBloc
+
+
     - Add event handler for ToggleReminderInterval in SettingsBloc
     - Implement interval validation (15-240 minutes range)
     - Add database update logic using existing SettingsDB pattern

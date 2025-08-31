@@ -10,6 +10,7 @@ import 'package:flutter_app/pages/settings/setting.dart';
 import 'package:flutter_app/pages/settings/settings_db.dart';
 import 'package:flutter_app/utils/logger_util.dart';
 import 'package:flutter_app/utils/shard_prefs_util.dart';
+import 'package:workmanager/workmanager.dart';
 
 part 'settings_event.dart';
 
@@ -35,6 +36,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           setLocale: (Locale) {},
           enableNotifications: false,
           enableDailyReminder: false,
+          reminderInterval: 15,
         )) {
     on<LoadSettingsEvent>(_loadSettings);
     on<ToggleUseCountBadgesEvent>(_toggleUseCountBadges);
@@ -47,6 +49,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<ToggleConfirmDeletion>(_toggleConfirmDeletion);
     on<ToggleEnableNotificationsEvent>(_toggleEnableNotifications);
     on<ToggleEnableDailyReminderEvent>(_toggleEnableDailyReminder);
+    on<ToggleReminderInterval>(_toggleReminderInterval);
   }
 
   FutureOr<void> _toggleUseCountBadges(
@@ -492,5 +495,86 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       updatedKey: SettingKeys.CONFIRM_DELETION,
       status: ResultStatus.success,
     ));
+  }
+
+  FutureOr<void> _toggleReminderInterval(
+      ToggleReminderInterval event, Emitter<SettingsState> emit) async {
+    try {
+      // Validate interval is within acceptable range (15-240 minutes)
+      if (event.intervalMinutes < 15 || event.intervalMinutes > 240) {
+        _logger.warn('Invalid reminder interval: ${event.intervalMinutes} minutes. Must be between 15-240 minutes.');
+        emit(state.copyWith(
+          status: ResultStatus.failure,
+          updatedKey: SettingKeys.REMINDER_INTERVAL,
+        ));
+        return;
+      }
+
+      final setting = await _settingsDB.findByName(SettingKeys.REMINDER_INTERVAL);
+      if (setting == null) {
+        // Create new setting if it doesn't exist
+        var created = await _settingsDB.createSetting(Setting.create(
+            key: SettingKeys.REMINDER_INTERVAL,
+            value: '${event.intervalMinutes}',
+            updatedAt: DateTime.now(),
+            type: SettingType.IntNumber));
+        if (!created) {
+          _logger.warn('Failed to create ${SettingKeys.REMINDER_INTERVAL} setting.');
+          emit(state.copyWith(
+            status: ResultStatus.failure,
+            updatedKey: SettingKeys.REMINDER_INTERVAL,
+          ));
+          return;
+        }
+      } else {
+        // Update existing setting
+        await _settingsDB.updateSetting(Setting.update(
+            id: setting.id,
+            key: setting.key,
+            value: '${event.intervalMinutes}',
+            updatedAt: DateTime.now(),
+            type: setting.type));
+      }
+
+      // Reconfigure WorkManager with new interval
+      try {
+        // Cancel existing task
+        await Workmanager().cancelByUniqueName("1");
+        
+        // Register new task with updated interval
+        await Workmanager().registerPeriodicTask(
+          "1", // uniqueName
+          "simplePeriodicTask", // taskName
+          frequency: Duration(minutes: event.intervalMinutes),
+          initialDelay: const Duration(minutes: 1),
+          constraints: Constraints(
+            networkType: NetworkType.notRequired,
+            requiresBatteryNotLow: false,
+            requiresCharging: false,
+            requiresDeviceIdle: false,
+            requiresStorageNotLow: false,
+          ),
+        );
+      } catch (workManagerError) {
+        _logger.warn('WorkManager reconfiguration failed: $workManagerError');
+        emit(state.copyWith(
+          status: ResultStatus.failure,
+          updatedKey: SettingKeys.REMINDER_INTERVAL,
+        ));
+        return;
+      }
+
+      emit(state.copyWith(
+        reminderInterval: event.intervalMinutes,
+        updatedKey: SettingKeys.REMINDER_INTERVAL,
+        status: ResultStatus.success,
+      ));
+    } catch (e) {
+      _logger.warn('Failed to update reminder interval: $e');
+      emit(state.copyWith(
+        status: ResultStatus.failure,
+        updatedKey: SettingKeys.REMINDER_INTERVAL,
+      ));
+    }
   }
 }

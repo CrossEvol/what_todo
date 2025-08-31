@@ -29,6 +29,7 @@ class SettingsState extends Equatable {
   final Language language;
   final int labelLen; // Added
   final int projectLen; // Added
+  final int reminderInterval;
   final Function(Locale) setLocale;
 
   const SettingsState({
@@ -44,6 +45,7 @@ class SettingsState extends Equatable {
     required this.projectLen, // Added
     required this.setLocale,
     required this.enableDailyReminder,
+    this.reminderInterval = 15,
   });
 
   @override
@@ -58,6 +60,7 @@ class SettingsState extends Equatable {
         language,
         labelLen, // Added
         projectLen, // Added
+        reminderInterval,
       ];
 
   SettingsState copyWith({
@@ -72,6 +75,7 @@ class SettingsState extends Equatable {
     Language? language,
     int? labelLen, // Added
     int? projectLen, // Added
+    int? reminderInterval,
     Function(Locale)? setLocale,
   }) {
     return SettingsState(
@@ -87,6 +91,7 @@ class SettingsState extends Equatable {
       // Added
       projectLen: projectLen ?? this.projectLen,
       // Added
+      reminderInterval: reminderInterval ?? this.reminderInterval,
       setLocale: setLocale ?? this.setLocale,
       enableDailyReminder: enableDailyReminder ?? this.enableDailyReminder,
     );
@@ -109,6 +114,7 @@ class SettingsState extends Equatable {
           language == other.language &&
           labelLen == other.labelLen &&
           projectLen == other.projectLen &&
+          reminderInterval == other.reminderInterval &&
           setLocale == other.setLocale;
 
   @override
@@ -125,5 +131,6 @@ class SettingsState extends Equatable {
       language,
       labelLen,
       projectLen,
+      reminderInterval,
       setLocale);
 }

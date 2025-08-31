@@ -80,3 +80,12 @@ final class ToggleConfirmDeletion extends SettingsEvent {
   @override
   List<Object?> get props => [];
 }
+
+final class ToggleReminderInterval extends SettingsEvent {
+  final int intervalMinutes;
+
+  const ToggleReminderInterval({required this.intervalMinutes});
+
+  @override
+  List<Object?> get props => [intervalMinutes];
+}
