@@ -194,27 +194,43 @@ Future<void> _processDailyReminder(
   }
 }
 
-void setupWorkManager(){
-  // Initialize workmanager
-  Workmanager().initialize(
-    callbackDispatcher,
-    isInDebugMode: false, // Set to false for production
-  );
+void setupWorkManager({int? intervalMinutes}) async {
+  final interval = intervalMinutes ?? 15;
+  
+  try {
+    // Initialize workmanager
+    Workmanager().initialize(
+      callbackDispatcher,
+    );
 
-  // Register a periodic task
-  Workmanager().registerPeriodicTask(
-    "1", // uniqueName
-    "simplePeriodicTask", // taskName
-    frequency: const Duration(minutes: 15), // Android minimum is 15 minutes
-    initialDelay: const Duration(minutes: 1),
-    constraints: Constraints(
-      networkType: NetworkType.notRequired,
-      requiresBatteryNotLow: false,
-      requiresCharging: false,
-      requiresDeviceIdle: false,
-      requiresStorageNotLow: false,
-    ),
-  );
+    // Cancel existing task before registering new one
+    await Workmanager().cancelByUniqueName("1");
+
+    // Register a periodic task with configurable interval
+    await Workmanager().registerPeriodicTask(
+      "1", // uniqueName
+      "simplePeriodicTask", // taskName
+      frequency: Duration(minutes: interval), // Configurable interval
+      initialDelay: const Duration(minutes: 1),
+      constraints: Constraints(
+        networkType: NetworkType.notRequired,
+        requiresBatteryNotLow: false,
+        requiresCharging: false,
+        requiresDeviceIdle: false,
+        requiresStorageNotLow: false,
+      ),
+    );
+    
+    if (kDebugMode) {
+      debugPrint('WorkManager setup completed with interval: $interval minutes');
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      debugPrint('WorkManager setup failed: $e');
+    }
+    // Re-throw the exception so calling code can handle it
+    rethrow;
+  }
 }
 
 Future<void> setupNotification() async {
