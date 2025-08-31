@@ -151,6 +151,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
     final enableDailyReminder = await _getEnableDailyReminder(_settingsDB);
     emit(state.copyWith(enableDailyReminder: enableDailyReminder));
+
+    final reminderInterval = await _getReminderInterval(_settingsDB);
+    emit(state.copyWith(reminderInterval: reminderInterval));
   }
 
   Future<bool> _getUseCountBadges(SettingsDB settingsDB) async {
@@ -350,6 +353,44 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     }
   }
 
+  Future<int> _getReminderInterval(SettingsDB settingsDB) async {
+    const defaultInterval = 15; // Default to 15 minutes
+    final setting = await _settingsDB.findByName(SettingKeys.REMINDER_INTERVAL);
+    if (setting == null) {
+      var created = await _settingsDB.createSetting(Setting.create(
+          key: SettingKeys.REMINDER_INTERVAL,
+          value: '$defaultInterval',
+          updatedAt: DateTime.now(),
+          type: SettingType.IntNumber));
+      if (created) {
+        final newSetting =
+            await _settingsDB.findByName(SettingKeys.REMINDER_INTERVAL);
+        if (newSetting == null) {
+          _logger.warn('Insert ${SettingKeys.REMINDER_INTERVAL} failed.');
+          return defaultInterval;
+        }
+        final parsedValue = int.tryParse(newSetting.value) ?? defaultInterval;
+        // Validate interval is within acceptable range (15-240 minutes)
+        if (parsedValue < 15 || parsedValue > 240) {
+          _logger.warn(
+              'Invalid reminder interval value: $parsedValue. Using default: $defaultInterval');
+          return defaultInterval;
+        }
+        return parsedValue;
+      }
+      return defaultInterval;
+    } else {
+      final parsedValue = int.tryParse(setting.value) ?? defaultInterval;
+      // Validate interval is within acceptable range (15-240 minutes)
+      if (parsedValue < 15 || parsedValue > 240) {
+        _logger.warn(
+            'Invalid reminder interval value: $parsedValue. Using default: $defaultInterval');
+        return defaultInterval;
+      }
+      return parsedValue;
+    }
+  }
+
   FutureOr<void> _toggleEnvironment(
       ToggleEnvironment event, Emitter<SettingsState> emit) async {
     final setting = await _settingsDB.findByName(SettingKeys.Environment);
@@ -502,7 +543,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     try {
       // Validate interval is within acceptable range (15-240 minutes)
       if (event.intervalMinutes < 15 || event.intervalMinutes > 240) {
-        _logger.warn('Invalid reminder interval: ${event.intervalMinutes} minutes. Must be between 15-240 minutes.');
+        _logger.warn(
+            'Invalid reminder interval: ${event.intervalMinutes} minutes. Must be between 15-240 minutes.');
         emit(state.copyWith(
           status: ResultStatus.failure,
           updatedKey: SettingKeys.REMINDER_INTERVAL,
@@ -510,7 +552,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         return;
       }
 
-      final setting = await _settingsDB.findByName(SettingKeys.REMINDER_INTERVAL);
+      final setting =
+          await _settingsDB.findByName(SettingKeys.REMINDER_INTERVAL);
       if (setting == null) {
         // Create new setting if it doesn't exist
         var created = await _settingsDB.createSetting(Setting.create(
@@ -519,7 +562,8 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
             updatedAt: DateTime.now(),
             type: SettingType.IntNumber));
         if (!created) {
-          _logger.warn('Failed to create ${SettingKeys.REMINDER_INTERVAL} setting.');
+          _logger.warn(
+              'Failed to create ${SettingKeys.REMINDER_INTERVAL} setting.');
           emit(state.copyWith(
             status: ResultStatus.failure,
             updatedKey: SettingKeys.REMINDER_INTERVAL,
@@ -540,7 +584,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       try {
         // Cancel existing task
         await Workmanager().cancelByUniqueName("1");
-        
+
         // Register new task with updated interval
         await Workmanager().registerPeriodicTask(
           "1", // uniqueName
