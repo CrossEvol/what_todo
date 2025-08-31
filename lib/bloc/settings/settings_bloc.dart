@@ -10,7 +10,7 @@ import 'package:flutter_app/pages/settings/setting.dart';
 import 'package:flutter_app/pages/settings/settings_db.dart';
 import 'package:flutter_app/utils/logger_util.dart';
 import 'package:flutter_app/utils/shard_prefs_util.dart';
-import 'package:workmanager/workmanager.dart';
+import 'package:flutter_app/utils/work_manager_util.dart';
 
 part 'settings_event.dart';
 
@@ -582,23 +582,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
       // Reconfigure WorkManager with new interval
       try {
-        // Cancel existing task
-        await Workmanager().cancelByUniqueName("1");
-
-        // Register new task with updated interval
-        await Workmanager().registerPeriodicTask(
-          "1", // uniqueName
-          "simplePeriodicTask", // taskName
-          frequency: Duration(minutes: event.intervalMinutes),
-          initialDelay: const Duration(minutes: 1),
-          constraints: Constraints(
-            networkType: NetworkType.notRequired,
-            requiresBatteryNotLow: false,
-            requiresCharging: false,
-            requiresDeviceIdle: false,
-            requiresStorageNotLow: false,
-          ),
-        );
+        await reconfigureWorkManager(event.intervalMinutes);
       } catch (workManagerError) {
         _logger.warn('WorkManager reconfiguration failed: $workManagerError');
         emit(state.copyWith(

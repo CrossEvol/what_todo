@@ -233,6 +233,42 @@ void setupWorkManager({int? intervalMinutes}) async {
   }
 }
 
+Future<void> reconfigureWorkManager(int intervalMinutes) async {
+  try {
+    if (kDebugMode) {
+      debugPrint('Reconfiguring WorkManager with interval: $intervalMinutes minutes');
+    }
+
+    // Cancel existing task
+    await Workmanager().cancelByUniqueName("1");
+
+    // Register new task with updated interval
+    await Workmanager().registerPeriodicTask(
+      "1", // uniqueName
+      "simplePeriodicTask", // taskName
+      frequency: Duration(minutes: intervalMinutes),
+      initialDelay: const Duration(minutes: 1),
+      constraints: Constraints(
+        networkType: NetworkType.notRequired,
+        requiresBatteryNotLow: false,
+        requiresCharging: false,
+        requiresDeviceIdle: false,
+        requiresStorageNotLow: false,
+      ),
+    );
+
+    if (kDebugMode) {
+      debugPrint('WorkManager reconfigured successfully.');
+    }
+  } catch (e) {
+    if (kDebugMode) {
+      debugPrint('WorkManager reconfiguration failed: $e');
+    }
+    // Optionally, re-throw or handle the error as needed
+    rethrow;
+  }
+}
+
 Future<void> setupNotification() async {
 
   // Initialize flutter_local_notifications for the foreground app
