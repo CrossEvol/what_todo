@@ -43,6 +43,7 @@ class SettingKeys {
   static const CONFIRM_DELETION = 'confirm_deletion';
   static const ENABLE_NOTIFICATIONS = 'enable_notifications';
   static const ENABLE_DAILY_REMINDER = 'enable_daily_reminder';
+  static const REMINDER_INTERVAL = 'reminder_interval';
 }
 
 class AddProjectKeys {

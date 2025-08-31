@@ -1,6 +1,8 @@
 # Implementation Plan
 
-- [-] 1. Add reminder interval setting key and data model
+- [x] 1. Add reminder interval setting key and data model
+
+
 
 
 
