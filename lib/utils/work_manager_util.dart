@@ -47,7 +47,6 @@ void callbackDispatcher() {
       if (kDebugMode) {
         debugPrint('CallbackDispatcher: 通知功能未启用，跳过处理。');
       }
-      return Future.value(true);
     } else {
       await _processRemindersAndShowNotifications(notificationDetails);
     }
@@ -57,7 +56,6 @@ void callbackDispatcher() {
       if (kDebugMode) {
         debugPrint('CallbackDispatcher: 日常提醒功能未启用，跳过处理。');
       }
-      return Future.value(true);
     } else {
       await _processDailyReminder(notificationDetails);
     }
@@ -196,7 +194,7 @@ Future<void> _processDailyReminder(
 
 void setupWorkManager({int? intervalMinutes}) async {
   final interval = intervalMinutes ?? 15;
-  
+
   try {
     // Initialize workmanager
     Workmanager().initialize(
@@ -220,9 +218,10 @@ void setupWorkManager({int? intervalMinutes}) async {
         requiresStorageNotLow: false,
       ),
     );
-    
+
     if (kDebugMode) {
-      debugPrint('WorkManager setup completed with interval: $interval minutes');
+      debugPrint(
+          'WorkManager setup completed with interval: $interval minutes');
     }
   } catch (e) {
     if (kDebugMode) {
@@ -236,7 +235,8 @@ void setupWorkManager({int? intervalMinutes}) async {
 Future<void> reconfigureWorkManager(int intervalMinutes) async {
   try {
     if (kDebugMode) {
-      debugPrint('Reconfiguring WorkManager with interval: $intervalMinutes minutes');
+      debugPrint(
+          'Reconfiguring WorkManager with interval: $intervalMinutes minutes');
     }
 
     // Cancel existing task
@@ -270,7 +270,6 @@ Future<void> reconfigureWorkManager(int intervalMinutes) async {
 }
 
 Future<void> setupNotification() async {
-
   // Initialize flutter_local_notifications for the foreground app
   const AndroidInitializationSettings initializationSettingsAndroid =
       AndroidInitializationSettings('@mipmap/ic_launcher');
