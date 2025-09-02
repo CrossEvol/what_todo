@@ -148,8 +148,7 @@ class UpdateErrorHandler {
       case UpdateErrorType.invalidVersion:
         return Icons.info;
       case UpdateErrorType.unknown:
-      default:
-        return Icons.error;
+      return Icons.error;
     }
   }
 
@@ -335,8 +334,7 @@ class UpdateErrorHandler {
       case UpdateErrorType.fileNotFound:
         return false;
       case UpdateErrorType.unknown:
-      default:
-        return true; // Give it a chance
+      return true; // Give it a chance
     }
   }
 

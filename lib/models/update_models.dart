@@ -23,12 +23,12 @@ class VersionInfo extends Equatable {
   factory VersionInfo.fromJson(Map<String, dynamic> json) {
     // Find APK asset
     final assets = json['assets'] as List<dynamic>? ?? [];
-    final apkAsset = assets.firstWhere(
-      (asset) => (asset['name'] as String).endsWith('.apk'),
-      orElse: () => null,
-    );
+    final apkAsset = assets.cast<Map<String, dynamic>>().firstWhere(
+          (asset) => (asset['name'] as String).endsWith('.apk'),
+          orElse: () => <String, dynamic>{},
+        );
 
-    if (apkAsset == null) {
+    if (apkAsset.isEmpty) {
       throw Exception('No APK file found in release assets');
     }
 
@@ -90,28 +90,28 @@ class VersionInfo extends Equatable {
   String get formattedFileSize {
     if (fileSize == null) return 'Unknown size';
     if (fileSize! < 1024) return '${fileSize}B';
-    if (fileSize! < 1024 * 1024) return '${(fileSize! / 1024).toStringAsFixed(1)}KB';
+    if (fileSize! < 1024 * 1024)
+      return '${(fileSize! / 1024).toStringAsFixed(1)}KB';
     return '${(fileSize! / (1024 * 1024)).toStringAsFixed(1)}MB';
   }
 
+  // TODO maybe should compare by pub_semver or package_info_plus
   /// Check if this version is newer than current version
   bool isNewerThan(String currentVersion) {
     try {
       // Remove 'v' prefix if present
-      final cleanCurrent = currentVersion.startsWith('v') 
-          ? currentVersion.substring(1) 
+      final cleanCurrent = currentVersion.startsWith('v')
+          ? currentVersion.substring(1)
           : currentVersion;
-      final cleanNew = version.startsWith('v') 
-          ? version.substring(1) 
-          : version;
-      
+      final cleanNew = version.startsWith('v') ? version.substring(1) : version;
+
       final currentParts = cleanCurrent.split('.').map(int.parse).toList();
       final newParts = cleanNew.split('.').map(int.parse).toList();
-      
+
       // Pad with zeros to make lengths equal
       while (currentParts.length < newParts.length) currentParts.add(0);
       while (newParts.length < currentParts.length) newParts.add(0);
-      
+
       for (int i = 0; i < currentParts.length; i++) {
         if (newParts[i] > currentParts[i]) return true;
         if (newParts[i] < currentParts[i]) return false;
@@ -180,7 +180,8 @@ class DownloadProgress extends Equatable {
       status: status ?? this.status,
       error: error ?? this.error,
       speed: speed ?? this.speed,
-      estimatedTimeRemaining: estimatedTimeRemaining ?? this.estimatedTimeRemaining,
+      estimatedTimeRemaining:
+          estimatedTimeRemaining ?? this.estimatedTimeRemaining,
     );
   }
 
@@ -201,7 +202,8 @@ class DownloadProgress extends Equatable {
     if (speed == null) return 'N/A';
     final speedValue = speed!;
     if (speedValue < 1024) return '${speedValue.toStringAsFixed(1)} B/s';
-    if (speedValue < 1024 * 1024) return '${(speedValue / 1024).toStringAsFixed(1)} KB/s';
+    if (speedValue < 1024 * 1024)
+      return '${(speedValue / 1024).toStringAsFixed(1)} KB/s';
     return '${(speedValue / (1024 * 1024)).toStringAsFixed(1)} MB/s';
   }
 
@@ -222,8 +224,10 @@ class DownloadProgress extends Equatable {
   String getFormattedSpeed(Duration elapsed) {
     if (elapsed.inSeconds == 0) return '0 KB/s';
     final bytesPerSecond = downloaded / elapsed.inSeconds;
-    if (bytesPerSecond < 1024) return '${bytesPerSecond.toStringAsFixed(1)} B/s';
-    if (bytesPerSecond < 1024 * 1024) return '${(bytesPerSecond / 1024).toStringAsFixed(1)} KB/s';
+    if (bytesPerSecond < 1024)
+      return '${bytesPerSecond.toStringAsFixed(1)} B/s';
+    if (bytesPerSecond < 1024 * 1024)
+      return '${(bytesPerSecond / 1024).toStringAsFixed(1)} KB/s';
     return '${(bytesPerSecond / (1024 * 1024)).toStringAsFixed(1)} MB/s';
   }
 
@@ -266,8 +270,8 @@ extension DownloadStatusExtension on DownloadStatus {
 
   bool get isTerminal {
     return this == DownloadStatus.completed ||
-           this == DownloadStatus.failed ||
-           this == DownloadStatus.cancelled;
+        this == DownloadStatus.failed ||
+        this == DownloadStatus.cancelled;
   }
 
   bool get isActive {
@@ -365,10 +369,11 @@ class UpdatePreferences extends Equatable {
       autoDownload: json['autoDownload'] as bool? ?? false,
       wifiOnlyDownload: json['wifiOnlyDownload'] as bool? ?? true,
       showNotifications: json['showNotifications'] as bool? ?? true,
-      lastCheckTime: json['lastCheckTime'] != null 
+      lastCheckTime: json['lastCheckTime'] != null
           ? DateTime.parse(json['lastCheckTime'] as String)
           : null,
-      skippedVersions: (json['skippedVersions'] as List<dynamic>?)?.cast<String>() ?? [],
+      skippedVersions:
+          (json['skippedVersions'] as List<dynamic>?)?.cast<String>() ?? [],
     );
   }
 
@@ -393,14 +398,13 @@ class UpdatePreferences extends Equatable {
         skippedVersions,
       ];
 
-  UpdatePreferences copyWith({
-    bool? autoCheckEnabled,
-    bool? autoDownload,
-    bool? wifiOnlyDownload,
-    bool? showNotifications,
-    DateTime? lastCheckTime,
-    List<String>? skippedVersions
-  }) {
+  UpdatePreferences copyWith(
+      {bool? autoCheckEnabled,
+      bool? autoDownload,
+      bool? wifiOnlyDownload,
+      bool? showNotifications,
+      DateTime? lastCheckTime,
+      List<String>? skippedVersions}) {
     return UpdatePreferences(
       autoCheckEnabled: autoCheckEnabled ?? this.autoCheckEnabled,
       autoDownload: autoDownload ?? this.autoDownload,
@@ -415,7 +419,7 @@ class UpdatePreferences extends Equatable {
   bool shouldPerformDailyCheck() {
     if (!autoCheckEnabled) return false;
     if (lastCheckTime == null) return true;
-    
+
     final now = DateTime.now();
     final difference = now.difference(lastCheckTime!);
     return difference.inHours >= 24;

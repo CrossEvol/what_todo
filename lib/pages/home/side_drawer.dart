@@ -91,7 +91,7 @@ class _SideDrawerState extends State<SideDrawer> {
               return ListTile(
                 onTap: () {
                   if (hasUpdate) {
-                    final state = updateState as UpdateAvailable;
+                    final state = updateState;
                     UpdateDialog.show(
                       context,
                       versionInfo: state.versionInfo,

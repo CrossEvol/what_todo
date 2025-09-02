@@ -5,6 +5,7 @@ import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import '../utils/logger_util.dart';
 
+// TODO: 考虑移除， 没看到必要性好吧
 /// Security validator for auto-update functionality
 class SecurityValidator {
   static SecurityValidator? _instance;

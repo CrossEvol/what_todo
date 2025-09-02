@@ -609,8 +609,7 @@ class UpdateErrorDialog extends StatelessWidget {
         icon = Icons.info;
         break;
       case UpdateErrorType.unknown:
-      default:
-        info = 'An unexpected error occurred.';
+      info = 'An unexpected error occurred.';
         icon = Icons.help_outline;
         break;
     }

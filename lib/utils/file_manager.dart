@@ -198,8 +198,7 @@ class FileManager {
         case ResultType.permissionDenied:
           return InstallResult.failure('Permission denied for installation');
         case ResultType.error:
-        default:
-          return InstallResult.failure(result.message);
+        return InstallResult.failure(result.message);
       }
     } catch (e) {
       logger.error('Error installing APK: $e');

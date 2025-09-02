@@ -3,6 +3,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/services.dart';
 import '../utils/logger_util.dart';
 
+// TODO： 可以考虑删除了, 没看到啥地方采用了这个
 /// Platform compatibility validator for auto-update functionality
 class PlatformValidator {
   static PlatformValidator? _instance;

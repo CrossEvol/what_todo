@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/utils/logger_util.dart' show setupLogger;
 import 'package:flutter_app/utils/shard_prefs_util.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_app/providers/theme_provider.dart';
@@ -81,4 +82,5 @@ Future<void> setupTest() async {
   TestWidgetsFlutterBinding.ensureInitialized();
   SharedPreferences.setMockInitialValues({});
   await setupSharedPreference();
+  await setupLogger();
 }

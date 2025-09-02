@@ -1,6 +1,8 @@
 import 'package:pub_semver/pub_semver.dart';
+
 import '../utils/logger_util.dart';
 
+// TODO: 补丁版本我也是要处理的， 这里到底有没有考虑到呢？
 /// Utility class for version comparison and validation
 class VersionUtils {
   static VersionUtils? _instance;
@@ -11,6 +13,23 @@ class VersionUtils {
 
   VersionUtils._internal();
 
+  // Safe logging methods that don't throw if logger is not initialized
+  void _logError(String message) {
+    try {
+      logger.error(message);
+    } catch (_) {
+      // Ignore if logger is not initialized (e.g., in tests)
+    }
+  }
+
+  void _logWarn(String message) {
+    try {
+      logger.warn(message);
+    } catch (_) {
+      // Ignore if logger is not initialized (e.g., in tests)
+    }
+  }
+
   /// Parse version string into Version object
   Version? parseVersion(String versionString) {
     try {
@@ -18,7 +37,7 @@ class VersionUtils {
       String cleanVersion = _cleanVersionString(versionString);
       return Version.parse(cleanVersion);
     } catch (e) {
-      logger.error('Failed to parse version: $versionString - $e');
+      _logError('Failed to parse version: $versionString - $e');
       return null;
     }
   }
@@ -26,38 +45,43 @@ class VersionUtils {
   /// Clean version string (remove 'v' prefix, handle edge cases)
   String _cleanVersionString(String version) {
     String cleaned = version.trim();
-    
+
     // Remove 'v' or 'V' prefix
     if (cleaned.toLowerCase().startsWith('v')) {
       cleaned = cleaned.substring(1);
     }
-    
-    // Handle semantic version parts
-    final parts = cleaned.split('.');
-    
+
+    // Check if it's a simple invalid string
+    if (!RegExp(r'\d').hasMatch(cleaned)) {
+      throw FormatException('No numeric version found in: $version');
+    }
+
+    // Handle semantic version parts - split by dots but preserve pre-release/build info
+    final mainVersionMatch =
+        RegExp(r'^(\d+(?:\.\d+)*(?:\.\d+)?)(.*)').firstMatch(cleaned);
+    if (mainVersionMatch == null) {
+      throw FormatException('Invalid version format: $version');
+    }
+
+    final versionPart = mainVersionMatch.group(1)!;
+    final suffixPart = mainVersionMatch.group(2) ?? '';
+
+    final parts = versionPart.split('.');
+
     // Ensure we have at least major.minor.patch
     while (parts.length < 3) {
       parts.add('0');
     }
-    
-    // Take only first 3 parts for basic semantic versioning
-    final semanticParts = parts.take(3).toList();
-    
+
     // Validate each part is numeric
-    for (int i = 0; i < semanticParts.length; i++) {
-      final part = semanticParts[i];
-      if (int.tryParse(part) == null) {
-        // Try to extract numeric part
-        final numericPart = RegExp(r'\d+').firstMatch(part)?.group(0);
-        if (numericPart != null) {
-          semanticParts[i] = numericPart;
-        } else {
-          semanticParts[i] = '0';
-        }
+    for (int i = 0; i < parts.length && i < 3; i++) {
+      if (int.tryParse(parts[i]) == null) {
+        throw FormatException('Invalid numeric version part: ${parts[i]}');
       }
     }
-    
-    return semanticParts.join('.');
+
+    // Rebuild version with suffix
+    return parts.take(3).join('.') + suffixPart;
   }
 
   /// Compare two version strings
@@ -65,12 +89,13 @@ class VersionUtils {
     try {
       final v1 = parseVersion(version1);
       final v2 = parseVersion(version2);
-      
+
       if (v1 == null || v2 == null) {
-        logger.warn('Failed to parse versions for comparison: $version1 vs $version2');
+        _logWarn(
+            'Failed to parse versions for comparison: $version1 vs $version2');
         return VersionComparisonResult.invalid;
       }
-      
+
       if (v1 > v2) {
         return VersionComparisonResult.newer;
       } else if (v1 < v2) {
@@ -79,7 +104,7 @@ class VersionUtils {
         return VersionComparisonResult.same;
       }
     } catch (e) {
-      logger.error('Error comparing versions: $version1 vs $version2 - $e');
+      _logError('Error comparing versions: $version1 vs $version2 - $e');
       return VersionComparisonResult.invalid;
     }
   }
@@ -101,18 +126,19 @@ class VersionUtils {
     try {
       final parsed = parseVersion(version);
       if (parsed == null) return null;
-      
+
       return VersionComponents(
         major: parsed.major,
         minor: parsed.minor,
         patch: parsed.patch,
-        preRelease: parsed.preRelease.isNotEmpty ? parsed.preRelease.join('.') : null,
+        preRelease:
+            parsed.preRelease.isNotEmpty ? parsed.preRelease.join('.') : null,
         build: parsed.build.isNotEmpty ? parsed.build.join('.') : null,
         originalString: version,
         cleanString: parsed.toString(),
       );
     } catch (e) {
-      logger.error('Failed to get version components: $version - $e');
+      _logError('Failed to get version components: $version - $e');
       return null;
     }
   }
@@ -122,20 +148,21 @@ class VersionUtils {
     try {
       final components = getVersionComponents(version);
       if (components == null) return version;
-      
-      String formatted = '${components.major}.${components.minor}.${components.patch}';
-      
+
+      String formatted =
+          '${components.major}.${components.minor}.${components.patch}';
+
       if (components.preRelease != null) {
         formatted += '-${components.preRelease}';
       }
-      
+
       if (includePrefix) {
         formatted = 'v$formatted';
       }
-      
+
       return formatted;
     } catch (e) {
-      logger.error('Failed to format version: $version - $e');
+      _logError('Failed to format version: $version - $e');
       return version;
     }
   }
@@ -145,11 +172,11 @@ class VersionUtils {
     try {
       final current = parseVersion(currentVersion);
       final newVer = parseVersion(newVersion);
-      
+
       if (current == null || newVer == null) {
         return VersionUpgradeType.unknown;
       }
-      
+
       if (newVer.major > current.major) {
         return VersionUpgradeType.major;
       } else if (newVer.minor > current.minor) {
@@ -160,7 +187,8 @@ class VersionUtils {
         return VersionUpgradeType.none;
       }
     } catch (e) {
-      logger.error('Failed to determine upgrade type: $currentVersion -> $newVersion - $e');
+      _logError(
+          'Failed to determine upgrade type: $currentVersion -> $newVersion - $e');
       return VersionUpgradeType.unknown;
     }
   }
@@ -168,7 +196,7 @@ class VersionUtils {
   /// Get version difference description
   String getVersionDifference(String currentVersion, String newVersion) {
     final upgradeType = getUpgradeType(currentVersion, newVersion);
-    
+
     switch (upgradeType) {
       case VersionUpgradeType.major:
         return 'Major update with potential breaking changes';
@@ -190,19 +218,24 @@ class VersionUtils {
           .map((v) => {'original': v, 'parsed': parseVersion(v)})
           .where((item) => item['parsed'] != null)
           .toList();
-      
+
+      // If no valid versions found, return empty list instead of original
+      if (versionsWithParsed.isEmpty) {
+        return [];
+      }
+
       versionsWithParsed.sort((a, b) {
         final versionA = a['parsed'] as Version;
         final versionB = b['parsed'] as Version;
         return versionA.compareTo(versionB);
       });
-      
+
       return versionsWithParsed
           .map((item) => item['original'] as String)
           .toList();
     } catch (e) {
-      logger.error('Failed to sort versions: $e');
-      return versions; // Return original list on error
+      _logError('Failed to sort versions: $e');
+      return []; // Return empty list on error instead of original
     }
   }
 
@@ -210,11 +243,11 @@ class VersionUtils {
   String? getLatestVersion(List<String> versions) {
     try {
       if (versions.isEmpty) return null;
-      
+
       final sorted = sortVersions(versions);
       return sorted.isNotEmpty ? sorted.last : null;
     } catch (e) {
-      logger.error('Failed to get latest version: $e');
+      _logError('Failed to get latest version: $e');
       return null;
     }
   }
@@ -224,11 +257,12 @@ class VersionUtils {
     try {
       final parsedVersion = parseVersion(version);
       if (parsedVersion == null) return false;
-      
+
       final versionConstraint = VersionConstraint.parse(constraint);
       return versionConstraint.allows(parsedVersion);
     } catch (e) {
-      logger.error('Failed to check version constraint: $version satisfies $constraint - $e');
+      _logError(
+          'Failed to check version constraint: $version satisfies $constraint - $e');
       return false;
     }
   }
@@ -238,14 +272,16 @@ class VersionUtils {
     try {
       final current = parseVersion(currentVersion);
       if (current == null) return {};
-      
+
       return {
-        VersionUpgradeType.patch: Version(current.major, current.minor, current.patch + 1).toString(),
-        VersionUpgradeType.minor: Version(current.major, current.minor + 1, 0).toString(),
+        VersionUpgradeType.patch:
+            Version(current.major, current.minor, current.patch + 1).toString(),
+        VersionUpgradeType.minor:
+            Version(current.major, current.minor + 1, 0).toString(),
         VersionUpgradeType.major: Version(current.major + 1, 0, 0).toString(),
       };
     } catch (e) {
-      logger.error('Failed to get next versions: $currentVersion - $e');
+      _logError('Failed to get next versions: $currentVersion - $e');
       return {};
     }
   }
@@ -258,7 +294,7 @@ class VersionUtils {
       RegExp(r'^v?\d+\.\d+\.\d+-\w+$'), // v1.0.0-beta
       RegExp(r'^v?\d+\.\d+\.\d+-\w+\.\d+$'), // v1.0.0-beta.1
     ];
-    
+
     return patterns.any((pattern) => pattern.hasMatch(tag));
   }
 
@@ -266,18 +302,19 @@ class VersionUtils {
   String? extractVersionFromReleaseName(String releaseName) {
     try {
       // Try to find version pattern in release name
-      final versionPattern = RegExp(r'v?(\d+\.\d+\.\d+(?:-[\w\.]+)?)');
+      final versionPattern = RegExp(r'v?(\d+\.\d+\.\d+(?:-[\w.]+)?)');
       final match = versionPattern.firstMatch(releaseName);
-      
+
       if (match != null) {
         return match.group(1);
       }
-      
+
       // If no pattern found, try to parse the whole string
       final parsed = parseVersion(releaseName);
       return parsed?.toString();
     } catch (e) {
-      logger.error('Failed to extract version from release name: $releaseName - $e');
+      _logError(
+          'Failed to extract version from release name: $releaseName - $e');
       return null;
     }
   }
@@ -323,12 +360,12 @@ class VersionComponents {
   @override
   String toString() {
     return 'VersionComponents(major: $major, minor: $minor, patch: $patch, '
-           'preRelease: $preRelease, build: $build, original: $originalString)';
+        'preRelease: $preRelease, build: $build, original: $originalString)';
   }
 
   /// Get short display string
   String get shortDisplay => '$major.$minor.$patch';
-  
+
   /// Get full display string
   String get fullDisplay {
     String display = shortDisplay;
@@ -353,16 +390,20 @@ extension VersionStringExtensions on String {
   bool get isValidVersion => VersionUtils.instance.isValidSemanticVersion(this);
 
   /// Check if this version is newer than another
-  bool isNewerThan(String other) => VersionUtils.instance.isNewerVersion(other, this);
+  bool isNewerThan(String other) =>
+      VersionUtils.instance.isNewerVersion(other, this);
 
   /// Check if this version is older than another
-  bool isOlderThan(String other) => VersionUtils.instance.isNewerVersion(this, other);
+  bool isOlderThan(String other) =>
+      VersionUtils.instance.isNewerVersion(this, other);
 
   /// Get version components
-  VersionComponents? get versionComponents => VersionUtils.instance.getVersionComponents(this);
+  VersionComponents? get versionComponents =>
+      VersionUtils.instance.getVersionComponents(this);
 
   /// Format for display
   String formatForDisplay({bool includePrefix = true}) {
-    return VersionUtils.instance.formatVersionForDisplay(this, includePrefix: includePrefix);
+    return VersionUtils.instance
+        .formatVersionForDisplay(this, includePrefix: includePrefix);
   }
 }

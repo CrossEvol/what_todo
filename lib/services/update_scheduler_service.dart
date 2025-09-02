@@ -15,9 +15,11 @@ class UpdateSchedulerService {
   UpdateSchedulerService._internal();
 
   Timer? _periodicTimer;
+  Timer? _initialCheckTimer;
   UpdateBloc? _updateBloc;
   UpdateRepository? _repository;
   bool _isInitialized = false;
+  bool _disposed = false;
 
   /// Initialize the scheduler service
   Future<void> initialize({
@@ -47,18 +49,29 @@ class UpdateSchedulerService {
   /// Perform initial update check when app launches
   Future<void> _performInitialCheck() async {
     try {
+      // Cancel any existing initial check timer
+      _initialCheckTimer?.cancel();
+      
       if (_repository == null || _updateBloc == null) return;
 
       // Wait a bit to ensure app is fully loaded
-      await Future.delayed(const Duration(seconds: 3));
-      
-      final shouldCheck = await _repository!.shouldPerformDailyCheck();
-      if (shouldCheck) {
-        logger.info('Performing initial daily update check');
-        _updateBloc!.add(const CheckForUpdatesEvent(isManual: false));
-      } else {
-        logger.debug('Daily update check not needed yet');
-      }
+      _initialCheckTimer = Timer(const Duration(seconds: 3), () {
+        // Check if service is disposed before proceeding
+        if (_disposed) return;
+        
+        _repository!.shouldPerformDailyCheck().then((shouldCheck) {
+          if (shouldCheck && !_disposed) {
+            logger.info('Performing initial daily update check');
+            _updateBloc!.add(const CheckForUpdatesEvent(isManual: false));
+          } else if (!_disposed) {
+            logger.debug('Daily update check not needed yet');
+          }
+        }).catchError((e) {
+          if (!_disposed) {
+            logger.error('Error in initial update check: $e');
+          }
+        });
+      });
     } catch (e) {
       logger.error('Error in initial update check: $e');
     }
@@ -166,6 +179,8 @@ class UpdateSchedulerService {
   void stopScheduledChecks() {
     _periodicTimer?.cancel();
     _periodicTimer = null;
+    _initialCheckTimer?.cancel();
+    _initialCheckTimer = null;
     logger.debug('Scheduled update checks stopped');
   }
 
@@ -188,6 +203,7 @@ class UpdateSchedulerService {
 
   /// Dispose resources
   void dispose() {
+    _disposed = true;
     stopScheduledChecks();
     _updateBloc = null;
     _repository = null;
