@@ -13,6 +13,7 @@
   <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
   <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
   <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+  <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
 
   <!-- Storage permissions for import/export feature -->
   <!-- For Android 12 (API level 32) and below -->
@@ -98,5 +99,14 @@
         android:name="androidx.work.impl.WorkManagerInitializer"
         android:authorities="${applicationId}.workmanager-init"
         tools:node="remove" />
+    <provider
+        android:name="androidx.core.content.FileProvider"
+        android:authorities="${applicationId}.provider"
+        android:exported="false"
+        android:grantUriPermissions="true">
+        <meta-data
+            android:name="android.support.FILE_PROVIDER_PATHS"
+            android:resource="@xml/provider_paths" />
+    </provider>
   </application>
 </manifest>

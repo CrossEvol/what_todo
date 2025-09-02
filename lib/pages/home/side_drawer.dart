@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:badges/badges.dart' as badges;
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
@@ -18,6 +19,8 @@ import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../bloc/update/update_bloc.dart';
+import '../../widgets/update_dialog.dart';
 
 class SideDrawer extends StatefulWidget {
   @override
@@ -80,6 +83,46 @@ class _SideDrawerState extends State<SideDrawer> {
           ProjectsExpansionTile(),
           LabelsExpansionTile(),
           GridsExpansionTile(),
+          // Update menu item with badge
+          BlocBuilder<UpdateBloc, UpdateState>(
+            builder: (context, updateState) {
+              final hasUpdate = updateState is UpdateAvailable && !updateState.isSkipped;
+              
+              return ListTile(
+                onTap: () {
+                  if (hasUpdate) {
+                    final state = updateState as UpdateAvailable;
+                    UpdateDialog.show(
+                      context,
+                      versionInfo: state.versionInfo,
+                      currentVersion: state.currentVersion,
+                      isSkipped: state.isSkipped,
+                    );
+                  } else {
+                    // Manual check for updates
+                    context.read<UpdateBloc>().add(const CheckForUpdatesEvent(isManual: true));
+                    showSnackbar(context, 'Checking for updates...', materialColor: Colors.blue);
+                  }
+                  context.safePop();
+                },
+                leading: Icon(
+                  hasUpdate ? Icons.system_update : Icons.update,
+                  color: hasUpdate ? Colors.orange : null,
+                ),
+                title: hasUpdate
+                    ? badges.Badge(
+                        badgeStyle: const badges.BadgeStyle(
+                          shape: badges.BadgeShape.circle,
+                          padding: EdgeInsets.all(4),
+                          badgeColor: Colors.red,
+                        ),
+                        position: badges.BadgePosition.topEnd(top: -8, end: -8),
+                        child: const Text('App Update'),
+                      )
+                    : const Text('Check for Updates'),
+              );
+            },
+          ),
           ListTile(
             onTap: () {
               context.push('/settings');
@@ -87,7 +130,6 @@ class _SideDrawerState extends State<SideDrawer> {
             leading: Icon(Icons.settings_sharp),
             title: Text(
               AppLocalizations.of(context)!.settings,
-              key: ValueKey(SideDrawerKeys.UNKNOWN),
             ),
           ),
           if (environment == Environment.test)

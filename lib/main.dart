@@ -39,6 +39,13 @@ import 'package:flutter_app/pages/settings/setting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+// Update system imports
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_app/bloc/update/update_bloc.dart';
+import 'package:flutter_app/repositories/update_repository.dart';
+import 'package:flutter_app/services/notification_service.dart';
+import 'package:flutter_app/services/update_scheduler_service.dart';
+import 'package:flutter_app/utils/download_manager.dart';
 
 Future<void> setupWorkManagerWithStoredInterval() async {
   try {
@@ -74,6 +81,28 @@ Future<void> setupWorkManagerWithStoredInterval() async {
   }
 }
 
+/// Initialize update-related services
+Future<void> setupUpdateServices() async {
+  try {
+    // Initialize Flutter Downloader
+    await FlutterDownloader.initialize(
+      debug: kDebugMode,
+      ignoreSsl: false,
+    );
+    
+    // Initialize Download Manager
+    await DownloadManager.instance.initialize();
+    
+    // Initialize Notification Service
+    await NotificationService.instance.initialize();
+    
+    logger.info('Update services initialized successfully');
+  } catch (e) {
+    logger.error('Failed to initialize update services: $e');
+    // Don't rethrow - allow app to continue without update functionality
+  }
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await setupLogger();
@@ -89,6 +118,9 @@ void main() async {
   // Initialize workmanager with stored interval
   await setupWorkManagerWithStoredInterval();
   await setupNotification();
+  
+  // Initialize update services
+  await setupUpdateServices();
 
   runApp(ChangeNotifierProvider(
     create: (context) => ThemeProvider(),
@@ -101,13 +133,59 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> with RouteAware {
+class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
   Locale _locale = Locale(prefs.getLocale());
+  bool _schedulerInitialized = false;
 
   void setLocale(Locale locale) {
     setState(() {
       _locale = locale;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    UpdateSchedulerService.instance.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    
+    switch (state) {
+      case AppLifecycleState.resumed:
+        UpdateSchedulerService.instance.onAppResumed();
+        break;
+      case AppLifecycleState.paused:
+        UpdateSchedulerService.instance.onAppPaused();
+        break;
+      default:
+        break;
+    }
+  }
+
+  /// Initialize the update scheduler after BLoC is available
+  Future<void> _initializeUpdateScheduler(BuildContext context) async {
+    if (_schedulerInitialized) return;
+    
+    try {
+      final updateBloc = context.read<UpdateBloc>();
+      await UpdateSchedulerService.instance.initializeWithLifecycle(
+        updateBloc: updateBloc,
+      );
+      _schedulerInitialized = true;
+      logger.info('Update scheduler initialized successfully');
+    } catch (e) {
+      logger.error('Failed to initialize update scheduler: $e');
+    }
   }
 
   @override
@@ -165,23 +243,36 @@ class _MyAppState extends State<MyApp> with RouteAware {
         BlocProvider(
             create: (_) => ReminderBloc(reminderDB: ReminderDB.get())
               ..add(RemindersInitialEvent())),
+        BlocProvider(
+          create: (_) => UpdateBloc(repository: UpdateRepository()),
+          lazy: false,
+        ),
       ],
-      child: MaterialApp.router(
-        locale: _locale,
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale('en'),
-          Locale('ja'),
-          Locale('zh'),
-        ],
-        debugShowCheckedModeBanner: false,
-        theme: Provider.of<ThemeProvider>(context).themeDataStyle,
-        routerConfig: goRouter,
+      child: Builder(
+        builder: (context) {
+          // Initialize scheduler after BLoCs are available
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            _initializeUpdateScheduler(context);
+          });
+          
+          return MaterialApp.router(
+            locale: _locale,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('en'),
+              Locale('ja'),
+              Locale('zh'),
+            ],
+            debugShowCheckedModeBanner: false,
+            theme: Provider.of<ThemeProvider>(context).themeDataStyle,
+            routerConfig: goRouter,
+          );
+        },
       ),
     );
   }
