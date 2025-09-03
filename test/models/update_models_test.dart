@@ -374,7 +374,7 @@ void main() {
 
       expect(preferences.autoCheckEnabled, isTrue);
       expect(preferences.autoDownload, isFalse);
-      expect(preferences.wifiOnlyDownload, isTrue);
+      expect(preferences.wifiOnlyDownload, isFalse);
       expect(preferences.showNotifications, isTrue);
       expect(preferences.lastCheckTime, isNull);
       expect(preferences.skippedVersions, isEmpty);

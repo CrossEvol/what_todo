@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import '../bloc/update/update_bloc.dart';
-import '../models/update_models.dart' hide UpdateErrorType;
 import '../utils/logger_util.dart';
 
 /// Comprehensive error handling service for the update system
@@ -106,8 +105,7 @@ class UpdateErrorHandler {
       case UpdateErrorType.invalidVersion:
         return 'Invalid version information. Please try checking for updates again.';
       case UpdateErrorType.unknown:
-      default:
-        return originalMessage ?? 'An unexpected error occurred. Please try again.';
+      return originalMessage ?? 'An unexpected error occurred. Please try again.';
     }
   }
 
@@ -127,8 +125,7 @@ class UpdateErrorHandler {
       case UpdateErrorType.invalidVersion:
         return 'Check for updates again';
       case UpdateErrorType.unknown:
-      default:
-        return 'Restart the app and try again';
+      return 'Restart the app and try again';
     }
   }
 

@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 /// Represents version information from GitHub release
+@pragma('vm:entry-point')
 class VersionInfo extends Equatable {
   final String version;
   final String downloadUrl;
@@ -124,6 +125,7 @@ class VersionInfo extends Equatable {
 }
 
 /// Represents download progress information
+@pragma('vm:entry-point')
 class DownloadProgress extends Equatable {
   final String taskId;
   final double progress; // 0.0 to 1.0
@@ -240,6 +242,7 @@ class DownloadProgress extends Equatable {
 }
 
 /// Download status enumeration
+@pragma('vm:entry-point')
 enum DownloadStatus {
   pending,
   downloading,
@@ -280,6 +283,7 @@ extension DownloadStatusExtension on DownloadStatus {
 }
 
 /// Update error types
+@pragma('vm:entry-point')
 enum UpdateErrorType {
   networkError,
   permissionDenied,
@@ -345,7 +349,67 @@ extension UpdateErrorTypeExtension on UpdateErrorType {
   }
 }
 
+/// Download option types for Update Manager
+@pragma('vm:entry-point')
+enum DownloadOption {
+  official('Official What_todo Update', 'CrossEvol/what_todo');
+
+  const DownloadOption(this.displayName, this.repository);
+  
+  final String displayName;
+  final String repository;
+
+  /// Get download URL for the option
+  String get downloadUrl {
+    switch (this) {
+      case DownloadOption.official:
+        return ''; // Will be determined from GitHub API
+    }
+  }
+
+  /// Get API endpoint for version checking (only for official)
+  String? get apiEndpoint {
+    switch (this) {
+      case DownloadOption.official:
+        return 'https://api.github.com/repos/CrossEvol/what_todo/releases/latest';
+    }
+  }
+
+  /// Get default filename
+  String get defaultFileName {
+    switch (this) {
+      case DownloadOption.official:
+        return 'what_todo_update.apk';
+    }
+  }
+
+  /// Whether this option requires version checking
+  bool get requiresVersionCheck {
+    switch (this) {
+      case DownloadOption.official:
+        return true;
+    }
+  }
+
+  /// Get icon for the option
+  String get iconName {
+    switch (this) {
+      case DownloadOption.official:
+        return 'verified';
+    }
+  }
+
+  /// Get subtitle description
+  String get subtitle {
+    switch (this) {
+      case DownloadOption.official:
+        return 'Check and download from GitHub releases';
+    }
+  }
+}
+
 /// Update preferences model
+@pragma('vm:entry-point')
 class UpdatePreferences extends Equatable {
   final bool autoCheckEnabled;
   final bool autoDownload;
@@ -357,7 +421,7 @@ class UpdatePreferences extends Equatable {
   const UpdatePreferences({
     this.autoCheckEnabled = true,
     this.autoDownload = false,
-    this.wifiOnlyDownload = true,
+    this.wifiOnlyDownload = false,
     this.showNotifications = true,
     this.lastCheckTime,
     this.skippedVersions = const [],
@@ -367,7 +431,7 @@ class UpdatePreferences extends Equatable {
     return UpdatePreferences(
       autoCheckEnabled: json['autoCheckEnabled'] as bool? ?? true,
       autoDownload: json['autoDownload'] as bool? ?? false,
-      wifiOnlyDownload: json['wifiOnlyDownload'] as bool? ?? true,
+      wifiOnlyDownload: json['wifiOnlyDownload'] as bool? ?? false,
       showNotifications: json['showNotifications'] as bool? ?? true,
       lastCheckTime: json['lastCheckTime'] != null
           ? DateTime.parse(json['lastCheckTime'] as String)

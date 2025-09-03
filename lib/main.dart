@@ -40,7 +40,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 // Update system imports
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_app/bloc/update/update_bloc.dart';
 import 'package:flutter_app/repositories/update_repository.dart';
 import 'package:flutter_app/services/notification_service.dart';
@@ -84,12 +83,7 @@ Future<void> setupWorkManagerWithStoredInterval() async {
 /// Initialize update-related services
 Future<void> setupUpdateServices() async {
   try {
-    // Initialize Flutter Downloader
-    await FlutterDownloader.initialize(
-      debug: kDebugMode,
-      ignoreSsl: false,
-    );
-    
+
     // Initialize Download Manager
     await DownloadManager.instance.initialize();
     

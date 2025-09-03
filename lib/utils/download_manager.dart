@@ -5,10 +5,12 @@ import 'dart:ui';
 
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
+
 import '../models/update_models.dart';
 import '../utils/logger_util.dart';
 
 /// Manages APK downloads using flutter_downloader
+@pragma('vm:entry-point')
 class DownloadManager {
   static DownloadManager? _instance;
 
@@ -263,6 +265,12 @@ class DownloadManager {
       final currentProgress = _progressMap[taskId];
       if (currentProgress == null) return;
 
+      // Prevent processing if already completed to avoid infinite loops
+      if (currentProgress.status == DownloadStatus.completed &&
+          status == DownloadTaskStatus.complete) {
+        return;
+      }
+
       DownloadStatus downloadStatus;
       switch (status) {
         case DownloadTaskStatus.undefined:
@@ -289,9 +297,30 @@ class DownloadManager {
       }
 
       final progressValue = progress / 100.0;
-      final downloadedBytes = currentProgress.total > 0
-          ? (currentProgress.total * progressValue).round()
-          : 0;
+      int downloadedBytes;
+
+      if (status == DownloadTaskStatus.complete) {
+        // For completed downloads, try to get actual file size
+        _getActualFileSize(taskId).then((actualSize) {
+          final bytes = actualSize ??
+              (currentProgress.total > 0 ? currentProgress.total : 0);
+          final finalProgress = currentProgress.copyWith(
+            progress: 1.0,
+            downloaded: bytes,
+            total:
+                bytes > currentProgress.total ? bytes : currentProgress.total,
+            status: downloadStatus,
+          );
+          _progressMap[taskId] = finalProgress;
+          _progressController.add(finalProgress);
+        });
+        return;
+      } else {
+        // For in-progress downloads, calculate based on progress
+        downloadedBytes = currentProgress.total > 0
+            ? (currentProgress.total * progressValue).round()
+            : 0;
+      }
 
       final updatedProgress = currentProgress.copyWith(
         progress: progressValue,
@@ -312,6 +341,23 @@ class DownloadManager {
       }
     } catch (e) {
       logger.error('Error handling download update: $e');
+    }
+  }
+
+  /// Get actual file size for completed downloads
+  Future<int?> _getActualFileSize(String taskId) async {
+    try {
+      final filePath = await getDownloadedFilePath(taskId);
+      if (filePath != null) {
+        final file = File(filePath);
+        if (await file.exists()) {
+          return await file.length();
+        }
+      }
+      return null;
+    } catch (e) {
+      logger.error('Failed to get actual file size: $e');
+      return null;
     }
   }
 
@@ -346,6 +392,15 @@ class DownloadManager {
   void updateFileSize(String taskId, int fileSize) {
     final progress = _progressMap[taskId];
     if (progress != null) {
+      // Don't trigger updates for completed downloads to avoid loops
+      if (progress.status == DownloadStatus.completed) {
+        final updatedProgress = progress.copyWith(total: fileSize);
+        _progressMap[taskId] = updatedProgress;
+        // Don't emit to stream for completed downloads
+        logger.debug('Updated file size for completed download: $taskId');
+        return;
+      }
+
       final updatedProgress = progress.copyWith(total: fileSize);
       _progressMap[taskId] = updatedProgress;
       _progressController.add(updatedProgress);

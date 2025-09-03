@@ -24,6 +24,7 @@ import 'package:flutter_app/pages/tasks/task_completed/task_completed.dart';
 import 'package:flutter_app/pages/tasks/task_detail.dart';
 import 'package:flutter_app/pages/tasks/task_uncompleted/task_uncompleted.dart';
 import 'package:flutter_app/pages/tasks/task_grid.dart';
+import 'package:flutter_app/pages/update/update_manager_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_app/models/reminder.dart';
@@ -54,6 +55,12 @@ final GoRouter goRouter = GoRouter(
           path: 'settings',
           builder: (BuildContext context, GoRouterState state) {
             return SettingsScreen();
+          },
+        ),
+        GoRoute(
+          path: 'update_manager',
+          builder: (BuildContext context, GoRouterState state) {
+            return const UpdateManagerPage();
           },
         ),
         GoRoute(

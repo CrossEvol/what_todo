@@ -119,6 +119,16 @@ class UpdateDownloadPaused extends UpdateState {
 
   @override
   List<Object?> get props => [versionInfo, progress];
+
+  UpdateDownloadPaused copyWith({
+    VersionInfo? versionInfo,
+    DownloadProgress? progress,
+  }) {
+    return UpdateDownloadPaused(
+      versionInfo: versionInfo ?? this.versionInfo,
+      progress: progress ?? this.progress,
+    );
+  }
 }
 
 /// Download completed successfully

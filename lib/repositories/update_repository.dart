@@ -193,7 +193,7 @@ class UpdateRepository {
   Future<bool> isVersionSkipped(String version) async {
     try {
       final preferences = await getPreferences();
-      return preferences.skippedVersions == version;
+      return preferences.skippedVersions.contains(version);
     } catch (e) {
       logger.error('Failed to check if version is skipped: $e');
       return false;

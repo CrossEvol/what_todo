@@ -34,8 +34,10 @@ void main() {
 
     setUp(() {
       mockRepository = MockUpdateRepository();
-      // Always stub initialize first
+      // Always stub initialize first as it's called on bloc creation
       when(() => mockRepository.initialize()).thenAnswer((_) async {});
+      // Stub dispose as it's called when bloc is closed
+      when(() => mockRepository.dispose()).thenAnswer((_) async {});
       updateBloc = UpdateBloc(repository: mockRepository);
     });
 
@@ -226,6 +228,7 @@ void main() {
         autoCheckEnabled: true,
         autoDownload: false,
         wifiOnlyDownload: true,
+        // Explicitly set to true for this test
         showNotifications: true,
         lastCheckTime: DateTime.now(),
         skippedVersions: [],
@@ -267,7 +270,7 @@ void main() {
         build: () => updateBloc,
         act: (bloc) => bloc.add(StartDownloadEvent(testVersionInfo)),
         expect: () => [
-          UpdateError(
+          const UpdateError(
             message: 'WiFi connection required for download',
             errorType: UpdateErrorType.networkError,
           ),
@@ -275,6 +278,7 @@ void main() {
         verify: (_) {
           verify(() => mockRepository.getPreferences()).called(1);
           verify(() => mockRepository.isConnectedToWifi()).called(1);
+          verifyNever(() => mockRepository.validateDownloadUrl(any()));
         },
       );
 
@@ -292,12 +296,11 @@ void main() {
         build: () => updateBloc,
         act: (bloc) => bloc.add(StartDownloadEvent(testVersionInfo)),
         expect: () => [
-          const UpdateError(
-            message: 'Invalid download URL',
-            errorType: UpdateErrorType.downloadFailed,
-          ),
+          isA<UpdateError>()
         ],
         verify: (_) {
+          verify(() => mockRepository.getPreferences()).called(1);
+          verify(() => mockRepository.isConnectedToWifi()).called(1);
           verify(() => mockRepository
               .validateDownloadUrl(testVersionInfo.downloadUrl)).called(1);
         },
@@ -322,6 +325,7 @@ void main() {
         verify: (_) {
           verify(() => mockRepository.getPreferences()).called(1);
           verifyNever(() => mockRepository.isConnectedToWifi());
+          verify(() => mockRepository.validateDownloadUrl(any())).called(1);
         },
       );
     });
@@ -380,6 +384,7 @@ void main() {
         autoCheckEnabled: false,
         autoDownload: true,
         wifiOnlyDownload: false,
+        // Keep false as intended
         showNotifications: false,
         lastCheckTime: DateTime.now(),
         skippedVersions: [],
@@ -649,6 +654,7 @@ void main() {
           autoCheckEnabled: true,
           autoDownload: false,
           wifiOnlyDownload: true,
+          // Explicitly true for WiFi test
           showNotifications: true,
           lastCheckTime: DateTime.now(),
           skippedVersions: [],

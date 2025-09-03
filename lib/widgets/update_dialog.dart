@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 import '../bloc/update/update_bloc.dart';
 import '../models/update_models.dart' hide UpdateErrorType;
-import '../generated/l10n.dart';
 
 /// Dialog widget for showing update information and actions
 class UpdateDialog extends StatelessWidget {
