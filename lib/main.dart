@@ -1,7 +1,6 @@
 import 'dart:io' show Platform;
 
 import 'package:drift/drift.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/export/export_bloc.dart';
@@ -33,69 +32,15 @@ import 'package:flutter_app/utils/logger_util.dart';
 import 'package:flutter_app/utils/shard_prefs_util.dart';
 import 'package:flutter_app/utils/window_util.dart' show setupWindow;
 import 'package:flutter_app/utils/work_manager_util.dart';
-import 'package:flutter_app/constants/keys.dart';
-import 'package:flutter_app/models/setting_type.dart';
-import 'package:flutter_app/pages/settings/setting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+
 // Update system imports
 import 'package:flutter_app/bloc/update/update_bloc.dart';
 import 'package:flutter_app/repositories/update_repository.dart';
-import 'package:flutter_app/services/notification_service.dart';
 import 'package:flutter_app/services/update_scheduler_service.dart';
 import 'package:flutter_app/utils/download_manager.dart';
-
-Future<void> setupWorkManagerWithStoredInterval() async {
-  try {
-    final settingsDb = SettingsDB.get();
-    final intervalSetting = await settingsDb.findByName(SettingKeys.REMINDER_INTERVAL);
-    
-    int intervalMinutes = 15; // Default value
-    
-    if (intervalSetting != null) {
-      // Try to parse the stored value
-      final parsedInterval = int.tryParse(intervalSetting.value);
-      if (parsedInterval != null && parsedInterval >= 15 && parsedInterval <= 240) {
-        intervalMinutes = parsedInterval;
-      }
-    } else {
-      // Create default setting if it doesn't exist
-      final defaultSetting = Setting.create(
-        key: SettingKeys.REMINDER_INTERVAL,
-        value: intervalMinutes.toString(),
-        updatedAt: DateTime.now(),
-        type: SettingType.IntNumber,
-      );
-      await settingsDb.createSetting(defaultSetting);
-    }
-    
-    setupWorkManager(intervalMinutes: intervalMinutes);
-  } catch (e) {
-    // If there's any error, fall back to default setup
-    if (kDebugMode) {
-      debugPrint('Error setting up WorkManager with stored interval: $e');
-    }
-    setupWorkManager(); // Use default 15 minutes
-  }
-}
-
-/// Initialize update-related services
-Future<void> setupUpdateServices() async {
-  try {
-
-    // Initialize Download Manager
-    await DownloadManager.instance.initialize();
-    
-    // Initialize Notification Service
-    await NotificationService.instance.initialize();
-    
-    logger.info('Update services initialized successfully');
-  } catch (e) {
-    logger.error('Failed to initialize update services: $e');
-    // Don't rethrow - allow app to continue without update functionality
-  }
-}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -112,9 +57,9 @@ void main() async {
   // Initialize workmanager with stored interval
   await setupWorkManagerWithStoredInterval();
   await setupNotification();
-  
+
   // Initialize update services
-  await setupUpdateServices();
+  await setupDownloadManager();
 
   runApp(ChangeNotifierProvider(
     create: (context) => ThemeProvider(),
@@ -153,7 +98,7 @@ class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    
+
     switch (state) {
       case AppLifecycleState.resumed:
         UpdateSchedulerService.instance.onAppResumed();
@@ -169,7 +114,7 @@ class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
   /// Initialize the update scheduler after BLoC is available
   Future<void> _initializeUpdateScheduler(BuildContext context) async {
     if (_schedulerInitialized) return;
-    
+
     try {
       final updateBloc = context.read<UpdateBloc>();
       await UpdateSchedulerService.instance.initializeWithLifecycle(
@@ -248,7 +193,7 @@ class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _initializeUpdateScheduler(context);
           });
-          
+
           return MaterialApp.router(
             locale: _locale,
             localizationsDelegates: const [

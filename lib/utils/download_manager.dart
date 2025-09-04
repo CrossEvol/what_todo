@@ -446,3 +446,17 @@ extension DownloadTaskStatusExtension on DownloadTaskStatus {
     }
   }
 }
+
+
+/// Initialize update-related services
+Future<void> setupDownloadManager() async {
+  try {
+
+    // Initialize Download Manager
+    await DownloadManager.instance.initialize();
+
+    logger.info('Update services initialized successfully');
+  } catch (e) {
+    logger.error('Failed to initialize update services: $e');
+  }
+}

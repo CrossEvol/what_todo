@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/dao/reminder_db.dart';
 import 'package:flutter_app/constants/keys.dart';
+import 'package:flutter_app/models/setting_type.dart' show SettingType;
 import 'package:flutter_app/pages/settings/settings_db.dart';
 import 'package:flutter_app/models/reminder.dart';
 import 'package:flutter_app/models/reminder_type.dart';
@@ -15,7 +16,8 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:workmanager/workmanager.dart' hide TaskStatus;
 
-// TODO: 这个和 notification service 可以合并吗
+import '../pages/settings/setting.dart' show Setting;
+
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
@@ -63,6 +65,43 @@ void callbackDispatcher() {
 
     return Future.value(true);
   });
+}
+
+Future<void> setupWorkManagerWithStoredInterval() async {
+  try {
+    final settingsDb = SettingsDB.get();
+    final intervalSetting =
+        await settingsDb.findByName(SettingKeys.REMINDER_INTERVAL);
+
+    int intervalMinutes = 15; // Default value
+
+    if (intervalSetting != null) {
+      // Try to parse the stored value
+      final parsedInterval = int.tryParse(intervalSetting.value);
+      if (parsedInterval != null &&
+          parsedInterval >= 15 &&
+          parsedInterval <= 240) {
+        intervalMinutes = parsedInterval;
+      }
+    } else {
+      // Create default setting if it doesn't exist
+      final defaultSetting = Setting.create(
+        key: SettingKeys.REMINDER_INTERVAL,
+        value: intervalMinutes.toString(),
+        updatedAt: DateTime.now(),
+        type: SettingType.IntNumber,
+      );
+      await settingsDb.createSetting(defaultSetting);
+    }
+
+    setupWorkManager(intervalMinutes: intervalMinutes);
+  } catch (e) {
+    // If there's any error, fall back to default setup
+    if (kDebugMode) {
+      debugPrint('Error setting up WorkManager with stored interval: $e');
+    }
+    setupWorkManager(); // Use default 15 minutes
+  }
 }
 
 Future<void> _processRemindersAndShowNotifications(
