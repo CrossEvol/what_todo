@@ -144,15 +144,12 @@ class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
         BlocProvider(
           create: (context) => HomeBloc(TaskDB.get())
             ..add(ApplyFilterEvent(
-                project.name,
-                Filter.byProject(project.id!)
-                    .copyWith(status: TaskStatus.PENDING))),
+                project.name, Filter.byStatus(TaskStatus.PENDING))),
         ),
         BlocProvider(
           create: (context) => TaskBloc(TaskDB.get())
-            ..add(FilterTasksEvent(
-                filter: Filter.byProject(project.id)
-                    .copyWith(status: TaskStatus.PENDING))),
+            ..add(
+                FilterTasksEvent(filter: Filter.byStatus(TaskStatus.PENDING))),
         ),
         BlocProvider(
           create: (_) => AdminBloc()

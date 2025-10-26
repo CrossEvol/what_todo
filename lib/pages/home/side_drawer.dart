@@ -88,12 +88,9 @@ class _SideDrawerState extends State<SideDrawer> {
                 onTap: () {
                   var project = Project.inbox();
                   homeBloc.add(ApplyFilterEvent(
-                      project.name,
-                      Filter.byProject(project.id!)
-                          .copyWith(status: TaskStatus.PENDING)));
+                      project.name, Filter.byStatus(TaskStatus.PENDING)));
                   context.read<TaskBloc>().add(FilterTasksEvent(
-                      filter: Filter.byProject(project.id)
-                          .copyWith(status: TaskStatus.PENDING)));
+                      filter: Filter.byStatus(TaskStatus.PENDING)));
                   context.safePop();
                 }),
             TodayMenuItem(),
@@ -130,7 +127,8 @@ class _SideDrawerState extends State<SideDrawer> {
                 return ListTile(
                   onTap: () {
                     context.safePop(); // Close the drawer
-                    context.push('/update_manager'); // Navigate to Update Manager
+                    context
+                        .push('/update_manager'); // Navigate to Update Manager
                   },
                   leading: Icon(
                     hasUpdate
