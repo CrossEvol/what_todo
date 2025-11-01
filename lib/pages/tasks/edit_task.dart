@@ -129,6 +129,16 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
           AppLocalizations.of(context)!.editTask,
           key: ValueKey(EditTaskKeys.Edit_TASK_TITLE),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: IconButton(
+                icon: Icon(Icons.display_settings),
+                onPressed: () {
+                  context.push('/task/${widget.task.id}/detail');
+                }),
+          )
+        ],
       ),
       body: ListView(
         children: <Widget>[
