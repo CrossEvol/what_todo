@@ -145,6 +145,8 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                 controller: _titleController,
                 onSaved: (value) {},
                 keyboardType: TextInputType.multiline,
+                minLines: 1,
+                maxLines: 5,
                 decoration: InputDecoration(
                   hintText: "",
                   labelText: AppLocalizations.of(context)!.taskTitle,
