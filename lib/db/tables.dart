@@ -95,7 +95,7 @@ class Setting extends Table {
   TextColumn get value => text().withDefault(const Constant(""))();
 
   DateTimeColumn get updatedAt =>
-      dateTime().customConstraint("DEFAULT CURRENT_TIMESTAMP")();
+      dateTime().customConstraint("NOT NULL DEFAULT CURRENT_TIMESTAMP")();
 
   TextColumn get type => textEnum<SettingType>()();
 }
@@ -117,5 +117,5 @@ class Resource extends Table {
   IntColumn get taskId => integer()
       .customConstraint('NOT NULL REFERENCES task(id) ON DELETE CASCADE')();
 
-  DateTimeColumn get createTime => dateTime().customConstraint("DEFAULT CURRENT_TIMESTAMP")();
+  DateTimeColumn get createTime => dateTime().customConstraint("NOT NULL DEFAULT CURRENT_TIMESTAMP")();
 }

@@ -1,6 +1,6 @@
 # Implementation Plan
 
-- [ ] 1. Create Resource model and verify database schema
+- [x] 1. Create Resource model and verify database schema
   - Create ResourceModel class in lib/models/resource.dart with id, path, and taskId properties
   - Verify Resource table exists in database with proper foreign key constraints
   - _Requirements: 1.3, 4.4_

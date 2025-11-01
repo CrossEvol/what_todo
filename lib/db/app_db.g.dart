@@ -1476,7 +1476,7 @@ class $SettingTable extends Setting with TableInfo<$SettingTable, SettingData> {
       'updated_at', aliasedName, false,
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
-      $customConstraints: 'DEFAULT CURRENT_TIMESTAMP',
+      $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
       defaultValue: const CustomExpression('CURRENT_TIMESTAMP'));
   @override
   late final GeneratedColumnWithTypeConverter<SettingType, String> type =
@@ -2265,6 +2265,267 @@ class ReminderCompanion extends UpdateCompanion<ReminderData> {
   }
 }
 
+class $ResourceTable extends Resource
+    with TableInfo<$ResourceTable, ResourceData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $ResourceTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _pathMeta = const VerificationMeta('path');
+  @override
+  late final GeneratedColumn<String> path = GeneratedColumn<String>(
+      'path', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _taskIdMeta = const VerificationMeta('taskId');
+  @override
+  late final GeneratedColumn<int> taskId = GeneratedColumn<int>(
+      'task_id', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: true,
+      $customConstraints: 'NOT NULL REFERENCES task(id) ON DELETE CASCADE');
+  static const VerificationMeta _createTimeMeta =
+      const VerificationMeta('createTime');
+  @override
+  late final GeneratedColumn<DateTime> createTime = GeneratedColumn<DateTime>(
+      'create_time', aliasedName, false,
+      type: DriftSqlType.dateTime,
+      requiredDuringInsert: false,
+      $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
+      defaultValue: const CustomExpression('CURRENT_TIMESTAMP'));
+  @override
+  List<GeneratedColumn> get $columns => [id, path, taskId, createTime];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'resource';
+  @override
+  VerificationContext validateIntegrity(Insertable<ResourceData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('path')) {
+      context.handle(
+          _pathMeta, path.isAcceptableOrUnknown(data['path']!, _pathMeta));
+    } else if (isInserting) {
+      context.missing(_pathMeta);
+    }
+    if (data.containsKey('task_id')) {
+      context.handle(_taskIdMeta,
+          taskId.isAcceptableOrUnknown(data['task_id']!, _taskIdMeta));
+    } else if (isInserting) {
+      context.missing(_taskIdMeta);
+    }
+    if (data.containsKey('create_time')) {
+      context.handle(
+          _createTimeMeta,
+          createTime.isAcceptableOrUnknown(
+              data['create_time']!, _createTimeMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  ResourceData map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return ResourceData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      path: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}path'])!,
+      taskId: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}task_id'])!,
+      createTime: attachedDatabase.typeMapping
+          .read(DriftSqlType.dateTime, data['${effectivePrefix}create_time'])!,
+    );
+  }
+
+  @override
+  $ResourceTable createAlias(String alias) {
+    return $ResourceTable(attachedDatabase, alias);
+  }
+}
+
+class ResourceData extends DataClass implements Insertable<ResourceData> {
+  final int id;
+  final String path;
+  final int taskId;
+  final DateTime createTime;
+  const ResourceData(
+      {required this.id,
+      required this.path,
+      required this.taskId,
+      required this.createTime});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['path'] = Variable<String>(path);
+    map['task_id'] = Variable<int>(taskId);
+    map['create_time'] = Variable<DateTime>(createTime);
+    return map;
+  }
+
+  ResourceCompanion toCompanion(bool nullToAbsent) {
+    return ResourceCompanion(
+      id: Value(id),
+      path: Value(path),
+      taskId: Value(taskId),
+      createTime: Value(createTime),
+    );
+  }
+
+  factory ResourceData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return ResourceData(
+      id: serializer.fromJson<int>(json['id']),
+      path: serializer.fromJson<String>(json['path']),
+      taskId: serializer.fromJson<int>(json['taskId']),
+      createTime: serializer.fromJson<DateTime>(json['createTime']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'path': serializer.toJson<String>(path),
+      'taskId': serializer.toJson<int>(taskId),
+      'createTime': serializer.toJson<DateTime>(createTime),
+    };
+  }
+
+  ResourceData copyWith(
+          {int? id, String? path, int? taskId, DateTime? createTime}) =>
+      ResourceData(
+        id: id ?? this.id,
+        path: path ?? this.path,
+        taskId: taskId ?? this.taskId,
+        createTime: createTime ?? this.createTime,
+      );
+  ResourceData copyWithCompanion(ResourceCompanion data) {
+    return ResourceData(
+      id: data.id.present ? data.id.value : this.id,
+      path: data.path.present ? data.path.value : this.path,
+      taskId: data.taskId.present ? data.taskId.value : this.taskId,
+      createTime:
+          data.createTime.present ? data.createTime.value : this.createTime,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ResourceData(')
+          ..write('id: $id, ')
+          ..write('path: $path, ')
+          ..write('taskId: $taskId, ')
+          ..write('createTime: $createTime')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, path, taskId, createTime);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is ResourceData &&
+          other.id == this.id &&
+          other.path == this.path &&
+          other.taskId == this.taskId &&
+          other.createTime == this.createTime);
+}
+
+class ResourceCompanion extends UpdateCompanion<ResourceData> {
+  final Value<int> id;
+  final Value<String> path;
+  final Value<int> taskId;
+  final Value<DateTime> createTime;
+  const ResourceCompanion({
+    this.id = const Value.absent(),
+    this.path = const Value.absent(),
+    this.taskId = const Value.absent(),
+    this.createTime = const Value.absent(),
+  });
+  ResourceCompanion.insert({
+    this.id = const Value.absent(),
+    required String path,
+    required int taskId,
+    this.createTime = const Value.absent(),
+  })  : path = Value(path),
+        taskId = Value(taskId);
+  static Insertable<ResourceData> custom({
+    Expression<int>? id,
+    Expression<String>? path,
+    Expression<int>? taskId,
+    Expression<DateTime>? createTime,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (path != null) 'path': path,
+      if (taskId != null) 'task_id': taskId,
+      if (createTime != null) 'create_time': createTime,
+    });
+  }
+
+  ResourceCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? path,
+      Value<int>? taskId,
+      Value<DateTime>? createTime}) {
+    return ResourceCompanion(
+      id: id ?? this.id,
+      path: path ?? this.path,
+      taskId: taskId ?? this.taskId,
+      createTime: createTime ?? this.createTime,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (path.present) {
+      map['path'] = Variable<String>(path.value);
+    }
+    if (taskId.present) {
+      map['task_id'] = Variable<int>(taskId.value);
+    }
+    if (createTime.present) {
+      map['create_time'] = Variable<DateTime>(createTime.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('ResourceCompanion(')
+          ..write('id: $id, ')
+          ..write('path: $path, ')
+          ..write('taskId: $taskId, ')
+          ..write('createTime: $createTime')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2276,6 +2537,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $SettingTable setting = $SettingTable(this);
   late final $DriftSchemaTable driftSchema = $DriftSchemaTable(this);
   late final $ReminderTable reminder = $ReminderTable(this);
+  late final $ResourceTable resource = $ResourceTable(this);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2288,7 +2550,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         profile,
         setting,
         driftSchema,
-        reminder
+        reminder,
+        resource
       ];
   @override
   StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules(
@@ -2319,6 +2582,13 @@ abstract class _$AppDatabase extends GeneratedDatabase {
                 limitUpdateKind: UpdateKind.delete),
             result: [
               TableUpdate('reminder', kind: UpdateKind.delete),
+            ],
+          ),
+          WritePropagation(
+            on: TableUpdateQuery.onTableName('task',
+                limitUpdateKind: UpdateKind.delete),
+            result: [
+              TableUpdate('resource', kind: UpdateKind.delete),
             ],
           ),
         ],
@@ -2622,6 +2892,20 @@ final class $$TaskTableReferences
     return ProcessedTableManager(
         manager.$state.copyWith(prefetchedData: cache));
   }
+
+  static MultiTypedResultKey<$ResourceTable, List<ResourceData>>
+      _resourceRefsTable(_$AppDatabase db) =>
+          MultiTypedResultKey.fromTable(db.resource,
+              aliasName: $_aliasNameGenerator(db.task.id, db.resource.taskId));
+
+  $$ResourceTableProcessedTableManager get resourceRefs {
+    final manager = $$ResourceTableTableManager($_db, $_db.resource)
+        .filter((f) => f.taskId.id.sqlEquals($_itemColumn<int>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_resourceRefsTable($_db));
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: cache));
+  }
 }
 
 class $$TaskTableFilterComposer extends Composer<_$AppDatabase, $TaskTable> {
@@ -2707,6 +2991,27 @@ class $$TaskTableFilterComposer extends Composer<_$AppDatabase, $TaskTable> {
             $$ReminderTableFilterComposer(
               $db: $db,
               $table: $db.reminder,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
+
+  Expression<bool> resourceRefs(
+      Expression<bool> Function($$ResourceTableFilterComposer f) f) {
+    final $$ResourceTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.resource,
+        getReferencedColumn: (t) => t.taskId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ResourceTableFilterComposer(
+              $db: $db,
+              $table: $db.resource,
               $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
               joinBuilder: joinBuilder,
               $removeJoinBuilderFromRootComposer:
@@ -2857,6 +3162,27 @@ class $$TaskTableAnnotationComposer
             ));
     return f(composer);
   }
+
+  Expression<T> resourceRefs<T extends Object>(
+      Expression<T> Function($$ResourceTableAnnotationComposer a) f) {
+    final $$ResourceTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.id,
+        referencedTable: $db.resource,
+        getReferencedColumn: (t) => t.taskId,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$ResourceTableAnnotationComposer(
+              $db: $db,
+              $table: $db.resource,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return f(composer);
+  }
 }
 
 class $$TaskTableTableManager extends RootTableManager<
@@ -2871,7 +3197,10 @@ class $$TaskTableTableManager extends RootTableManager<
     (TaskData, $$TaskTableReferences),
     TaskData,
     PrefetchHooks Function(
-        {bool projectId, bool taskLabelRefs, bool reminderRefs})> {
+        {bool projectId,
+        bool taskLabelRefs,
+        bool reminderRefs,
+        bool resourceRefs})> {
   $$TaskTableTableManager(_$AppDatabase db, $TaskTable table)
       : super(TableManagerState(
           db: db,
@@ -2929,12 +3258,14 @@ class $$TaskTableTableManager extends RootTableManager<
           prefetchHooksCallback: (
               {projectId = false,
               taskLabelRefs = false,
-              reminderRefs = false}) {
+              reminderRefs = false,
+              resourceRefs = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [
                 if (taskLabelRefs) db.taskLabel,
-                if (reminderRefs) db.reminder
+                if (reminderRefs) db.reminder,
+                if (resourceRefs) db.resource
               ],
               addJoins: <
                   T extends TableManagerState<
@@ -2986,6 +3317,18 @@ class $$TaskTableTableManager extends RootTableManager<
                         referencedItemsForCurrentItem: (item,
                                 referencedItems) =>
                             referencedItems.where((e) => e.taskId == item.id),
+                        typedResults: items),
+                  if (resourceRefs)
+                    await $_getPrefetchedData<TaskData, $TaskTable,
+                            ResourceData>(
+                        currentTable: table,
+                        referencedTable:
+                            $$TaskTableReferences._resourceRefsTable(db),
+                        managerFromTypedResult: (p0) =>
+                            $$TaskTableReferences(db, table, p0).resourceRefs,
+                        referencedItemsForCurrentItem: (item,
+                                referencedItems) =>
+                            referencedItems.where((e) => e.taskId == item.id),
                         typedResults: items)
                 ];
               },
@@ -3006,7 +3349,10 @@ typedef $$TaskTableProcessedTableManager = ProcessedTableManager<
     (TaskData, $$TaskTableReferences),
     TaskData,
     PrefetchHooks Function(
-        {bool projectId, bool taskLabelRefs, bool reminderRefs})>;
+        {bool projectId,
+        bool taskLabelRefs,
+        bool reminderRefs,
+        bool resourceRefs})>;
 typedef $$LabelTableCreateCompanionBuilder = LabelCompanion Function({
   Value<int> id,
   required String name,
@@ -4267,6 +4613,254 @@ typedef $$ReminderTableProcessedTableManager = ProcessedTableManager<
     (ReminderData, $$ReminderTableReferences),
     ReminderData,
     PrefetchHooks Function({bool taskId})>;
+typedef $$ResourceTableCreateCompanionBuilder = ResourceCompanion Function({
+  Value<int> id,
+  required String path,
+  required int taskId,
+  Value<DateTime> createTime,
+});
+typedef $$ResourceTableUpdateCompanionBuilder = ResourceCompanion Function({
+  Value<int> id,
+  Value<String> path,
+  Value<int> taskId,
+  Value<DateTime> createTime,
+});
+
+final class $$ResourceTableReferences
+    extends BaseReferences<_$AppDatabase, $ResourceTable, ResourceData> {
+  $$ResourceTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $TaskTable _taskIdTable(_$AppDatabase db) =>
+      db.task.createAlias($_aliasNameGenerator(db.resource.taskId, db.task.id));
+
+  $$TaskTableProcessedTableManager get taskId {
+    final $_column = $_itemColumn<int>('task_id')!;
+
+    final manager = $$TaskTableTableManager($_db, $_db.task)
+        .filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_taskIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+        manager.$state.copyWith(prefetchedData: [item]));
+  }
+}
+
+class $$ResourceTableFilterComposer
+    extends Composer<_$AppDatabase, $ResourceTable> {
+  $$ResourceTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get path => $composableBuilder(
+      column: $table.path, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<DateTime> get createTime => $composableBuilder(
+      column: $table.createTime, builder: (column) => ColumnFilters(column));
+
+  $$TaskTableFilterComposer get taskId {
+    final $$TaskTableFilterComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.taskId,
+        referencedTable: $db.task,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TaskTableFilterComposer(
+              $db: $db,
+              $table: $db.task,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$ResourceTableOrderingComposer
+    extends Composer<_$AppDatabase, $ResourceTable> {
+  $$ResourceTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get path => $composableBuilder(
+      column: $table.path, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<DateTime> get createTime => $composableBuilder(
+      column: $table.createTime, builder: (column) => ColumnOrderings(column));
+
+  $$TaskTableOrderingComposer get taskId {
+    final $$TaskTableOrderingComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.taskId,
+        referencedTable: $db.task,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TaskTableOrderingComposer(
+              $db: $db,
+              $table: $db.task,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$ResourceTableAnnotationComposer
+    extends Composer<_$AppDatabase, $ResourceTable> {
+  $$ResourceTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get path =>
+      $composableBuilder(column: $table.path, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createTime => $composableBuilder(
+      column: $table.createTime, builder: (column) => column);
+
+  $$TaskTableAnnotationComposer get taskId {
+    final $$TaskTableAnnotationComposer composer = $composerBuilder(
+        composer: this,
+        getCurrentColumn: (t) => t.taskId,
+        referencedTable: $db.task,
+        getReferencedColumn: (t) => t.id,
+        builder: (joinBuilder,
+                {$addJoinBuilderToRootComposer,
+                $removeJoinBuilderFromRootComposer}) =>
+            $$TaskTableAnnotationComposer(
+              $db: $db,
+              $table: $db.task,
+              $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+              joinBuilder: joinBuilder,
+              $removeJoinBuilderFromRootComposer:
+                  $removeJoinBuilderFromRootComposer,
+            ));
+    return composer;
+  }
+}
+
+class $$ResourceTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $ResourceTable,
+    ResourceData,
+    $$ResourceTableFilterComposer,
+    $$ResourceTableOrderingComposer,
+    $$ResourceTableAnnotationComposer,
+    $$ResourceTableCreateCompanionBuilder,
+    $$ResourceTableUpdateCompanionBuilder,
+    (ResourceData, $$ResourceTableReferences),
+    ResourceData,
+    PrefetchHooks Function({bool taskId})> {
+  $$ResourceTableTableManager(_$AppDatabase db, $ResourceTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$ResourceTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$ResourceTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$ResourceTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> path = const Value.absent(),
+            Value<int> taskId = const Value.absent(),
+            Value<DateTime> createTime = const Value.absent(),
+          }) =>
+              ResourceCompanion(
+            id: id,
+            path: path,
+            taskId: taskId,
+            createTime: createTime,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String path,
+            required int taskId,
+            Value<DateTime> createTime = const Value.absent(),
+          }) =>
+              ResourceCompanion.insert(
+            id: id,
+            path: path,
+            taskId: taskId,
+            createTime: createTime,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) =>
+                  (e.readTable(table), $$ResourceTableReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: ({taskId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins: <
+                  T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic>>(state) {
+                if (taskId) {
+                  state = state.withJoin(
+                    currentTable: table,
+                    currentColumn: table.taskId,
+                    referencedTable: $$ResourceTableReferences._taskIdTable(db),
+                    referencedColumn:
+                        $$ResourceTableReferences._taskIdTable(db).id,
+                  ) as T;
+                }
+
+                return state;
+              },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ));
+}
+
+typedef $$ResourceTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $ResourceTable,
+    ResourceData,
+    $$ResourceTableFilterComposer,
+    $$ResourceTableOrderingComposer,
+    $$ResourceTableAnnotationComposer,
+    $$ResourceTableCreateCompanionBuilder,
+    $$ResourceTableUpdateCompanionBuilder,
+    (ResourceData, $$ResourceTableReferences),
+    ResourceData,
+    PrefetchHooks Function({bool taskId})>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -4286,4 +4880,6 @@ class $AppDatabaseManager {
       $$DriftSchemaTableTableManager(_db, _db.driftSchema);
   $$ReminderTableTableManager get reminder =>
       $$ReminderTableTableManager(_db, _db.reminder);
+  $$ResourceTableTableManager get resource =>
+      $$ResourceTableTableManager(_db, _db.resource);
 }
