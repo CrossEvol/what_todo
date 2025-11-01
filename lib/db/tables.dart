@@ -105,3 +105,17 @@ class DriftSchema extends Table {
 
   IntColumn get version => integer().withDefault(const Constant(0))();
 }
+
+class Resource extends Table {
+  IntColumn get id => integer().autoIncrement()();
+
+  // 资源路径，不能为空
+  TextColumn get path => text()();
+
+  // 外键，关联到 Task 表的 id
+  // `customConstraint` 确保了当关联的 Task 被删除时，相关的 Resource 也会被级联删除
+  IntColumn get taskId => integer()
+      .customConstraint('NOT NULL REFERENCES task(id) ON DELETE CASCADE')();
+
+  DateTimeColumn get createTime => dateTime().customConstraint("DEFAULT CURRENT_TIMESTAMP")();
+}

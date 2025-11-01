@@ -12,8 +12,17 @@ import 'package:flutter/material.dart' hide Table;
 
 part 'app_db.g.dart';
 
-@DriftDatabase(
-    tables: [Project, Task, Label, TaskLabel, Profile, Setting, DriftSchema, Reminder])
+@DriftDatabase(tables: [
+  Project,
+  Task,
+  Label,
+  TaskLabel,
+  Profile,
+  Setting,
+  DriftSchema,
+  Reminder,
+  Resource
+])
 class AppDatabase extends _$AppDatabase {
   AppDatabase._internal() : super(_openConnection());
 
@@ -26,7 +35,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase.test(super.connection);
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -49,6 +58,8 @@ class AppDatabase extends _$AppDatabase {
         await m.createTable(schema.reminder);
       }, from8To9: (Migrator m, Schema9 schema) async {
         await m.addColumn(schema.reminder, schema.reminder.updateTime);
+      }, from9To10: (Migrator m, Schema10 schema) async {
+        m.createTable(schema.resource);
       }),
       beforeOpen: (details) async {
         // initial creation
