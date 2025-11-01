@@ -349,13 +349,17 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          insetPadding: EdgeInsets.zero,
           title: Text(AppLocalizations.of(context)!.comments),
-          content: TextField(
-            controller: _commentController,
-            maxLines: 5,
-            decoration: InputDecoration(
-              hintText: AppLocalizations.of(context)!.comments,
-              border: OutlineInputBorder(),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: TextField(
+              controller: _commentController,
+              maxLines: 5,
+              decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.comments,
+                border: OutlineInputBorder(),
+              ),
             ),
           ),
           actions: <Widget>[
