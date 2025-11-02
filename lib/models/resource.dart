@@ -9,13 +9,13 @@ class ResourceModel {
 
   final int id;
   final String path;
-  final int taskId;
+  final int? taskId;
   final DateTime? createTime;
 
   const ResourceModel({
     required this.id,
     required this.path,
-    required this.taskId,
+    this.taskId,
     this.createTime,
   });
 
@@ -24,7 +24,7 @@ class ResourceModel {
     return ResourceModel(
       id: map['id'] as int,
       path: map['path'] as String,
-      taskId: map['taskId'] as int,
+      taskId: map['taskId'] as int?,
       createTime: map['createTime'] != null 
           ? DateTime.parse(map['createTime'] as String)
           : null,

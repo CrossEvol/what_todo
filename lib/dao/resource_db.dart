@@ -25,9 +25,11 @@ class ResourceDB {
 
   /// Insert a new resource record
   Future<int> insertResource(ResourceModel resource) async {
-    return await _db.into(_db.resource).insert(ResourceCompanion.insert(
-          path: resource.path,
-          taskId: resource.taskId,
+    return await _db.into(_db.resource).insert(ResourceCompanion(
+          path: Value(resource.path),
+          taskId: resource.taskId != null
+              ? Value(resource.taskId!)
+              : Value.absent(),
           createTime: Value(resource.createTime ?? DateTime.now()),
         ));
   }
@@ -56,9 +58,27 @@ class ResourceDB {
 
   /// Get the next available ID for a new resource
   Future<int> getNextResourceId() async {
-    final result = await _db.customSelect(
-      'SELECT COALESCE(MAX(id), 0) + 1 as next_id FROM resource'
-    ).getSingle();
+    final result = await _db
+        .customSelect(
+            'SELECT COALESCE(MAX(id), 0) + 1 as next_id FROM resource')
+        .getSingle();
     return result.data['next_id'] as int;
+  }
+
+  /// Fetch all resources that are not associated with any task (taskId is null)
+  Future<List<ResourceModel>> getUnassignedResources() async {
+    final result = await (_db.select(_db.resource)
+          ..where((tbl) => tbl.taskId.equals(-1))
+          ..orderBy([(tbl) => OrderingTerm.desc(tbl.createTime)]))
+        .get();
+    return result.map((row) => ResourceModel.fromMap(row.toJson())).toList();
+  }
+
+  /// Update the taskId of a resource to associate it with a task
+  Future<bool> updateResourceTaskId(int resourceId, int taskId) async {
+    final result = await (_db.update(_db.resource)
+          ..where((tbl) => tbl.id.equals(resourceId)))
+        .write(ResourceCompanion(taskId: Value(taskId)));
+    return result > 0;
   }
 }

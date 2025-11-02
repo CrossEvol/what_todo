@@ -42,25 +42,35 @@ class AppDatabase extends _$AppDatabase {
       onCreate: (Migrator m) async {
         await m.createAll();
       },
-      onUpgrade: stepByStep(from1To2: (m, schema) async {
-        m.addColumn(schema.task, schema.task.updatedAt);
-      }, from2To3: (Migrator m, Schema3 schema) async {
-        m.dropColumn(schema.task, 'due_date');
-      }, from3To4: (Migrator m, Schema4 schema) async {
-        m.addColumn(schema.task, schema.task.dueDate);
-      }, from4To5: (Migrator m, Schema5 schema) async {
-        m.dropColumn(schema.task, 'updated_at');
-      }, from5To6: (Migrator m, Schema6 schema) async {
-        m.createTable(schema.driftSchema);
-      }, from6To7: (Migrator m, Schema7 schema) async {
-        m.addColumn(schema.task, schema.task.order);
-      }, from7To8: (Migrator m, Schema8 schema) async {
-        await m.createTable(schema.reminder);
-      }, from8To9: (Migrator m, Schema9 schema) async {
-        await m.addColumn(schema.reminder, schema.reminder.updateTime);
-      }, from9To10: (Migrator m, Schema10 schema) async {
-        m.createTable(schema.resource);
-      }),
+      onUpgrade: stepByStep(
+        from1To2: (m, schema) async {
+          m.addColumn(schema.task, schema.task.updatedAt);
+        },
+        from2To3: (Migrator m, Schema3 schema) async {
+          m.dropColumn(schema.task, 'due_date');
+        },
+        from3To4: (Migrator m, Schema4 schema) async {
+          m.addColumn(schema.task, schema.task.dueDate);
+        },
+        from4To5: (Migrator m, Schema5 schema) async {
+          m.dropColumn(schema.task, 'updated_at');
+        },
+        from5To6: (Migrator m, Schema6 schema) async {
+          m.createTable(schema.driftSchema);
+        },
+        from6To7: (Migrator m, Schema7 schema) async {
+          m.addColumn(schema.task, schema.task.order);
+        },
+        from7To8: (Migrator m, Schema8 schema) async {
+          await m.createTable(schema.reminder);
+        },
+        from8To9: (Migrator m, Schema9 schema) async {
+          await m.addColumn(schema.reminder, schema.reminder.updateTime);
+        },
+        from9To10: (Migrator m, Schema10 schema) async {
+          m.createTable(schema.resource);
+        },
+      ),
       beforeOpen: (details) async {
         // initial creation
         if (details.wasCreated) {
