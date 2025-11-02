@@ -116,8 +116,7 @@ class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
 
               // 关键：任务完成后立即取消订阅，避免内存泄漏和不必要的后续操作
               blocSubscription?.cancel();
-            }
-            else if (state is ResourceError) {
+            } else if (state is ResourceError) {
               // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add image.')));
               logger.error("Failed to add shared image: ${state.message}");
               blocSubscription?.cancel(); // 同样要取消订阅
@@ -128,16 +127,15 @@ class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
           for (var file in files) {
             resourceBloc.add(AddResourceEvent(-1, file.path));
           }
-
-          // 跳转到指定页面
-          context.go('/task/add');
         } else if ([SharedMediaType.text, SharedMediaType.url]
             .contains(firstFile.type)) {
           final commentCubit = context.read<CommentCubit>();
 
           // 设置初始评论内容，然后跳转
           commentCubit.setInitialComment(firstFile.path);
-          context.go('/task/add');
+          if (commentCubit.state.isNotEmpty) {
+            context.go('/task/add');
+          }
         }
       } else {
         // 如果 context 为 null (极少见，可能在 app 启动的极早期)

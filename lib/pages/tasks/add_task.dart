@@ -12,7 +12,9 @@ import 'package:flutter_app/bloc/resource/resource_bloc.dart'
         ResourceLoaded,
         ClearResourcesEvent,
         LoadResourcesEvent,
-        ResourceRemoveSuccess;
+        ResourceRemoveSuccess,
+        ResourceAddSuccess,
+        ResourceInitial;
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
@@ -73,7 +75,6 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ResourceBloc>().add(ClearResourcesEvent());
     // 2. 从 CommentCubit 获取初始评论
     final initialComment = context.read<CommentCubit>().state;
     if (initialComment.isNotEmpty) {
@@ -94,6 +95,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              context.read<ResourceBloc>().add(ClearResourcesEvent());
+              context.safePop();
+            },
+            icon: Icon(Icons.arrow_back)),
         title: Text(
           AppLocalizations.of(context)!.addTask,
           key: ValueKey(AddTaskKeys.ADD_TASK_TITLE),
@@ -194,6 +201,10 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             listener: (BuildContext context, ResourceState state) {
               if (state is ResourceRemoveSuccess) {
                 context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
+              } else if (state is ResourceAddSuccess) {
+                context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
+              } else if (state is ResourceInitial) {
+                context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
               }
             },
             builder: (context, state) {
@@ -292,6 +303,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               context.read<HomeBloc>().add(LoadTodayCountEvent());
               final filter = context.read<HomeBloc>().state.filter;
               context.read<TaskBloc>().add(FilterTasksEvent(filter: filter!));
+              context.read<ResourceBloc>().add(ClearResourcesEvent());
 
               if (context.isWiderScreen()) {
                 context
