@@ -47,6 +47,7 @@ import 'package:flutter_app/utils/download_manager.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 import 'bloc/resource/resource_bloc.dart';
+import 'cubit/comment_cubit.dart' show CommentCubit;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -98,22 +99,30 @@ class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
     void handleSharedFiles(List<SharedMediaFile> files) {
       if (files.isEmpty) return;
 
-      for (var file in files) {
-        print(file.toMap());
-      }
-
       // 关键！通过 GlobalKey 获取当前的 context
       final context = rootNavigatorKey.currentContext;
 
       if (context != null) {
         // 现在你可以安全地访问 BLoC 和 GoRouter 了
-        final resourceBloc = context.read<ResourceBloc>();
-        // 假设你有一个方法来处理文件
-        // resourceBloc.add(AddResourcesFromFilesEvent(files));
+        var firstFile = files[0];
+        if (firstFile.type == SharedMediaType.image) {
+          final resourceBloc = context.read<ResourceBloc>();
 
-        // 跳转到指定页面
-        // 假设你有一个路由 '/share-preview' 用来预览分享的内容
-        context.go('/about');
+          // 假设你有一个方法来处理文件
+          for (var file in files) {
+            resourceBloc.add(AddResourceEvent(-1, file.path));
+          }
+
+          // 跳转到指定页面
+          context.go('/task/add');
+        } else if ([SharedMediaType.text, SharedMediaType.url]
+            .contains(firstFile.type)) {
+          final commentCubit = context.read<CommentCubit>();
+
+          // 设置初始评论内容，然后跳转
+          commentCubit.setInitialComment(firstFile.path);
+          context.go('/task/add');
+        }
       } else {
         // 如果 context 为 null (极少见，可能在 app 启动的极早期)
         // 可以考虑延迟处理或记录日志
@@ -237,6 +246,9 @@ class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
         BlocProvider(
           create: (_) => ResourceBloc(ResourceDB.get()),
           lazy: true,
+        ),
+        BlocProvider(
+          create: (_) => CommentCubit(),
         ),
       ],
       child: Builder(
