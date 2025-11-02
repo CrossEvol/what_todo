@@ -765,6 +765,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Task Grid'**
   String get taskGrid;
+
+  /// Title for the resource management page
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Resources'**
+  String get manageResources;
+
+  /// Text for retry button
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// Message shown when no resources are attached to a task
+  ///
+  /// In en, this message translates to:
+  /// **'No resources attached'**
+  String get noResourcesAttached;
+
+  /// Instruction text for adding resources
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the + button to attach images'**
+  String get tapAddToAttachImages;
+
+  /// Tooltip for add resource button
+  ///
+  /// In en, this message translates to:
+  /// **'Add Resource'**
+  String get addResource;
+
+  /// Message shown when a resource is deleted
+  ///
+  /// In en, this message translates to:
+  /// **'Resource deleted'**
+  String get resourceDeleted;
+
+  /// Tooltip for view full size button
+  ///
+  /// In en, this message translates to:
+  /// **'View full size'**
+  String get viewFullSize;
+
+  /// Title for delete confirmation dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Delete'**
+  String get confirmDelete;
+
+  /// Confirmation message for deleting a resource
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this resource? This action cannot be undone.'**
+  String get deleteResourceConfirmation;
+
+  /// Text for gallery option in image source dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get gallery;
+
+  /// Text for camera option in image source dialog
+  ///
+  /// In en, this message translates to:
+  /// **'Camera'**
+  String get camera;
 }
 
 class _AppLocalizationsDelegate

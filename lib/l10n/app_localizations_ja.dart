@@ -347,4 +347,38 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get taskGrid => 'タスクグリッド';
+
+  @override
+  String get manageResources => 'Manage Resources';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get noResourcesAttached => 'No resources attached';
+
+  @override
+  String get tapAddToAttachImages => 'Tap the + button to attach images';
+
+  @override
+  String get addResource => 'Add Resource';
+
+  @override
+  String get resourceDeleted => 'Resource deleted';
+
+  @override
+  String get viewFullSize => 'View full size';
+
+  @override
+  String get confirmDelete => 'Confirm Delete';
+
+  @override
+  String get deleteResourceConfirmation =>
+      'Are you sure you want to delete this resource? This action cannot be undone.';
+
+  @override
+  String get gallery => 'Gallery';
+
+  @override
+  String get camera => 'Camera';
 }

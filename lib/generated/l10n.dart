@@ -1165,6 +1165,116 @@ class S {
       args: [],
     );
   }
+
+  /// `Manage Resources`
+  String get manageResources {
+    return Intl.message(
+      'Manage Resources',
+      name: 'manageResources',
+      desc: 'Title for the resource management page',
+      args: [],
+    );
+  }
+
+  /// `Retry`
+  String get retry {
+    return Intl.message(
+      'Retry',
+      name: 'retry',
+      desc: 'Text for retry button',
+      args: [],
+    );
+  }
+
+  /// `No resources attached`
+  String get noResourcesAttached {
+    return Intl.message(
+      'No resources attached',
+      name: 'noResourcesAttached',
+      desc: 'Message shown when no resources are attached to a task',
+      args: [],
+    );
+  }
+
+  /// `Tap the + button to attach images`
+  String get tapAddToAttachImages {
+    return Intl.message(
+      'Tap the + button to attach images',
+      name: 'tapAddToAttachImages',
+      desc: 'Instruction text for adding resources',
+      args: [],
+    );
+  }
+
+  /// `Add Resource`
+  String get addResource {
+    return Intl.message(
+      'Add Resource',
+      name: 'addResource',
+      desc: 'Tooltip for add resource button',
+      args: [],
+    );
+  }
+
+  /// `Resource deleted`
+  String get resourceDeleted {
+    return Intl.message(
+      'Resource deleted',
+      name: 'resourceDeleted',
+      desc: 'Message shown when a resource is deleted',
+      args: [],
+    );
+  }
+
+  /// `View full size`
+  String get viewFullSize {
+    return Intl.message(
+      'View full size',
+      name: 'viewFullSize',
+      desc: 'Tooltip for view full size button',
+      args: [],
+    );
+  }
+
+  /// `Confirm Delete`
+  String get confirmDelete {
+    return Intl.message(
+      'Confirm Delete',
+      name: 'confirmDelete',
+      desc: 'Title for delete confirmation dialog',
+      args: [],
+    );
+  }
+
+  /// `Are you sure you want to delete this resource? This action cannot be undone.`
+  String get deleteResourceConfirmation {
+    return Intl.message(
+      'Are you sure you want to delete this resource? This action cannot be undone.',
+      name: 'deleteResourceConfirmation',
+      desc: 'Confirmation message for deleting a resource',
+      args: [],
+    );
+  }
+
+  /// `Gallery`
+  String get gallery {
+    return Intl.message(
+      'Gallery',
+      name: 'gallery',
+      desc: 'Text for gallery option in image source dialog',
+      args: [],
+    );
+  }
+
+  /// `Camera`
+  String get camera {
+    return Intl.message(
+      'Camera',
+      name: 'camera',
+      desc: 'Text for camera option in image source dialog',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

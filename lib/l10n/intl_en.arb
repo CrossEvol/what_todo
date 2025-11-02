@@ -453,5 +453,49 @@
   "taskGrid": "Task Grid",
   "@taskGrid": {
     "description": "Title for the task grid view"
+  },
+  "manageResources": "Manage Resources",
+  "@manageResources": {
+    "description": "Title for the resource management page"
+  },
+  "retry": "Retry",
+  "@retry": {
+    "description": "Text for retry button"
+  },
+  "noResourcesAttached": "No resources attached",
+  "@noResourcesAttached": {
+    "description": "Message shown when no resources are attached to a task"
+  },
+  "tapAddToAttachImages": "Tap the + button to attach images",
+  "@tapAddToAttachImages": {
+    "description": "Instruction text for adding resources"
+  },
+  "addResource": "Add Resource",
+  "@addResource": {
+    "description": "Tooltip for add resource button"
+  },
+  "resourceDeleted": "Resource deleted",
+  "@resourceDeleted": {
+    "description": "Message shown when a resource is deleted"
+  },
+  "viewFullSize": "View full size",
+  "@viewFullSize": {
+    "description": "Tooltip for view full size button"
+  },
+  "confirmDelete": "Confirm Delete",
+  "@confirmDelete": {
+    "description": "Title for delete confirmation dialog"
+  },
+  "deleteResourceConfirmation": "Are you sure you want to delete this resource? This action cannot be undone.",
+  "@deleteResourceConfirmation": {
+    "description": "Confirmation message for deleting a resource"
+  },
+  "gallery": "Gallery",
+  "@gallery": {
+    "description": "Text for gallery option in image source dialog"
+  },
+  "camera": "Camera",
+  "@camera": {
+    "description": "Text for camera option in image source dialog"
   }
 }

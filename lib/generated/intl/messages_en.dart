@@ -32,6 +32,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "aboutTitle": MessageLookupByLibrary.simpleMessage("About"),
     "addLabel": MessageLookupByLibrary.simpleMessage("Add Label"),
     "addProject": MessageLookupByLibrary.simpleMessage("Add Project"),
+    "addResource": MessageLookupByLibrary.simpleMessage("Add Resource"),
     "addTask": MessageLookupByLibrary.simpleMessage("Add Task"),
     "allToToday": MessageLookupByLibrary.simpleMessage("All to Today"),
     "apacheLicense": MessageLookupByLibrary.simpleMessage("Apache License"),
@@ -40,6 +41,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "authorSectionTitle": MessageLookupByLibrary.simpleMessage("Author"),
     "authorUsername": MessageLookupByLibrary.simpleMessage("burhanrashid52"),
     "avatarUrl": MessageLookupByLibrary.simpleMessage("Avatar URL"),
+    "camera": MessageLookupByLibrary.simpleMessage("Camera"),
     "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
     "cannotReadFile": MessageLookupByLibrary.simpleMessage("Cannot read file"),
     "chooseExportFormat": MessageLookupByLibrary.simpleMessage(
@@ -50,9 +52,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "comments": MessageLookupByLibrary.simpleMessage("Comments"),
     "completedTasks": MessageLookupByLibrary.simpleMessage("Completed Tasks"),
     "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
+    "confirmDelete": MessageLookupByLibrary.simpleMessage("Confirm Delete"),
     "controls": MessageLookupByLibrary.simpleMessage("Controls"),
     "count": MessageLookupByLibrary.simpleMessage("Count"),
     "delete": MessageLookupByLibrary.simpleMessage("DELETE"),
+    "deleteResourceConfirmation": MessageLookupByLibrary.simpleMessage(
+      "Are you sure you want to delete this resource? This action cannot be undone.",
+    ),
     "done": MessageLookupByLibrary.simpleMessage("done"),
     "dueDate": MessageLookupByLibrary.simpleMessage("Due Date"),
     "editTask": MessageLookupByLibrary.simpleMessage("Edit Task"),
@@ -74,6 +80,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "fileNotFound": MessageLookupByLibrary.simpleMessage("File not found"),
     "filePath": MessageLookupByLibrary.simpleMessage("File Path"),
     "forkGithub": MessageLookupByLibrary.simpleMessage("Fork on Github"),
+    "gallery": MessageLookupByLibrary.simpleMessage("Gallery"),
     "goBack": MessageLookupByLibrary.simpleMessage("Go Back"),
     "import": MessageLookupByLibrary.simpleMessage("Import"),
     "importDescription": MessageLookupByLibrary.simpleMessage(
@@ -123,6 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "licenseText": MessageLookupByLibrary.simpleMessage(
       "Copyright 2020 Burhanuddin Rashid\n\nLicensed under the Apache License, Version 2.0 (the \"License\") you may not use this file except in compliance with the License. You may obtain a copy of the License at\n\n\nhttp://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software distributed under the License is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.",
     ),
+    "manageResources": MessageLookupByLibrary.simpleMessage("Manage Resources"),
     "name": MessageLookupByLibrary.simpleMessage("Name"),
     "newFormat": MessageLookupByLibrary.simpleMessage("New Format"),
     "newFormatV1": MessageLookupByLibrary.simpleMessage("New Format (v1)"),
@@ -131,6 +139,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "noFileSelected": MessageLookupByLibrary.simpleMessage("No file selected"),
     "noLabels": MessageLookupByLibrary.simpleMessage("No Labels"),
     "noReminder": MessageLookupByLibrary.simpleMessage("No Reminder"),
+    "noResourcesAttached": MessageLookupByLibrary.simpleMessage(
+      "No resources attached",
+    ),
     "noTaskAdded": MessageLookupByLibrary.simpleMessage("No Task Added"),
     "onlyRemoveLabel": MessageLookupByLibrary.simpleMessage(
       "Only remove label",
@@ -164,6 +175,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "Having an issue ? Report it here",
     ),
     "reportIssueTitle": MessageLookupByLibrary.simpleMessage("Report an Issue"),
+    "resourceDeleted": MessageLookupByLibrary.simpleMessage("Resource deleted"),
+    "retry": MessageLookupByLibrary.simpleMessage("Retry"),
     "selectLabels": MessageLookupByLibrary.simpleMessage("Select Labels"),
     "selectPriority": MessageLookupByLibrary.simpleMessage("Select Priority"),
     "selectProject": MessageLookupByLibrary.simpleMessage("Select Project"),
@@ -173,6 +186,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Storage permissions required",
     ),
     "takePhoto": MessageLookupByLibrary.simpleMessage("Take Photo"),
+    "tapAddToAttachImages": MessageLookupByLibrary.simpleMessage(
+      "Tap the + button to attach images",
+    ),
     "taskCompleted": MessageLookupByLibrary.simpleMessage("Task completed"),
     "taskDeleted": MessageLookupByLibrary.simpleMessage("Task deleted"),
     "taskGrid": MessageLookupByLibrary.simpleMessage("Task Grid"),
@@ -192,5 +208,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "valueTooLong": m2,
     "versionTitle": MessageLookupByLibrary.simpleMessage("Version"),
+    "viewFullSize": MessageLookupByLibrary.simpleMessage("View full size"),
   };
 }
