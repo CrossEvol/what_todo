@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart'
     show ProjectBloc, ProjectsLoadedState;
+import 'package:flutter_app/bloc/resource/resource_bloc.dart'
+    show ResourceBloc, ResourceInitial;
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,6 +26,7 @@ void main() {
   late MockHomeBloc mockHomeBloc;
   late MockLabelBloc mockLabelBloc;
   late MockProjectBloc mockProjectBloc;
+  late MockResourceBloc mockResourceBloc;
 
   Widget createWidgetUnderTest() {
     return MultiBlocProvider(
@@ -33,6 +36,7 @@ void main() {
         BlocProvider<HomeBloc>.value(value: mockHomeBloc),
         BlocProvider<LabelBloc>.value(value: mockLabelBloc),
         BlocProvider<ProjectBloc>.value(value: mockProjectBloc),
+        BlocProvider<ResourceBloc>.value(value: mockResourceBloc),
       ],
       child: AddTaskScreen().withLocalizedMaterialApp().withThemeProvider(),
     );
@@ -44,6 +48,7 @@ void main() {
     mockHomeBloc = MockHomeBloc();
     mockLabelBloc = MockLabelBloc();
     mockProjectBloc = MockProjectBloc();
+    mockResourceBloc = MockResourceBloc();
 
     // Setup default states
     whenListen(
@@ -113,6 +118,10 @@ void main() {
       Stream.fromIterable([projectsLoaded]),
       initialState: projectsLoaded,
     );
+
+    final resourceState = ResourceInitial();
+    whenListen(mockResourceBloc, Stream.fromIterable([resourceState]),
+        initialState: resourceState);
   });
 
   testWidgets('AddTaskScreen should render all initial elements',
@@ -126,12 +135,13 @@ void main() {
     expect(find.byType(TextFormField), findsOneWidget);
 
     // Verify all ListTiles are present
-    expect(find.byType(ListTile), findsExactly(6));
+    expect(find.byType(ListTile), findsExactly(7));
     expect(find.text('Project'), findsOneWidget);
     expect(find.text('Due Date'), findsOneWidget);
     expect(find.text('Priority'), findsOneWidget);
     expect(find.text('Labels'), findsOneWidget);
     expect(find.text('Comments'), findsOneWidget);
+    expect(find.text('Manage Resources'), findsOneWidget);
   });
 
   testWidgets('Should show validation error when title is empty',
