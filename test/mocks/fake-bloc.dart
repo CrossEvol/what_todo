@@ -6,6 +6,7 @@ import 'package:flutter_app/bloc/profile/profile_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/bloc/reminder/reminder_bloc.dart'
     show ReminderBloc, ReminderEvent, ReminderState;
+import 'package:flutter_app/bloc/resource/resource_bloc.dart';
 import 'package:flutter_app/bloc/search/search_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
@@ -36,6 +37,9 @@ class MockTaskBloc extends MockBloc<TaskEvent, TaskState> implements TaskBloc {}
 class MockSearchBloc extends MockBloc<SearchEvent, SearchState>
     implements SearchBloc {}
 
+class MockResourceBloc extends MockBloc<ResourceEvent, ResourceState>
+    implements ResourceBloc {}
+
 void main() {
   test('create mock BLOCs', () {
     var adminBloc = MockAdminBloc();
@@ -47,5 +51,6 @@ void main() {
     var settingsBloc = MockSettingsBloc();
     var taskBloc = MockTaskBloc();
     var searchBloc = MockTaskBloc();
+    var resourceBloc = MockResourceBloc();
   });
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart'
     show ProjectBloc, ProjectsLoadedState;
 import 'package:flutter_app/bloc/reminder/reminder_bloc.dart';
+import 'package:flutter_app/bloc/resource/resource_bloc.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/pages/home/screen_enum.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
@@ -30,6 +31,7 @@ void main() {
   late MockLabelBloc mockLabelBloc;
   late MockProjectBloc mockProjectBloc;
   late MockReminderBloc mockReminderBloc;
+  late MockResourceBloc mockResourceBloc;
   late Task testTask;
 
   Widget createWidgetUnderTest() {
@@ -42,7 +44,8 @@ void main() {
         BlocProvider<ProjectBloc>.value(value: mockProjectBloc),
         BlocProvider<ReminderBloc>.value(
           value: mockReminderBloc,
-        )
+        ),
+        BlocProvider<ResourceBloc>.value(value: mockResourceBloc),
       ],
       child: EditTaskScreen(task: testTask)
           .withLocalizedMaterialApp()
@@ -57,6 +60,7 @@ void main() {
     mockLabelBloc = MockLabelBloc();
     mockProjectBloc = MockProjectBloc();
     mockReminderBloc = MockReminderBloc();
+    mockResourceBloc = MockResourceBloc();
 
     testTask = Task.update(
       id: 1,
@@ -153,6 +157,10 @@ void main() {
       Stream.fromIterable([projectsLoaded]),
       initialState: projectsLoaded,
     );
+
+    final resourceState = ResourceInitial();
+    whenListen(mockResourceBloc, Stream.fromIterable([resourceState]),
+        initialState: resourceState);
   });
 
   testWidgets(
