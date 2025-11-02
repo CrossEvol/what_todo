@@ -96,188 +96,156 @@ final GoRouter goRouter = GoRouter(
             return ImportPage();
           },
         ),
+        // Task Router
         GoRoute(
-            path: 'task',
-            builder: (BuildContext context, GoRouterState state) {
-              return DefaultGrid();
-            },
-            routes: <RouteBase>[
-              GoRoute(
-                path: 'add',
-                builder: (BuildContext context, GoRouterState state) {
-                  return AddTaskProvider();
-                },
-              ),
-              GoRoute(
-                path: 'completed',
-                builder: (BuildContext context, GoRouterState state) {
-                  return TaskCompletedPage();
-                },
-              ),
-              GoRoute(
-                path: 'uncompleted',
-                builder: (BuildContext context, GoRouterState state) {
-                  return TaskUnCompletedPage();
-                },
-              ),
-              GoRoute(
-                path: ':id/edit',
-                builder: (BuildContext context, GoRouterState state) {
-                  final String taskIdValue = state.pathParameters['id'] ?? '';
-                  final int taskId = int.parse(taskIdValue);
-                  return FutureBuilder(
-                    future: Future.wait([
-                      TaskDB.get().getTaskById(taskId),
-                    ]),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      }
-                      if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      }
-                      if (!snapshot.hasData || snapshot.data == null) {
-                        return const Text('Task not found');
-                      }
-                      final task = snapshot.data![0];
-
-                      if (task == null) {
-                        return const Text('Task not found');
-                      }
-
-                      return EditTaskProvider(
-                        task: task,
-                      );
-                    },
-                  );
-                },
-              ),
-              GoRoute(
-                path: 'grid',
-                builder: (BuildContext context, GoRouterState state) {
-                  return TaskGrid();
-                },
-              ),
-              GoRoute(
-                path: ':id/detail', // 使用 :id 定义动态参数
-                builder: (BuildContext context, GoRouterState state) {
-                  final String taskIdValue = state.pathParameters['id'] ?? '';
-                  final int taskId = int.parse(taskIdValue);
-                  return FutureBuilder(
-                    future: Future.wait([
-                      TaskDB.get().getTaskById(taskId),
-                      ReminderDB.get().getRemindersForTask(taskId)
-                    ]),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      }
-                      if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
-                      }
-                      if (!snapshot.hasData || snapshot.data == null) {
-                        return const Text('Task not found');
-                      }
-                      final task = snapshot.data![0] as Task?;
-                      final reminders = snapshot.data![1] as List<Reminder>;
-
-                      if (task == null) {
-                        return const Text('Task not found');
-                      }
-
-                      return TaskDetailPage(task: task, reminders: reminders);
-                    },
-                  );
-                },
-              ),
-            ]),
+          path: 'task/add',
+          builder: (BuildContext context, GoRouterState state) {
+            return AddTaskProvider();
+          },
+        ),
         GoRoute(
-            path: 'project',
-            builder: (BuildContext context, GoRouterState state) {
-              return DefaultGrid();
-            },
-            routes: <RouteBase>[
-              GoRoute(
-                path: 'add',
-                builder: (BuildContext context, GoRouterState state) {
-                  return AddProjectPage();
-                },
-              ),
-              GoRoute(
-                path: 'grid',
-                builder: (BuildContext context, GoRouterState state) {
-                  context.read<AdminBloc>().add(AdminLoadProjectsEvent());
-                  return ProjectGridPage();
-                },
-              ),
-            ]),
+          path: 'task/completed',
+          builder: (BuildContext context, GoRouterState state) {
+            return TaskCompletedPage();
+          },
+        ),
         GoRoute(
-            path: 'label',
-            builder: (BuildContext context, GoRouterState state) {
-              return DefaultGrid();
-            },
-            routes: <RouteBase>[
-              GoRoute(
-                path: 'add',
-                builder: (BuildContext context, GoRouterState state) {
-                  return AddLabelPage();
-                },
-              ),
-              GoRoute(
-                path: 'grid',
-                builder: (BuildContext context, GoRouterState state) {
-                  context.read<AdminBloc>().add(AdminLoadLabelsEvent());
-                  return LabelGridPage();
-                },
-              ),
-            ]),
+          path: 'task/uncompleted',
+          builder: (BuildContext context, GoRouterState state) {
+            return TaskUnCompletedPage();
+          },
+        ),
         GoRoute(
-          path: 'reminder',
+          path: 'task/:id/edit',
+          builder: (BuildContext context, GoRouterState state) {
+            final String taskIdValue = state.pathParameters['id'] ?? '';
+            final int taskId = int.parse(taskIdValue);
+            return FutureBuilder(
+              future: Future.wait([
+                TaskDB.get().getTaskById(taskId),
+              ]),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                }
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+                if (!snapshot.hasData || snapshot.data == null) {
+                  return const Text('Task not found');
+                }
+                final task = snapshot.data![0];
+
+                if (task == null) {
+                  return const Text('Task not found');
+                }
+
+                return EditTaskProvider(
+                  task: task,
+                );
+              },
+            );
+          },
+        ),
+        GoRoute(
+          path: 'task/grid',
           builder: (BuildContext context, GoRouterState state) {
             return TaskGrid();
           },
-          routes: <RouteBase>[
-            GoRoute(
-              path: 'create',
-              builder: (BuildContext context, GoRouterState state) {
-                final map = state.extra as Map<String, int?>?;
-                return ReminderCreatePage(taskId: map!["taskId"]!);
-              },
-            ),
-            GoRoute(
-              path: 'update',
-              builder: (BuildContext context, GoRouterState state) {
-                final reminder = state.extra as Reminder;
-                return ReminderUpdatePage(
-                  reminder: reminder,
-                );
-              },
-            ),
-            GoRoute(
-              path: 'grid',
-              builder: (BuildContext context, GoRouterState state) {
-                return ReminderGrid();
-              },
-            ),
-          ],
         ),
         GoRoute(
-          path: 'resource',
+          path: 'task/:id/detail', // 使用 :id 定义动态参数
           builder: (BuildContext context, GoRouterState state) {
-            return DefaultGrid();
-          },
-          routes: <RouteBase>[
-            GoRoute(
-              path: 'edit',
-              builder: (BuildContext context, GoRouterState state) {
-                final taskId = state.uri.queryParameters['taskId'];
-                if (taskId == null) {
-                  return const Text('Task ID is required');
+            final String taskIdValue = state.pathParameters['id'] ?? '';
+            final int taskId = int.parse(taskIdValue);
+            return FutureBuilder(
+              future: Future.wait([
+                TaskDB.get().getTaskById(taskId),
+                ReminderDB.get().getRemindersForTask(taskId)
+              ]),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
                 }
-                return ResourceManagePage(taskId: int.parse(taskId));
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+                if (!snapshot.hasData || snapshot.data == null) {
+                  return const Text('Task not found');
+                }
+                final task = snapshot.data![0] as Task?;
+                final reminders = snapshot.data![1] as List<Reminder>;
+
+                if (task == null) {
+                  return const Text('Task not found');
+                }
+
+                return TaskDetailPage(task: task, reminders: reminders);
               },
-            ),
-          ],
+            );
+          },
+        ),
+        // Project Router
+        GoRoute(
+          path: 'project/add',
+          builder: (BuildContext context, GoRouterState state) {
+            return AddProjectPage();
+          },
+        ),
+        GoRoute(
+          path: 'project/grid',
+          builder: (BuildContext context, GoRouterState state) {
+            context.read<AdminBloc>().add(AdminLoadProjectsEvent());
+            return ProjectGridPage();
+          },
+        ),
+        // Label Router
+        GoRoute(
+          path: 'label/add',
+          builder: (BuildContext context, GoRouterState state) {
+            return AddLabelPage();
+          },
+        ),
+        GoRoute(
+          path: 'label/grid',
+          builder: (BuildContext context, GoRouterState state) {
+            context.read<AdminBloc>().add(AdminLoadLabelsEvent());
+            return LabelGridPage();
+          },
+        ),
+        // Reminder Router
+        GoRoute(
+          path: 'reminder/create',
+          builder: (BuildContext context, GoRouterState state) {
+            final map = state.extra as Map<String, int?>?;
+            return ReminderCreatePage(taskId: map!["taskId"]!);
+          },
+        ),
+        GoRoute(
+          path: 'reminder/update',
+          builder: (BuildContext context, GoRouterState state) {
+            final reminder = state.extra as Reminder;
+            return ReminderUpdatePage(
+              reminder: reminder,
+            );
+          },
+        ),
+        GoRoute(
+          path: 'reminder/grid',
+          builder: (BuildContext context, GoRouterState state) {
+            return ReminderGrid();
+          },
+        ),
+        // Resource Router
+        GoRoute(
+          path: 'resource/edit',
+          builder: (BuildContext context, GoRouterState state) {
+            final taskId = state.uri.queryParameters['taskId'];
+            if (taskId == null) {
+              return const Text('Task ID is required');
+            }
+            return ResourceManagePage(taskId: int.parse(taskId));
+          },
         ),
       ],
     ),
