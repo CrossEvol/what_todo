@@ -22,7 +22,7 @@ class TaskDetailPage extends StatelessWidget {
           PopupMenuButton<String>(
             onSelected: (value) {
               if (value == 'edit') {
-                context.pushReplacement('/task/edit', extra: task);
+                context.pushReplacement('/task/${task.id}/edit', extra: task);
               } else if (value == 'delete') {
                 _showDeleteConfirmationDialog(context);
               }

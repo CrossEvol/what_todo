@@ -592,7 +592,7 @@ class DoneTaskCard extends StatelessWidget {
                       if (value == 'show') {
                         context.push('/task/${task.id}/detail');
                       } else if (value == 'edit') {
-                        context.push('/task/edit', extra: task);
+                        context.push('/task/${task.id}/edit', extra: task);
                       } else if (value == 'undone') {
                         context
                             .read<SearchBloc>()
@@ -920,7 +920,7 @@ class UndoneTaskCard extends StatelessWidget {
                       if (value == 'show') {
                         context.push('/task/${task.id}/detail');
                       } else if (value == 'edit') {
-                        context.push('/task/edit', extra: task);
+                        context.push('/task/${task.id}/edit', extra: task);
                       } else if (value == 'done') {
                         context
                             .read<SearchBloc>()

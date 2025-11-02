@@ -16,7 +16,7 @@ class TaskRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        context.push('/task/edit', extra: this.task);
+        context.push('/task/${this.task.id}/edit', extra: this.task);
       },
       child: Column(
         children: <Widget>[
@@ -103,7 +103,7 @@ class TaskRow extends StatelessWidget {
                                     height: 8.0,
                                     child: CircleAvatar(
                                       backgroundColor:
-                                      Color(task.projectColor!),
+                                          Color(task.projectColor!),
                                     ),
                                   )
                                 ],

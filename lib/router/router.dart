@@ -39,7 +39,6 @@ class DefaultGrid extends StatelessWidget {
   }
 }
 
-
 /// The route configuration.
 final GoRouter goRouter = GoRouter(
   routes: <RouteBase>[
@@ -117,11 +116,34 @@ final GoRouter goRouter = GoRouter(
                 },
               ),
               GoRoute(
-                path: 'edit',
+                path: ':id/edit',
                 builder: (BuildContext context, GoRouterState state) {
-                  var task = state.extra as Task;
-                  return EditTaskProvider(
-                    task: task,
+                  final String taskIdValue = state.pathParameters['id'] ?? '';
+                  final int taskId = int.parse(taskIdValue);
+                  return FutureBuilder(
+                    future: Future.wait([
+                      TaskDB.get().getTaskById(taskId),
+                    ]),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      }
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
+                      if (!snapshot.hasData || snapshot.data == null) {
+                        return const Text('Task not found');
+                      }
+                      final task = snapshot.data![0];
+
+                      if (task == null) {
+                        return const Text('Task not found');
+                      }
+
+                      return EditTaskProvider(
+                        task: task,
+                      );
+                    },
                   );
                 },
               ),
