@@ -35,6 +35,8 @@ class DefaultGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO: 暂时用路由回首页的方式来处理，在 share 图片或文字跳转到 AddTask 时， navi-back会看到这个界面
+    context.go('/');
     return const Placeholder();
   }
 }
