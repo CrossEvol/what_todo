@@ -107,6 +107,22 @@ class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
         var firstFile = files[0];
         if (firstFile.type == SharedMediaType.image) {
           final resourceBloc = context.read<ResourceBloc>();
+          StreamSubscription? blocSubscription; // 用来持有订阅，以便后续取消
+
+          blocSubscription = resourceBloc.stream.listen((state) {
+            if (state is ResourceAddSuccess) {
+              // 状态已达到预期，执行跳转
+              context.go('/task/add');
+
+              // 关键：任务完成后立即取消订阅，避免内存泄漏和不必要的后续操作
+              blocSubscription?.cancel();
+            }
+            else if (state is ResourceError) {
+              // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add image.')));
+              logger.error("Failed to add shared image: ${state.message}");
+              blocSubscription?.cancel(); // 同样要取消订阅
+            }
+          });
 
           // 假设你有一个方法来处理文件
           for (var file in files) {
