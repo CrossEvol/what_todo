@@ -453,5 +453,49 @@
   "taskGrid": "任务网格",
   "@taskGrid": {
     "description": "任务网格视图的标题"
+  },
+  "manageResources": "管理资源",
+  "@manageResources": {
+    "description": "资源管理页面的标题"
+  },
+  "retry": "重试",
+  "@retry": {
+    "description": "重试按钮的文本"
+  },
+  "noResourcesAttached": "未附加任何资源",
+  "@noResourcesAttached": {
+    "description": "当任务未附加资源时显示的消息"
+  },
+  "tapAddToAttachImages": "点击“+”按钮以附加图片",
+  "@tapAddToAttachImages": {
+    "description": "添加资源的操作提示文本"
+  },
+  "addResource": "添加资源",
+  "@addResource": {
+    "description": "添加资源按钮的工具提示"
+  },
+  "resourceDeleted": "资源已删除",
+  "@resourceDeleted": {
+    "description": "资源被删除时显示的消息"
+  },
+  "viewFullSize": "查看原图",
+  "@viewFullSize": {
+    "description": "查看原图按钮的工具提示"
+  },
+  "confirmDelete": "确认删除",
+  "@confirmDelete": {
+    "description": "删除确认对话框的标题"
+  },
+  "deleteResourceConfirmation": "确定要删除此资源吗？此操作无法撤销。",
+  "@deleteResourceConfirmation": {
+    "description": "删除资源时的确认消息"
+  },
+  "gallery": "相册",
+  "@gallery": {
+    "description": "图片来源对话框中的相册选项文本"
+  },
+  "camera": "相机",
+  "@camera": {
+    "description": "图片来源对话框中的相机选项文本"
   }
 }

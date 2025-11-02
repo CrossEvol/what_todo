@@ -349,36 +349,35 @@ class AppLocalizationsJa extends AppLocalizations {
   String get taskGrid => 'タスクグリッド';
 
   @override
-  String get manageResources => 'Manage Resources';
+  String get manageResources => 'リソースを管理';
 
   @override
-  String get retry => 'Retry';
+  String get retry => '再試行';
 
   @override
-  String get noResourcesAttached => 'No resources attached';
+  String get noResourcesAttached => '添付されたリソースがありません';
 
   @override
-  String get tapAddToAttachImages => 'Tap the + button to attach images';
+  String get tapAddToAttachImages => '「+」ボタンをタップして画像を添付してください';
 
   @override
-  String get addResource => 'Add Resource';
+  String get addResource => 'リソースを追加';
 
   @override
-  String get resourceDeleted => 'Resource deleted';
+  String get resourceDeleted => 'リソースを削除しました';
 
   @override
-  String get viewFullSize => 'View full size';
+  String get viewFullSize => 'フルサイズで表示';
 
   @override
-  String get confirmDelete => 'Confirm Delete';
+  String get confirmDelete => '削除の確認';
 
   @override
-  String get deleteResourceConfirmation =>
-      'Are you sure you want to delete this resource? This action cannot be undone.';
+  String get deleteResourceConfirmation => 'このリソースを削除してもよろしいですか？この操作は取り消せません。';
 
   @override
-  String get gallery => 'Gallery';
+  String get gallery => 'ギャラリー';
 
   @override
-  String get camera => 'Camera';
+  String get camera => 'カメラ';
 }

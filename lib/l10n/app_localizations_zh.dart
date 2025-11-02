@@ -349,36 +349,35 @@ class AppLocalizationsZh extends AppLocalizations {
   String get taskGrid => '任务网格';
 
   @override
-  String get manageResources => 'Manage Resources';
+  String get manageResources => '管理资源';
 
   @override
-  String get retry => 'Retry';
+  String get retry => '重试';
 
   @override
-  String get noResourcesAttached => 'No resources attached';
+  String get noResourcesAttached => '未附加任何资源';
 
   @override
-  String get tapAddToAttachImages => 'Tap the + button to attach images';
+  String get tapAddToAttachImages => '点击“+”按钮以附加图片';
 
   @override
-  String get addResource => 'Add Resource';
+  String get addResource => '添加资源';
 
   @override
-  String get resourceDeleted => 'Resource deleted';
+  String get resourceDeleted => '资源已删除';
 
   @override
-  String get viewFullSize => 'View full size';
+  String get viewFullSize => '查看原图';
 
   @override
-  String get confirmDelete => 'Confirm Delete';
+  String get confirmDelete => '确认删除';
 
   @override
-  String get deleteResourceConfirmation =>
-      'Are you sure you want to delete this resource? This action cannot be undone.';
+  String get deleteResourceConfirmation => '确定要删除此资源吗？此操作无法撤销。';
 
   @override
-  String get gallery => 'Gallery';
+  String get gallery => '相册';
 
   @override
-  String get camera => 'Camera';
+  String get camera => '相机';
 }

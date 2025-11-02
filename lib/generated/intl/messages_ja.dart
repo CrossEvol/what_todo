@@ -31,6 +31,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "aboutTitle": MessageLookupByLibrary.simpleMessage("アプリについて"),
     "addLabel": MessageLookupByLibrary.simpleMessage("ラベルを追加"),
     "addProject": MessageLookupByLibrary.simpleMessage("プロジェクトを追加"),
+    "addResource": MessageLookupByLibrary.simpleMessage("リソースを追加"),
     "addTask": MessageLookupByLibrary.simpleMessage("タスクを追加"),
     "allToToday": MessageLookupByLibrary.simpleMessage("すべて今日へ"),
     "apacheLicense": MessageLookupByLibrary.simpleMessage("Apacheライセンス"),
@@ -39,6 +40,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "authorSectionTitle": MessageLookupByLibrary.simpleMessage("作者"),
     "authorUsername": MessageLookupByLibrary.simpleMessage("burhanrashid52"),
     "avatarUrl": MessageLookupByLibrary.simpleMessage("アバターURL"),
+    "camera": MessageLookupByLibrary.simpleMessage("カメラ"),
     "cancel": MessageLookupByLibrary.simpleMessage("キャンセル"),
     "cannotReadFile": MessageLookupByLibrary.simpleMessage("ファイルを読み込めません"),
     "chooseExportFormat": MessageLookupByLibrary.simpleMessage("エクスポート形式を選択"),
@@ -47,9 +49,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "comments": MessageLookupByLibrary.simpleMessage("コメント"),
     "completedTasks": MessageLookupByLibrary.simpleMessage("完了したタスク"),
     "confirm": MessageLookupByLibrary.simpleMessage("確認"),
+    "confirmDelete": MessageLookupByLibrary.simpleMessage("削除の確認"),
     "controls": MessageLookupByLibrary.simpleMessage("コントロール"),
     "count": MessageLookupByLibrary.simpleMessage("数"),
     "delete": MessageLookupByLibrary.simpleMessage("削除"),
+    "deleteResourceConfirmation": MessageLookupByLibrary.simpleMessage(
+      "このリソースを削除してもよろしいですか？この操作は取り消せません。",
+    ),
     "done": MessageLookupByLibrary.simpleMessage("完了"),
     "dueDate": MessageLookupByLibrary.simpleMessage("期限"),
     "editTask": MessageLookupByLibrary.simpleMessage("タスクを編集"),
@@ -69,6 +75,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "fileNotFound": MessageLookupByLibrary.simpleMessage("ファイルが見つかりません"),
     "filePath": MessageLookupByLibrary.simpleMessage("ファイルパス"),
     "forkGithub": MessageLookupByLibrary.simpleMessage("GitHubでフォーク"),
+    "gallery": MessageLookupByLibrary.simpleMessage("ギャラリー"),
     "goBack": MessageLookupByLibrary.simpleMessage("戻る"),
     "import": MessageLookupByLibrary.simpleMessage("インポート"),
     "importDescription": MessageLookupByLibrary.simpleMessage(
@@ -108,6 +115,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "licenseText": MessageLookupByLibrary.simpleMessage(
       "Copyright 2020 Burhanuddin Rashid\n\nApache License Version 2.0（以下「ライセンス」）に基づいてライセンスされています。あなたはライセンスに従う場合を除き、このファイルを使用することはできません。ライセンスのコピーは下記から入手できます。\n\nhttp://www.apache.org/licenses/LICENSE-2.0\n\n適用される法律で要求されるか、書面で合意されない限り、このライセンスの下で配布されるソフトウェアは、「現状のまま」で、明示または黙示を問わず、いかなる保証も条件もなしに提供されます。ライセンスの下での許可と制限を規定する特定の言語についてはライセンスを参照してください。",
     ),
+    "manageResources": MessageLookupByLibrary.simpleMessage("リソースを管理"),
     "name": MessageLookupByLibrary.simpleMessage("名前"),
     "newFormat": MessageLookupByLibrary.simpleMessage("新形式"),
     "newFormatV1": MessageLookupByLibrary.simpleMessage("新形式 (v1)"),
@@ -116,6 +124,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "noFileSelected": MessageLookupByLibrary.simpleMessage("ファイルが選択されていません"),
     "noLabels": MessageLookupByLibrary.simpleMessage("ラベルなし"),
     "noReminder": MessageLookupByLibrary.simpleMessage("リマインダーなし"),
+    "noResourcesAttached": MessageLookupByLibrary.simpleMessage(
+      "添付されたリソースがありません",
+    ),
     "noTaskAdded": MessageLookupByLibrary.simpleMessage("タスクが追加されていません"),
     "onlyRemoveLabel": MessageLookupByLibrary.simpleMessage("ラベルのみ削除"),
     "onlyRemoveProject": MessageLookupByLibrary.simpleMessage("プロジェクトのみ削除"),
@@ -143,6 +154,8 @@ class MessageLookup extends MessageLookupByLibrary {
       "問題がありますか？ここで報告してください",
     ),
     "reportIssueTitle": MessageLookupByLibrary.simpleMessage("問題を報告"),
+    "resourceDeleted": MessageLookupByLibrary.simpleMessage("リソースを削除しました"),
+    "retry": MessageLookupByLibrary.simpleMessage("再試行"),
     "selectLabels": MessageLookupByLibrary.simpleMessage("ラベルを選択"),
     "selectPriority": MessageLookupByLibrary.simpleMessage("優先度を選択"),
     "selectProject": MessageLookupByLibrary.simpleMessage("プロジェクトを選択"),
@@ -152,6 +165,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "ストレージ権限が必要です",
     ),
     "takePhoto": MessageLookupByLibrary.simpleMessage("写真を撮影"),
+    "tapAddToAttachImages": MessageLookupByLibrary.simpleMessage(
+      "「+」ボタンをタップして画像を添付してください",
+    ),
     "taskCompleted": MessageLookupByLibrary.simpleMessage("タスクを完了しました"),
     "taskDeleted": MessageLookupByLibrary.simpleMessage("タスクを削除しました"),
     "taskGrid": MessageLookupByLibrary.simpleMessage("タスクグリッド"),
@@ -167,5 +183,6 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "valueTooLong": m2,
     "versionTitle": MessageLookupByLibrary.simpleMessage("バージョン"),
+    "viewFullSize": MessageLookupByLibrary.simpleMessage("フルサイズで表示"),
   };
 }

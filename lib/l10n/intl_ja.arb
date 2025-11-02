@@ -453,5 +453,49 @@
   "taskGrid": "タスクグリッド",
   "@taskGrid": {
     "description": "タスクグリッドビューのタイトル"
+  },
+  "manageResources": "リソースを管理",
+  "@manageResources": {
+    "description": "リソース管理ページのタイトル"
+  },
+  "retry": "再試行",
+  "@retry": {
+    "description": "再試行ボタンのテキスト"
+  },
+  "noResourcesAttached": "添付されたリソースがありません",
+  "@noResourcesAttached": {
+    "description": "タスクにリソースが添付されていない場合に表示されるメッセージ"
+  },
+  "tapAddToAttachImages": "「+」ボタンをタップして画像を添付してください",
+  "@tapAddToAttachImages": {
+    "description": "リソース追加のための説明テキスト"
+  },
+  "addResource": "リソースを追加",
+  "@addResource": {
+    "description": "リソース追加ボタンのツールチップ"
+  },
+  "resourceDeleted": "リソースを削除しました",
+  "@resourceDeleted": {
+    "description": "リソースが削除された際に表示されるメッセージ"
+  },
+  "viewFullSize": "フルサイズで表示",
+  "@viewFullSize": {
+    "description": "フルサイズ表示ボタンのツールチップ"
+  },
+  "confirmDelete": "削除の確認",
+  "@confirmDelete": {
+    "description": "削除確認ダイアログのタイトル"
+  },
+  "deleteResourceConfirmation": "このリソースを削除してもよろしいですか？この操作は取り消せません。",
+  "@deleteResourceConfirmation": {
+    "description": "リソース削除時の確認メッセージ"
+  },
+  "gallery": "ギャラリー",
+  "@gallery": {
+    "description": "画像選択ダイアログ内のギャラリーオプションのテキスト"
+  },
+  "camera": "カメラ",
+  "@camera": {
+    "description": "画像選択ダイアログ内のカメラオプションのテキスト"
   }
 }
