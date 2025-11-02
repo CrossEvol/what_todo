@@ -36,7 +36,35 @@ class _ResourceManagePageState extends State<ResourceManagePage> {
           AppLocalizations.of(context)!.manageResources,
         ),
       ),
-      body: BlocBuilder<ResourceBloc, ResourceState>(
+      body: BlocConsumer<ResourceBloc, ResourceState>(
+        listener: (context, state) {
+          if (state is ResourceAddSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.green,
+              ),
+            );
+            // Reload resources after successful addition
+            context.read<ResourceBloc>().add(LoadResourcesEvent(widget.taskId));
+          } else if (state is ResourceRemoveSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.green,
+              ),
+            );
+            // Reload resources after successful removal
+            context.read<ResourceBloc>().add(LoadResourcesEvent(widget.taskId));
+          } else if (state is ResourceError) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(state.message),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        },
         builder: (context, state) {
           if (state is ResourceLoading) {
             return const Center(
@@ -63,7 +91,9 @@ class _ResourceManagePageState extends State<ResourceManagePage> {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<ResourceBloc>().add(LoadResourcesEvent(widget.taskId));
+                      context
+                          .read<ResourceBloc>()
+                          .add(LoadResourcesEvent(widget.taskId));
                     },
                     child: Text(AppLocalizations.of(context)!.retry),
                   ),
@@ -89,15 +119,15 @@ class _ResourceManagePageState extends State<ResourceManagePage> {
                     Text(
                       AppLocalizations.of(context)!.noResourcesAttached,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Colors.grey[600],
-                      ),
+                            color: Colors.grey[600],
+                          ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       AppLocalizations.of(context)!.tapAddToAttachImages,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[500],
-                      ),
+                            color: Colors.grey[500],
+                          ),
                     ),
                   ],
                 ),
@@ -155,16 +185,8 @@ class _ResourceManagePageState extends State<ResourceManagePage> {
         },
         onDismissed: (direction) {
           context.read<ResourceBloc>().add(
-            RemoveResourceEvent(resource.id, resource.path),
-          );
-          
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                AppLocalizations.of(context)!.resourceDeleted,
-              ),
-            ),
-          );
+                RemoveResourceEvent(resource.id, resource.path),
+              );
         },
         child: ListTile(
           contentPadding: const EdgeInsets.all(8.0),
@@ -228,7 +250,8 @@ class _ResourceManagePageState extends State<ResourceManagePage> {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
 
-  Future<bool?> _showDeleteConfirmationDialog(BuildContext context, ResourceModel resource) async {
+  Future<bool?> _showDeleteConfirmationDialog(
+      BuildContext context, ResourceModel resource) async {
     return await showDialog<bool>(
       context: context,
       builder: (BuildContext dialogContext) {
@@ -294,11 +317,17 @@ class _ResourceManagePageState extends State<ResourceManagePage> {
 
       if (image != null) {
         context.read<ResourceBloc>().add(
-          AddResourceEvent(widget.taskId, image.path),
-        );
+              AddResourceEvent(widget.taskId, image.path),
+            );
       }
     } catch (e) {
-      _showErrorSnackBar('Failed to pick image from gallery: $e');
+      // Let the bloc handle the error by emitting ResourceError state
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to pick image from gallery: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
   }
 
@@ -311,21 +340,18 @@ class _ResourceManagePageState extends State<ResourceManagePage> {
 
       if (image != null) {
         context.read<ResourceBloc>().add(
-          AddResourceEvent(widget.taskId, image.path),
-        );
+              AddResourceEvent(widget.taskId, image.path),
+            );
       }
     } catch (e) {
-      _showErrorSnackBar('Failed to take photo: $e');
+      // Let the bloc handle the error by emitting ResourceError state
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to take photo: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
-  }
-
-  void _showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
-    );
   }
 
   void _showFullScreenImage(BuildContext context, ResourceModel resource) {

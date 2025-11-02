@@ -28,3 +28,21 @@ final class ResourceError extends ResourceState {
   @override
   List<Object> get props => [message];
 }
+
+final class ResourceAddSuccess extends ResourceState {
+  final String message;
+
+  const ResourceAddSuccess(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
+
+final class ResourceRemoveSuccess extends ResourceState {
+  final String message;
+
+  const ResourceRemoveSuccess(this.message);
+
+  @override
+  List<Object> get props => [message];
+}

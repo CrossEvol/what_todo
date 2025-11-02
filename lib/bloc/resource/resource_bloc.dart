@@ -48,9 +48,8 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
       // Insert resource into database
       await _resourceDB.insertResource(resource);
 
-      // Reload resources for the task
-      final resources = await _resourceDB.getResourcesByTaskId(event.taskId);
-      emit(ResourceLoaded(resources));
+      // Emit success state first
+      emit(const ResourceAddSuccess('Resource added successfully'));
     } catch (e) {
       emit(ResourceError('Failed to add resource: ${e.toString()}'));
     }
@@ -65,19 +64,8 @@ class ResourceBloc extends Bloc<ResourceEvent, ResourceState> {
       // Delete resource from database
       await _resourceDB.deleteResource(event.resourceId);
 
-      // Get current state to determine task ID for reloading
-      if (state is ResourceLoaded) {
-        final currentResources = (state as ResourceLoaded).resources;
-        if (currentResources.isNotEmpty) {
-          final taskId = currentResources.first.taskId;
-          final resources = await _resourceDB.getResourcesByTaskId(taskId);
-          emit(ResourceLoaded(resources));
-        } else {
-          emit(ResourceLoaded([]));
-        }
-      } else {
-        emit(ResourceLoaded([]));
-      }
+      // Emit success state first
+      emit(const ResourceRemoveSuccess('Resource deleted successfully'));
     } catch (e) {
       emit(ResourceError('Failed to remove resource: ${e.toString()}'));
     }
