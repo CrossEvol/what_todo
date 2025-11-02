@@ -4,6 +4,7 @@ import 'package:flutter_app/bloc/project/project_bloc.dart'
 import 'package:flutter_app/bloc/resource/resource_bloc.dart'
     show ResourceBloc, ResourceInitial;
 import 'package:flutter_app/constants/color_constant.dart';
+import 'package:flutter_app/cubit/comment_cubit.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc_test/bloc_test.dart';
@@ -27,6 +28,7 @@ void main() {
   late MockLabelBloc mockLabelBloc;
   late MockProjectBloc mockProjectBloc;
   late MockResourceBloc mockResourceBloc;
+  late MockCommentCubit mockCommentCubit;
 
   Widget createWidgetUnderTest() {
     return MultiBlocProvider(
@@ -37,6 +39,7 @@ void main() {
         BlocProvider<LabelBloc>.value(value: mockLabelBloc),
         BlocProvider<ProjectBloc>.value(value: mockProjectBloc),
         BlocProvider<ResourceBloc>.value(value: mockResourceBloc),
+        BlocProvider<CommentCubit>.value(value: mockCommentCubit),
       ],
       child: AddTaskScreen().withLocalizedMaterialApp().withThemeProvider(),
     );
@@ -49,6 +52,7 @@ void main() {
     mockLabelBloc = MockLabelBloc();
     mockProjectBloc = MockProjectBloc();
     mockResourceBloc = MockResourceBloc();
+    mockCommentCubit = MockCommentCubit();
 
     // Setup default states
     whenListen(
@@ -122,6 +126,7 @@ void main() {
     final resourceState = ResourceInitial();
     whenListen(mockResourceBloc, Stream.fromIterable([resourceState]),
         initialState: resourceState);
+    whenListen(mockCommentCubit, Stream.fromIterable([""]), initialState: "");
   });
 
   testWidgets('AddTaskScreen should render all initial elements',

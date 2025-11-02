@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter/animation.dart';
 import 'package:flutter_app/bloc/admin/admin_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_app/bloc/resource/resource_bloc.dart';
 import 'package:flutter_app/bloc/search/search_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
+import 'package:flutter_app/cubit/comment_cubit.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 class MockAdminBloc extends MockBloc<AdminEvent, AdminState>
@@ -40,6 +42,8 @@ class MockSearchBloc extends MockBloc<SearchEvent, SearchState>
 class MockResourceBloc extends MockBloc<ResourceEvent, ResourceState>
     implements ResourceBloc {}
 
+class MockCommentCubit extends MockCubit<String> implements CommentCubit {}
+
 void main() {
   test('create mock BLOCs', () {
     var adminBloc = MockAdminBloc();
@@ -52,5 +56,6 @@ void main() {
     var taskBloc = MockTaskBloc();
     var searchBloc = MockTaskBloc();
     var resourceBloc = MockResourceBloc();
+    var commentCubit = MockCommentCubit();
   });
 }
