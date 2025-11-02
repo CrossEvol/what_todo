@@ -172,12 +172,13 @@ void main() {
     expect(find.text('Priority 4'), findsOneWidget);
 
     // Verify all ListTiles are present
-    expect(find.byType(ListTile), findsExactly(6));
+    expect(find.byType(ListTile), findsExactly(7));
     expect(find.text('Project'), findsOneWidget);
     expect(find.text('Due Date'), findsOneWidget);
     expect(find.text('Priority'), findsOneWidget);
     expect(find.text('Labels'), findsOneWidget);
     expect(find.text('Comments'), findsOneWidget);
+    expect(find.text('Manage Resources'), findsOneWidget);
   });
 
   testWidgets('Should show validation error when title is empty',

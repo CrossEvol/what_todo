@@ -59,6 +59,27 @@ class TaskCompletedRow extends StatelessWidget {
                               color: Colors.grey, fontSize: FONT_SIZE_DATE),
                           key: Key(dateLabel),
                         ),
+                        if (task.resources.isNotEmpty) ...[
+                          SizedBox(width: 8.0),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.link,
+                                size: FONT_SIZE_DATE,
+                                color: Colors.grey,
+                              ),
+                              SizedBox(width: 2.0),
+                              Text(
+                                '${task.resources.length}',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: FONT_SIZE_DATE,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.end,

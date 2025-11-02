@@ -57,20 +57,20 @@
     - Pass taskId parameter for resource loading
     - _Requirements: 5.2, 5.4_
 
-- [ ] 6. Update existing UI components for resource display
-  - [ ] 6.1 Update home page task rows
+- [x] 6. Update existing UI components for resource display
+  - [x] 6.1 Update home page task rows
     - Modify TaskRow and TaskCompletedRow components to show resource count indicator
     - Add link icon with resource count for tasks that have attached resources
     - Ensure minimal space usage in compact home view
     - _Requirements: 2.1_
 
-  - [ ] 6.2 Update EditTaskScreen with resource preview
+  - [x] 6.2 Update EditTaskScreen with resource preview
     - Add resource thumbnail row as bottom section of edit screen
     - Implement horizontal scrollable thumbnail display with wrap functionality
     - Add tap navigation to ResourceManagePage
     - _Requirements: 2.2, 2.5, 5.1_
 
-  - [ ] 6.3 Update TaskDetailPage with resource display
+  - [x] 6.3 Update TaskDetailPage with resource display
     - Add resource display card in task detail view
     - Implement vertical list of resources within card component
     - Display full-size resource images in detail context

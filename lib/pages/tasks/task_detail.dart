@@ -5,6 +5,7 @@ import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'dart:io';
 
 class TaskDetailPage extends StatelessWidget {
   final Task task;
@@ -62,6 +63,8 @@ class TaskDetailPage extends StatelessWidget {
             _buildProjectInfo(context),
             const SizedBox(height: 20),
             _buildLabelsInfo(context),
+            const SizedBox(height: 20),
+            _buildResourcesInfo(context),
             const SizedBox(height: 20),
             _buildRemindersInfo(context),
           ],
@@ -204,6 +207,107 @@ class TaskDetailPage extends StatelessWidget {
                           label: Text(label.name),
                         ))
                     .toList(),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildResourcesInfo(BuildContext context) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Resources',
+                    style: Theme.of(context).textTheme.headlineSmall),
+                if (task.resources.isNotEmpty)
+                  TextButton.icon(
+                    onPressed: () {
+                      context.push('/resource/edit?taskId=${task.id}');
+                    },
+                    icon: Icon(Icons.edit, size: 16),
+                    label: Text('Manage'),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            if (task.resources.isEmpty)
+              const ListTile(
+                leading: Icon(Icons.image_not_supported),
+                title: Text('No resources attached to this task.'),
+              )
+            else
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: task.resources.length,
+                itemBuilder: (context, index) {
+                  final resource = task.resources[index];
+                  return Container(
+                    margin: EdgeInsets.only(bottom: 8.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey[300]!),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: File(resource.path).existsSync()
+                          ? Image.file(
+                              File(resource.path),
+                              fit: BoxFit.cover,
+                              height: 200.0,
+                              width: double.infinity,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  height: 200.0,
+                                  color: Colors.grey[200],
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.broken_image,
+                                        color: Colors.grey[400],
+                                        size: 48.0,
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      Text(
+                                        'Failed to load image',
+                                        style:
+                                            TextStyle(color: Colors.grey[600]),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            )
+                          : Container(
+                              height: 200.0,
+                              color: Colors.grey[200],
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.image_not_supported,
+                                    color: Colors.grey[400],
+                                    size: 48.0,
+                                  ),
+                                  SizedBox(height: 8.0),
+                                  Text(
+                                    'Image not found',
+                                    style: TextStyle(color: Colors.grey[600]),
+                                  ),
+                                ],
+                              ),
+                            ),
+                    ),
+                  );
+                },
               ),
           ],
         ),
