@@ -14,10 +14,12 @@ The existing Drift database schema is extended with a new `Resource` table that 
 CREATE TABLE resource (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   path TEXT NOT NULL,
-  task_id INTEGER NOT NULL REFERENCES task(id) ON DELETE CASCADE,
+  task_id INTEGER REFERENCES task(id) ON DELETE CASCADE,
   create_time DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 ```
+
+**Note:** The `task_id` field is nullable to support the workflow where resources are created before task creation (e.g., when sharing media files to create new tasks).
 
 ### Data Flow Architecture
 The feature follows the established data flow pattern:
@@ -34,9 +36,9 @@ Database (Drift) → DAO Layer → BLoC Layer → UI Layer
 class ResourceModel {
   final int id;  // Auto-increment database ID
   final String path;
-  final int taskId;
+  final int? taskId;  // Nullable to support pre-task resource creation
   
-  ResourceModel({required this.id, required this.path, required this.taskId});
+  ResourceModel({required this.id, required this.path, this.taskId});
 }
 ```
 
@@ -48,7 +50,9 @@ class ResourceModel {
 
 **ResourceDAO** (`lib/dao/resource_db.dart`)
 - `Future<List<ResourceModel>> getResourcesByTaskId(int taskId)`
+- `Future<List<ResourceModel>> getUnassignedResources()` // Resources with null taskId
 - `Future<int> insertResource(ResourceModel resource)`
+- `Future<bool> updateResourceTaskId(int resourceId, int taskId)` // Associate resource with task
 - `Future<bool> deleteResource(int resourceId)`
 - `Future<bool> deleteResourcesByTaskId(int taskId)`
 

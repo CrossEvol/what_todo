@@ -23,10 +23,22 @@ This feature adds image resource management capabilities to tasks in the Flutter
 #### Acceptance Criteria
 
 1. WHEN a user selects images from their device gallery, THE Task Management System SHALL copy the selected images to internal storage
-2. THE Task Management System SHALL create Resource records with unique IDs, file paths, and task associations
-3. THE Task Management System SHALL store Resource metadata in the database with ID, PATH, TASK_ID, and createTime fields
+2. THE Task Management System SHALL create Resource records with unique IDs, file paths, and optional task associations
+3. THE Task Management System SHALL store Resource metadata in the database with ID, PATH, TASK_ID (nullable), and createTime fields
 4. WHEN a Resource is created, THE Task Management System SHALL generate a unique identifier and timestamp automatically
 5. THE Task Management System SHALL support only image file formats for Resource attachments
+
+### Requirement 6
+
+**User Story:** As a user, I want to create tasks from shared media files, so that I can quickly convert external content into actionable tasks.
+
+#### Acceptance Criteria
+
+1. WHEN a user shares media files to create a new task, THE Task Management System SHALL create Resource records without task associations initially
+2. WHEN a user creates a task in AddTaskPage with pre-existing resources, THE Task Management System SHALL associate the resources with the newly created task
+3. THE Task Management System SHALL support creating resources with null taskId values for temporary storage
+4. WHEN a task is created with associated resources, THE Task Management System SHALL update the Resource records to link them to the task
+5. THE Task Management System SHALL handle the workflow of resource creation before task creation seamlessly
 
 ### Requirement 2
 

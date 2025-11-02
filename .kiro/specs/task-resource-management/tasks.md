@@ -76,7 +76,31 @@
     - Display full-size resource images in detail context
     - _Requirements: 2.3_
 
-- [ ] 7. Implement image picker and file management utilities
+- [ ] 7. Update database schema to support nullable taskId
+  - [x] 7.1 Modify Resource table schema in tables.dart
+    - Change taskId column constraint to allow NULL values
+    - Update foreign key constraint to maintain referential integrity with nullable taskId
+    - _Requirements: 6.3, 1.3_
+
+  - [x] 7.2 Create database migration for nullable taskId
+    - Add migration step in app_db.dart to alter Resource table
+    - Increment schema version and add migration logic
+    - Test migration with existing data
+    - _Requirements: 6.3_
+
+  - [x] 7.3 Update ResourceModel to handle nullable taskId
+    - Modify ResourceModel class to make taskId optional
+    - Update constructors, serialization methods, and factory methods
+    - Ensure backward compatibility with existing resource data
+    - _Requirements: 6.3, 6.4_
+
+  - [x] 7.4 Update ResourceDB methods for nullable taskId workflow
+    - Add getUnassignedResources method to fetch resources without taskId
+    - Add updateResourceTaskId method to associate resources with tasks
+    - Update existing methods to handle nullable taskId properly
+    - _Requirements: 6.2, 6.4_
+
+- [ ] 8. Implement image picker and file management utilities
   - Create utility functions for image selection from device gallery
   - Implement file copying to internal storage with proper error handling
   - Add file cleanup functionality for resource deletion
