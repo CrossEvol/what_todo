@@ -9,11 +9,13 @@ import '../mocks/fake-database.mocks.dart';
 
 void main() {
   late MockTaskDB mockTaskDB;
+  late MockResourceDB mockResourceDB;
   late TaskBloc taskBloc;
 
   setUp(() {
     mockTaskDB = MockTaskDB();
-    taskBloc = TaskBloc(mockTaskDB);
+    mockResourceDB = MockResourceDB();
+    taskBloc = TaskBloc(mockTaskDB, mockResourceDB);
   });
 
   tearDown(() {

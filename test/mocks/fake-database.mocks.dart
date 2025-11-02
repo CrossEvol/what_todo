@@ -7,8 +7,10 @@ import 'dart:async' as _i5;
 
 import 'package:flutter_app/bloc/search/search_bloc.dart' as _i16;
 import 'package:flutter_app/dao/reminder_db.dart' as _i7;
+import 'package:flutter_app/dao/resource_db.dart' as _i17;
 import 'package:flutter_app/dao/search_db.dart' as _i3;
 import 'package:flutter_app/models/reminder/reminder.dart' as _i8;
+import 'package:flutter_app/models/resource.dart' as _i18;
 import 'package:flutter_app/pages/labels/label.dart' as _i6;
 import 'package:flutter_app/pages/labels/label_db.dart' as _i4;
 import 'package:flutter_app/pages/profile/profile.dart' as _i11;
@@ -792,6 +794,106 @@ class MockSearchDB extends _i1.Mock implements _i3.SearchDB {
         Invocation.method(
           #deleteTask,
           [taskId],
+        ),
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
+}
+
+/// A class which mocks [ResourceDB].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockResourceDB extends _i1.Mock implements _i17.ResourceDB {
+  @override
+  _i5.Future<List<_i18.ResourceModel>> getResourcesByTaskId(int? taskId) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getResourcesByTaskId,
+          [taskId],
+        ),
+        returnValue:
+            _i5.Future<List<_i18.ResourceModel>>.value(<_i18.ResourceModel>[]),
+        returnValueForMissingStub:
+            _i5.Future<List<_i18.ResourceModel>>.value(<_i18.ResourceModel>[]),
+      ) as _i5.Future<List<_i18.ResourceModel>>);
+
+  @override
+  _i5.Future<int> insertResource(_i18.ResourceModel? resource) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #insertResource,
+          [resource],
+        ),
+        returnValue: _i5.Future<int>.value(0),
+        returnValueForMissingStub: _i5.Future<int>.value(0),
+      ) as _i5.Future<int>);
+
+  @override
+  _i5.Future<int> deleteResource(int? resourceId) => (super.noSuchMethod(
+        Invocation.method(
+          #deleteResource,
+          [resourceId],
+        ),
+        returnValue: _i5.Future<int>.value(0),
+        returnValueForMissingStub: _i5.Future<int>.value(0),
+      ) as _i5.Future<int>);
+
+  @override
+  _i5.Future<int> deleteResourcesByTaskId(int? taskId) => (super.noSuchMethod(
+        Invocation.method(
+          #deleteResourcesByTaskId,
+          [taskId],
+        ),
+        returnValue: _i5.Future<int>.value(0),
+        returnValueForMissingStub: _i5.Future<int>.value(0),
+      ) as _i5.Future<int>);
+
+  @override
+  _i5.Future<_i18.ResourceModel?> getResourceById(int? resourceId) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getResourceById,
+          [resourceId],
+        ),
+        returnValue: _i5.Future<_i18.ResourceModel?>.value(),
+        returnValueForMissingStub: _i5.Future<_i18.ResourceModel?>.value(),
+      ) as _i5.Future<_i18.ResourceModel?>);
+
+  @override
+  _i5.Future<int> getNextResourceId() => (super.noSuchMethod(
+        Invocation.method(
+          #getNextResourceId,
+          [],
+        ),
+        returnValue: _i5.Future<int>.value(0),
+        returnValueForMissingStub: _i5.Future<int>.value(0),
+      ) as _i5.Future<int>);
+
+  @override
+  _i5.Future<List<_i18.ResourceModel>> getUnassignedResources() =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getUnassignedResources,
+          [],
+        ),
+        returnValue:
+            _i5.Future<List<_i18.ResourceModel>>.value(<_i18.ResourceModel>[]),
+        returnValueForMissingStub:
+            _i5.Future<List<_i18.ResourceModel>>.value(<_i18.ResourceModel>[]),
+      ) as _i5.Future<List<_i18.ResourceModel>>);
+
+  @override
+  _i5.Future<bool> updateResourceTaskId(
+    int? resourceId,
+    int? taskId,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateResourceTaskId,
+          [
+            resourceId,
+            taskId,
+          ],
         ),
         returnValue: _i5.Future<bool>.value(false),
         returnValueForMissingStub: _i5.Future<bool>.value(false),
