@@ -5,14 +5,15 @@
   - Verify Resource table exists in database with proper foreign key constraints
   - _Requirements: 1.3, 4.4_
 
-- [ ] 2. Implement Resource DAO layer
-  - [ ] 2.1 Create resource_db.dart in lib/dao/ directory
+- [x] 2. Implement Resource DAO layer
+  use fvm before flutter or dart commands.
+  - [x] 2.1 Create resource_db.dart in lib/dao/ directory
     - Implement getResourcesByTaskId method to fetch resources for a specific task
     - Implement insertResource method to add new resource records
     - Implement deleteResource method to remove resource by ID
     - _Requirements: 4.3, 1.1_
 
-  - [ ] 2.2 Update TaskDB to include resource loading
+  - [x] 2.2 Update TaskDB to include resource loading
     - Modify _bindData method to join with Resource table and load associated resources
     - Update Task model to include List<ResourceModel> resources property
     - Ensure all task queries automatically load related resources

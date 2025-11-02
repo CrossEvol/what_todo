@@ -1,5 +1,6 @@
 import 'package:flutter_app/models/priority.dart';
 import 'package:flutter_app/pages/labels/label.dart';
+import 'package:flutter_app/models/resource.dart';
 
 class Task {
   static final tblTask = "Task"; // Changed from "Tasks" to "Task"
@@ -23,13 +24,15 @@ class Task {
   PriorityStatus priority;
   TaskStatus? tasksStatus;
   List<Label> labelList = [];
+  List<ResourceModel> resources = [];
 
   @override
   String toString() {
     // Note: Adjusted toString to handle List<Label> appropriately if needed,
     // for now just showing label names might be sufficient or adjust as required.
     var labelNames = labelList.map((l) => l.name).join(', ');
-    return 'Task{title: $title, comment: $comment, projectName: $projectName, id: $id, projectColor: $projectColor, dueDate: $dueDate, projectId: $projectId, priority: $priority, tasksStatus: $tasksStatus, labelList: [$labelNames]}';
+    var resourceCount = resources.length;
+    return 'Task{title: $title, comment: $comment, projectName: $projectName, id: $id, projectColor: $projectColor, dueDate: $dueDate, projectId: $projectId, priority: $priority, tasksStatus: $tasksStatus, labelList: [$labelNames], resources: $resourceCount}';
   }
 
   Task.create({
@@ -123,8 +126,9 @@ class Task {
     int? order,
     PriorityStatus? priority,
     TaskStatus? tasksStatus,
+    List<ResourceModel>? resources,
   }) {
-    return Task(
+    var newTask = Task(
       title: title ?? this.title,
       comment: comment ?? this.comment,
       id: id ?? this.id,
@@ -134,6 +138,11 @@ class Task {
       priority: priority ?? this.priority,
       tasksStatus: tasksStatus ?? this.tasksStatus,
     );
+    newTask.resources = resources ?? this.resources;
+    newTask.labelList = this.labelList;
+    newTask.projectName = this.projectName;
+    newTask.projectColor = this.projectColor;
+    return newTask;
   }
 }
 

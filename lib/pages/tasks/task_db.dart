@@ -6,6 +6,7 @@ import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
+import 'package:flutter_app/models/resource.dart';
 
 class TaskDB {
   static final TaskDB _taskDb = TaskDB._internal(AppDatabase());
@@ -131,6 +132,7 @@ class TaskDB {
       leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
       leftOuterJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId)),
       innerJoin(_db.project, _db.project.id.equalsExp(_db.task.projectId)),
+      leftOuterJoin(_db.resource, _db.resource.taskId.equalsExp(_db.task.id)),
     ]);
 
     if (startDate > 0 && endDate > 0) {
@@ -159,6 +161,7 @@ class TaskDB {
       var task = item.readTable(_db.task);
       var project = item.readTable(_db.project);
       var label = item.readTableOrNull(_db.label);
+      var resource = item.readTableOrNull(_db.resource);
 
       if (!taskMap.containsKey(task.id)) {
         var map = task.toJson();
@@ -169,6 +172,7 @@ class TaskDB {
         myTask.projectName = project.name;
         myTask.projectColor = project.colorCode;
         myTask.labelList = [];
+        myTask.resources = [];
         taskMap[task.id] = myTask;
       }
 
@@ -182,6 +186,17 @@ class TaskDB {
         });
         taskMap[task.id]!.labelList.add(labelObject);
       }
+
+      if (resource != null) {
+        // Create a ResourceModel object and add it to the list
+        final resourceObject = ResourceModel.fromMap({
+          'id': resource.id,
+          'path': resource.path,
+          'taskId': resource.taskId,
+          'createTime': resource.createTime.toIso8601String(),
+        });
+        taskMap[task.id]!.resources.add(resourceObject);
+      }
     }
 
     return taskMap.values.toList();
@@ -193,6 +208,7 @@ class TaskDB {
       leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
       leftOuterJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId)),
       innerJoin(_db.project, _db.project.id.equalsExp(_db.task.projectId)),
+      leftOuterJoin(_db.resource, _db.resource.taskId.equalsExp(_db.task.id)),
     ]);
 
     query.where(_db.task.projectId.equals(projectId));
@@ -223,6 +239,7 @@ class TaskDB {
       leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
       leftOuterJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId)),
       innerJoin(_db.project, _db.project.id.equalsExp(_db.task.projectId)),
+      leftOuterJoin(_db.resource, _db.resource.taskId.equalsExp(_db.task.id)),
     ]);
 
     query.where(_db.task.id.isInQuery(tasksWithLabelQuery));
@@ -440,14 +457,15 @@ class TaskDB {
       leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
       leftOuterJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId)),
       innerJoin(_db.project, _db.project.id.equalsExp(_db.task.projectId)),
+      leftOuterJoin(_db.resource, _db.resource.taskId.equalsExp(_db.task.id)),
     ]);
 
     query.where(_db.task.id.equals(taskId));
-    query.limit(1);
 
     var result = await query.get();
     if (result.isNotEmpty) {
-      return _bindData(result).first;
+      final tasks = _bindData(result);
+      return tasks.first;
     }
     return null;
   }
@@ -555,6 +573,7 @@ class TaskDB {
       leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
       leftOuterJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId)),
       innerJoin(_db.project, _db.project.id.equalsExp(_db.task.projectId)),
+      leftOuterJoin(_db.resource, _db.resource.taskId.equalsExp(_db.task.id)),
     ])
       ..orderBy([OrderingTerm(expression: CustomExpression('RANDOM()'))])
       ..limit(1);
