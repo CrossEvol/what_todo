@@ -6,7 +6,13 @@ import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/bloc/resource/resource_bloc.dart'
-    show ResourceBloc, ResourceState, ResourceLoaded, ClearResourcesEvent;
+    show
+        ResourceBloc,
+        ResourceState,
+        ResourceLoaded,
+        ClearResourcesEvent,
+        LoadResourcesEvent,
+        ResourceRemoveSuccess;
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
@@ -21,8 +27,7 @@ import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../bloc/resource/resource_bloc.dart'
-    show ResourceBloc, ResourceState, ResourceLoaded;
+import '../../cubit/comment_cubit.dart' show CommentCubit;
 import 'models/task.dart';
 
 class AddTaskScreen extends StatefulWidget {
@@ -69,10 +74,19 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   void initState() {
     super.initState();
     context.read<ResourceBloc>().add(ClearResourcesEvent());
+    // 2. 从 CommentCubit 获取初始评论
+    final initialComment = context.read<CommentCubit>().state;
+    if (initialComment.isNotEmpty) {
+      _commentController.text = initialComment;
+      // 清除状态，这样下次打开页面时不会再次填充
+      context.read<CommentCubit>().clearComment();
+    }
   }
 
   @override
   void dispose() {
+    _titleController.dispose();
+    _commentController.dispose();
     super.dispose();
   }
 
@@ -176,7 +190,12 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               context.push('/resource/edit?taskId=${-1}');
             },
           ),
-          BlocBuilder<ResourceBloc, ResourceState>(
+          BlocConsumer<ResourceBloc, ResourceState>(
+            listener: (BuildContext context, ResourceState state) {
+              if (state is ResourceRemoveSuccess) {
+                context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
+              }
+            },
             builder: (context, state) {
               if (state is ResourceLoaded && state.resources.isNotEmpty) {
                 return Container(
