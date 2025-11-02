@@ -53,6 +53,25 @@ android {
         jvmTarget = '17'
     }
 
+    // Force all subprojects to use the same JVM target
+    subprojects {
+        afterEvaluate { project ->
+            if (project.hasProperty('android')) {
+                project.android {
+                    compileOptions {
+                        sourceCompatibility JavaVersion.VERSION_17
+                        targetCompatibility JavaVersion.VERSION_17
+                    }
+                    if (project.hasProperty('kotlinOptions')) {
+                        kotlinOptions {
+                            jvmTarget = '17'
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     signingConfigs {
         release {
             if (keystorePropertiesFile.exists()) {

@@ -52,6 +52,7 @@ dependencies:
   flutter_downloader: ^1.12.0
   open_filex: ^4.7.0
   connectivity_plus: ^6.1.5
+  receive_sharing_intent: ^1.8.1
 
 dev_dependencies:
   flutter_driver:
