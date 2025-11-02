@@ -1,3 +1,4 @@
+import 'dart:async' show StreamSubscription;
 import 'dart:io' show Platform;
 
 import 'package:drift/drift.dart';
@@ -35,6 +36,7 @@ import 'package:flutter_app/utils/window_util.dart' show setupWindow;
 import 'package:flutter_app/utils/work_manager_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 // Update system imports
@@ -42,6 +44,7 @@ import 'package:flutter_app/bloc/update/update_bloc.dart';
 import 'package:flutter_app/repositories/update_repository.dart';
 import 'package:flutter_app/services/update_scheduler_service.dart';
 import 'package:flutter_app/utils/download_manager.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 import 'bloc/resource/resource_bloc.dart';
 
@@ -78,6 +81,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
   Locale _locale = Locale(prefs.getLocale());
   bool _schedulerInitialized = false;
+  late StreamSubscription _intentSub;
 
   void setLocale(Locale locale) {
     setState(() {
@@ -89,12 +93,56 @@ class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+
+    // 封装处理分享的逻辑
+    void handleSharedFiles(List<SharedMediaFile> files) {
+      if (files.isEmpty) return;
+
+      for (var file in files) {
+        print(file.toMap());
+      }
+
+      // 关键！通过 GlobalKey 获取当前的 context
+      final context = rootNavigatorKey.currentContext;
+
+      if (context != null) {
+        // 现在你可以安全地访问 BLoC 和 GoRouter 了
+        final resourceBloc = context.read<ResourceBloc>();
+        // 假设你有一个方法来处理文件
+        // resourceBloc.add(AddResourcesFromFilesEvent(files));
+
+        // 跳转到指定页面
+        // 假设你有一个路由 '/share-preview' 用来预览分享的内容
+        context.go('/about');
+      } else {
+        // 如果 context 为 null (极少见，可能在 app 启动的极早期)
+        // 可以考虑延迟处理或记录日志
+        logger.warn(
+            "Navigator context not available yet for handling share intent.");
+      }
+    }
+
+    // 监听 app 运行时收到的分享
+    _intentSub = ReceiveSharingIntent.instance.getMediaStream().listen((value) {
+      handleSharedFiles(value);
+    }, onError: (err) {
+      print("getIntentDataStream error: $err");
+    });
+
+    // 监听 app 关闭状态下通过分享启动
+    ReceiveSharingIntent.instance.getInitialMedia().then((value) {
+      if (value.isNotEmpty) {
+        handleSharedFiles(value);
+        ReceiveSharingIntent.instance.reset();
+      }
+    });
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     UpdateSchedulerService.instance.dispose();
+    _intentSub.cancel();
     super.dispose();
   }
 

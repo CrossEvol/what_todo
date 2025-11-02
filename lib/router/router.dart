@@ -39,8 +39,11 @@ class DefaultGrid extends StatelessWidget {
   }
 }
 
+final rootNavigatorKey = GlobalKey<NavigatorState>();
+
 /// The route configuration.
 final GoRouter goRouter = GoRouter(
+  navigatorKey: rootNavigatorKey,
   routes: <RouteBase>[
     GoRoute(
       path: '/',
