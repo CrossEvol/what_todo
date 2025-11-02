@@ -44,14 +44,14 @@
     - Update task loading, creation, and update operations to include resources
     - _Requirements: 4.5_
 
-- [ ] 5. Create Resource Management Page
-  - [ ] 5.1 Implement ResourceManagePage UI
+- [x] 5. Create Resource Management Page
+  - [x] 5.1 Implement ResourceManagePage UI
     - Create page in lib/pages/resource/ directory with ListView for resource display
     - Implement swipe-to-delete functionality with confirmation dialogs
     - Add FloatingActionButton for adding new resources from gallery
     - _Requirements: 3.1, 3.2, 3.3_
 
-  - [ ] 5.2 Add navigation route for resource management
+  - [x] 5.2 Add navigation route for resource management
     - Add /resource/edit route to router configuration
     - Implement navigation from EditTaskScreen to ResourceManagePage
     - Pass taskId parameter for resource loading

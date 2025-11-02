@@ -25,6 +25,7 @@ import 'package:flutter_app/pages/tasks/task_detail.dart';
 import 'package:flutter_app/pages/tasks/task_uncompleted/task_uncompleted.dart';
 import 'package:flutter_app/pages/tasks/task_grid.dart';
 import 'package:flutter_app/pages/update/update_manager_page.dart';
+import 'package:flutter_app/pages/resource/resource_manage_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_app/models/reminder.dart';
@@ -229,6 +230,24 @@ final GoRouter goRouter = GoRouter(
               path: 'grid',
               builder: (BuildContext context, GoRouterState state) {
                 return ReminderGrid();
+              },
+            ),
+          ],
+        ),
+        GoRoute(
+          path: 'resource',
+          builder: (BuildContext context, GoRouterState state) {
+            return DefaultGrid();
+          },
+          routes: <RouteBase>[
+            GoRoute(
+              path: 'edit',
+              builder: (BuildContext context, GoRouterState state) {
+                final taskId = state.uri.queryParameters['taskId'];
+                if (taskId == null) {
+                  return const Text('Task ID is required');
+                }
+                return ResourceManagePage(taskId: int.parse(taskId));
               },
             ),
           ],

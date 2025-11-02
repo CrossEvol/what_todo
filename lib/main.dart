@@ -15,6 +15,7 @@ import 'package:flutter_app/bloc/search/search_bloc.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/dao/reminder_db.dart';
+import 'package:flutter_app/dao/resource_db.dart';
 import 'package:flutter_app/dao/search_db.dart';
 import 'package:flutter_app/l10n/app_localizations.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
@@ -41,6 +42,8 @@ import 'package:flutter_app/bloc/update/update_bloc.dart';
 import 'package:flutter_app/repositories/update_repository.dart';
 import 'package:flutter_app/services/update_scheduler_service.dart';
 import 'package:flutter_app/utils/download_manager.dart';
+
+import 'bloc/resource/resource_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -182,6 +185,10 @@ class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
         BlocProvider(
           create: (_) => UpdateBloc(repository: UpdateRepository()),
           lazy: false,
+        ),
+        BlocProvider(
+          create: (_) => ResourceBloc(ResourceDB.get()),
+          lazy: true,
         ),
       ],
       child: Builder(

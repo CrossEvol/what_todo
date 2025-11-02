@@ -247,6 +247,15 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
               );
             },
           ),
+          ListTile(
+            leading: Icon(Icons.attachment),
+            title: Text(AppLocalizations.of(context)!.manageResources),
+            subtitle: Text('Attach images to this task'),
+            hoverColor: _grey,
+            onTap: () {
+              context.push('/resource/edit?taskId=${widget.task.id}');
+            },
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
