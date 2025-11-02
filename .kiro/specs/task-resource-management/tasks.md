@@ -19,27 +19,27 @@
     - Ensure all task queries automatically load related resources
     - _Requirements: 4.1, 4.2_
 
-- [ ] 3. Create Resource BLoC for state management
-  - [ ] 3.1 Implement ResourceBloc with events and states
+- [x] 3. Create Resource BLoC for state management
+  - [x] 3.1 Implement ResourceBloc with events and states
     - Create LoadResourcesEvent, AddResourceEvent, and RemoveResourceEvent
     - Implement ResourceLoading, ResourceLoaded, and ResourceError states
     - Handle resource loading, adding, and removal operations
     - _Requirements: 4.3, 3.3_
 
-  - [ ] 3.2 Integrate file operations with BLoC
+  - [x] 3.2 Integrate file operations with BLoC
     - Implement image copying from gallery to internal storage using path_provider
     - Handle file deletion when resources are removed
     - Manage file path generation and storage organization
     - _Requirements: 1.1, 3.4_
 
-- [ ] 4. Update Task model and data flow
-  - [ ] 4.1 Extend Task model with resources property
+- [x] 4. Update Task model and data flow
+  - [x] 4.1 Extend Task model with resources property
     - Add List<ResourceModel> resources property to Task class
     - Update Task constructors, copyWith, and serialization methods
     - Ensure resources are properly handled in task operations
     - _Requirements: 4.1_
 
-  - [ ] 4.2 Update task BLoC to handle resource data
+  - [x] 4.2 Update task BLoC to handle resource data
     - Ensure TaskBloc properly propagates resource data through task operations
     - Update task loading, creation, and update operations to include resources
     - _Requirements: 4.5_
