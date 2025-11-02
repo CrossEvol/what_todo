@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show File;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
@@ -16,7 +17,10 @@ import 'package:flutter_app/utils/app_util.dart' show showSnackbar;
 import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_app/utils/extension.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../bloc/resource/resource_bloc.dart'
+    show ResourceBloc, ResourceState, ResourceLoaded;
 import 'models/task.dart';
 
 class AddTaskScreen extends StatefulWidget {
@@ -159,7 +163,92 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             onTap: () {
               showSnackbar(context, AppLocalizations.of(context)!.comingSoon);
             },
-          )
+          ),
+          ListTile(
+            leading: Icon(Icons.attachment),
+            title: Text(AppLocalizations.of(context)!.manageResources),
+            subtitle: Text('Attach images to this task'),
+            hoverColor: _grey,
+            onTap: () {
+              context.push('/resource/edit?taskId=${-1}');
+            },
+          ),
+          BlocBuilder<ResourceBloc, ResourceState>(
+            builder: (context, state) {
+              if (state is ResourceLoaded && state.resources.isNotEmpty) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Resources (${state.resources.length})',
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      SizedBox(height: 8.0),
+                      Container(
+                        height: 80.0,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: state.resources.length,
+                          itemBuilder: (context, index) {
+                            final resource = state.resources[index];
+                            return GestureDetector(
+                              onTap: () {
+                                context.push('/resource/edit?taskId=-1');
+                              },
+                              child: Container(
+                                width: 80.0,
+                                height: 80.0,
+                                margin: EdgeInsets.only(right: 8.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  border: Border.all(color: Colors.grey[300]!),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: File(resource.path).existsSync()
+                                      ? Image.file(
+                                          File(resource.path),
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Container(
+                                              color: Colors.grey[200],
+                                              child: Icon(
+                                                Icons.broken_image,
+                                                color: Colors.grey[400],
+                                                size: 32.0,
+                                              ),
+                                            );
+                                          },
+                                        )
+                                      : Container(
+                                          color: Colors.grey[200],
+                                          child: Icon(
+                                            Icons.image_not_supported,
+                                            color: Colors.grey[400],
+                                            size: 32.0,
+                                          ),
+                                        ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
