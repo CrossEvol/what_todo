@@ -6,6 +6,7 @@ import 'package:flutter_app/bloc/reminder/reminder_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
+import 'package:flutter_app/bloc/resource/resource_bloc.dart';
 import 'package:flutter_app/models/reminder/reminder.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
@@ -113,6 +114,11 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
                 .contains(l.name))
             .toList()
         : [];
+    
+    // Load resources for this task
+    if (widget.task.id != null) {
+      context.read<ResourceBloc>().add(LoadResourcesEvent(widget.task.id!));
+    }
   }
 
   @override
@@ -257,74 +263,80 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
               context.push('/resource/edit?taskId=${widget.task.id}');
             },
           ),
-          if (widget.task.resources.isNotEmpty)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Resources (${widget.task.resources.length})',
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  SizedBox(height: 8.0),
-                  Container(
-                    height: 80.0,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: widget.task.resources.length,
-                      itemBuilder: (context, index) {
-                        final resource = widget.task.resources[index];
-                        return GestureDetector(
-                          onTap: () {
-                            context.push('/resource/edit?taskId=${widget.task.id}');
-                          },
-                          child: Container(
-                            width: 80.0,
-                            height: 80.0,
-                            margin: EdgeInsets.only(right: 8.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.0),
-                              border: Border.all(color: Colors.grey[300]!),
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: File(resource.path).existsSync()
-                                  ? Image.file(
-                                      File(resource.path),
-                                      fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) {
-                                        return Container(
+          BlocBuilder<ResourceBloc, ResourceState>(
+            builder: (context, state) {
+              if (state is ResourceLoaded && state.resources.isNotEmpty) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Resources (${state.resources.length})',
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      SizedBox(height: 8.0),
+                      Container(
+                        height: 80.0,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: state.resources.length,
+                          itemBuilder: (context, index) {
+                            final resource = state.resources[index];
+                            return GestureDetector(
+                              onTap: () {
+                                context.push('/resource/edit?taskId=${widget.task.id}');
+                              },
+                              child: Container(
+                                width: 80.0,
+                                height: 80.0,
+                                margin: EdgeInsets.only(right: 8.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  border: Border.all(color: Colors.grey[300]!),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: File(resource.path).existsSync()
+                                      ? Image.file(
+                                          File(resource.path),
+                                          fit: BoxFit.cover,
+                                          errorBuilder: (context, error, stackTrace) {
+                                            return Container(
+                                              color: Colors.grey[200],
+                                              child: Icon(
+                                                Icons.broken_image,
+                                                color: Colors.grey[400],
+                                                size: 32.0,
+                                              ),
+                                            );
+                                          },
+                                        )
+                                      : Container(
                                           color: Colors.grey[200],
                                           child: Icon(
-                                            Icons.broken_image,
+                                            Icons.image_not_supported,
                                             color: Colors.grey[400],
                                             size: 32.0,
                                           ),
-                                        );
-                                      },
-                                    )
-                                  : Container(
-                                      color: Colors.grey[200],
-                                      child: Icon(
-                                        Icons.image_not_supported,
-                                        color: Colors.grey[400],
-                                        size: 32.0,
-                                      ),
-                                    ),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                                        ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(

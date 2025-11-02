@@ -6,6 +6,9 @@ import 'package:flutter_app/bloc/resource/resource_bloc.dart';
 import 'package:flutter_app/models/resource.dart';
 import 'package:flutter_app/l10n/app_localizations.dart';
 
+import '../../bloc/home/home_bloc.dart';
+import '../../bloc/task/task_bloc.dart';
+
 class ResourceManagePage extends StatefulWidget {
   final int taskId;
 
@@ -47,6 +50,8 @@ class _ResourceManagePageState extends State<ResourceManagePage> {
             );
             // Reload resources after successful addition
             context.read<ResourceBloc>().add(LoadResourcesEvent(widget.taskId));
+            final filter = context.read<HomeBloc>().state.filter;
+            context.read<TaskBloc>().add(FilterTasksEvent(filter: filter!));
           } else if (state is ResourceRemoveSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -56,6 +61,8 @@ class _ResourceManagePageState extends State<ResourceManagePage> {
             );
             // Reload resources after successful removal
             context.read<ResourceBloc>().add(LoadResourcesEvent(widget.taskId));
+            final filter = context.read<HomeBloc>().state.filter;
+            context.read<TaskBloc>().add(FilterTasksEvent(filter: filter!));
           } else if (state is ResourceError) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
