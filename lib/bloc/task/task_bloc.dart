@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_app/dao/resource_db.dart';
 import 'package:flutter_app/pages/tasks/bloc/filter.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
@@ -14,8 +15,9 @@ part 'task_state.dart';
 class TaskBloc extends Bloc<TaskEvent, TaskState> {
   final TaskDB _taskDB;
   final ILogger _logger = ILogger();
+  final ResourceDB _resourceDB;
 
-  TaskBloc(this._taskDB) : super(TaskInitial()) {
+  TaskBloc(this._taskDB, this._resourceDB) : super(TaskInitial()) {
     on<LoadTasksEvent>(_onLoadTasks);
     on<AddTaskEvent>(_onAddTask);
     on<UpdateTaskEvent>(_onUpdateTask);
@@ -86,10 +88,14 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     final currentState = state;
     if (currentState is TaskLoaded) {
       try {
-        await _taskDB.createTask(
+        final taskID = await _taskDB.createTask(
           event.task,
           labelIDs: event.labelIds,
         );
+        final unassignedResources = await _resourceDB.getUnassignedResources();
+        for (final resource in unassignedResources) {
+          await _resourceDB.updateResourceTaskId(resource.id, taskID);
+        }
       } catch (e) {
         emit(TaskError(e.toString()));
       }

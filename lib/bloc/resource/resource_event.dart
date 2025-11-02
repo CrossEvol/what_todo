@@ -35,3 +35,10 @@ class RemoveResourceEvent extends ResourceEvent {
   @override
   List<Object> get props => [resourceId, filePath];
 }
+
+class ClearResourcesEvent extends ResourceEvent {
+  const ClearResourcesEvent();
+
+  @override
+  List<Object> get props => [];
+}

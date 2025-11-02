@@ -198,7 +198,7 @@ class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
                 project.name, Filter.byStatus(TaskStatus.PENDING))),
         ),
         BlocProvider(
-          create: (context) => TaskBloc(TaskDB.get())
+          create: (context) => TaskBloc(TaskDB.get(), ResourceDB.get())
             ..add(
                 FilterTasksEvent(filter: Filter.byStatus(TaskStatus.PENDING))),
         ),

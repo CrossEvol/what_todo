@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
+import 'package:flutter_app/bloc/resource/resource_bloc.dart'
+    show ResourceBloc, ResourceState, ResourceLoaded, ClearResourcesEvent;
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
@@ -66,6 +68,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   @override
   void initState() {
     super.initState();
+    context.read<ResourceBloc>().add(ClearResourcesEvent());
   }
 
   @override
