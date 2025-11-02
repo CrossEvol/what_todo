@@ -1,5 +1,5 @@
 import 'package:drift/drift.dart';
-import 'package:flutter_app/models/reminder_type.dart';
+import 'package:flutter_app/models/reminder/reminder_type.dart';
 import 'package:flutter_app/models/setting_type.dart';
 
 class Project extends Table {

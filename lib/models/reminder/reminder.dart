@@ -1,5 +1,5 @@
 import 'package:enum_to_string/enum_to_string.dart';
-import 'package:flutter_app/models/reminder_type.dart';
+import 'package:flutter_app/models/reminder/reminder_type.dart';
 
 class Reminder {
   static final tblReminder = "reminder";

@@ -8,7 +8,7 @@ import 'dart:async' as _i5;
 import 'package:flutter_app/bloc/search/search_bloc.dart' as _i16;
 import 'package:flutter_app/dao/reminder_db.dart' as _i7;
 import 'package:flutter_app/dao/search_db.dart' as _i3;
-import 'package:flutter_app/models/reminder.dart' as _i8;
+import 'package:flutter_app/models/reminder/reminder.dart' as _i8;
 import 'package:flutter_app/pages/labels/label.dart' as _i6;
 import 'package:flutter_app/pages/labels/label_db.dart' as _i4;
 import 'package:flutter_app/pages/profile/profile.dart' as _i11;

@@ -1,6 +1,6 @@
 import 'package:drift/drift.dart';
 import 'package:flutter_app/db/app_db.dart';
-import 'package:flutter_app/models/reminder.dart';
+import 'package:flutter_app/models/reminder/reminder.dart';
 
 class ReminderDB {
   static final ReminderDB _reminderDb = ReminderDB._internal(AppDatabase());

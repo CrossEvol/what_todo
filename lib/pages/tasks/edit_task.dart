@@ -6,7 +6,7 @@ import 'package:flutter_app/bloc/reminder/reminder_bloc.dart';
 import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
-import 'package:flutter_app/models/reminder.dart';
+import 'package:flutter_app/models/reminder/reminder.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/l10n/app_localizations.dart';

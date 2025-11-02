@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/settings/settings_bloc.dart';
 import 'package:flutter_app/constants/keys.dart';
-import 'package:flutter_app/models/reminder_interval.dart';
+import 'package:flutter_app/models/reminder/reminder_interval.dart';
 import 'package:flutter_app/providers/theme_provider.dart';
 import 'package:flutter_app/styles/theme_data_style.dart';
 import 'package:flutter_app/utils/app_util.dart';

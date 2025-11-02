@@ -28,7 +28,7 @@ import 'package:flutter_app/pages/update/update_manager_page.dart';
 import 'package:flutter_app/pages/resource/resource_manage_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:flutter_app/models/reminder.dart';
+import 'package:flutter_app/models/reminder/reminder.dart';
 
 class DefaultGrid extends StatelessWidget {
   const DefaultGrid({super.key});

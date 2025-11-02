@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/task/task_bloc.dart';
-import 'package:flutter_app/models/reminder.dart';
+import 'package:flutter_app/models/reminder/reminder.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/utils/date_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

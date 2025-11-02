@@ -1,6 +1,6 @@
-import 'package:flutter_app/models/reminder.dart';
+import 'package:flutter_app/models/reminder/reminder.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app/models/reminder_type.dart';
+import 'package:flutter_app/models/reminder/reminder_type.dart';
 import 'package:flutter_app/bloc/reminder/reminder_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
