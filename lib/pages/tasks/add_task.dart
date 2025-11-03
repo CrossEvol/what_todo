@@ -6,7 +6,16 @@ import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/bloc/resource/resource_bloc.dart'
-    show ResourceBloc, ResourceState, ResourceLoaded, ClearResourcesEvent, LoadResourcesEvent, ResourceRemoveSuccess, ResourceAddSuccess, ResourceInitial, ResourceLoading;
+    show
+        ResourceBloc,
+        ResourceState,
+        ResourceLoaded,
+        ClearResourcesEvent,
+        LoadResourcesEvent,
+        ResourceRemoveSuccess,
+        ResourceAddSuccess,
+        ResourceInitial,
+        ResourceLoading;
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
@@ -67,6 +76,9 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   @override
   void initState() {
     super.initState();
+    // Load resources for task ID -1 (unassigned resources for new tasks)
+    context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
+
     // 2. 从 CommentCubit 获取初始评论
     final initialComment = context.read<CommentCubit>().state;
     if (initialComment.isNotEmpty) {
@@ -188,16 +200,51 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               },
             ),
             BlocConsumer<ResourceBloc, ResourceState>(
+              key: ValueKey('resource_bloc_consumer'),
               listener: (BuildContext context, ResourceState state) {
                 if (state is ResourceRemoveSuccess) {
-                  context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
+                  // Use post frame callback to ensure the previous operation is complete
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
+                  });
                 } else if (state is ResourceAddSuccess) {
-                  context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
+                  // Use post frame callback to ensure the previous operation is complete
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
+                  });
                 } else if (state is ResourceInitial) {
                   context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
                 }
               },
               builder: (context, state) {
+                // Show loading indicator during resource loading to maintain widget tree
+                if (state is ResourceLoading) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Loading resources...',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        SizedBox(height: 8.0),
+                        Container(
+                          height: 80.0,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
                 if (state is ResourceLoaded && state.resources.isNotEmpty) {
                   return Container(
                     padding: const EdgeInsets.symmetric(
