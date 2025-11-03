@@ -112,7 +112,7 @@ class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
           blocSubscription = resourceBloc.stream.listen((state) {
             if (state is ResourceAddSuccess) {
               // 状态已达到预期，执行跳转
-              context.go('/task/add');
+              context.push('/task/add');
 
               // 关键：任务完成后立即取消订阅，避免内存泄漏和不必要的后续操作
               blocSubscription?.cancel();
@@ -134,7 +134,7 @@ class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
           // 设置初始评论内容，然后跳转
           commentCubit.setInitialComment(firstFile.path);
           if (commentCubit.state.isNotEmpty) {
-            context.go('/task/add');
+            context.push('/task/add');
           }
         }
       } else {
@@ -259,10 +259,11 @@ class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
         ),
         BlocProvider(
           create: (_) => ResourceBloc(ResourceDB.get()),
-          lazy: true,
+          lazy: false,
         ),
         BlocProvider(
           create: (_) => CommentCubit(),
+          lazy: true,
         ),
       ],
       child: Builder(

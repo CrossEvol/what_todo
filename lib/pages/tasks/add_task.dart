@@ -6,15 +6,7 @@ import 'package:flutter_app/bloc/home/home_bloc.dart';
 import 'package:flutter_app/bloc/label/label_bloc.dart';
 import 'package:flutter_app/bloc/project/project_bloc.dart';
 import 'package:flutter_app/bloc/resource/resource_bloc.dart'
-    show
-        ResourceBloc,
-        ResourceState,
-        ResourceLoaded,
-        ClearResourcesEvent,
-        LoadResourcesEvent,
-        ResourceRemoveSuccess,
-        ResourceAddSuccess,
-        ResourceInitial;
+    show ResourceBloc, ResourceState, ResourceLoaded, ClearResourcesEvent, LoadResourcesEvent, ResourceRemoveSuccess, ResourceAddSuccess, ResourceInitial, ResourceLoading;
 import 'package:flutter_app/bloc/task/task_bloc.dart';
 import 'package:flutter_app/constants/color_constant.dart';
 import 'package:flutter_app/constants/keys.dart';
@@ -93,227 +85,227 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              context.read<ResourceBloc>().add(ClearResourcesEvent());
-              context.safePop();
-            },
-            icon: Icon(Icons.arrow_back)),
-        title: Text(
-          AppLocalizations.of(context)!.addTask,
-          key: ValueKey(AddTaskKeys.ADD_TASK_TITLE),
+    return PopScope(
+      onPopInvokedWithResult: (didPop, result) {
+        context.read<ResourceBloc>().add(ClearResourcesEvent());
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            AppLocalizations.of(context)!.addTask,
+            key: ValueKey(AddTaskKeys.ADD_TASK_TITLE),
+          ),
         ),
-      ),
-      body: ListView(
-        children: <Widget>[
-          Form(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                key: ValueKey(AddTaskKeys.ADD_TITLE),
-                validator: (value) {
-                  return value!.isEmpty
-                      ? AppLocalizations.of(context)!.titleCannotBeEmpty
-                      : null;
-                },
-                controller: _titleController,
-                onSaved: (value) {},
-                keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(
-                  hintText: "",
-                  labelText: AppLocalizations.of(context)!.taskTitle,
-                  focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Theme.of(context).primaryColor)),
-                  floatingLabelBehavior: FloatingLabelBehavior.auto,
+        body: ListView(
+          children: <Widget>[
+            Form(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  key: ValueKey(AddTaskKeys.ADD_TITLE),
+                  validator: (value) {
+                    return value!.isEmpty
+                        ? AppLocalizations.of(context)!.titleCannotBeEmpty
+                        : null;
+                  },
+                  controller: _titleController,
+                  onSaved: (value) {},
+                  keyboardType: TextInputType.multiline,
+                  decoration: InputDecoration(
+                    hintText: "",
+                    labelText: AppLocalizations.of(context)!.taskTitle,
+                    focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Theme.of(context).primaryColor)),
+                    floatingLabelBehavior: FloatingLabelBehavior.auto,
+                  ),
                 ),
               ),
+              key: _formState,
             ),
-            key: _formState,
-          ),
-          ListTile(
-            key: ValueKey("addProject"),
-            leading: Icon(Icons.book),
-            title: Text(AppLocalizations.of(context)!.project),
-            subtitle: Text(selectedProject.name),
-            hoverColor: _grey,
-            onTap: () {
-              _showProjectsDialog(context);
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.calendar_today),
-            title: Text(AppLocalizations.of(context)!.dueDate),
-            subtitle: Text(getFormattedDate(selectedDueDate)),
-            hoverColor: _grey,
-            onTap: () {
-              _showDatePicker(context);
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.flag),
-            title: Text(AppLocalizations.of(context)!.priority),
-            subtitle: Text(priorityText[selectedPriority.index]),
-            hoverColor: _grey,
-            onTap: () {
-              _showPriorityDialog(context);
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.label),
-            title: Text(AppLocalizations.of(context)!.labels),
-            subtitle: Text(labelNames),
-            hoverColor: _grey,
-            onTap: () {
-              _showLabelsDialog(context);
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.mode_comment),
-            title: Text(AppLocalizations.of(context)!.comments),
-            subtitle: Text(commentPreview),
-            hoverColor: _grey,
-            onTap: () {
-              _showCommentDialog(context);
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.timer),
-            title: Text(AppLocalizations.of(context)!.reminder),
-            subtitle: Text(AppLocalizations.of(context)!.noReminder),
-            hoverColor: _grey,
-            onTap: () {
-              showSnackbar(context, AppLocalizations.of(context)!.comingSoon);
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.attachment),
-            title: Text(AppLocalizations.of(context)!.manageResources),
-            subtitle: Text('Attach images to this task'),
-            hoverColor: _grey,
-            onTap: () {
-              context.push('/resource/edit?taskId=${-1}');
-            },
-          ),
-          BlocConsumer<ResourceBloc, ResourceState>(
-            listener: (BuildContext context, ResourceState state) {
-              if (state is ResourceRemoveSuccess) {
-                context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
-              } else if (state is ResourceAddSuccess) {
-                context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
-              } else if (state is ResourceInitial) {
-                context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
-              }
-            },
-            builder: (context, state) {
-              if (state is ResourceLoaded && state.resources.isNotEmpty) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Resources (${state.resources.length})',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey[600],
+            ListTile(
+              key: ValueKey("addProject"),
+              leading: Icon(Icons.book),
+              title: Text(AppLocalizations.of(context)!.project),
+              subtitle: Text(selectedProject.name),
+              hoverColor: _grey,
+              onTap: () {
+                _showProjectsDialog(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.calendar_today),
+              title: Text(AppLocalizations.of(context)!.dueDate),
+              subtitle: Text(getFormattedDate(selectedDueDate)),
+              hoverColor: _grey,
+              onTap: () {
+                _showDatePicker(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.flag),
+              title: Text(AppLocalizations.of(context)!.priority),
+              subtitle: Text(priorityText[selectedPriority.index]),
+              hoverColor: _grey,
+              onTap: () {
+                _showPriorityDialog(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.label),
+              title: Text(AppLocalizations.of(context)!.labels),
+              subtitle: Text(labelNames),
+              hoverColor: _grey,
+              onTap: () {
+                _showLabelsDialog(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.mode_comment),
+              title: Text(AppLocalizations.of(context)!.comments),
+              subtitle: Text(commentPreview),
+              hoverColor: _grey,
+              onTap: () {
+                _showCommentDialog(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.timer),
+              title: Text(AppLocalizations.of(context)!.reminder),
+              subtitle: Text(AppLocalizations.of(context)!.noReminder),
+              hoverColor: _grey,
+              onTap: () {
+                showSnackbar(context, AppLocalizations.of(context)!.comingSoon);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.attachment),
+              title: Text(AppLocalizations.of(context)!.manageResources),
+              subtitle: Text('Attach images to this task'),
+              hoverColor: _grey,
+              onTap: () {
+                context.push('/resource/edit?taskId=${-1}');
+              },
+            ),
+            BlocConsumer<ResourceBloc, ResourceState>(
+              listener: (BuildContext context, ResourceState state) {
+                if (state is ResourceRemoveSuccess) {
+                  context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
+                } else if (state is ResourceAddSuccess) {
+                  context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
+                } else if (state is ResourceInitial) {
+                  context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
+                }
+              },
+              builder: (context, state) {
+                if (state is ResourceLoaded && state.resources.isNotEmpty) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0, vertical: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Resources (${state.resources.length})',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.grey[600],
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 8.0),
-                      Container(
-                        height: 80.0,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: state.resources.length,
-                          itemBuilder: (context, index) {
-                            final resource = state.resources[index];
-                            return GestureDetector(
-                              onTap: () {
-                                context.push('/resource/edit?taskId=-1');
-                              },
-                              child: Container(
-                                width: 80.0,
-                                height: 80.0,
-                                margin: EdgeInsets.only(right: 8.0),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  border: Border.all(color: Colors.grey[300]!),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  child: File(resource.path).existsSync()
-                                      ? Image.file(
-                                          File(resource.path),
-                                          fit: BoxFit.cover,
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            return Container(
-                                              color: Colors.grey[200],
-                                              child: Icon(
-                                                Icons.broken_image,
-                                                color: Colors.grey[400],
-                                                size: 32.0,
-                                              ),
-                                            );
-                                          },
-                                        )
-                                      : Container(
-                                          color: Colors.grey[200],
-                                          child: Icon(
-                                            Icons.image_not_supported,
-                                            color: Colors.grey[400],
-                                            size: 32.0,
+                        SizedBox(height: 8.0),
+                        Container(
+                          height: 80.0,
+                          child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: state.resources.length,
+                            itemBuilder: (context, index) {
+                              final resource = state.resources[index];
+                              return GestureDetector(
+                                onTap: () {
+                                  context.push('/resource/edit?taskId=-1');
+                                },
+                                child: Container(
+                                  width: 80.0,
+                                  height: 80.0,
+                                  margin: EdgeInsets.only(right: 8.0),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    border:
+                                        Border.all(color: Colors.grey[300]!),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: File(resource.path).existsSync()
+                                        ? Image.file(
+                                            File(resource.path),
+                                            fit: BoxFit.cover,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return Container(
+                                                color: Colors.grey[200],
+                                                child: Icon(
+                                                  Icons.broken_image,
+                                                  color: Colors.grey[400],
+                                                  size: 32.0,
+                                                ),
+                                              );
+                                            },
+                                          )
+                                        : Container(
+                                            color: Colors.grey[200],
+                                            child: Icon(
+                                              Icons.image_not_supported,
+                                              color: Colors.grey[400],
+                                              size: 32.0,
+                                            ),
                                           ),
-                                        ),
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
+                      ],
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+            key: ValueKey(AddTaskKeys.ADD_TASK),
+            child: Icon(Icons.send, color: Colors.white),
+            onPressed: () {
+              if (_formState.currentState!.validate()) {
+                _formState.currentState!.save();
+                context.read<TaskBloc>().add(AddTaskEvent(
+                    task: Task.create(
+                      title: _titleController.text,
+                      projectId: selectedProject.id ?? 0,
+                      priority: selectedPriority,
+                      comment: _commentController.text,
+                    ),
+                    labelIds: labelIds));
+
+                /// if add task success
+                context.read<HomeBloc>().add(LoadTodayCountEvent());
+                final filter = context.read<HomeBloc>().state.filter;
+                context.read<TaskBloc>().add(FilterTasksEvent(filter: filter!));
+                context.read<ResourceBloc>().add(ClearResourcesEvent());
+
+                if (context.isWiderScreen()) {
+                  context
+                      .read<HomeBloc>()
+                      .add(ApplyFilterEvent("Today", Filter.byToday()));
+                } else {
+                  context.safePop();
+                }
               }
-              return const SizedBox.shrink();
-            },
-          ),
-        ],
+            }),
       ),
-      floatingActionButton: FloatingActionButton(
-          key: ValueKey(AddTaskKeys.ADD_TASK),
-          child: Icon(Icons.send, color: Colors.white),
-          onPressed: () {
-            if (_formState.currentState!.validate()) {
-              _formState.currentState!.save();
-              context.read<TaskBloc>().add(AddTaskEvent(
-                  task: Task.create(
-                    title: _titleController.text,
-                    projectId: selectedProject.id ?? 0,
-                    priority: selectedPriority,
-                    comment: _commentController.text,
-                  ),
-                  labelIds: labelIds));
-
-              /// if add task success
-              context.read<HomeBloc>().add(LoadTodayCountEvent());
-              final filter = context.read<HomeBloc>().state.filter;
-              context.read<TaskBloc>().add(FilterTasksEvent(filter: filter!));
-              context.read<ResourceBloc>().add(ClearResourcesEvent());
-
-              if (context.isWiderScreen()) {
-                context
-                    .read<HomeBloc>()
-                    .add(ApplyFilterEvent("Today", Filter.byToday()));
-              } else {
-                context.safePop();
-              }
-            }
-          }),
     );
   }
 

@@ -30,17 +30,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_app/models/reminder/reminder.dart';
 
-class DefaultGrid extends StatelessWidget {
-  const DefaultGrid({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: 暂时用路由回首页的方式来处理，在 share 图片或文字跳转到 AddTask 时， navi-back会看到这个界面
-    context.go('/');
-    return const Placeholder();
-  }
-}
-
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 /// The route configuration.

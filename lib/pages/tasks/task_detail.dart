@@ -97,7 +97,7 @@ class TaskDetailPage extends StatelessWidget {
                 if (context.canPop()) {
                   context.pop();
                 } else {
-                  context.go('/');
+                  context.push('/');
                 }
               },
             ),
