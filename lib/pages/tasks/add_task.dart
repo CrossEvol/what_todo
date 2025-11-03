@@ -110,31 +110,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
         ),
         body: ListView(
           children: <Widget>[
-            Form(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextFormField(
-                  key: ValueKey(AddTaskKeys.ADD_TITLE),
-                  validator: (value) {
-                    return value!.isEmpty
-                        ? AppLocalizations.of(context)!.titleCannotBeEmpty
-                        : null;
-                  },
-                  controller: _titleController,
-                  onSaved: (value) {},
-                  keyboardType: TextInputType.multiline,
-                  decoration: InputDecoration(
-                    hintText: "",
-                    labelText: AppLocalizations.of(context)!.taskTitle,
-                    focusedBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Theme.of(context).primaryColor)),
-                    floatingLabelBehavior: FloatingLabelBehavior.auto,
-                  ),
-                ),
-              ),
-              key: _formState,
-            ),
+            _inputForm(context),
             ListTile(
               key: ValueKey("addProject"),
               leading: Icon(Icons.book),
@@ -199,127 +175,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 context.push('/resource/edit?taskId=${-1}');
               },
             ),
-            BlocConsumer<ResourceBloc, ResourceState>(
-              key: ValueKey('resource_bloc_consumer'),
-              listener: (BuildContext context, ResourceState state) {
-                if (state is ResourceRemoveSuccess) {
-                  // Use post frame callback to ensure the previous operation is complete
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
-                  });
-                } else if (state is ResourceAddSuccess) {
-                  // Use post frame callback to ensure the previous operation is complete
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
-                  });
-                } else if (state is ResourceInitial) {
-                  context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
-                }
-              },
-              builder: (context, state) {
-                // Show loading indicator during resource loading to maintain widget tree
-                if (state is ResourceLoading) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Loading resources...',
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        SizedBox(height: 8.0),
-                        Container(
-                          height: 80.0,
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                if (state is ResourceLoaded && state.resources.isNotEmpty) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Resources (${state.resources.length})',
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        SizedBox(height: 8.0),
-                        Container(
-                          height: 80.0,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: state.resources.length,
-                            itemBuilder: (context, index) {
-                              final resource = state.resources[index];
-                              return GestureDetector(
-                                onTap: () {
-                                  context.push('/resource/edit?taskId=-1');
-                                },
-                                child: Container(
-                                  width: 80.0,
-                                  height: 80.0,
-                                  margin: EdgeInsets.only(right: 8.0),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    border:
-                                        Border.all(color: Colors.grey[300]!),
-                                  ),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    child: File(resource.path).existsSync()
-                                        ? Image.file(
-                                            File(resource.path),
-                                            fit: BoxFit.cover,
-                                            errorBuilder:
-                                                (context, error, stackTrace) {
-                                              return Container(
-                                                color: Colors.grey[200],
-                                                child: Icon(
-                                                  Icons.broken_image,
-                                                  color: Colors.grey[400],
-                                                  size: 32.0,
-                                                ),
-                                              );
-                                            },
-                                          )
-                                        : Container(
-                                            color: Colors.grey[200],
-                                            child: Icon(
-                                              Icons.image_not_supported,
-                                              color: Colors.grey[400],
-                                              size: 32.0,
-                                            ),
-                                          ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-                return const SizedBox.shrink();
-              },
-            ),
+            _buildResourcesThumbnail(),
           ],
         ),
         floatingActionButton: FloatingActionButton(
@@ -354,6 +210,160 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
             }),
       ),
     );
+  }
+
+  Form _inputForm(BuildContext context) {
+    return Form(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextFormField(
+                key: ValueKey(AddTaskKeys.ADD_TITLE),
+                validator: (value) {
+                  return value!.isEmpty
+                      ? AppLocalizations.of(context)!.titleCannotBeEmpty
+                      : null;
+                },
+                controller: _titleController,
+                minLines: 1,
+                maxLines: 5,
+                onSaved: (value) {},
+                keyboardType: TextInputType.multiline,
+                decoration: InputDecoration(
+                  hintText: "",
+                  labelText: AppLocalizations.of(context)!.taskTitle,
+                  focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Theme.of(context).primaryColor)),
+                  floatingLabelBehavior: FloatingLabelBehavior.auto,
+                ),
+              ),
+            ),
+            key: _formState,
+          );
+  }
+
+  BlocConsumer<ResourceBloc, ResourceState> _buildResourcesThumbnail() {
+    return BlocConsumer<ResourceBloc, ResourceState>(
+            key: ValueKey('resource_bloc_consumer'),
+            listener: (BuildContext context, ResourceState state) {
+              if (state is ResourceRemoveSuccess) {
+                // Use post frame callback to ensure the previous operation is complete
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
+                });
+              } else if (state is ResourceAddSuccess) {
+                // Use post frame callback to ensure the previous operation is complete
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
+                });
+              } else if (state is ResourceInitial) {
+                context.read<ResourceBloc>().add(LoadResourcesEvent(-1));
+              }
+            },
+            builder: (context, state) {
+              // Show loading indicator during resource loading to maintain widget tree
+              if (state is ResourceLoading) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Loading resources...',
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      SizedBox(height: 8.0),
+                      Container(
+                        height: 80.0,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              if (state is ResourceLoaded && state.resources.isNotEmpty) {
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Resources (${state.resources.length})',
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                      SizedBox(height: 8.0),
+                      Container(
+                        height: 80.0,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: state.resources.length,
+                          itemBuilder: (context, index) {
+                            final resource = state.resources[index];
+                            return GestureDetector(
+                              onTap: () {
+                                context.push('/resource/edit?taskId=-1');
+                              },
+                              child: Container(
+                                width: 80.0,
+                                height: 80.0,
+                                margin: EdgeInsets.only(right: 8.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  border:
+                                      Border.all(color: Colors.grey[300]!),
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: File(resource.path).existsSync()
+                                      ? Image.file(
+                                          File(resource.path),
+                                          fit: BoxFit.cover,
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Container(
+                                              color: Colors.grey[200],
+                                              child: Icon(
+                                                Icons.broken_image,
+                                                color: Colors.grey[400],
+                                                size: 32.0,
+                                              ),
+                                            );
+                                          },
+                                        )
+                                      : Container(
+                                          color: Colors.grey[200],
+                                          child: Icon(
+                                            Icons.image_not_supported,
+                                            color: Colors.grey[400],
+                                            size: 32.0,
+                                          ),
+                                        ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          );
   }
 
   Color? get _grey => Colors.grey[300];
@@ -424,13 +434,17 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          insetPadding: EdgeInsets.zero,
           title: Text(AppLocalizations.of(context)!.comments),
-          content: TextField(
-            controller: _commentController,
-            maxLines: 5,
-            decoration: InputDecoration(
-              hintText: AppLocalizations.of(context)!.comments,
-              border: OutlineInputBorder(),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: TextField(
+              controller: _commentController,
+              maxLines: 5,
+              decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.comments,
+                border: OutlineInputBorder(),
+              ),
             ),
           ),
           actions: <Widget>[

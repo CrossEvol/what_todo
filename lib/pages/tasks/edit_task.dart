@@ -149,33 +149,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
       ),
       body: ListView(
         children: <Widget>[
-          Form(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextFormField(
-                key: ValueKey(EditTaskKeys.Edit_TITLE),
-                validator: (value) {
-                  return value!.isEmpty
-                      ? AppLocalizations.of(context)!.titleCannotBeEmpty
-                      : null;
-                },
-                controller: _titleController,
-                onSaved: (value) {},
-                keyboardType: TextInputType.multiline,
-                minLines: 1,
-                maxLines: 5,
-                decoration: InputDecoration(
-                  hintText: "",
-                  labelText: AppLocalizations.of(context)!.taskTitle,
-                  focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Theme.of(context).primaryColor)),
-                  floatingLabelBehavior: FloatingLabelBehavior.auto,
-                ),
-              ),
-            ),
-            key: _formState,
-          ),
+          _inputForm(context),
           ListTile(
             key: ValueKey("editProject"),
             leading: Icon(Icons.book),
@@ -263,80 +237,7 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
               context.push('/resource/edit?taskId=${widget.task.id}');
             },
           ),
-          BlocBuilder<ResourceBloc, ResourceState>(
-            builder: (context, state) {
-              if (state is ResourceLoaded && state.resources.isNotEmpty) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Resources (${state.resources.length})',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey[600],
-                        ),
-                      ),
-                      SizedBox(height: 8.0),
-                      Container(
-                        height: 80.0,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: state.resources.length,
-                          itemBuilder: (context, index) {
-                            final resource = state.resources[index];
-                            return GestureDetector(
-                              onTap: () {
-                                context.push('/resource/edit?taskId=${widget.task.id}');
-                              },
-                              child: Container(
-                                width: 80.0,
-                                height: 80.0,
-                                margin: EdgeInsets.only(right: 8.0),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  border: Border.all(color: Colors.grey[300]!),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  child: File(resource.path).existsSync()
-                                      ? Image.file(
-                                          File(resource.path),
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (context, error, stackTrace) {
-                                            return Container(
-                                              color: Colors.grey[200],
-                                              child: Icon(
-                                                Icons.broken_image,
-                                                color: Colors.grey[400],
-                                                size: 32.0,
-                                              ),
-                                            );
-                                          },
-                                        )
-                                      : Container(
-                                          color: Colors.grey[200],
-                                          child: Icon(
-                                            Icons.image_not_supported,
-                                            color: Colors.grey[400],
-                                            size: 32.0,
-                                          ),
-                                        ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              }
-              return const SizedBox.shrink();
-            },
-          ),
+          _buildResourcesThumbnail(),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -370,6 +271,113 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
             }
           }),
     );
+  }
+
+  BlocBuilder<ResourceBloc, ResourceState> _buildResourcesThumbnail() {
+    return BlocBuilder<ResourceBloc, ResourceState>(
+          builder: (context, state) {
+            if (state is ResourceLoaded && state.resources.isNotEmpty) {
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Resources (${state.resources.length})',
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                    SizedBox(height: 8.0),
+                    Container(
+                      height: 80.0,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: state.resources.length,
+                        itemBuilder: (context, index) {
+                          final resource = state.resources[index];
+                          return GestureDetector(
+                            onTap: () {
+                              context.push('/resource/edit?taskId=${widget.task.id}');
+                            },
+                            child: Container(
+                              width: 80.0,
+                              height: 80.0,
+                              margin: EdgeInsets.only(right: 8.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                                border: Border.all(color: Colors.grey[300]!),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: File(resource.path).existsSync()
+                                    ? Image.file(
+                                        File(resource.path),
+                                        fit: BoxFit.cover,
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return Container(
+                                            color: Colors.grey[200],
+                                            child: Icon(
+                                              Icons.broken_image,
+                                              color: Colors.grey[400],
+                                              size: 32.0,
+                                            ),
+                                          );
+                                        },
+                                      )
+                                    : Container(
+                                        color: Colors.grey[200],
+                                        child: Icon(
+                                          Icons.image_not_supported,
+                                          color: Colors.grey[400],
+                                          size: 32.0,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+          },
+        );
+  }
+
+  Form _inputForm(BuildContext context) {
+    return Form(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextFormField(
+              key: ValueKey(EditTaskKeys.Edit_TITLE),
+              validator: (value) {
+                return value!.isEmpty
+                    ? AppLocalizations.of(context)!.titleCannotBeEmpty
+                    : null;
+              },
+              controller: _titleController,
+              onSaved: (value) {},
+              keyboardType: TextInputType.multiline,
+              minLines: 1,
+              maxLines: 5,
+              decoration: InputDecoration(
+                hintText: "",
+                labelText: AppLocalizations.of(context)!.taskTitle,
+                focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Theme.of(context).primaryColor)),
+                floatingLabelBehavior: FloatingLabelBehavior.auto,
+              ),
+            ),
+          ),
+          key: _formState,
+        );
   }
 
   void _showRemindersBottomSheet(BuildContext context) {
