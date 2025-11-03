@@ -38,7 +38,7 @@ android {
         minSdk flutter.minSdkVersion
         targetSdk 34
         versionCode 6
-        versionName '1.6.6+customize-naviback'
+        versionName '1.6.7+postframe-callback'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled = true
     }

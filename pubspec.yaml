@@ -1,6 +1,6 @@
 name: flutter_app
 description: A new Flutter application.
-version: 1.6.6+customize-naviback
+version: 1.6.7+postframe-callback
 
 environment:
   sdk: '>=3.1.0 <4.0.0'
