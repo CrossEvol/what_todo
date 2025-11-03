@@ -115,4 +115,30 @@ class ProjectDB {
       }
     }
   }
+
+  /// Batch insert multiple projects within a single transaction
+  /// This method provides better performance for bulk operations
+  Future<void> batchInsertProjects(List<Project> projects) async {
+    return await _db.transaction(() async {
+      for (var project in projects) {
+        await _db.into(_db.project).insertOnConflictUpdate(
+          ProjectCompanion(
+            id: project.id != null ? Value(project.id!) : Value.absent(),
+            name: Value(project.name),
+            colorCode: Value(project.colorValue),
+            colorName: Value(project.colorName),
+          ),
+        );
+      }
+    });
+  }
+
+  /// Get existing project names from a list of names for bulk existence checking
+  /// Returns a Set of project names that already exist in the database
+  Future<Set<String>> getExistingProjectNames(List<String> names) async {
+    final query = _db.select(_db.project)
+      ..where((tbl) => tbl.name.isIn(names));
+    final results = await query.get();
+    return results.map((p) => p.name).toSet();
+  }
 }
