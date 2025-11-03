@@ -21,24 +21,24 @@
   - Implement batchInsertTaskLabels method
   - _Requirements: 1.4, 2.1, 2.5, 3.1_
 
-- [ ] 4. Optimize ImportBloc _onImportInProgress method
-- [ ] 4.1 Implement pre-filtering logic
+- [x] 4. Optimize ImportBloc _onImportInProgress method
+- [x] 4.1 Implement pre-filtering logic
   - Add bulk existence checking for projects, labels, and tasks
   - Filter out existing records to avoid unnecessary operations
   - _Requirements: 2.4, 3.4_
 
-- [ ] 4.2 Replace individual inserts with batch operations
+- [x] 4.2 Replace individual inserts with batch operations
   - Refactor project insertion to use batch operations
   - Refactor label insertion to use batch operations
   - Refactor task insertion to use batch operations
   - _Requirements: 1.1, 1.2, 1.3, 1.5_
 
-- [ ] 4.3 Implement batch task-label relationship creation
+- [x] 4.3 Implement batch task-label relationship creation
   - Build ID mappings after batch inserts
   - Create task-label relationships in batches
   - _Requirements: 1.4, 2.5_
 
-- [ ] 4.4 Add enhanced error handling and logging
+- [x] 4.4 Add enhanced error handling and logging
   - Implement transaction rollback on batch failures
   - Add fallback to individual operations if batch fails
   - Add performance monitoring logs

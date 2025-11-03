@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:equatable/equatable.dart';
+import 'package:flutter_app/models/task_label_relation.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
+import 'package:flutter_app/utils/logger_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'import_event.dart';
@@ -259,63 +261,208 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
 
   FutureOr<void> _onImportInProgress(
       ImportInProgressEvent event, Emitter<ImportState> emit) async {
+    final startTime = DateTime.now();
+    logger.info('Import started at: ${startTime.toIso8601String()}');
+    logger.info('Import data: ${event.projects.length} projects, ${event.labels.length} labels, ${event.tasks.length} tasks');
+
     try {
-      // Import projects
-      for (var project in event.projects) {
-        final projectObj = Project(
-            id: project.id,
-            name: project.name,
-            colorValue: project.colorCode,
-            colorName: project.colorName);
+      // Pre-filtering: Check existing records to avoid unnecessary operations
+      final filterStartTime = DateTime.now();
+      
+      // Get existing project names
+      final projectNames = event.projects.map((p) => p.name).toList();
+      final existingProjectNames = await _projectDB.getExistingProjectNames(projectNames);
+      
+      // Filter out existing projects
+      final newProjects = event.projects
+          .where((project) => !existingProjectNames.contains(project.name))
+          .map((project) => Project(
+              id: project.id,
+              name: project.name,
+              colorValue: project.colorCode,
+              colorName: project.colorName))
+          .toList();
 
-        if (!await _projectDB.isProjectExists(projectObj)) {
-          await _projectDB.insertProject(projectObj);
-        }
-      }
+      // Get existing label names
+      final labelNames = event.labels.map((l) => l.name).toList();
+      final existingLabelNames = await _labelDB.getExistingLabelNames(labelNames);
+      
+      // Filter out existing labels
+      final newLabels = event.labels
+          .where((label) => !existingLabelNames.contains(label.name))
+          .map((label) => Label.fromMap({
+              'id': label.id,
+              'name': label.name,
+              'colorCode': label.colorCode,
+              'colorName': label.colorName,
+            }))
+          .toList();
 
-      // Import labels
-      for (var label in event.labels) {
-        final labelObj = Label.fromMap({
-          'id': label.id,
-          'name': label.name,
-          'colorCode': label.colorCode,
-          'colorName': label.colorName,
-        });
+      // Get existing task titles
+      final taskTitles = event.tasks.map((t) => t.title).toList();
+      final existingTaskTitles = await _taskDB.getExistingTaskTitles(taskTitles);
+      
+      // Filter out existing tasks
+      final newTasks = event.tasks
+          .where((task) => !existingTaskTitles.contains(task.title))
+          .toList();
 
-        if (!await _labelDB.isLabelExists(labelObj)) {
-          await _labelDB.insertLabel(labelObj);
-        }
-      }
+      final filterDuration = DateTime.now().difference(filterStartTime);
+      logger.info('Pre-filtering completed in ${filterDuration.inMilliseconds}ms');
+      logger.info('Filtered data: ${newProjects.length} new projects, ${newLabels.length} new labels, ${newTasks.length} new tasks');
 
-      // Import tasks
-      for (var task in event.tasks) {
-        // Find project ID for the task
-        int projectId = 1; // Default to Inbox
-        for (var project in event.projects) {
-          if (project.name == task.projectName) {
-            projectId = project.id;
-            break;
-          }
-        }
-        task.projectId = projectId;
-
-        // Find label IDs for the task
-        List<int> labelIds = [];
-        for (var taskLabel in task.labelList) {
-          for (var label in event.labels) {
-            if (label.name == taskLabel.name) {
-              labelIds.add(label.id);
-              break;
+      // Batch import projects with error handling
+      if (newProjects.isNotEmpty) {
+        final projectStartTime = DateTime.now();
+        try {
+          await _projectDB.batchInsertProjects(newProjects);
+          final projectDuration = DateTime.now().difference(projectStartTime);
+          logger.info('Batch project import completed in ${projectDuration.inMilliseconds}ms');
+        } catch (e) {
+          logger.warn('Batch project import failed, falling back to individual inserts: $e');
+          // Fallback to individual operations
+          for (var project in newProjects) {
+            try {
+              await _projectDB.insertProject(project);
+            } catch (individualError) {
+              logger.error('Failed to insert project ${project.name}: $individualError');
             }
           }
         }
-
-        // Create or update the task
-        await _taskDB.createTask(task, labelIDs: labelIds);
       }
 
+      // Batch import labels with error handling
+      if (newLabels.isNotEmpty) {
+        final labelStartTime = DateTime.now();
+        try {
+          await _labelDB.batchInsertLabels(newLabels);
+          final labelDuration = DateTime.now().difference(labelStartTime);
+          logger.info('Batch label import completed in ${labelDuration.inMilliseconds}ms');
+        } catch (e) {
+          logger.warn('Batch label import failed, falling back to individual inserts: $e');
+          // Fallback to individual operations
+          for (var label in newLabels) {
+            try {
+              await _labelDB.insertLabel(label);
+            } catch (individualError) {
+              logger.error('Failed to insert label ${label.name}: $individualError');
+            }
+          }
+        }
+      }
+
+      // Batch import tasks and create task-label relationships with error handling
+      if (newTasks.isNotEmpty) {
+        final taskStartTime = DateTime.now();
+        
+        // Prepare tasks with correct project IDs
+        for (var task in newTasks) {
+          // Find project ID for the task
+          int projectId = 1; // Default to Inbox
+          for (var project in event.projects) {
+            if (project.name == task.projectName) {
+              projectId = project.id;
+              break;
+            }
+          }
+          task.projectId = projectId;
+        }
+
+        try {
+          // Batch insert tasks and get their IDs
+          final insertedTaskIds = await _taskDB.batchInsertTasks(newTasks);
+          final taskDuration = DateTime.now().difference(taskStartTime);
+          logger.info('Batch task import completed in ${taskDuration.inMilliseconds}ms');
+
+          // Build ID mappings after batch inserts
+          final relationStartTime = DateTime.now();
+          
+          // Create project name to ID mapping
+          final projectNameToId = <String, int>{};
+          for (var project in event.projects) {
+            projectNameToId[project.name] = project.id;
+          }
+
+          // Create label name to ID mapping
+          final labelNameToId = <String, int>{};
+          for (var label in event.labels) {
+            labelNameToId[label.name] = label.id;
+          }
+
+          // Create task-label relationships in batches
+          final taskLabelRelations = <TaskLabelRelation>[];
+          for (int i = 0; i < newTasks.length; i++) {
+            final task = newTasks[i];
+            final taskId = insertedTaskIds[i];
+            
+            // Build relationships for this task's labels
+            for (var taskLabel in task.labelList) {
+              final labelId = labelNameToId[taskLabel.name];
+              if (labelId != null) {
+                taskLabelRelations.add(TaskLabelRelation(
+                  taskId: taskId,
+                  labelId: labelId,
+                ));
+              }
+            }
+          }
+
+          // Batch insert task-label relationships
+          if (taskLabelRelations.isNotEmpty) {
+            try {
+              await _taskDB.batchInsertTaskLabels(taskLabelRelations);
+              final relationDuration = DateTime.now().difference(relationStartTime);
+              logger.info('Batch task-label relationship creation completed in ${relationDuration.inMilliseconds}ms');
+            } catch (e) {
+              logger.error('Batch task-label relationship creation failed: $e');
+              // Note: Individual fallback for relationships would require more complex logic
+              // as we'd need to recreate the relationships one by one
+              throw e; // Re-throw to trigger overall fallback
+            }
+          }
+        } catch (e) {
+          logger.warn('Batch task import failed, falling back to individual inserts: $e');
+          // Fallback to individual operations
+          for (var task in newTasks) {
+            try {
+              // Find project ID for the task
+              int projectId = 1; // Default to Inbox
+              for (var project in event.projects) {
+                if (project.name == task.projectName) {
+                  projectId = project.id;
+                  break;
+                }
+              }
+              task.projectId = projectId;
+
+              // Find label IDs for the task
+              List<int> labelIds = [];
+              for (var taskLabel in task.labelList) {
+                for (var label in event.labels) {
+                  if (label.name == taskLabel.name) {
+                    labelIds.add(label.id);
+                    break;
+                  }
+                }
+              }
+
+              // Create task with relationships
+              await _taskDB.createTask(task, labelIDs: labelIds);
+            } catch (individualError) {
+              logger.error('Failed to insert task ${task.title}: $individualError');
+            }
+          }
+        }
+      }
+
+      final totalDuration = DateTime.now().difference(startTime);
+      logger.info('Import completed successfully in ${totalDuration.inMilliseconds}ms');
+      
       emit(const ImportSuccess());
     } catch (e) {
+      final totalDuration = DateTime.now().difference(startTime);
+      logger.error('Import failed after ${totalDuration.inMilliseconds}ms: $e');
+      
       emit(ImportError(
         message: 'Error during import: $e',
         projects: event.projects,
