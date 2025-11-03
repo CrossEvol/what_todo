@@ -7,6 +7,7 @@ import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/models/resource.dart';
+import 'package:flutter_app/models/task_label_relation.dart';
 
 class TaskDB {
   static final TaskDB _taskDb = TaskDB._internal(AppDatabase());
@@ -565,6 +566,59 @@ class TaskDB {
         }
       }
     }
+  }
+
+  /// Batch insert tasks with transaction wrapper
+  /// Returns list of inserted task IDs
+  Future<List<int>> batchInsertTasks(List<Task> tasks) async {
+    return await _db.transaction(() async {
+      List<int> insertedIds = [];
+      
+      for (var task in tasks) {
+        int id = await _db.into(_db.task).insert(
+          TaskCompanion(
+            id: task.id != null ? Value(task.id!) : Value.absent(),
+            title: Value(task.title),
+            projectId: Value(task.projectId),
+            comment: Value(task.comment),
+            dueDate: Value(DateTime.fromMillisecondsSinceEpoch(task.dueDate)),
+            priority: Value(task.priority.index),
+            status: Value(task.tasksStatus!.index),
+            order: Value(await _orderForNewTask()),
+          ),
+        );
+        insertedIds.add(id);
+      }
+      
+      return insertedIds;
+    });
+  }
+
+  /// Check existing tasks by title for bulk existence checking
+  /// Returns set of existing task titles
+  Future<Set<String>> getExistingTaskTitles(List<String> titles) async {
+    if (titles.isEmpty) return <String>{};
+    
+    final query = _db.select(_db.task)
+      ..where((tbl) => tbl.title.isIn(titles));
+    final results = await query.get();
+    return results.map((t) => t.title).toSet();
+  }
+
+  /// Batch insert task-label relationships with transaction wrapper
+  Future<void> batchInsertTaskLabels(List<TaskLabelRelation> relations) async {
+    if (relations.isEmpty) return;
+    
+    return await _db.transaction(() async {
+      for (var relation in relations) {
+        await _db.into(_db.taskLabel).insertOnConflictUpdate(
+          TaskLabelCompanion(
+            taskId: Value(relation.taskId),
+            labelId: Value(relation.labelId),
+          ),
+        );
+      }
+    });
   }
 
   // TODO: will remove this method at last , currently for test convenience

@@ -10,13 +10,13 @@
   - Add getExistingLabelNames method for bulk existence checking
   - _Requirements: 1.2, 2.1, 2.2, 3.1_
 
-- [ ] 3. Enhance TaskDB with batch operations
-- [ ] 3.1 Add batch task insertion methods
+- [x] 3. Enhance TaskDB with batch operations
+- [x] 3.1 Add batch task insertion methods
   - Implement batchInsertTasks method with transaction wrapper
   - Add getExistingTaskTitles method for bulk existence checking
   - _Requirements: 1.3, 2.1, 2.2, 3.1_
 
-- [ ] 3.2 Add batch task-label relationship methods
+- [x] 3.2 Add batch task-label relationship methods
   - Create TaskLabelRelation data model
   - Implement batchInsertTaskLabels method
   - _Requirements: 1.4, 2.1, 2.5, 3.1_
