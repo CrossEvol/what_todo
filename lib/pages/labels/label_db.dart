@@ -91,4 +91,28 @@ class LabelDB {
       return result > 0;
     });
   }
+
+  /// Batch insert multiple labels with transaction wrapper
+  Future<void> batchInsertLabels(List<Label> labels) async {
+    return await _db.transaction(() async {
+      for (var label in labels) {
+        await _db.into(_db.label).insertOnConflictUpdate(
+          LabelCompanion(
+            id: label.id != null ? Value(label.id!) : Value.absent(),
+            name: Value(label.name),
+            colorCode: Value(label.colorValue),
+            colorName: Value(label.colorName),
+          ),
+        );
+      }
+    });
+  }
+
+  /// Bulk existence check for label names
+  Future<Set<String>> getExistingLabelNames(List<String> names) async {
+    final query = _db.select(_db.label)
+      ..where((tbl) => tbl.name.isIn(names));
+    final results = await query.get();
+    return results.map((l) => l.name).toSet();
+  }
 }
