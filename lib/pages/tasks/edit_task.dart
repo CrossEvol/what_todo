@@ -119,6 +119,9 @@ class _EditTaskScreenState extends State<EditTaskScreen> {
     if (widget.task.id != null) {
       context.read<ResourceBloc>().add(LoadResourcesEvent(widget.task.id!));
     }
+    if (widget.task.id != null) {
+      context.read<ReminderBloc>().add(LoadRemindersForTask(widget.task.id!));
+    }
   }
 
   @override
