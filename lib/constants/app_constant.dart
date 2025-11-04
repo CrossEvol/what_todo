@@ -20,6 +20,7 @@ const String TWITTER_URL = "https://twitter.com/burhanrashid52";
 const String FACEBOOK_URL = "https://www.facebook.com/Bursid";
 const String STACK_OVERFLOW_URL = "https://stackoverflow.com/questions/tagged/flutter";
 const String GITHUB_URL = "https://github.com/burhanrashid52";
+const String CE_GITHUB_URL = "https://github.com/CrossEvol/what_todo";
 const String PROJECT_URL = "https://github.com/burhanrashid52/WhatTodo";
 const String ISSUE_URL = "https://github.com/burhanrashid52/WhatTodo/issues";
 const String README_URL =

@@ -5,6 +5,8 @@ class AboutUsKeys {
   static const AUTHOR_NAME = 'authorName';
   static const AUTHOR_USERNAME = 'authorUsername';
   static const AUTHOR_EMAIL = 'authorEmail';
+  static const CURRENT_AUTHOR = 'currentAuthor';
+  static const CURRENT_REPO = 'currentRepo';
   static const VERSION_NUMBER = 'versionNumber';
 }
 

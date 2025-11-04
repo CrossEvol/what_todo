@@ -3,8 +3,30 @@ import 'package:flutter_app/constants/app_constant.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/constants/keys.dart';
 import 'package:flutter_app/l10n/app_localizations.dart';
+import 'package:package_info_plus/package_info_plus.dart' show PackageInfo;
 
-class AboutUsScreen extends StatelessWidget {
+class AboutUsScreen extends StatefulWidget {
+  @override
+  State<AboutUsScreen> createState() => _AboutUsScreenState();
+}
+
+class _AboutUsScreenState extends State<AboutUsScreen> {
+  String _version = '...'; // 2. 创建一个变量来存储版本号，并设置初始值
+
+  @override
+  void initState() {
+    super.initState();
+    _initPackageInfo(); // 3. 在 initState 中调用方法获取版本信息
+  }
+
+  // 异步方法来获取版本信息并更新状态
+  Future<void> _initPackageInfo() async {
+    final PackageInfo info = await PackageInfo.fromPlatform();
+    setState(() {
+      _version = info.version;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +59,7 @@ class AboutUsScreen extends StatelessWidget {
                       leading: Icon(Icons.update, color: Colors.black),
                       title: Text(AppLocalizations.of(context)!.versionTitle),
                       subtitle: Text(
-                        "1.0.0",
+                        _version,
                         key: ValueKey(AboutUsKeys.VERSION_NUMBER),
                       ),
                     )
@@ -68,6 +90,18 @@ class AboutUsScreen extends StatelessWidget {
                         key: ValueKey(AboutUsKeys.AUTHOR_USERNAME),
                       ),
                       onTap: () => launchURL(GITHUB_URL),
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.perm_contact_calendar_outlined, color: Colors.black),
+                      title: Text(
+                        "CrossEvol",
+                        key: ValueKey(AboutUsKeys.CURRENT_AUTHOR),
+                      ),
+                      subtitle: Text(
+                        "github.com/CrossEvol/what_todo",
+                        key: ValueKey(AboutUsKeys.CURRENT_REPO),
+                      ),
+                      onTap: () => launchURL(CE_GITHUB_URL),
                     ),
                     ListTile(
                         leading: Icon(Icons.bug_report, color: Colors.black),
