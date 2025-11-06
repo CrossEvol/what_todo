@@ -351,20 +351,36 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
         }
       }
 
+      // Query database for actual IDs after insertion
+      final mappingStartTime = DateTime.now();
+      
+      // Get actual project IDs from database
+      final allProjectNames = event.projects.map((p) => p.name).toList();
+      final actualProjects = await _projectDB.getProjectsByNames(allProjectNames);
+      final projectNameToId = <String, int>{};
+      for (var project in actualProjects) {
+        projectNameToId[project.name] = project.id!;
+      }
+
+      // Get actual label IDs from database
+      final allLabelNames = event.labels.map((l) => l.name).toList();
+      final actualLabels = await _labelDB.getLabelsByNames(allLabelNames);
+      final labelNameToId = <String, int>{};
+      for (var label in actualLabels) {
+        labelNameToId[label.name] = label.id!;
+      }
+
+      final mappingDuration = DateTime.now().difference(mappingStartTime);
+      logger.info('ID mapping completed in ${mappingDuration.inMilliseconds}ms');
+
       // Batch import tasks and create task-label relationships with error handling
       if (newTasks.isNotEmpty) {
         final taskStartTime = DateTime.now();
         
-        // Prepare tasks with correct project IDs
+        // Prepare tasks with correct project IDs from database
         for (var task in newTasks) {
-          // Find project ID for the task
-          int projectId = 1; // Default to Inbox
-          for (var project in event.projects) {
-            if (project.name == task.projectName) {
-              projectId = project.id;
-              break;
-            }
-          }
+          // Use actual project ID from database
+          final projectId = projectNameToId[task.projectName] ?? 1; // Default to Inbox
           task.projectId = projectId;
         }
 
@@ -374,28 +390,15 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
           final taskDuration = DateTime.now().difference(taskStartTime);
           logger.info('Batch task import completed in ${taskDuration.inMilliseconds}ms');
 
-          // Build ID mappings after batch inserts
+          // Create task-label relationships using actual database IDs
           final relationStartTime = DateTime.now();
-          
-          // Create project name to ID mapping
-          final projectNameToId = <String, int>{};
-          for (var project in event.projects) {
-            projectNameToId[project.name] = project.id;
-          }
-
-          // Create label name to ID mapping
-          final labelNameToId = <String, int>{};
-          for (var label in event.labels) {
-            labelNameToId[label.name] = label.id;
-          }
-
-          // Create task-label relationships in batches
           final taskLabelRelations = <TaskLabelRelation>[];
+          
           for (int i = 0; i < newTasks.length; i++) {
             final task = newTasks[i];
             final taskId = insertedTaskIds[i];
             
-            // Build relationships for this task's labels
+            // Build relationships for this task's labels using actual database IDs
             for (var taskLabel in task.labelList) {
               final labelId = labelNameToId[taskLabel.name];
               if (labelId != null) {
@@ -425,28 +428,20 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
           // Fallback to individual operations
           for (var task in newTasks) {
             try {
-              // Find project ID for the task
-              int projectId = 1; // Default to Inbox
-              for (var project in event.projects) {
-                if (project.name == task.projectName) {
-                  projectId = project.id;
-                  break;
-                }
-              }
+              // Use actual project ID from database
+              final projectId = projectNameToId[task.projectName] ?? 1; // Default to Inbox
               task.projectId = projectId;
 
-              // Find label IDs for the task
+              // Find actual label IDs from database
               List<int> labelIds = [];
               for (var taskLabel in task.labelList) {
-                for (var label in event.labels) {
-                  if (label.name == taskLabel.name) {
-                    labelIds.add(label.id);
-                    break;
-                  }
+                final labelId = labelNameToId[taskLabel.name];
+                if (labelId != null) {
+                  labelIds.add(labelId);
                 }
               }
 
-              // Create task with relationships
+              // Create task with relationships using actual database IDs
               await _taskDB.createTask(task, labelIDs: labelIds);
             } catch (individualError) {
               logger.error('Failed to insert task ${task.title}: $individualError');

@@ -141,4 +141,13 @@ class ProjectDB {
     final results = await query.get();
     return results.map((p) => p.name).toSet();
   }
+
+  /// Get projects by their names
+  /// Returns a List of Project objects that match the given names
+  Future<List<Project>> getProjectsByNames(List<String> names) async {
+    final query = _db.select(_db.project)
+      ..where((tbl) => tbl.name.isIn(names));
+    final results = await query.get();
+    return results.map((item) => Project.fromMap(item.toJson())).toList();
+  }
 }
