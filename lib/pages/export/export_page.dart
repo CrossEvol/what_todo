@@ -495,20 +495,11 @@ class ExportView extends StatelessWidget {
           TextButton(
             onPressed: () {
               context.read<ExportBloc>().add(
-                    const ExportDataEvent(useNewFormat: false),
-                  );
-              Navigator.pop(context);
-            },
-            child: const Text('Legacy Format (v0)'),
-          ),
-          TextButton(
-            onPressed: () {
-              context.read<ExportBloc>().add(
                     const ExportDataEvent(useNewFormat: true),
                   );
               Navigator.pop(context);
             },
-            child: const Text('New Format (v1)'),
+            child: const Text('New Format (v2)'),
           ),
         ],
       ),
@@ -525,7 +516,7 @@ class ExportView extends StatelessWidget {
     try {
       String json;
       if (state.useNewFormat) {
-        // Export with new format (v1)
+        // Export with new format (v2)
         const encoder = JsonEncoder.withIndent('  ');
         json = encoder.convert(state.exportData);
       } else {
@@ -547,6 +538,13 @@ class ExportView extends StatelessWidget {
           }
 
           await file.writeAsString(json);
+
+          // 处理图片资源导出
+          if (state.useNewFormat && state.exportData.containsKey('resources')) {
+            await _exportResources(context,
+                state.exportData['resources'] as List, p.dirname(importPath));
+          }
+
           showSnackbar(context, 'Export Success: $importPath');
         } catch (e) {
           logger.warn('Error writing to file: $e');
@@ -557,6 +555,14 @@ class ExportView extends StatelessWidget {
           try {
             var file = File(fallbackPath);
             await file.writeAsString(json);
+
+            // 处理图片资源导出
+            if (state.useNewFormat &&
+                state.exportData.containsKey('resources')) {
+              await _exportResources(context,
+                  state.exportData['resources'] as List, directory.path);
+            }
+
             showSnackbar(context, 'Export Success: $fallbackPath');
           } catch (e2) {
             logger.warn('Error writing to fallback location: $e2');
@@ -577,6 +583,43 @@ class ExportView extends StatelessWidget {
         'Export Error: $e',
         materialColor: Colors.red,
       );
+    }
+  }
+
+  Future<void> _exportResources(
+      BuildContext context, List<dynamic> resources, String exportDir) async {
+    if (resources.isEmpty) return;
+
+    try {
+      // 创建 resources 文件夹
+      final resourcesDir = Directory(p.join(exportDir, 'resources'));
+      if (!await resourcesDir.exists()) {
+        await resourcesDir.create(recursive: true);
+      }
+
+      // 使用 Future.wait 进行异步并发复制，避免阻塞
+      final copyFutures = resources.map((resource) async {
+        final resourceMap = resource as Map<String, dynamic>;
+        final sourcePath = resourceMap['path'] as String;
+        final sourceFile = File(sourcePath);
+
+        if (await sourceFile.exists()) {
+          final fileName = p.basename(sourcePath);
+          final destPath = p.join(resourcesDir.path, fileName);
+          final destFile = File(destPath);
+
+          // 只有当目标文件不存在时才复制
+          if (!await destFile.exists()) {
+            await sourceFile.copy(destPath);
+          }
+        }
+      }).toList();
+
+      await Future.wait(copyFutures);
+      logger.info('Resources exported successfully');
+    } catch (e) {
+      logger.warn('Error exporting resources: $e');
+      // 不抛出异常，让主导出流程继续
     }
   }
 
@@ -788,30 +831,6 @@ class ExportView extends StatelessWidget {
         return null;
       }
     }
-  }
-
-  Widget _buildSuccessScreen(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text('Export completed successfully!'),
-          const SizedBox(height: 16),
-          const Text('Redirecting to home in...'),
-          TweenAnimationBuilder(
-            tween: Tween(begin: 3.0, end: 0.0),
-            duration: const Duration(seconds: 3),
-            builder: (_, double value, __) {
-              return Text(
-                '${value.ceil()}',
-                style:
-                    const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              );
-            },
-          ),
-        ],
-      ),
-    );
   }
 }
 

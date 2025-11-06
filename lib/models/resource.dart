@@ -11,12 +11,14 @@ class ResourceModel {
   final String path;
   final int? taskId;
   final DateTime? createTime;
+  String? taskTitle; // 用于导入时的临时存储
 
-  const ResourceModel({
+  ResourceModel({
     required this.id,
     required this.path,
     this.taskId,
     this.createTime,
+    this.taskTitle,
   });
 
   /// Create a new ResourceModel from database map
@@ -47,12 +49,14 @@ class ResourceModel {
     String? path,
     int? taskId,
     DateTime? createTime,
+    String? taskTitle,
   }) {
     return ResourceModel(
       id: id ?? this.id,
       path: path ?? this.path,
       taskId: taskId ?? this.taskId,
       createTime: createTime ?? this.createTime,
+      taskTitle: taskTitle ?? this.taskTitle,
     );
   }
 

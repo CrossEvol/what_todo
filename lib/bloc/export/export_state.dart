@@ -6,17 +6,19 @@ abstract class ExportState extends Equatable {
   final List<ProjectWithCount>? projects;
   final List<LabelWithCount>? labels;
   final List<Task>? tasks;
+  final List<ResourceModel>? resources;
   final ExportTab? currentTab;
 
   const ExportState({
     this.projects,
     this.labels,
     this.tasks,
+    this.resources,
     this.currentTab,
   });
 
   @override
-  List<Object?> get props => [projects, labels, tasks, currentTab];
+  List<Object?> get props => [projects, labels, tasks, resources, currentTab];
 }
 
 class ExportInitial extends ExportState {
@@ -32,11 +34,13 @@ class ExportLoaded extends ExportState {
     required List<ProjectWithCount> projects,
     required List<LabelWithCount> labels,
     required List<Task> tasks,
+    required List<ResourceModel> resources,
     required ExportTab currentTab,
   }) : super(
           projects: projects,
           labels: labels,
           tasks: tasks,
+          resources: resources,
           currentTab: currentTab,
         );
 
@@ -44,12 +48,14 @@ class ExportLoaded extends ExportState {
     List<ProjectWithCount>? projects,
     List<LabelWithCount>? labels,
     List<Task>? tasks,
+    List<ResourceModel>? resources,
     ExportTab? currentTab,
   }) {
     return ExportLoaded(
       projects: projects ?? this.projects!,
       labels: labels ?? this.labels!,
       tasks: tasks ?? this.tasks!,
+      resources: resources ?? this.resources!,
       currentTab: currentTab ?? this.currentTab!,
     );
   }
@@ -74,11 +80,13 @@ class ExportSuccess extends ExportState {
     List<ProjectWithCount>? projects,
     List<LabelWithCount>? labels,
     List<Task>? tasks,
+    List<ResourceModel>? resources,
     ExportTab? currentTab,
   }) : super(
           projects: projects,
           labels: labels,
           tasks: tasks,
+          resources: resources,
           currentTab: currentTab,
         );
 

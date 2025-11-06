@@ -8,6 +8,8 @@ import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
+import 'package:flutter_app/dao/resource_db.dart';
+import 'package:flutter_app/models/resource.dart';
 import 'package:flutter_app/utils/logger_util.dart';
 
 part 'export_event.dart';
@@ -17,8 +19,9 @@ class ExportBloc extends Bloc<ExportEvent, ExportState> {
   final ProjectDB _projectDB;
   final LabelDB _labelDB;
   final TaskDB _taskDB;
+  final ResourceDB _resourceDB;
 
-  ExportBloc(this._projectDB, this._labelDB, this._taskDB)
+  ExportBloc(this._projectDB, this._labelDB, this._taskDB, this._resourceDB)
       : super(ExportInitial()) {
     on<LoadExportDataEvent>(_loadExportData);
     on<DeleteProjectEvent>(_deleteProject);
@@ -36,11 +39,21 @@ class ExportBloc extends Bloc<ExportEvent, ExportState> {
       final projects = await _projectDB.getProjectsWithCount();
       final labels = await _labelDB.getLabelsWithCount();
       final tasks = await _taskDB.getTasks();
+      
+      // 收集所有资源信息
+      List<ResourceModel> resources = [];
+      for (final task in tasks) {
+        if (task.id != null) {
+          final taskResources = await _resourceDB.getResourcesByTaskId(task.id!);
+          resources.addAll(taskResources);
+        }
+      }
 
       emit(ExportLoaded(
         projects: projects,
         labels: labels,
         tasks: tasks,
+        resources: resources,
         currentTab: ExportTab.tasks,
       ));
     } catch (e) {
@@ -128,9 +141,27 @@ class ExportBloc extends Bloc<ExportEvent, ExportState> {
     if (state is ExportLoaded) {
       final currentState = state as ExportLoaded;
       try {
+        // 创建任务ID到任务标题的映射
+        final taskIdToTitle = <int, String>{};
+        for (final task in currentState.tasks!) {
+          if (task.id != null) {
+            taskIdToTitle[task.id!] = task.title;
+          }
+        }
+
+        // 转换资源数据，只包含必要的字段
+        final resourcesData = currentState.resources!.map((r) {
+          final taskTitle = r.taskId != null ? taskIdToTitle[r.taskId!] : null;
+          return {
+            'id': r.id,
+            'path': r.path,
+            'task_title': taskTitle,
+          };
+        }).toList();
+
         // Construct exportable data using the data in the current state
         final exportData = {
-          '__v': 1,
+          '__v': 2, // 版本号改为2
           'projects': currentState.projects!.map((p) => p.toMap()).toList(),
           'labels': currentState.labels!.map((l) => l.toMap()).toList(),
           'tasks': currentState.tasks!.map((t) {
@@ -147,6 +178,7 @@ class ExportBloc extends Bloc<ExportEvent, ExportState> {
               'labelNames': t.labelList.map((l) => l.name).toList(),
             };
           }).toList(),
+          'resources': resourcesData,
         };
 
         emit(ExportSuccess(
@@ -155,6 +187,7 @@ class ExportBloc extends Bloc<ExportEvent, ExportState> {
             projects: currentState.projects,
             labels: currentState.labels,
             tasks: currentState.tasks,
+            resources: currentState.resources,
             currentTab: currentState.currentTab));
       } catch (e) {
         logger.error("Error exporting data: $e");
