@@ -597,25 +597,35 @@ class ExportView extends StatelessWidget {
         await resourcesDir.create(recursive: true);
       }
 
-      // 使用 Future.wait 进行异步并发复制，避免阻塞
-      final copyFutures = resources.map((resource) async {
-        final resourceMap = resource as Map<String, dynamic>;
-        final sourcePath = resourceMap['path'] as String;
-        final sourceFile = File(sourcePath);
+      // 逐个复制文件，避免并发导致的文件锁定问题
+      for (final resource in resources) {
+        try {
+          final resourceMap = resource as Map<String, dynamic>;
+          final sourcePath = resourceMap['path'] as String;
+          final sourceFile = File(sourcePath);
 
-        if (await sourceFile.exists()) {
-          final fileName = p.basename(sourcePath);
-          final destPath = p.join(resourcesDir.path, fileName);
-          final destFile = File(destPath);
+          if (await sourceFile.exists()) {
+            final fileName = p.basename(sourcePath);
+            final destPath = p.join(resourcesDir.path, fileName);
+            final destFile = File(destPath);
 
-          // 只有当目标文件不存在时才复制
-          if (!await destFile.exists()) {
-            await sourceFile.copy(destPath);
+            // 只有当目标文件不存在时才复制
+            if (!await destFile.exists()) {
+              // 使用字节流复制，确保文件句柄正确关闭
+              final sourceBytes = await sourceFile.readAsBytes();
+              await destFile.writeAsBytes(sourceBytes);
+              
+              // 添加小延迟确保文件操作完成
+              await Future.delayed(const Duration(milliseconds: 10));
+            }
           }
+        } catch (e) {
+          logger.warn('Error copying resource ${resource['path']}: $e');
+          // 继续处理下一个文件
+          continue;
         }
-      }).toList();
+      }
 
-      await Future.wait(copyFutures);
       logger.info('Resources exported successfully');
     } catch (e) {
       logger.warn('Error exporting resources: $e');
