@@ -7,17 +7,19 @@ abstract class ImportState extends Equatable {
   final List<ProjectWithCount> projects;
   final List<LabelWithCount> labels;
   final List<Task> tasks;
+  final List<ResourceModel> resources;
   final ImportTab currentTab;
 
   const ImportState({
     required this.projects,
     required this.labels,
     required this.tasks,
+    required this.resources,
     required this.currentTab,
   });
 
   @override
-  List<Object> get props => [projects, labels, tasks, currentTab];
+  List<Object> get props => [projects, labels, tasks, resources, currentTab];
 }
 
 class ImportInitial extends ImportState {
@@ -26,6 +28,7 @@ class ImportInitial extends ImportState {
           projects: [],
           labels: [],
           tasks: [],
+          resources: [],
           currentTab: ImportTab.tasks,
         );
 }
@@ -36,6 +39,7 @@ class ImportLoading extends ImportState {
           projects: [],
           labels: [],
           tasks: [],
+          resources: [],
           currentTab: ImportTab.tasks,
         );
 }
@@ -45,11 +49,13 @@ class ImportLoaded extends ImportState {
     required List<ProjectWithCount> projects,
     required List<LabelWithCount> labels,
     required List<Task> tasks,
+    required List<ResourceModel> resources,
     required ImportTab currentTab,
   }) : super(
           projects: projects,
           labels: labels,
           tasks: tasks,
+          resources: resources,
           currentTab: currentTab,
         );
 
@@ -57,12 +63,14 @@ class ImportLoaded extends ImportState {
     List<ProjectWithCount>? projects,
     List<LabelWithCount>? labels,
     List<Task>? tasks,
+    List<ResourceModel>? resources,
     ImportTab? currentTab,
   }) {
     return ImportLoaded(
       projects: projects ?? this.projects,
       labels: labels ?? this.labels,
       tasks: tasks ?? this.tasks,
+      resources: resources ?? this.resources,
       currentTab: currentTab ?? this.currentTab,
     );
   }
@@ -73,10 +81,12 @@ class ImportConfirmed extends ImportState {
     required List<ProjectWithCount> projects,
     required List<LabelWithCount> labels,
     required List<Task> tasks,
+    required List<ResourceModel> resources,
   }) : super(
     projects: projects,
     labels: labels,
     tasks: tasks,
+    resources: resources,
     currentTab: ImportTab.tasks,
   );
 }
@@ -87,10 +97,12 @@ class ImportInProgress extends ImportState {
     required List<ProjectWithCount> projects,
     required List<LabelWithCount> labels,
     required List<Task> tasks,
+    required List<ResourceModel> resources,
   }) : super(
           projects: projects,
           labels: labels,
           tasks: tasks,
+          resources: resources,
           currentTab: ImportTab.tasks,
         );
 }
@@ -101,6 +113,7 @@ class ImportSuccess extends ImportState {
           projects: const [],
           labels: const [],
           tasks: const [],
+          resources: const [],
           currentTab: ImportTab.tasks,
         );
 }
@@ -113,14 +126,16 @@ class ImportError extends ImportState {
     required List<ProjectWithCount> projects,
     required List<LabelWithCount> labels,
     required List<Task> tasks,
+    required List<ResourceModel> resources,
     required ImportTab currentTab,
   }) : super(
           projects: projects,
           labels: labels,
           tasks: tasks,
+          resources: resources,
           currentTab: currentTab,
         );
 
   @override
-  List<Object> get props => [message, projects, labels, tasks, currentTab];
+  List<Object> get props => [message, projects, labels, tasks, resources, currentTab];
 }

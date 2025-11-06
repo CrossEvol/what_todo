@@ -243,11 +243,11 @@ class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
         ),
         BlocProvider(
             create: (_) =>
-                ExportBloc(ProjectDB.get(), LabelDB.get(), TaskDB.get())
+                ExportBloc(ProjectDB.get(), LabelDB.get(), TaskDB.get(),ResourceDB.get())
                   ..add(LoadExportDataEvent())),
         BlocProvider(
             create: (_) =>
-                ImportBloc(ProjectDB.get(), LabelDB.get(), TaskDB.get())),
+                ImportBloc(ProjectDB.get(), LabelDB.get(), TaskDB.get(),ResourceDB.get())),
         BlocProvider(
             create: (_) => SearchBloc(SearchDB.get())..add(ResetSearchEvent())),
         BlocProvider(

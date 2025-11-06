@@ -69,13 +69,18 @@ class ImportInProgressEvent extends ImportEvent {
   final List<ProjectWithCount> projects;
   final List<LabelWithCount> labels;
   final List<Task> tasks;
+  final List<ResourceModel> resources;
+  final String? importPath;
 
   const ImportInProgressEvent({
     required this.projects,
     required this.labels,
     required this.tasks,
+    required this.resources,
+    this.importPath,
   });
 
   @override
-  List<Object> get props => [projects, labels, tasks];
+  List<Object> get props =>
+      [projects, labels, tasks, resources, importPath ?? ""];
 }

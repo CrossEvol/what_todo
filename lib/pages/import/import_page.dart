@@ -77,7 +77,9 @@ class _ImportPageState extends State<ImportPage> {
               context.read<ImportBloc>().add(ImportInProgressEvent(
                   projects: state.projects,
                   labels: state.labels,
-                  tasks: state.tasks));
+                  tasks: state.tasks,
+                  resources: state.resources,
+                  importPath: filePathController.text));
             });
             return _buildImportInProgressView();
           } else if (state is ImportInProgress) {

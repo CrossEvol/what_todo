@@ -81,4 +81,20 @@ class ResourceDB {
         .write(ResourceCompanion(taskId: Value(taskId)));
     return result > 0;
   }
+
+  /// Batch insert resources with placeholder taskId (-1)
+  Future<void> batchInsertResources(List<ResourceModel> resources) async {
+    await _db.batch((batch) {
+      for (final resource in resources) {
+        batch.insert(
+          _db.resource,
+          ResourceCompanion(
+            path: Value(resource.path),
+            taskId: Value(-1), // 使用占位值
+            createTime: Value(resource.createTime ?? DateTime.now()),
+          ),
+        );
+      }
+    });
+  }
 }

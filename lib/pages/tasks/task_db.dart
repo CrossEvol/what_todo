@@ -605,6 +605,49 @@ class TaskDB {
     return results.map((t) => t.title).toSet();
   }
 
+  /// Get tasks by their titles
+  /// Returns list of tasks that match the given titles
+  Future<List<Task>> getTasksByTitles(List<String> titles) async {
+    if (titles.isEmpty) return <Task>[];
+    
+    var query = _db.select(_db.task).join([
+      leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
+      leftOuterJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId)),
+      innerJoin(_db.project, _db.project.id.equalsExp(_db.task.projectId)),
+    ]);
+    
+    query.where(_db.task.title.isIn(titles));
+    query.orderBy([OrderingTerm.asc(_db.task.id)]);
+    
+    var result = await query.get();
+    
+    Map<int, Task> taskMap = {};
+    
+    for (var row in result) {
+      var taskData = row.readTable(_db.task);
+      var projectData = row.readTable(_db.project);
+      var labelData = row.readTableOrNull(_db.label);
+      
+      var taskId = taskData.id;
+      
+      if (!taskMap.containsKey(taskId)) {
+        var task = Task.fromMap(taskData.toJson());
+        task.projectName = projectData.name;
+        task.labelList = [];
+        taskMap[taskId] = task;
+      }
+      
+      if (labelData != null) {
+        var label = lb.Label.fromMap(labelData.toJson());
+        if (!taskMap[taskId]!.labelList.any((l) => l.id == label.id)) {
+          taskMap[taskId]!.labelList.add(label);
+        }
+      }
+    }
+    
+    return taskMap.values.toList();
+  }
+
   /// Batch insert task-label relationships with transaction wrapper
   Future<void> batchInsertTaskLabels(List<TaskLabelRelation> relations) async {
     if (relations.isEmpty) return;

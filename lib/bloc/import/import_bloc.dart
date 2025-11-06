@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 import 'package:flutter_app/models/task_label_relation.dart';
@@ -8,6 +9,8 @@ import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/projects/project_db.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/pages/tasks/task_db.dart';
+import 'package:flutter_app/dao/resource_db.dart';
+import 'package:flutter_app/models/resource.dart';
 import 'package:flutter_app/utils/logger_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,8 +23,9 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
   final ProjectDB _projectDB;
   final LabelDB _labelDB;
   final TaskDB _taskDB;
+  final ResourceDB _resourceDB;
 
-  ImportBloc(this._projectDB, this._labelDB, this._taskDB)
+  ImportBloc(this._projectDB, this._labelDB, this._taskDB, this._resourceDB)
       : super(ImportInitial()) {
     on<ImportLoadDataEvent>(_onImportLoadData);
     on<ChangeImportTabEvent>(_onChangeTab);
@@ -43,11 +47,17 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
       List<ProjectWithCount> projects = [];
       List<LabelWithCount> labels = [];
       List<Task> tasks = [];
+      List<ResourceModel> resources = [];
 
-      // Check if it's v1 format (has __v key)
-      bool isV1Format = data is Map && data.containsKey('__v');
+      // Check if it's new format (has __v key)
+      bool isNewFormat = data is Map && data.containsKey('__v');
+      int formatVersion = 1;
+      
+      if (isNewFormat) {
+        formatVersion = data['__v'] as int? ?? 1;
+      }
 
-      if (isV1Format) {
+      if (isNewFormat) {
         // Process v1 format
         if (data.containsKey('projects')) {
           final projectMaps =
@@ -121,6 +131,23 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
             tasks.add(task);
           }
         }
+
+        // 处理资源数据（仅在 V2 格式中存在）
+        if (formatVersion >= 2 && data.containsKey('resources')) {
+          final resourceMaps = (data['resources'] as List).cast<Map<String, dynamic>>();
+          for (var resourceMap in resourceMaps) {
+            // 创建占位的 ResourceModel，taskId 设为 -1
+            final resource = ResourceModel(
+              id: resourceMap['id'] as int? ?? 0,
+              path: resourceMap['path'] as String,
+              taskId: -1, // 占位值
+              createTime: DateTime.now(),
+            );
+            // 保存 task_title 用于后续映射
+            resource.taskTitle = resourceMap['task_title'] as String?;
+            resources.add(resource);
+          }
+        }
       } else {
         // Handle legacy format (v0)
         List<dynamic> taskJsonList = data is List ? data : [data];
@@ -156,6 +183,7 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
         projects: projects,
         labels: labels,
         tasks: tasks,
+        resources: resources,
         currentTab: ImportTab.tasks,
       ));
     } catch (e) {
@@ -164,6 +192,7 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
         projects: [],
         labels: [],
         tasks: [],
+        resources: [],
         currentTab: ImportTab.tasks,
       ));
     }
@@ -255,6 +284,7 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
         projects: currentState.projects,
         labels: currentState.labels,
         tasks: currentState.tasks,
+        resources: currentState.resources,
       ));
     }
   }
@@ -263,7 +293,7 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
       ImportInProgressEvent event, Emitter<ImportState> emit) async {
     final startTime = DateTime.now();
     logger.info('Import started at: ${startTime.toIso8601String()}');
-    logger.info('Import data: ${event.projects.length} projects, ${event.labels.length} labels, ${event.tasks.length} tasks');
+    logger.info('Import data: ${event.projects.length} projects, ${event.labels.length} labels, ${event.tasks.length} tasks, ${event.resources.length} resources');
 
     try {
       // Pre-filtering: Check existing records to avoid unnecessary operations
@@ -450,6 +480,52 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
         }
       }
 
+      // 处理资源导入
+      if (event.resources.isNotEmpty) {
+        final resourceStartTime = DateTime.now();
+        
+        // 过滤掉重复的 path 信息
+        final uniqueResources = <String, ResourceModel>{};
+        for (final resource in event.resources) {
+          uniqueResources[resource.path] = resource;
+        }
+        final filteredResources = uniqueResources.values.toList();
+        
+        // 批量插入资源，使用占位的 taskId (-1)
+        try {
+          await _resourceDB.batchInsertResources(filteredResources);
+          
+          // 获取实际的任务映射
+          final allTaskTitles = event.tasks.map((t) => t.title).toList();
+          final actualTasks = await _taskDB.getTasksByTitles(allTaskTitles);
+          final taskTitleToId = <String, int>{};
+          for (final task in actualTasks) {
+            if (task.id != null) {
+              taskTitleToId[task.title] = task.id!;
+            }
+          }
+          
+          // 更新资源的 taskId
+          for (final resource in filteredResources) {
+            if (resource.taskTitle != null) {
+              final realTaskId = taskTitleToId[resource.taskTitle!];
+              if (realTaskId != null) {
+                await _resourceDB.updateResourceTaskId(resource.id, realTaskId);
+              }
+            }
+          }
+          
+          // 异步复制资源文件
+          _copyResourcesAsync(filteredResources, event.importPath);
+          
+          final resourceDuration = DateTime.now().difference(resourceStartTime);
+          logger.info('Resource import completed in ${resourceDuration.inMilliseconds}ms');
+        } catch (e) {
+          logger.error('Resource import failed: $e');
+          // 不抛出异常，让主导入流程继续
+        }
+      }
+
       final totalDuration = DateTime.now().difference(startTime);
       logger.info('Import completed successfully in ${totalDuration.inMilliseconds}ms');
       
@@ -463,8 +539,38 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
         projects: event.projects,
         labels: event.labels,
         tasks: event.tasks,
+        resources: event.resources,
         currentTab: ImportTab.tasks,
       ));
     }
+  }
+
+
+
+  void _copyResourcesAsync(List<ResourceModel> resources, String? importPath) {
+    if (importPath == null) return;
+    
+    // 使用 Future 进行异步处理，避免阻塞
+    Future.microtask(() async {
+      try {
+        final importDir = Directory(importPath).parent;
+        final resourcesDir = Directory('${importDir.path}/resources');
+        
+        if (await resourcesDir.exists()) {
+          for (final resource in resources) {
+            final fileName = resource.path.split('/').last;
+            final sourceFile = File('${resourcesDir.path}/$fileName');
+            final destFile = File(resource.path);
+            
+            // 只有当目标图片资源不存在时才进行复制
+            if (await sourceFile.exists() && !await destFile.exists()) {
+              await sourceFile.copy(resource.path);
+            }
+          }
+        }
+      } catch (e) {
+        logger.warn('Error copying resources: $e');
+      }
+    });
   }
 }
