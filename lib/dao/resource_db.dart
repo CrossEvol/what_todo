@@ -82,19 +82,27 @@ class ResourceDB {
     return result > 0;
   }
 
-  /// Batch insert resources with placeholder taskId (-1)
-  Future<void> batchInsertResources(List<ResourceModel> resources) async {
-    await _db.batch((batch) {
-      for (final resource in resources) {
-        batch.insert(
-          _db.resource,
-          ResourceCompanion(
-            path: Value(resource.path),
-            taskId: Value(-1), // 使用占位值
-            createTime: Value(resource.createTime ?? DateTime.now()),
-          ),
-        );
-      }
-    });
+  /// Batch insert resources and return the inserted IDs
+  Future<List<int>> batchInsertResources(List<ResourceModel> resources) async {
+    final insertedIds = <int>[];
+    
+    for (final resource in resources) {
+      final id = await _db.into(_db.resource).insert(ResourceCompanion(
+        path: Value(resource.path),
+        taskId: Value(resource.taskId ?? -1),
+        createTime: Value(resource.createTime ?? DateTime.now()),
+      ));
+      insertedIds.add(id);
+    }
+    
+    return insertedIds;
+  }
+
+  /// Update the path of a resource
+  Future<bool> updateResourcePath(int resourceId, String newPath) async {
+    final result = await (_db.update(_db.resource)
+          ..where((tbl) => tbl.id.equals(resourceId)))
+        .write(ResourceCompanion(path: Value(newPath)));
+    return result > 0;
   }
 }

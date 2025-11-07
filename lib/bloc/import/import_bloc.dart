@@ -480,50 +480,9 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
         }
       }
 
-      // 处理资源导入
-      if (event.resources.isNotEmpty) {
-        final resourceStartTime = DateTime.now();
-        
-        // 过滤掉重复的 path 信息
-        final uniqueResources = <String, ResourceModel>{};
-        for (final resource in event.resources) {
-          uniqueResources[resource.path] = resource;
-        }
-        final filteredResources = uniqueResources.values.toList();
-        
-        // 批量插入资源，使用占位的 taskId (-1)
-        try {
-          await _resourceDB.batchInsertResources(filteredResources);
-          
-          // 获取实际的任务映射
-          final allTaskTitles = event.tasks.map((t) => t.title).toList();
-          final actualTasks = await _taskDB.getTasksByTitles(allTaskTitles);
-          final taskTitleToId = <String, int>{};
-          for (final task in actualTasks) {
-            if (task.id != null) {
-              taskTitleToId[task.title] = task.id!;
-            }
-          }
-          
-          // 更新资源的 taskId
-          for (final resource in filteredResources) {
-            if (resource.taskTitle != null) {
-              final realTaskId = taskTitleToId[resource.taskTitle!];
-              if (realTaskId != null) {
-                await _resourceDB.updateResourceTaskId(resource.id, realTaskId);
-              }
-            }
-          }
-          
-          // 异步复制资源文件
-          _copyResourcesAsync(filteredResources, event.importPath);
-          
-          final resourceDuration = DateTime.now().difference(resourceStartTime);
-          logger.info('Resource import completed in ${resourceDuration.inMilliseconds}ms');
-        } catch (e) {
-          logger.error('Resource import failed: $e');
-          // 不抛出异常，让主导入流程继续
-        }
+      // Handle resource import
+      if (event.resources.isNotEmpty && event.importPath != null) {
+        await _handleResourceImport(event);
       }
 
       final totalDuration = DateTime.now().difference(startTime);
@@ -547,25 +506,111 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
 
 
 
-  void _copyResourcesAsync(List<ResourceModel> resources, String? importPath) {
-    if (importPath == null) return;
+  Future<void> _handleResourceImport(ImportInProgressEvent event) async {
+    final resourceStartTime = DateTime.now();
     
+    try {
+      // Verify resources directory exists
+      final importDir = Directory(event.importPath!).parent;
+      final resourcesDir = Directory('${importDir.path}/resources');
+      
+      if (!await resourcesDir.exists()) {
+        logger.warn('Resources directory not found: ${resourcesDir.path}');
+        return;
+      }
+
+      // Get actual task mappings
+      final allTaskTitles = event.tasks.map((t) => t.title).toList();
+      final actualTasks = await _taskDB.getTasksByTitles(allTaskTitles);
+      final taskTitleToId = <String, int>{};
+      for (final task in actualTasks) {
+        if (task.id != null) {
+          taskTitleToId[task.title] = task.id!;
+        }
+      }
+      
+      // Filter valid resources (task_title exists and corresponding task was imported)
+      final validResources = <ResourceModel>[];
+      final resourceFiles = <File>[];
+      
+      for (final resource in event.resources) {
+        if (resource.taskTitle != null) {
+          final taskId = taskTitleToId[resource.taskTitle!];
+          if (taskId != null) {
+            // Check if source file exists
+            final fileName = resource.path.split('/').last;
+            final sourceFile = File('${resourcesDir.path}/$fileName');
+            
+            if (await sourceFile.exists()) {
+              // Create new resource record with correct taskId
+              final newResource = ResourceModel(
+                id: 0, // Will be assigned by database
+                path: resource.path, // Keep original path structure
+                taskId: taskId,
+                createTime: DateTime.now(),
+              );
+              validResources.add(newResource);
+              resourceFiles.add(sourceFile);
+            } else {
+              logger.warn('Resource file not found: ${sourceFile.path}');
+            }
+          } else {
+            logger.warn('Task not found for resource: ${resource.taskTitle}');
+          }
+        }
+      }
+      
+      // Batch insert valid resource records
+      if (validResources.isNotEmpty) {
+        final insertedResourceIds = await _resourceDB.batchInsertResources(validResources);
+        
+        // Async copy resource files
+        _copyResourcesAsync(validResources, resourceFiles, insertedResourceIds);
+        
+        logger.info('${validResources.length} resources prepared for import');
+      }
+      
+      final resourceDuration = DateTime.now().difference(resourceStartTime);
+      logger.info('Resource import completed in ${resourceDuration.inMilliseconds}ms');
+    } catch (e) {
+      logger.error('Resource import failed: $e');
+      // Don't throw exception, let main import process continue
+    }
+  }
+
+  void _copyResourcesAsync(List<ResourceModel> resources, List<File> sourceFiles, List<int> resourceIds) {
     // 使用 Future 进行异步处理，避免阻塞
     Future.microtask(() async {
       try {
-        final importDir = Directory(importPath).parent;
-        final resourcesDir = Directory('${importDir.path}/resources');
-        
-        if (await resourcesDir.exists()) {
-          for (final resource in resources) {
-            final fileName = resource.path.split('/').last;
-            final sourceFile = File('${resourcesDir.path}/$fileName');
-            final destFile = File(resource.path);
+        for (int i = 0; i < resources.length; i++) {
+          final resource = resources[i];
+          final sourceFile = sourceFiles[i];
+          final resourceId = resourceIds[i];
+          
+          // 生成新的文件名：resource + resourceId + 原扩展名
+          final originalExtension = resource.path.split('.').last;
+          final newFileName = 'resource$resourceId.$originalExtension';
+          
+          // 构建目标路径
+          final destFile = File('${resource.path.substring(0, resource.path.lastIndexOf('/'))}/$newFileName');
+          
+          // 确保目标目录存在
+          final destDir = destFile.parent;
+          if (!await destDir.exists()) {
+            await destDir.create(recursive: true);
+          }
+          
+          // 使用 readAsBytes 和 writeAsBytes 确保文件句柄正确释放
+          if (!await destFile.exists()) {
+            final bytes = await sourceFile.readAsBytes();
+            await destFile.writeAsBytes(bytes);
             
-            // 只有当目标图片资源不存在时才进行复制
-            if (await sourceFile.exists() && !await destFile.exists()) {
-              await sourceFile.copy(resource.path);
-            }
+            // 更新数据库中的路径
+            await _resourceDB.updateResourcePath(resourceId, destFile.path);
+            
+            logger.info('Resource copied: ${sourceFile.path} -> ${destFile.path}');
+          } else {
+            logger.info('Resource already exists, skipping: ${destFile.path}');
           }
         }
       } catch (e) {
