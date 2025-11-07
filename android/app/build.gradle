@@ -38,7 +38,7 @@ android {
         minSdk flutter.minSdkVersion
         targetSdk 34
         versionCode 6
-        versionName '1.6.7+postframe-callback'
+        versionName '1.6.8+resource-export'
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         multiDexEnabled = true
     }
