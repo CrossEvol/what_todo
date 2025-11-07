@@ -139,6 +139,8 @@ class _ImportPageState extends State<ImportPage> {
           SizedBox(height: 24),
           TextField(
             controller: filePathController,
+            minLines: 1,
+            maxLines: 7,
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context)!.filePath,
               border: OutlineInputBorder(),
