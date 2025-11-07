@@ -231,9 +231,8 @@ class TaskDB {
       {TaskStatus? status}) async {
     final tasksWithLabelQuery = _db.selectOnly(_db.taskLabel, distinct: true)
       ..addColumns([_db.taskLabel.taskId])
-      ..join([
-        innerJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId))
-      ])
+      ..join(
+          [innerJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId))])
       ..where(_db.label.name.equals(labelName));
 
     var query = _db.select(_db.task).join([
@@ -573,23 +572,24 @@ class TaskDB {
   Future<List<int>> batchInsertTasks(List<Task> tasks) async {
     return await _db.transaction(() async {
       List<int> insertedIds = [];
-      
+
       for (var task in tasks) {
         int id = await _db.into(_db.task).insert(
-          TaskCompanion(
-            id: task.id != null ? Value(task.id!) : Value.absent(),
-            title: Value(task.title),
-            projectId: Value(task.projectId),
-            comment: Value(task.comment),
-            dueDate: Value(DateTime.fromMillisecondsSinceEpoch(task.dueDate)),
-            priority: Value(task.priority.index),
-            status: Value(task.tasksStatus!.index),
-            order: Value(await _orderForNewTask()),
-          ),
-        );
+              TaskCompanion(
+                id: task.id != null ? Value(task.id!) : Value.absent(),
+                title: Value(task.title),
+                projectId: Value(task.projectId),
+                comment: Value(task.comment),
+                dueDate:
+                    Value(DateTime.fromMillisecondsSinceEpoch(task.dueDate)),
+                priority: Value(task.priority.index),
+                status: Value(task.tasksStatus!.index),
+                order: Value(await _orderForNewTask()),
+              ),
+            );
         insertedIds.add(id);
       }
-      
+
       return insertedIds;
     });
   }
@@ -598,9 +598,8 @@ class TaskDB {
   /// Returns set of existing task titles
   Future<Set<String>> getExistingTaskTitles(List<String> titles) async {
     if (titles.isEmpty) return <String>{};
-    
-    final query = _db.select(_db.task)
-      ..where((tbl) => tbl.title.isIn(titles));
+
+    final query = _db.select(_db.task)..where((tbl) => tbl.title.isIn(titles));
     final results = await query.get();
     return results.map((t) => t.title).toSet();
   }
@@ -609,57 +608,34 @@ class TaskDB {
   /// Returns list of tasks that match the given titles
   Future<List<Task>> getTasksByTitles(List<String> titles) async {
     if (titles.isEmpty) return <Task>[];
-    
-    var query = _db.select(_db.task).join([
-      leftOuterJoin(_db.taskLabel, _db.taskLabel.taskId.equalsExp(_db.task.id)),
-      leftOuterJoin(_db.label, _db.label.id.equalsExp(_db.taskLabel.labelId)),
-      innerJoin(_db.project, _db.project.id.equalsExp(_db.task.projectId)),
-    ]);
-    
-    query.where(_db.task.title.isIn(titles));
-    query.orderBy([OrderingTerm.asc(_db.task.id)]);
-    
+
+    var query = _db.select(_db.task)
+      ..where((t) => t.title.isIn(titles))
+      ..orderBy([(t) => OrderingTerm.asc(t.id)]);
+
     var result = await query.get();
-    
-    Map<int, Task> taskMap = {};
-    
-    for (var row in result) {
-      var taskData = row.readTable(_db.task);
-      var projectData = row.readTable(_db.project);
-      var labelData = row.readTableOrNull(_db.label);
-      
-      var taskId = taskData.id;
-      
-      if (!taskMap.containsKey(taskId)) {
-        var task = Task.fromMap(taskData.toJson());
-        task.projectName = projectData.name;
-        task.labelList = [];
-        taskMap[taskId] = task;
-      }
-      
-      if (labelData != null) {
-        var label = lb.Label.fromMap(labelData.toJson());
-        if (!taskMap[taskId]!.labelList.any((l) => l.id == label.id)) {
-          taskMap[taskId]!.labelList.add(label);
-        }
-      }
-    }
-    
-    return taskMap.values.toList();
+
+    return result.map((taskData) {
+      var map = taskData.toJson();
+      return Task.fromMap({
+        ...map,
+        'dueDate': DateTime.parse(map['dueDate']).millisecondsSinceEpoch
+      });
+    }).toList();
   }
 
   /// Batch insert task-label relationships with transaction wrapper
   Future<void> batchInsertTaskLabels(List<TaskLabelRelation> relations) async {
     if (relations.isEmpty) return;
-    
+
     return await _db.transaction(() async {
       for (var relation in relations) {
         await _db.into(_db.taskLabel).insertOnConflictUpdate(
-          TaskLabelCompanion(
-            taskId: Value(relation.taskId),
-            labelId: Value(relation.labelId),
-          ),
-        );
+              TaskLabelCompanion(
+                taskId: Value(relation.taskId),
+                labelId: Value(relation.labelId),
+              ),
+            );
       }
     });
   }

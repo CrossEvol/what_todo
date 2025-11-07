@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -149,15 +151,33 @@ class ExportBloc extends Bloc<ExportEvent, ExportState> {
           }
         }
 
-        // 转换资源数据，只包含必要的字段
-        final resourcesData = currentState.resources!.map((r) {
-          final taskTitle = r.taskId != null ? taskIdToTitle[r.taskId!] : null;
-          return {
-            'id': r.id,
-            'path': r.path,
-            'task_title': taskTitle,
-          };
-        }).toList();
+        // 转换资源数据，读取图片并编码为 base64
+        final resourcesData = <Map<String, dynamic>>[];
+        for (final resource in currentState.resources!) {
+          try {
+            // 读取图片文件
+            final file = File(resource.path);
+            if (await file.exists()) {
+              final bytes = await file.readAsBytes();
+              final base64Content = base64.encode(bytes);
+              
+              final taskTitle = resource.taskId != null 
+                  ? taskIdToTitle[resource.taskId!] 
+                  : null;
+              
+              // 只导出 content 和 task_title 两个字段
+              resourcesData.add({
+                'content': base64Content,
+                'task_title': taskTitle,
+              });
+            } else {
+              logger.warn('Resource file not found: ${resource.path}');
+            }
+          } catch (e) {
+            logger.error('Error encoding resource ${resource.path}: $e');
+            // 文件读取失败时记录日志并跳过
+          }
+        }
 
         // Construct exportable data using the data in the current state
         final exportData = {

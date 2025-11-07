@@ -12,6 +12,7 @@ class ResourceModel {
   final int? taskId;
   final DateTime? createTime;
   String? taskTitle; // 用于导入时的临时存储
+  String? content; // 用于存储 base64 编码的图片内容
 
   ResourceModel({
     required this.id,
@@ -30,7 +31,9 @@ class ResourceModel {
       createTime: map['createTime'] != null 
           ? DateTime.parse(map['createTime'] as String)
           : null,
-    );
+    )
+      ..content = map['content'] as String?
+      ..taskTitle = map['task_title'] as String?;
   }
 
   /// Convert ResourceModel to database map
@@ -40,6 +43,8 @@ class ResourceModel {
       'path': path,
       'taskId': taskId,
       'createTime': createTime?.toIso8601String(),
+      'content': content,
+      'task_title': taskTitle,
     };
   }
 
@@ -50,6 +55,7 @@ class ResourceModel {
     int? taskId,
     DateTime? createTime,
     String? taskTitle,
+    String? content,
   }) {
     return ResourceModel(
       id: id ?? this.id,
@@ -57,7 +63,7 @@ class ResourceModel {
       taskId: taskId ?? this.taskId,
       createTime: createTime ?? this.createTime,
       taskTitle: taskTitle ?? this.taskTitle,
-    );
+    )..content = content ?? this.content;
   }
 
   @override

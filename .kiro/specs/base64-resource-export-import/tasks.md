@@ -7,8 +7,8 @@
   - 更新 `copyWith` 方法，支持 `content` 字段的复制
   - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-- [ ] 2. 修改导出逻辑以使用 base64 编码
-  - [ ] 2.1 更新 ExportBloc 的 `_exportData` 方法
+- [x] 2. 修改导出逻辑以使用 base64 编码
+  - [x] 2.1 更新 ExportBloc 的 `_exportData` 方法
     - 在 `lib/bloc/export/export_bloc.dart` 中修改资源数据处理逻辑
     - 对每个资源使用 `File.readAsBytes()` 读取图片字节
     - 使用 `base64.encode()` 编码图片数据
@@ -18,7 +18,7 @@
     - 添加错误处理，文件读取失败时记录日志并跳过
     - _Requirements: 1.1, 1.2, 1.3, 5.1, 5.2_
 
-  - [ ] 2.2 简化 ExportPage 的导出流程
+  - [x] 2.2 简化 ExportPage 的导出流程
     - 在 `lib/pages/export/export_page.dart` 中删除 `_exportResources` 方法
     - 从 `_performExport` 方法中移除对 `_exportResources` 的调用
     - 移除所有资源文件复制相关的代码
@@ -66,7 +66,7 @@
     - 移除对外部 resources 文件夹的依赖
     - _Requirements: 4.1, 4.2_
 
-- [ ] 4. 添加必要的导入语句
+- [x] 4. 添加必要的导入语句
   - 在 `lib/bloc/export/export_bloc.dart` 中添加 `dart:convert` 和 `dart:io` 导入
   - 在 `lib/bloc/import/import_bloc.dart` 中添加 `dart:convert` 导入（如果尚未导入）
   - 在 `lib/bloc/import/import_bloc.dart` 中添加 `package:path/path.dart` 导入（如果尚未导入）

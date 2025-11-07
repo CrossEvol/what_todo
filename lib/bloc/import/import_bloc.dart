@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:equatable/equatable.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter_app/models/task_label_relation.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/labels/label_db.dart';
@@ -52,7 +55,7 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
       // Check if it's new format (has __v key)
       bool isNewFormat = data is Map && data.containsKey('__v');
       int formatVersion = 1;
-      
+
       if (isNewFormat) {
         formatVersion = data['__v'] as int? ?? 1;
       }
@@ -134,17 +137,19 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
 
         // 处理资源数据（仅在 V2 格式中存在）
         if (formatVersion >= 2 && data.containsKey('resources')) {
-          final resourceMaps = (data['resources'] as List).cast<Map<String, dynamic>>();
+          final resourceMaps =
+              (data['resources'] as List).cast<Map<String, dynamic>>();
           for (var resourceMap in resourceMaps) {
-            // 创建占位的 ResourceModel，taskId 设为 -1
+            // 创建 ResourceModel，保存 base64 内容和 task_title
             final resource = ResourceModel(
-              id: resourceMap['id'] as int? ?? 0,
-              path: resourceMap['path'] as String,
+              id: 0, // 将由数据库分配
+              path: '', // 临时占位，稍后生成
               taskId: -1, // 占位值
               createTime: DateTime.now(),
-            );
-            // 保存 task_title 用于后续映射
-            resource.taskTitle = resourceMap['task_title'] as String?;
+            )
+              ..content = resourceMap['content'] as String?
+              ..taskTitle = resourceMap['task_title'] as String?;
+
             resources.add(resource);
           }
         }
@@ -293,16 +298,18 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
       ImportInProgressEvent event, Emitter<ImportState> emit) async {
     final startTime = DateTime.now();
     logger.info('Import started at: ${startTime.toIso8601String()}');
-    logger.info('Import data: ${event.projects.length} projects, ${event.labels.length} labels, ${event.tasks.length} tasks, ${event.resources.length} resources');
+    logger.info(
+        'Import data: ${event.projects.length} projects, ${event.labels.length} labels, ${event.tasks.length} tasks, ${event.resources.length} resources');
 
     try {
       // Pre-filtering: Check existing records to avoid unnecessary operations
       final filterStartTime = DateTime.now();
-      
+
       // Get existing project names
       final projectNames = event.projects.map((p) => p.name).toList();
-      final existingProjectNames = await _projectDB.getExistingProjectNames(projectNames);
-      
+      final existingProjectNames =
+          await _projectDB.getExistingProjectNames(projectNames);
+
       // Filter out existing projects
       final newProjects = event.projects
           .where((project) => !existingProjectNames.contains(project.name))
@@ -315,31 +322,35 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
 
       // Get existing label names
       final labelNames = event.labels.map((l) => l.name).toList();
-      final existingLabelNames = await _labelDB.getExistingLabelNames(labelNames);
-      
+      final existingLabelNames =
+          await _labelDB.getExistingLabelNames(labelNames);
+
       // Filter out existing labels
       final newLabels = event.labels
           .where((label) => !existingLabelNames.contains(label.name))
           .map((label) => Label.fromMap({
-              'id': label.id,
-              'name': label.name,
-              'colorCode': label.colorCode,
-              'colorName': label.colorName,
-            }))
+                'id': label.id,
+                'name': label.name,
+                'colorCode': label.colorCode,
+                'colorName': label.colorName,
+              }))
           .toList();
 
       // Get existing task titles
       final taskTitles = event.tasks.map((t) => t.title).toList();
-      final existingTaskTitles = await _taskDB.getExistingTaskTitles(taskTitles);
-      
+      final existingTaskTitles =
+          await _taskDB.getExistingTaskTitles(taskTitles);
+
       // Filter out existing tasks
       final newTasks = event.tasks
           .where((task) => !existingTaskTitles.contains(task.title))
           .toList();
 
       final filterDuration = DateTime.now().difference(filterStartTime);
-      logger.info('Pre-filtering completed in ${filterDuration.inMilliseconds}ms');
-      logger.info('Filtered data: ${newProjects.length} new projects, ${newLabels.length} new labels, ${newTasks.length} new tasks');
+      logger.info(
+          'Pre-filtering completed in ${filterDuration.inMilliseconds}ms');
+      logger.info(
+          'Filtered data: ${newProjects.length} new projects, ${newLabels.length} new labels, ${newTasks.length} new tasks');
 
       // Batch import projects with error handling
       if (newProjects.isNotEmpty) {
@@ -347,15 +358,18 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
         try {
           await _projectDB.batchInsertProjects(newProjects);
           final projectDuration = DateTime.now().difference(projectStartTime);
-          logger.info('Batch project import completed in ${projectDuration.inMilliseconds}ms');
+          logger.info(
+              'Batch project import completed in ${projectDuration.inMilliseconds}ms');
         } catch (e) {
-          logger.warn('Batch project import failed, falling back to individual inserts: $e');
+          logger.warn(
+              'Batch project import failed, falling back to individual inserts: $e');
           // Fallback to individual operations
           for (var project in newProjects) {
             try {
               await _projectDB.insertProject(project);
             } catch (individualError) {
-              logger.error('Failed to insert project ${project.name}: $individualError');
+              logger.error(
+                  'Failed to insert project ${project.name}: $individualError');
             }
           }
         }
@@ -367,15 +381,18 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
         try {
           await _labelDB.batchInsertLabels(newLabels);
           final labelDuration = DateTime.now().difference(labelStartTime);
-          logger.info('Batch label import completed in ${labelDuration.inMilliseconds}ms');
+          logger.info(
+              'Batch label import completed in ${labelDuration.inMilliseconds}ms');
         } catch (e) {
-          logger.warn('Batch label import failed, falling back to individual inserts: $e');
+          logger.warn(
+              'Batch label import failed, falling back to individual inserts: $e');
           // Fallback to individual operations
           for (var label in newLabels) {
             try {
               await _labelDB.insertLabel(label);
             } catch (individualError) {
-              logger.error('Failed to insert label ${label.name}: $individualError');
+              logger.error(
+                  'Failed to insert label ${label.name}: $individualError');
             }
           }
         }
@@ -383,10 +400,11 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
 
       // Query database for actual IDs after insertion
       final mappingStartTime = DateTime.now();
-      
+
       // Get actual project IDs from database
       final allProjectNames = event.projects.map((p) => p.name).toList();
-      final actualProjects = await _projectDB.getProjectsByNames(allProjectNames);
+      final actualProjects =
+          await _projectDB.getProjectsByNames(allProjectNames);
       final projectNameToId = <String, int>{};
       for (var project in actualProjects) {
         projectNameToId[project.name] = project.id!;
@@ -401,16 +419,18 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
       }
 
       final mappingDuration = DateTime.now().difference(mappingStartTime);
-      logger.info('ID mapping completed in ${mappingDuration.inMilliseconds}ms');
+      logger
+          .info('ID mapping completed in ${mappingDuration.inMilliseconds}ms');
 
       // Batch import tasks and create task-label relationships with error handling
       if (newTasks.isNotEmpty) {
         final taskStartTime = DateTime.now();
-        
+
         // Prepare tasks with correct project IDs from database
         for (var task in newTasks) {
           // Use actual project ID from database
-          final projectId = projectNameToId[task.projectName] ?? 1; // Default to Inbox
+          final projectId =
+              projectNameToId[task.projectName] ?? 1; // Default to Inbox
           task.projectId = projectId;
         }
 
@@ -418,16 +438,17 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
           // Batch insert tasks and get their IDs
           final insertedTaskIds = await _taskDB.batchInsertTasks(newTasks);
           final taskDuration = DateTime.now().difference(taskStartTime);
-          logger.info('Batch task import completed in ${taskDuration.inMilliseconds}ms');
+          logger.info(
+              'Batch task import completed in ${taskDuration.inMilliseconds}ms');
 
           // Create task-label relationships using actual database IDs
           final relationStartTime = DateTime.now();
           final taskLabelRelations = <TaskLabelRelation>[];
-          
+
           for (int i = 0; i < newTasks.length; i++) {
             final task = newTasks[i];
             final taskId = insertedTaskIds[i];
-            
+
             // Build relationships for this task's labels using actual database IDs
             for (var taskLabel in task.labelList) {
               final labelId = labelNameToId[taskLabel.name];
@@ -444,8 +465,10 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
           if (taskLabelRelations.isNotEmpty) {
             try {
               await _taskDB.batchInsertTaskLabels(taskLabelRelations);
-              final relationDuration = DateTime.now().difference(relationStartTime);
-              logger.info('Batch task-label relationship creation completed in ${relationDuration.inMilliseconds}ms');
+              final relationDuration =
+                  DateTime.now().difference(relationStartTime);
+              logger.info(
+                  'Batch task-label relationship creation completed in ${relationDuration.inMilliseconds}ms');
             } catch (e) {
               logger.error('Batch task-label relationship creation failed: $e');
               // Note: Individual fallback for relationships would require more complex logic
@@ -454,12 +477,14 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
             }
           }
         } catch (e) {
-          logger.warn('Batch task import failed, falling back to individual inserts: $e');
+          logger.warn(
+              'Batch task import failed, falling back to individual inserts: $e');
           // Fallback to individual operations
           for (var task in newTasks) {
             try {
               // Use actual project ID from database
-              final projectId = projectNameToId[task.projectName] ?? 1; // Default to Inbox
+              final projectId =
+                  projectNameToId[task.projectName] ?? 1; // Default to Inbox
               task.projectId = projectId;
 
               // Find actual label IDs from database
@@ -474,7 +499,8 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
               // Create task with relationships using actual database IDs
               await _taskDB.createTask(task, labelIDs: labelIds);
             } catch (individualError) {
-              logger.error('Failed to insert task ${task.title}: $individualError');
+              logger.error(
+                  'Failed to insert task ${task.title}: $individualError');
             }
           }
         }
@@ -486,13 +512,14 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
       }
 
       final totalDuration = DateTime.now().difference(startTime);
-      logger.info('Import completed successfully in ${totalDuration.inMilliseconds}ms');
-      
+      logger.info(
+          'Import completed successfully in ${totalDuration.inMilliseconds}ms');
+
       emit(const ImportSuccess());
     } catch (e) {
       final totalDuration = DateTime.now().difference(startTime);
       logger.error('Import failed after ${totalDuration.inMilliseconds}ms: $e');
-      
+
       emit(ImportError(
         message: 'Error during import: $e',
         projects: event.projects,
@@ -504,22 +531,11 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
     }
   }
 
-
-
   Future<void> _handleResourceImport(ImportInProgressEvent event) async {
     final resourceStartTime = DateTime.now();
-    
-    try {
-      // Verify resources directory exists
-      final importDir = Directory(event.importPath!).parent;
-      final resourcesDir = Directory('${importDir.path}/resources');
-      
-      if (!await resourcesDir.exists()) {
-        logger.warn('Resources directory not found: ${resourcesDir.path}');
-        return;
-      }
 
-      // Get actual task mappings
+    try {
+      // 获取任务标题到 ID 的映射
       final allTaskTitles = event.tasks.map((t) => t.title).toList();
       final actualTasks = await _taskDB.getTasksByTitles(allTaskTitles);
       final taskTitleToId = <String, int>{};
@@ -528,94 +544,105 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
           taskTitleToId[task.title] = task.id!;
         }
       }
-      
-      // Filter valid resources (task_title exists and corresponding task was imported)
+
+      // 获取 resources 目录路径
+      final resourcesDir = await _getResourcesDirectory();
+      if (!await resourcesDir.exists()) {
+        await resourcesDir.create(recursive: true);
+      }
+
+      // 过滤有效的资源（有 content 和 task_title）
       final validResources = <ResourceModel>[];
-      final resourceFiles = <File>[];
-      
+
       for (final resource in event.resources) {
-        if (resource.taskTitle != null) {
+        if (resource.content != null && resource.taskTitle != null) {
           final taskId = taskTitleToId[resource.taskTitle!];
           if (taskId != null) {
-            // Check if source file exists
-            final fileName = resource.path.split('/').last;
-            final sourceFile = File('${resourcesDir.path}/$fileName');
-            
-            if (await sourceFile.exists()) {
-              // Create new resource record with correct taskId
-              final newResource = ResourceModel(
-                id: 0, // Will be assigned by database
-                path: resource.path, // Keep original path structure
-                taskId: taskId,
-                createTime: DateTime.now(),
-              );
-              validResources.add(newResource);
-              resourceFiles.add(sourceFile);
-            } else {
-              logger.warn('Resource file not found: ${sourceFile.path}');
-            }
+            validResources.add(resource.copyWith(taskId: taskId));
           } else {
             logger.warn('Task not found for resource: ${resource.taskTitle}');
           }
         }
       }
-      
-      // Batch insert valid resource records
+
+      // 批量插入资源记录（先插入占位路径）
       if (validResources.isNotEmpty) {
-        final insertedResourceIds = await _resourceDB.batchInsertResources(validResources);
-        
-        // Async copy resource files
-        _copyResourcesAsync(validResources, resourceFiles, insertedResourceIds);
-        
+        final insertedResourceIds = await _resourceDB.batchInsertResources(
+            validResources
+                .map((r) => r.copyWith(path: 'placeholder'))
+                .toList());
+
+        // 异步处理图片文件生成
+        _generateResourceFilesAsync(
+            validResources, insertedResourceIds, resourcesDir.path);
+
         logger.info('${validResources.length} resources prepared for import');
       }
-      
+
       final resourceDuration = DateTime.now().difference(resourceStartTime);
-      logger.info('Resource import completed in ${resourceDuration.inMilliseconds}ms');
+      logger.info(
+          'Resource import completed in ${resourceDuration.inMilliseconds}ms');
     } catch (e) {
       logger.error('Resource import failed: $e');
-      // Don't throw exception, let main import process continue
+      // 不抛出异常，让主导入流程继续
     }
   }
 
-  void _copyResourcesAsync(List<ResourceModel> resources, List<File> sourceFiles, List<int> resourceIds) {
-    // 使用 Future 进行异步处理，避免阻塞
+  /// 异步生成资源文件
+  void _generateResourceFilesAsync(
+    List<ResourceModel> resources,
+    List<int> resourceIds,
+    String resourcesDirPath,
+  ) {
     Future.microtask(() async {
       try {
         for (int i = 0; i < resources.length; i++) {
           final resource = resources[i];
-          final sourceFile = sourceFiles[i];
           final resourceId = resourceIds[i];
-          
-          // 生成新的文件名：resource + resourceId + 原扩展名
-          final originalExtension = resource.path.split('.').last;
-          final newFileName = 'resource$resourceId.$originalExtension';
-          
-          // 构建目标路径
-          final destFile = File('${resource.path.substring(0, resource.path.lastIndexOf('/'))}/$newFileName');
-          
-          // 确保目标目录存在
-          final destDir = destFile.parent;
-          if (!await destDir.exists()) {
-            await destDir.create(recursive: true);
-          }
-          
-          // 使用 readAsBytes 和 writeAsBytes 确保文件句柄正确释放
-          if (!await destFile.exists()) {
-            final bytes = await sourceFile.readAsBytes();
-            await destFile.writeAsBytes(bytes);
-            
+
+          if (resource.content == null) continue;
+
+          try {
+            // 解码 base64
+            final bytes = base64.decode(resource.content!);
+
+            // 推断文件扩展名（从原始 path 或默认为 jpg）
+            String extension = 'jpg';
+            if (resource.path.isNotEmpty) {
+              extension = resource.path.split('.').last;
+            }
+
+            // 生成新文件名
+            final fileName = 'resource$resourceId.$extension';
+            final filePath = p.join(resourcesDirPath, fileName);
+
+            // 写入文件
+            final file = File(filePath);
+            await file.writeAsBytes(bytes);
+
             // 更新数据库中的路径
-            await _resourceDB.updateResourcePath(resourceId, destFile.path);
-            
-            logger.info('Resource copied: ${sourceFile.path} -> ${destFile.path}');
-          } else {
-            logger.info('Resource already exists, skipping: ${destFile.path}');
+            await _resourceDB.updateResourcePath(resourceId, filePath);
+
+            logger.info('Resource file generated: $filePath');
+          } catch (e) {
+            logger
+                .error('Error generating resource file for ID $resourceId: $e');
           }
         }
       } catch (e) {
-        logger.warn('Error copying resources: $e');
+        logger.warn('Error in async resource file generation: $e');
       }
     });
+  }
+
+  /// 获取 resources 目录
+  Future<Directory> _getResourcesDirectory() async {
+    if (Platform.isAndroid) {
+      final dir = await getExternalStorageDirectory();
+      return Directory(p.join(dir!.path, 'resources'));
+    } else {
+      final dir = await getApplicationDocumentsDirectory();
+      return Directory(p.join(dir.path, 'resources'));
+    }
   }
 }
