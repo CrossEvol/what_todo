@@ -103,19 +103,19 @@ Future<void> setupWorkManagerWithStoredInterval() async {
 }
 
 /// Filters reminders based on enabled status, type, time window, and priority
-/// 
+///
 /// Returns a list of up to 5 reminders that should trigger notifications:
 /// 1. Filters to only enabled reminders
 /// 2. Filters by reminder type (daily, workday, holiday, once) based on current weekday
 /// 3. Filters by time - only reminders within the specified time window
 /// 4. Groups by taskId and keeps only the latest reminder per task
 /// 5. Sorts by updateTime (newest first) and takes top 5
-/// 
+///
 /// Parameters:
 /// - [allReminders]: List of all reminders to filter
 /// - [currentTime]: The current time to compare against
 /// - [timeWindowMinutes]: Time window in minutes (default 15)
-/// 
+///
 /// Returns: List of filtered reminders ready to send notifications
 List<Reminder> filterRemindersForNotification(
   List<Reminder> allReminders,
@@ -125,13 +125,15 @@ List<Reminder> filterRemindersForNotification(
   final weekday = currentTime.weekday;
 
   if (kDebugMode) {
-    debugPrint('filterRemindersForNotification: Starting with ${allReminders.length} reminders');
+    debugPrint(
+        'filterRemindersForNotification: Starting with ${allReminders.length} reminders');
   }
 
   // 1. Filter to only enabled reminders
   final enabledReminders = allReminders.where((r) => r.enable).toList();
   if (kDebugMode) {
-    debugPrint('filterRemindersForNotification: Enabled reminders: ${enabledReminders.length}');
+    debugPrint(
+        'filterRemindersForNotification: Enabled reminders: ${enabledReminders.length}');
   }
 
   // 2. Filter by type (daily, weekday, holiday, once)
@@ -150,7 +152,8 @@ List<Reminder> filterRemindersForNotification(
     }
   }).toList();
   if (kDebugMode) {
-    debugPrint('filterRemindersForNotification: After type filter: ${remindersFilteredByType.length}');
+    debugPrint(
+        'filterRemindersForNotification: After type filter: ${remindersFilteredByType.length}');
   }
 
   // 3. Filter by time (within time window)
@@ -168,7 +171,8 @@ List<Reminder> filterRemindersForNotification(
     return difference.inMinutes.abs() <= timeWindowMinutes;
   }).toList();
   if (kDebugMode) {
-    debugPrint('filterRemindersForNotification: After time filter: ${remindersToSend.length}');
+    debugPrint(
+        'filterRemindersForNotification: After time filter: ${remindersToSend.length}');
   }
 
   // 4. Group by taskId and get the latest one by updateTime
@@ -183,7 +187,8 @@ List<Reminder> filterRemindersForNotification(
     }
   }
   if (kDebugMode) {
-    debugPrint('filterRemindersForNotification: After grouping by task: ${remindersByTask.values.length}');
+    debugPrint(
+        'filterRemindersForNotification: After grouping by task: ${remindersByTask.values.length}');
   }
 
   var finalReminders = remindersByTask.values.toList();
@@ -194,7 +199,8 @@ List<Reminder> filterRemindersForNotification(
     finalReminders = finalReminders.sublist(0, 5);
   }
   if (kDebugMode) {
-    debugPrint('filterRemindersForNotification: Final reminders: ${finalReminders.length}');
+    debugPrint(
+        'filterRemindersForNotification: Final reminders: ${finalReminders.length}');
   }
 
   return finalReminders;
@@ -203,6 +209,9 @@ List<Reminder> filterRemindersForNotification(
 Future<void> _processRemindersAndShowNotifications(
     NotificationDetails notificationDetails) async {
   final reminderDb = ReminderDB.get();
+  final settingsDB = SettingsDB.get();
+  final setting = await settingsDB.findByName(SettingKeys.REMINDER_INTERVAL);
+  final timeWindowMinutes = int.parse(setting?.value ?? "15");
   final taskDb = TaskDB.get();
   final now = tz.TZDateTime.now(tz.local);
 
@@ -212,7 +221,8 @@ Future<void> _processRemindersAndShowNotifications(
 
   // Get all reminders and filter them
   final allReminders = await reminderDb.getAllReminders();
-  final finalReminders = filterRemindersForNotification(allReminders, now);
+  final finalReminders = filterRemindersForNotification(allReminders, now,
+      timeWindowMinutes: timeWindowMinutes);
 
   // Send notifications for filtered reminders
   if (finalReminders.isNotEmpty) {
