@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/import/import_bloc.dart';
@@ -10,10 +9,10 @@ import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
 import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/logger_util.dart';
+import 'package:flutter_app/utils/permission_handler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -567,8 +566,12 @@ class _ImportPageState extends State<ImportPage> {
     }
 
     // Check for storage permissions first
-    bool hasPermission = await _checkAndRequestStoragePermission(context);
+    bool hasPermission = await PermissionHandlerService.instance
+        .checkAndRequestStoragePermission(context);
     if (!hasPermission) {
+      showSnackbar(
+          context, AppLocalizations.of(context)!.storagePermissionRequired,
+          materialColor: Colors.red);
       return;
     }
 
@@ -637,173 +640,6 @@ class _ImportPageState extends State<ImportPage> {
         isLoading = false;
       });
     }
-  }
-
-  // Method to check and request storage permissions
-  Future<bool> _checkAndRequestStoragePermission(BuildContext context) async {
-    if (!Platform.isAndroid) {
-      // Only Android needs explicit permission handling
-      return true;
-    }
-
-    final deviceInfoPlugin = DeviceInfoPlugin();
-    final androidInfo = await deviceInfoPlugin.androidInfo;
-    final sdkVersion = androidInfo.version.sdkInt;
-
-    logger.info('Android SDK Version: $sdkVersion');
-
-    if (sdkVersion >= 33) {
-      // Android 13+ (API 33+) - request granular media permissions
-      PermissionStatus imageStatus = await Permission.photos.status;
-
-      if (imageStatus.isGranted) {
-        return true;
-      }
-
-      if (imageStatus.isPermanentlyDenied) {
-        _showPermissionSettingsDialog(context);
-        return false;
-      }
-
-      // Request permission
-      imageStatus = await Permission.photos.request();
-      if (imageStatus.isGranted) {
-        return true;
-      } else {
-        showSnackbar(
-          context,
-          AppLocalizations.of(context)!.storagePermissionRequired,
-          materialColor: Colors.red,
-        );
-        return false;
-      }
-    } else if (sdkVersion >= 30) {
-      // Android 11-12 (API 30-32) - Check for MANAGE_EXTERNAL_STORAGE if needed
-      // or fall back to storage permission for limited access
-
-      // First try with regular storage permissions (limited access)
-      PermissionStatus status = await Permission.storage.status;
-
-      if (status.isGranted) {
-        return true;
-      }
-
-      if (status.isPermanentlyDenied) {
-        _showPermissionSettingsDialog(context);
-        return false;
-      }
-
-      status = await Permission.storage.request();
-      if (status.isGranted) {
-        return true;
-      }
-
-      // If regular storage permission denied or we need full access,
-      // we might need to request MANAGE_EXTERNAL_STORAGE
-      bool hasFullAccess = await Permission.manageExternalStorage.isGranted;
-
-      if (hasFullAccess) {
-        return true;
-      }
-
-      // Show dialog to request full storage access
-      bool shouldRequestFull = await _showRequestFullStorageDialog(context);
-
-      if (shouldRequestFull) {
-        await Permission.manageExternalStorage.request();
-        hasFullAccess = await Permission.manageExternalStorage.isGranted;
-
-        if (!hasFullAccess) {
-          showSnackbar(
-            context,
-            AppLocalizations.of(context)!.storagePermissionRequired,
-            materialColor: Colors.red,
-          );
-        }
-
-        return hasFullAccess;
-      } else {
-        return false;
-      }
-    } else {
-      // Android 10 and below (API 29-) - Traditional storage permissions
-      PermissionStatus status = await Permission.storage.status;
-
-      if (status.isGranted) {
-        return true;
-      }
-
-      if (status.isPermanentlyDenied) {
-        _showPermissionSettingsDialog(context);
-        return false;
-      }
-
-      // Request permission
-      status = await Permission.storage.request();
-
-      if (status.isGranted) {
-        return true;
-      } else {
-        showSnackbar(
-          context,
-          AppLocalizations.of(context)!.storagePermissionRequired,
-          materialColor: Colors.red,
-        );
-        return false;
-      }
-    }
-  }
-
-  void _showPermissionSettingsDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.storagePermissionRequired),
-        content: Text(
-          AppLocalizations.of(context)!.storagePermissionRequired,
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text(AppLocalizations.of(context)!.cancel),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          TextButton(
-            child: Text(AppLocalizations.of(context)!.settings),
-            onPressed: () => openAppSettings(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<bool> _showRequestFullStorageDialog(BuildContext context) async {
-    bool result = false;
-    await showDialog(
-      context: context,
-      builder: (BuildContext context) => AlertDialog(
-        title: Text(AppLocalizations.of(context)!.storagePermissionRequired),
-        content: const Text(
-          'This feature requires full access to storage. You will be redirected to settings to grant this permission.',
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text(AppLocalizations.of(context)!.cancel),
-            onPressed: () {
-              result = false;
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: Text(AppLocalizations.of(context)!.confirm),
-            onPressed: () {
-              result = true;
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      ),
-    );
-    return result;
   }
 
   Future<String?> _getImportPath() async {

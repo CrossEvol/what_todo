@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../utils/logger_util.dart';
@@ -159,9 +160,10 @@ class PermissionHandlerService {
     try {
       if (!Platform.isAndroid) return false;
       
-      // This is a simplified check - in a real app you might want to use
-      // device_info_plus to get the exact SDK version
-      return false; // For now, assume older Android
+      // Use device_info_plus to get the exact SDK version
+      final deviceInfoPlugin = DeviceInfoPlugin();
+      final androidInfo = await deviceInfoPlugin.androidInfo;
+      return androidInfo.version.sdkInt >= 33;
     } catch (e) {
       logger.error('Error checking Android version: $e');
       return false;
@@ -213,7 +215,7 @@ class PermissionHandlerService {
   }
 
   /// Open app settings to manually grant permissions
-  Future<void> openAppSettings() async {
+  Future<void> openSettings() async {
     try {
       logger.info('Opening app settings for manual permission grant');
       await openAppSettings();
@@ -366,5 +368,146 @@ class PermissionHandlerService {
         ],
       ),
     );
+  }
+
+  /// Check and request storage permission for import/export with full UI flow
+  /// Returns true if permission is granted, false otherwise
+  Future<bool> checkAndRequestStoragePermission(BuildContext context) async {
+    if (!Platform.isAndroid) {
+      return true;
+    }
+
+    try {
+      final deviceInfoPlugin = DeviceInfoPlugin();
+      final androidInfo = await deviceInfoPlugin.androidInfo;
+      final sdkVersion = androidInfo.version.sdkInt;
+
+      logger.info('Android SDK Version: $sdkVersion');
+
+      if (sdkVersion >= 33) {
+        // Android 13+ (API 33+) - request granular media permissions
+        PermissionStatus imageStatus = await Permission.photos.status;
+
+        if (imageStatus.isGranted) {
+          return true;
+        }
+
+        if (imageStatus.isPermanentlyDenied) {
+          _showPermissionSettingsDialog(context);
+          return false;
+        }
+
+        // Request permission
+        imageStatus = await Permission.photos.request();
+        return imageStatus.isGranted;
+      } else if (sdkVersion >= 30) {
+        // Android 11-12 (API 30-32)
+        PermissionStatus status = await Permission.storage.status;
+
+        if (status.isGranted) {
+          return true;
+        }
+
+        if (status.isPermanentlyDenied) {
+          _showPermissionSettingsDialog(context);
+          return false;
+        }
+
+        status = await Permission.storage.request();
+        if (status.isGranted) {
+          return true;
+        }
+
+        // Check if we need MANAGE_EXTERNAL_STORAGE
+        bool hasFullAccess = await Permission.manageExternalStorage.isGranted;
+        if (hasFullAccess) {
+          return true;
+        }
+
+        // Show dialog to request full storage access
+        bool shouldRequestFull = await _showRequestFullStorageDialog(context);
+        if (shouldRequestFull) {
+          await Permission.manageExternalStorage.request();
+          hasFullAccess = await Permission.manageExternalStorage.isGranted;
+          return hasFullAccess;
+        }
+        return false;
+      } else {
+        // Android 10 and below (API 29-)
+        PermissionStatus status = await Permission.storage.status;
+
+        if (status.isGranted) {
+          return true;
+        }
+
+        if (status.isPermanentlyDenied) {
+          _showPermissionSettingsDialog(context);
+          return false;
+        }
+
+        status = await Permission.storage.request();
+        return status.isGranted;
+      }
+    } catch (e) {
+      logger.error('Error checking/requesting storage permission: $e');
+      return false;
+    }
+  }
+
+  /// Show permission settings dialog
+  void _showPermissionSettingsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Storage Permission Required'),
+        content: const Text(
+          'Storage permission is required for this feature. Please enable it in app settings.',
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Cancel'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          TextButton(
+            child: const Text('Settings'),
+            onPressed: () {
+              Navigator.of(context).pop();
+              openAppSettings();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Show request full storage dialog
+  Future<bool> _showRequestFullStorageDialog(BuildContext context) async {
+    bool result = false;
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Full Storage Access Required'),
+        content: const Text(
+          'This feature requires full access to storage. You will be redirected to settings to grant this permission.',
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Cancel'),
+            onPressed: () {
+              result = false;
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: const Text('Continue'),
+            onPressed: () {
+              result = true;
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
+    );
+    return result;
   }
 }
