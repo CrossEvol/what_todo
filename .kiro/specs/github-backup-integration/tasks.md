@@ -28,7 +28,7 @@
   - Implement isConfigured getter
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-- [ ] 5. Initialize GitHub Cubit in main.dart
+- [x] 5. Initialize GitHub Cubit in main.dart
   - Add GitHubCubit to BlocProvider list in main.dart
   - Set lazy: false to load config on app start
   - _Requirements: 5.6_

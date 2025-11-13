@@ -48,6 +48,7 @@ import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 import 'bloc/resource/resource_bloc.dart';
 import 'cubit/comment_cubit.dart' show CommentCubit;
+import 'cubit/github_cubit.dart' show GitHubCubit;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -264,6 +265,10 @@ class _MyAppState extends State<MyApp> with RouteAware, WidgetsBindingObserver {
         BlocProvider(
           create: (_) => CommentCubit(),
           lazy: true,
+        ),
+        BlocProvider(
+          create: (_) => GitHubCubit(),
+          lazy: false,
         ),
       ],
       child: Builder(
