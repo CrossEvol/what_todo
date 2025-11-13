@@ -53,6 +53,10 @@ dependencies:
   open_filex: ^4.7.0
   connectivity_plus: ^6.1.5
   receive_sharing_intent: ^1.8.1
+  github: ^9.25.0
+  barcode_scan2: ^4.5.1
+  barcode_widget: ^2.0.4
+  clipboard: ^2.0.2
 
 dev_dependencies:
   flutter_driver:
