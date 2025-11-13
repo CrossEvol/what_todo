@@ -49,7 +49,7 @@
   - Add error handling for invalid QR codes
   - _Requirements: 2.1, 2.6, 2.7_
 
-- [ ] 8. Create GitHub Service for API interactions
+- [x] 8. Create GitHub Service for API interactions
   - Create lib/services/github_service.dart
   - Implement uploadTasksJson() method to upload tasks.json to GitHub repository
   - Implement downloadTasksJson() method to download tasks.json from GitHub repository
