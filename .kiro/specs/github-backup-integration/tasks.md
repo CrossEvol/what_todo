@@ -69,7 +69,7 @@
   - Use English text only (no internationalization)
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 2.3, 2.4, 6.1, 6.2, 6.3, 6.4_
 
-- [ ] 10. Create QR code display page
+- [x] 10. Create QR code display page
   - Create lib/pages/github/github_qr_display_page.dart
   - Use barcode_widget to display QR code from GitHubConfig
   - Add descriptive text explaining the QR code purpose
@@ -77,7 +77,7 @@
   - Use English text only
   - _Requirements: 2.2, 6.1_
 
-- [ ] 11. Implement QR scanning instructions dialog
+- [x] 11. Implement QR scanning instructions dialog
   - Add method to show QR scanning instructions dialog in github_config_page.dart
   - Display instructions in English about QR code scanning process
   - Add "Understood, Go Scan" button that triggers camera permission check
