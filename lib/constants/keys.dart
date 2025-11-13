@@ -46,6 +46,8 @@ class SettingKeys {
   static const ENABLE_NOTIFICATIONS = 'enable_notifications';
   static const ENABLE_DAILY_REMINDER = 'enable_daily_reminder';
   static const REMINDER_INTERVAL = 'reminder_interval';
+  static const GITHUB_CONFIG = 'github_config';
+  static const ENABLE_GITHUB_EXPORT = 'enable_github_export';
 }
 
 class AddProjectKeys {

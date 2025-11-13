@@ -15,7 +15,7 @@
   - Implement copyWith() method
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [ ] 3. Add GitHub configuration key to constants
+- [x] 3. Add GitHub configuration key to constants
   - Update lib/constants/keys.dart to add GITHUB_CONFIG and ENABLE_GITHUB_EXPORT to SettingKeys
   - _Requirements: 5.4, 7.3_
 
