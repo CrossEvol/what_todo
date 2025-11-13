@@ -60,6 +60,50 @@ class PermissionHandlerService {
     }
   }
 
+  /// Check camera permission status
+  Future<bool> hasCameraPermission() async {
+    if (!Platform.isAndroid) return true;
+
+    try {
+      final status = await Permission.camera.status;
+      return status.isGranted;
+    } catch (e) {
+      logger.error('Error checking camera permission: $e');
+      return false;
+    }
+  }
+
+  /// Request camera permission
+  Future<bool> requestCameraPermission() async {
+    if (!Platform.isAndroid) return true;
+
+    try {
+      logger.info('Requesting camera permission');
+      final status = await Permission.camera.request();
+      
+      switch (status) {
+        case PermissionStatus.granted:
+          logger.info('Camera permission granted');
+          return true;
+        case PermissionStatus.denied:
+          logger.warn('Camera permission denied');
+          return false;
+        case PermissionStatus.permanentlyDenied:
+          logger.warn('Camera permission permanently denied');
+          return false;
+        case PermissionStatus.restricted:
+          logger.warn('Camera permission restricted');
+          return false;
+        default:
+          logger.warn('Camera permission status: $status');
+          return false;
+      }
+    } catch (e) {
+      logger.error('Error requesting camera permission: $e');
+      return false;
+    }
+  }
+
   /// Check notification permission status
   Future<bool> hasNotificationPermission() async {
     if (!Platform.isAndroid) return true;
@@ -297,6 +341,17 @@ class PermissionHandlerService {
     );
   }
 
+  /// Show camera permission explanation dialog
+  static Future<bool> showCameraPermissionDialog(BuildContext context) async {
+    return await showPermissionDialog(
+      context: context,
+      title: 'Camera Permission Required',
+      message: 'Camera access is needed to scan QR codes for GitHub configuration. '
+               'This allows you to quickly import settings from another device.',
+      confirmText: 'Grant Permission',
+    );
+  }
+
   /// Complete permission flow with user interaction
   Future<bool> requestPermissionsWithUI(BuildContext context) async {
     try {
@@ -509,5 +564,40 @@ class PermissionHandlerService {
       ),
     );
     return result;
+  }
+
+  /// Check and request camera permission with full UI flow
+  /// Returns true if permission is granted, false otherwise
+  Future<bool> checkAndRequestCameraPermission(BuildContext context) async {
+    if (!Platform.isAndroid) return true;
+
+    try {
+      final status = await Permission.camera.status;
+
+      if (status.isGranted) {
+        return true;
+      }
+
+      if (status.isPermanentlyDenied) {
+        _showPermissionSettingsDialog(context);
+        return false;
+      }
+
+      // Show explanation dialog
+      final shouldRequest = await showCameraPermissionDialog(context);
+      if (!shouldRequest) return false;
+
+      // Request permission
+      final granted = await requestCameraPermission();
+      if (!granted) {
+        _showPermissionDeniedDialog(context, 'Camera Permission');
+        return false;
+      }
+
+      return true;
+    } catch (e) {
+      logger.error('Error checking/requesting camera permission: $e');
+      return false;
+    }
   }
 }

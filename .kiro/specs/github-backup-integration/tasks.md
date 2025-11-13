@@ -33,7 +33,7 @@
   - Set lazy: false to load config on app start
   - _Requirements: 5.6_
 
-- [ ] 6. Enhance PermissionHandlerService with camera permission methods
+- [x] 6. Enhance PermissionHandlerService with camera permission methods
   - Add hasCameraPermission() method to lib/utils/permission_handler.dart
   - Add requestCameraPermission() method
   - Add showCameraPermissionDialog() static method
