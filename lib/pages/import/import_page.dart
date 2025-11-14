@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/import/import_bloc.dart';
+import 'package:flutter_app/bloc/settings/settings_bloc.dart';
+import 'package:flutter_app/cubit/github_cubit.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
@@ -11,6 +13,7 @@ import 'package:flutter_app/utils/app_util.dart';
 import 'package:flutter_app/utils/logger_util.dart';
 import 'package:flutter_app/utils/permission_handler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:syncfusion_flutter_datagrid/datagrid.dart';
@@ -27,6 +30,7 @@ class ImportPage extends StatefulWidget {
 class _ImportPageState extends State<ImportPage> {
   TextEditingController filePathController = TextEditingController();
   bool isLoading = false;
+  int _selectedTabIndex = 0; // 0 for Local, 1 for GitHub
 
   @override
   void initState() {
@@ -121,6 +125,67 @@ class _ImportPageState extends State<ImportPage> {
   }
 
   Widget _buildFileSelectionView() {
+    return Column(
+      children: [
+        // Tab bar
+        Container(
+          height: 50,
+          decoration: BoxDecoration(
+            color: Colors.blue.withOpacity(0.1),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildTabButton(
+                'Local',
+                _selectedTabIndex == 0,
+                () => setState(() => _selectedTabIndex = 0),
+              ),
+              _buildTabButton(
+                'GitHub',
+                _selectedTabIndex == 1,
+                () => setState(() => _selectedTabIndex = 1),
+              ),
+            ],
+          ),
+        ),
+        // Tab content
+        Expanded(
+          child: _selectedTabIndex == 0
+              ? _buildLocalTabContent()
+              : _buildGitHubTabContent(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTabButton(String title, bool isSelected, VoidCallback onTap) {
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: isSelected ? Colors.blue : Colors.transparent,
+                width: 3,
+              ),
+            ),
+          ),
+          child: Text(
+            title,
+            style: TextStyle(
+              color: isSelected ? Colors.blue : Colors.black,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLocalTabContent() {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -199,6 +264,211 @@ class _ImportPageState extends State<ImportPage> {
                 ],
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGitHubTabContent() {
+    final githubCubit = context.watch<GitHubCubit>();
+    final githubConfig = githubCubit.state;
+
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Import from GitHub',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Import your tasks from a GitHub repository backup.',
+            style: TextStyle(fontSize: 16),
+          ),
+          const SizedBox(height: 24),
+          if (githubConfig.isValid()) ...[
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Repository Information',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildInfoRow('Repository', '${githubConfig.owner}/${githubConfig.repo}'),
+                    const SizedBox(height: 8),
+                    _buildInfoRow('Branch', githubConfig.branch),
+                    const SizedBox(height: 8),
+                    _buildInfoRow('Path', '${githubConfig.pathPrefix}tasks.json'),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: isLoading ? null : _handleGitHubImport,
+                icon: isLoading
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2.0,
+                          color: Colors.white,
+                        ),
+                      )
+                    : const Icon(Icons.cloud_download),
+                label: Text(isLoading ? 'Loading...' : 'Load from GitHub'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+              ),
+            ),
+          ] else ...[
+            Card(
+              color: Colors.orange.withOpacity(0.1),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: const [
+                        Icon(Icons.warning, color: Colors.orange),
+                        SizedBox(width: 8),
+                        Text(
+                          'GitHub Not Configured',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'You need to configure your GitHub credentials before importing from GitHub.',
+                    ),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: () => context.push('/github_config'),
+                        icon: const Icon(Icons.settings),
+                        label: const Text('Configure GitHub'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String label, String value) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 100,
+          child: Text(
+            '$label:',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.grey,
+            ),
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: const TextStyle(fontSize: 16),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _handleGitHubImport() async {
+    // Check if GitHub credentials are configured
+    final githubCubit = context.read<GitHubCubit>();
+    if (!githubCubit.isConfigured) {
+      final shouldNavigate = await _showGitHubNotConfiguredDialog();
+      if (shouldNavigate == true) {
+        context.push('/github_config');
+      }
+      return;
+    }
+
+    // Check if GitHub export is enabled in settings
+    final settingsBloc = context.read<SettingsBloc>();
+    if (!settingsBloc.state.enableGitHubExport) {
+      final shouldNavigate = await _showGitHubExportDisabledDialog();
+      if (shouldNavigate == true) {
+        context.push('/settings');
+      }
+      return;
+    }
+
+    // TODO: Trigger GitHub import (will be implemented in task 18)
+    showSnackbar(
+      context,
+      'GitHub import will be implemented in the next task',
+      materialColor: Colors.orange,
+    );
+  }
+
+  Future<bool?> _showGitHubNotConfiguredDialog() {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('GitHub Not Configured'),
+        content: const Text(
+          'GitHub credentials are not configured. Would you like to set them up now?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Configure'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<bool?> _showGitHubExportDisabledDialog() {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('GitHub Export Disabled'),
+        content: const Text(
+          'GitHub export is currently disabled in settings. Would you like to enable it?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Go to Settings'),
           ),
         ],
       ),

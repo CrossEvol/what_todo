@@ -130,7 +130,7 @@
   - Navigate to error page on failure with error details
   - _Requirements: 8.6, 8.7_
 
-- [ ] 17. Enhance Import page with GitHub tab
+- [x] 17. Enhance Import page with GitHub tab
   - Update lib/pages/import/import_page.dart to add tabs for "Local" and "GitHub"
   - Implement tab switching UI
   - Add GitHub tab content with repository info display
