@@ -31,6 +31,7 @@ SettingsState defaultSettingState() {
     confirmDeletion: false,
     enableNotifications: false,
     enableDailyReminder: false,
+    enableGitHubExport: false,
   );
 }
 
