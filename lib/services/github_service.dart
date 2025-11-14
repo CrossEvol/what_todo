@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:github/github.dart';
 import '../models/github_config.dart';
 import '../utils/logger_util.dart';
+import '../utils/dio_config.dart';
 
 /// Service for interacting with GitHub API to upload and download task data
 class GitHubService {
@@ -107,13 +109,41 @@ class GitHubService {
         throw Exception('tasks.json not found in repository');
       }
       
-      // Decode the base64 content
-      final decodedContent = utf8.decode(
-        base64Decode(contents.file!.content!.replaceAll('\n', '')),
-      );
+      // Use downloadUrl to fetch the actual content
+      final downloadUrl = contents.file!.downloadUrl;
+      if (downloadUrl == null || downloadUrl.isEmpty) {
+        logger.error('Download URL not available for tasks.json');
+        throw Exception('Download URL not available for tasks.json');
+      }
       
-      logger.info('Successfully downloaded tasks.json from GitHub');
-      return decodedContent;
+      logger.debug('Fetching content from download URL: $downloadUrl');
+      
+      // Use DioConfig instance with retry logic for better reliability
+      final dio = DioConfig.instance;
+      
+      try {
+        final response = await dio.get(
+          downloadUrl,
+          options: Options(
+            responseType: ResponseType.plain,
+            followRedirects: true,
+            validateStatus: (status) => status != null && status < 500,
+          ),
+        );
+        
+        if (response.statusCode != 200) {
+          logger.error('Failed to download file content: ${response.statusCode}');
+          throw Exception('Failed to download file content: ${response.statusCode}');
+        }
+        
+        final content = response.data as String;
+        
+        logger.info('Successfully downloaded tasks.json from GitHub (${content.length} bytes)');
+        return content;
+      } on DioException catch (e) {
+        logger.error('Dio error downloading file: ${e.type} - ${e.message}');
+        throw Exception('Failed to download file from GitHub: ${e.message}');
+      }
     } catch (e) {
       logger.error('Failed to download tasks.json from GitHub: $e');
       rethrow;
