@@ -69,18 +69,20 @@ class _ImportPageState extends State<ImportPage> {
       ),
       body: BlocListener<ImportBloc, ImportState>(
         listener: (context, state) {
-          // Handle GitHub import errors by navigating to error page
-          if (state is ImportError && state.message.contains('GitHub')) {
-            setState(() => isLoading = false);
-            context.push('/github_error', extra: {
-              'errorMessage': state.message,
-              'operation': 'download',
-              'timestamp': DateTime.now(),
-            });
-          } else if (state is ImportLoading) {
+          if (state is ImportLoading) {
             setState(() => isLoading = true);
           } else if (state is ImportLoaded || state is ImportSuccess) {
             setState(() => isLoading = false);
+          } else if (state is ImportError) {
+            setState(() => isLoading = false);
+            // Handle GitHub import errors by navigating to error page
+            if (state.message.contains('GitHub')) {
+              context.push('/github_error', extra: {
+                'errorMessage': state.message,
+                'operation': 'download',
+                'timestamp': DateTime.now(),
+              });
+            }
           }
         },
         child: BlocBuilder<ImportBloc, ImportState>(

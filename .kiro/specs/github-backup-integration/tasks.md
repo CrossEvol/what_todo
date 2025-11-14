@@ -151,7 +151,7 @@
   - Navigate to error page on failure with error details
   - _Requirements: 9.5, 9.6, 9.7_
 
-- [ ] 19. Add routes for GitHub pages
+- [x] 19. Add routes for GitHub pages
   - Update lib/router/router.dart to add route for github_config page
   - Add route for github_qr_display page (pass GitHubConfig as extra)
   - Add route for github_error page (pass error details as extra)

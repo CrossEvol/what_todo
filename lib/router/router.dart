@@ -29,6 +29,10 @@ import 'package:flutter_app/pages/resource/resource_manage_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_app/models/reminder/reminder.dart';
+import 'package:flutter_app/pages/github/github_config_page.dart';
+import 'package:flutter_app/pages/github/github_qr_display_page.dart';
+import 'package:flutter_app/pages/github/github_error_page.dart';
+import 'package:flutter_app/models/github_config.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -234,6 +238,31 @@ final GoRouter goRouter = GoRouter(
               return const Text('Task ID is required');
             }
             return ResourceManagePage(taskId: int.parse(taskId));
+          },
+        ),
+        // GitHub Router
+        GoRoute(
+          path: 'github_config',
+          builder: (BuildContext context, GoRouterState state) {
+            return const GitHubConfigPage();
+          },
+        ),
+        GoRoute(
+          path: 'github_qr_display',
+          builder: (BuildContext context, GoRouterState state) {
+            final config = state.extra as GitHubConfig;
+            return GitHubQRDisplayPage(config: config);
+          },
+        ),
+        GoRoute(
+          path: 'github_error',
+          builder: (BuildContext context, GoRouterState state) {
+            final params = state.extra as Map<String, dynamic>;
+            return GitHubErrorPage(
+              errorMessage: params['errorMessage'] as String,
+              operation: params['operation'] as String,
+              timestamp: params['timestamp'] as DateTime,
+            );
           },
         ),
       ],

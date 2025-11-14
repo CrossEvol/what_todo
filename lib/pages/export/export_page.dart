@@ -56,14 +56,12 @@ class ExportView extends StatelessWidget {
               context.read<ExportBloc>().add(ResetExportDataEvent());
             });
           } else if (state is ExportError && state.message.contains('GitHub')) {
-            // Show error dialog for GitHub errors
-            // Note: Navigation to github_error page will be added in task 19
-            _showGitHubErrorDialog(
-              context,
-              state.message,
-              'upload',
-              DateTime.now(),
-            );
+            // Navigate to GitHub error page
+            context.push('/github_error', extra: {
+              'errorMessage': state.message,
+              'operation': 'upload',
+              'timestamp': DateTime.now(),
+            });
           }
         },
         child: BlocBuilder<ExportBloc, ExportState>(
@@ -653,65 +651,6 @@ class ExportView extends StatelessWidget {
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             child: const Text('Go to Settings'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showGitHubErrorDialog(
-    BuildContext context,
-    String errorMessage,
-    String operation,
-    DateTime timestamp,
-  ) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('GitHub Operation Failed'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Icon(Icons.error_outline, size: 48, color: Colors.red),
-              const SizedBox(height: 16),
-              Text(
-                'Operation: ${operation.toUpperCase()}',
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                'Error Message:',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 4),
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.red.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  errorMessage,
-                  style: TextStyle(color: Colors.red[900]),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Timestamp: ${timestamp.toString()}',
-                style: const TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              context.read<ExportBloc>().add(ResetExportDataEvent());
-            },
-            child: const Text('Close'),
           ),
         ],
       ),
