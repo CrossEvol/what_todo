@@ -377,7 +377,7 @@ class GridsExpansionTile extends StatelessWidget {
         },
         leading: Icon(Icons.cloud_sync),
         title: Text(
-          'Setup GitHub Backup',
+          'GitHub Backup',
           style: TextStyle(
             fontSize: 14.0,
             fontWeight: FontWeight.w500,

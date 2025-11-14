@@ -95,7 +95,10 @@ flutter:
     - assets/stack_overflow.png
     - assets/Agnimon.jpg
     - assets/empty.jpg
-
+  fonts:
+    - family: Iconfont
+      fonts:
+        - asset: assets/fonts/iconfont.ttf
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
 

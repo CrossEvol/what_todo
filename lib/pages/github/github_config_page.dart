@@ -226,7 +226,7 @@ class _GitHubConfigPageState extends State<GitHubConfigPage> {
         title: const Text('GitHub Configuration'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.info_outline),
+            icon: const Icon(IconData(0xe685, fontFamily: 'iconfont')),
             onPressed: _showQRScanningInstructions,
             tooltip: 'QR Scanning Instructions',
           ),
@@ -331,23 +331,27 @@ class _GitHubConfigPageState extends State<GitHubConfigPage> {
           ],
         ),
       ),
-      floatingActionButton: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            heroTag: 'qr_generate',
-            onPressed: _generateQRCode,
-            tooltip: 'Generate QR Code',
-            child: const Icon(Icons.qr_code),
-          ),
-          const SizedBox(width: 16),
-          FloatingActionButton(
-            heroTag: 'copy_clipboard',
-            onPressed: _copyToClipboard,
-            tooltip: 'Copy to Clipboard',
-            child: const Icon(Icons.content_copy),
-          ),
-        ],
+      floatingActionButton: Container(
+        padding: const EdgeInsets.all(8.0),
+        margin: const EdgeInsets.only(left: 32.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            FloatingActionButton(
+              heroTag: 'qr_generate',
+              onPressed: _generateQRCode,
+              tooltip: 'Generate QR Code',
+              child: const Icon(Icons.document_scanner_sharp),
+            ),
+            const SizedBox(width: 16),
+            FloatingActionButton(
+              heroTag: 'copy_clipboard',
+              onPressed: _copyToClipboard,
+              tooltip: 'Copy to Clipboard',
+              child: const Icon(Icons.content_copy),
+            ),
+          ],
+        ),
       ),
     );
   }
