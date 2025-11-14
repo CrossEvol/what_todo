@@ -157,7 +157,7 @@
   - Add route for github_error page (pass error details as extra)
   - _Requirements: 10.1, 10.2, 10.3_
 
-- [ ] 20. Add GitHub configuration to sidebar Controls
+- [x] 20. Add GitHub configuration to sidebar Controls
   - Update sidebar drawer to add new "GitHub Configuration" section
   - Add visual separator between Export/Import and GitHub Configuration
   - Add navigation item "Setup GitHub Backup" that navigates to github_config page

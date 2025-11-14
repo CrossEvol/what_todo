@@ -363,7 +363,28 @@ class GridsExpansionTile extends StatelessWidget {
           ),
         ),
       );
+
+      // Divider before GitHub Configuration
+      gridItems.add(Divider());
     }
+
+    // GitHub Configuration section
+    gridItems.add(
+      ListTile(
+        onTap: () {
+          context.push('/github_config');
+          context.safePop();
+        },
+        leading: Icon(Icons.cloud_sync),
+        title: Text(
+          'Setup GitHub Backup',
+          style: TextStyle(
+            fontSize: 14.0,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ),
+    );
 
     return gridItems;
   }
