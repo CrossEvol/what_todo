@@ -102,7 +102,7 @@
   - Update copyWith method to include enableGitHubExport
   - _Requirements: 7.1, 7.2, 7.3, 7.4_
 
-- [ ] 14. Add GitHub export toggle to Settings UI
+- [x] 14. Add GitHub export toggle to Settings UI
   - Add SettingsTile.switchTile for GitHub export in lib/pages/settings/settings_screen.dart
   - Place in Security section
   - Use English text: "Enable GitHub Export" with description

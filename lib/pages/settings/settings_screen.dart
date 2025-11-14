@@ -51,6 +51,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         final enableImportExport = state.enableImportExport;
         final enableNotifications = state.enableNotifications;
         final enableDailyReminder = state.enableDailyReminder;
+        final enableGitHubExport = state.enableGitHubExport;
         final environment = state.environment;
         final themeProvider = Provider.of<ThemeProvider>(context);
         return Scaffold(
@@ -233,6 +234,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     initialValue: true,
                     leading: const Icon(Icons.lock),
                     title: const Text('Change password'),
+                  ),
+                  SettingsTile.switchTile(
+                    key: ValueKey(SettingKeys.ENABLE_GITHUB_EXPORT),
+                    onToggle: (value) {
+                      context
+                          .read<SettingsBloc>()
+                          .add(ToggleEnableGitHubExport());
+                    },
+                    initialValue: enableGitHubExport,
+                    leading: const Icon(Icons.cloud_upload),
+                    title: const Text('Enable GitHub Export'),
+                    description: const Text(
+                      'Allow exporting and importing tasks to/from GitHub',
+                    ),
                   ),
                   SettingsTile.switchTile(
                     key: ValueKey(SettingKeys.ENABLE_NOTIFICATIONS),
