@@ -121,7 +121,7 @@
   - Use English text only
   - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-- [ ] 16. Implement GitHub export functionality in ExportBloc
+- [x] 16. Implement GitHub export functionality in ExportBloc
   - Update lib/bloc/export/export_bloc.dart to handle GitHub export
   - Add ExportToGitHubEvent
   - Implement _exportToGitHub event handler

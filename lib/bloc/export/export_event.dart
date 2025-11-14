@@ -69,3 +69,16 @@ class ChangeTabEvent extends ExportEvent {
   @override
   List<Object?> get props => [tab];
 }
+
+class ExportToGitHubEvent extends ExportEvent {
+  final bool useNewFormat;
+  final GitHubConfig gitHubConfig;
+
+  const ExportToGitHubEvent({
+    required this.useNewFormat,
+    required this.gitHubConfig,
+  });
+
+  @override
+  List<Object?> get props => [useNewFormat, gitHubConfig];
+}

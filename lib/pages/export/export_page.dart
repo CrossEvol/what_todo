@@ -46,8 +46,28 @@ class ExportView extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocBuilder<ExportBloc, ExportState>(
-        builder: (context, state) {
+      body: BlocListener<ExportBloc, ExportState>(
+        listener: (context, state) {
+          if (state is ExportToGitHubSuccess) {
+            showSnackbar(context, 'Successfully exported to GitHub');
+            // Redirect to home after 2 seconds
+            Future.delayed(const Duration(seconds: 2), () {
+              context.push('/');
+              context.read<ExportBloc>().add(ResetExportDataEvent());
+            });
+          } else if (state is ExportError && state.message.contains('GitHub')) {
+            // Show error dialog for GitHub errors
+            // Note: Navigation to github_error page will be added in task 19
+            _showGitHubErrorDialog(
+              context,
+              state.message,
+              'upload',
+              DateTime.now(),
+            );
+          }
+        },
+        child: BlocBuilder<ExportBloc, ExportState>(
+          builder: (context, state) {
           if (state is ExportInitial) {
             context.read<ExportBloc>().add(LoadExportDataEvent());
             return const Center(child: CircularProgressIndicator());
@@ -96,9 +116,22 @@ class ExportView extends StatelessWidget {
                 ),
               ],
             ));
+          } else if (state is ExportToGitHubSuccess) {
+            return Center(
+                child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.cloud_done, size: 64, color: Colors.green),
+                const SizedBox(height: 16),
+                const Text('GitHub export completed successfully!'),
+                const SizedBox(height: 16),
+                const Text('Redirecting to home...'),
+              ],
+            ));
           }
           return const Center(child: Text('Unknown state'));
         },
+        ),
       ),
     );
   }
@@ -573,12 +606,13 @@ class ExportView extends StatelessWidget {
       return;
     }
 
-    // TODO: Trigger GitHub export (will be implemented in task 16)
-    // For now, just show a message
-    showSnackbar(
-      context,
-      'GitHub export will be implemented in the next task',
-    );
+    // Trigger GitHub export
+    context.read<ExportBloc>().add(
+          ExportToGitHubEvent(
+            useNewFormat: true,
+            gitHubConfig: githubCubit.state,
+          ),
+        );
   }
 
   Future<bool?> _showGitHubNotConfiguredDialog(BuildContext context) {
@@ -619,6 +653,65 @@ class ExportView extends StatelessWidget {
           TextButton(
             onPressed: () => Navigator.pop(context, true),
             child: const Text('Go to Settings'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showGitHubErrorDialog(
+    BuildContext context,
+    String errorMessage,
+    String operation,
+    DateTime timestamp,
+  ) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('GitHub Operation Failed'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.error_outline, size: 48, color: Colors.red),
+              const SizedBox(height: 16),
+              Text(
+                'Operation: ${operation.toUpperCase()}',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
+              const Text(
+                'Error Message:',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 4),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: Text(
+                  errorMessage,
+                  style: TextStyle(color: Colors.red[900]),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Timestamp: ${timestamp.toString()}',
+                style: const TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              context.read<ExportBloc>().add(ResetExportDataEvent());
+            },
+            child: const Text('Close'),
           ),
         ],
       ),

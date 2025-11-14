@@ -13,6 +13,8 @@ import 'package:flutter_app/pages/tasks/task_db.dart';
 import 'package:flutter_app/dao/resource_db.dart';
 import 'package:flutter_app/models/resource.dart';
 import 'package:flutter_app/utils/logger_util.dart';
+import 'package:flutter_app/services/github_service.dart';
+import 'package:flutter_app/models/github_config.dart';
 
 part 'export_event.dart';
 part 'export_state.dart';
@@ -22,9 +24,14 @@ class ExportBloc extends Bloc<ExportEvent, ExportState> {
   final LabelDB _labelDB;
   final TaskDB _taskDB;
   final ResourceDB _resourceDB;
+  final GitHubService _gitHubService = GitHubService();
 
-  ExportBloc(this._projectDB, this._labelDB, this._taskDB, this._resourceDB)
-      : super(ExportInitial()) {
+  ExportBloc(
+    this._projectDB,
+    this._labelDB,
+    this._taskDB,
+    this._resourceDB,
+  ) : super(ExportInitial()) {
     on<LoadExportDataEvent>(_loadExportData);
     on<DeleteProjectEvent>(_deleteProject);
     on<DeleteLabelEvent>(_deleteLabel);
@@ -32,6 +39,7 @@ class ExportBloc extends Bloc<ExportEvent, ExportState> {
     on<ExportDataEvent>(_exportData);
     on<ChangeTabEvent>(_changeTab);
     on<ResetExportDataEvent>(_resetExportData);
+    on<ExportToGitHubEvent>(_exportToGitHub);
   }
 
   FutureOr<void> _loadExportData(
@@ -225,5 +233,96 @@ class ExportBloc extends Bloc<ExportEvent, ExportState> {
 
   FutureOr<void> _resetExportData(ResetExportDataEvent event, Emitter<ExportState> emit) {
     emit(ExportInitial());
+  }
+
+  FutureOr<void> _exportToGitHub(
+      ExportToGitHubEvent event, Emitter<ExportState> emit) async {
+    if (state is ExportLoaded) {
+      final currentState = state as ExportLoaded;
+      try {
+        logger.info('Starting GitHub export');
+        
+        // 创建任务ID到任务标题的映射
+        final taskIdToTitle = <int, String>{};
+        for (final task in currentState.tasks!) {
+          if (task.id != null) {
+            taskIdToTitle[task.id!] = task.title;
+          }
+        }
+
+        // 转换资源数据，读取图片并编码为 base64
+        final resourcesData = <Map<String, dynamic>>[];
+        for (final resource in currentState.resources!) {
+          try {
+            // 读取图片文件
+            final file = File(resource.path);
+            if (await file.exists()) {
+              final bytes = await file.readAsBytes();
+              final base64Content = base64.encode(bytes);
+              
+              final taskTitle = resource.taskId != null 
+                  ? taskIdToTitle[resource.taskId!] 
+                  : null;
+              
+              // 只导出 content 和 task_title 两个字段
+              resourcesData.add({
+                'content': base64Content,
+                'task_title': taskTitle,
+              });
+            } else {
+              logger.warn('Resource file not found: ${resource.path}');
+            }
+          } catch (e) {
+            logger.error('Error encoding resource ${resource.path}: $e');
+            // 文件读取失败时记录日志并跳过
+          }
+        }
+
+        // Construct exportable data using the data in the current state
+        final exportData = {
+          '__v': 2, // 版本号改为2
+          'projects': currentState.projects!.map((p) => p.toMap()).toList(),
+          'labels': currentState.labels!.map((l) => l.toMap()).toList(),
+          'tasks': currentState.tasks!.map((t) {
+            return {
+              'id': t.id,
+              'title': t.title,
+              'comment': t.comment,
+              'dueDate': DateTime.fromMillisecondsSinceEpoch(t.dueDate)
+                  .toIso8601String(),
+              'priority': t.priority.index,
+              'status': t.tasksStatus?.index ?? 0,
+              'projectName': t.projectName ?? 'Inbox',
+              'order': t.order,
+              'labelNames': t.labelList.map((l) => l.name).toList(),
+            };
+          }).toList(),
+          'resources': resourcesData,
+        };
+
+        // Convert export data to JSON string
+        final jsonContent = jsonEncode(exportData);
+
+        // Upload to GitHub using config from event
+        await _gitHubService.uploadTasksJson(
+          config: event.gitHubConfig,
+          jsonContent: jsonContent,
+        );
+
+        logger.info('Successfully exported to GitHub');
+        
+        emit(ExportToGitHubSuccess(
+          projects: currentState.projects,
+          labels: currentState.labels,
+          tasks: currentState.tasks,
+          resources: currentState.resources,
+          currentTab: currentState.currentTab,
+        ));
+      } catch (e) {
+        logger.error('Failed to export to GitHub: $e');
+        // Error will be handled by the UI layer which will navigate to error page
+        emit(ExportError('Failed to export to GitHub: ${e.toString()}'));
+      }
+    }
   }
 }

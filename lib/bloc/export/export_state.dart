@@ -93,3 +93,19 @@ class ExportSuccess extends ExportState {
   @override
   List<Object?> get props => [exportData, useNewFormat, ...super.props];
 }
+
+class ExportToGitHubSuccess extends ExportState {
+  const ExportToGitHubSuccess({
+    List<ProjectWithCount>? projects,
+    List<LabelWithCount>? labels,
+    List<Task>? tasks,
+    List<ResourceModel>? resources,
+    ExportTab? currentTab,
+  }) : super(
+          projects: projects,
+          labels: labels,
+          tasks: tasks,
+          resources: resources,
+          currentTab: currentTab,
+        );
+}
