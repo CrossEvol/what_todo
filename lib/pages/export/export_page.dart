@@ -4,6 +4,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_app/bloc/export/export_bloc.dart';
+import 'package:flutter_app/bloc/settings/settings_bloc.dart';
+import 'package:flutter_app/cubit/github_cubit.dart';
 import 'package:flutter_app/pages/labels/label.dart';
 import 'package:flutter_app/pages/projects/project.dart';
 import 'package:flutter_app/pages/tasks/models/task.dart';
@@ -482,23 +484,141 @@ class ExportView extends StatelessWidget {
     );
   }
 
-  void _showExportDialog(BuildContext context) {
-    showDialog(
+  void _showExportDialog(BuildContext context) async {
+    String selectedDestination = 'local';
+
+    final result = await showDialog<String>(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: const Text('Export Tasks'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Where would you like to export?',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 16),
+                RadioListTile<String>(
+                  title: const Text('Local Storage'),
+                  value: 'local',
+                  groupValue: selectedDestination,
+                  onChanged: (value) {
+                    setState(() => selectedDestination = value!);
+                  },
+                ),
+                RadioListTile<String>(
+                  title: const Text('GitHub Repository'),
+                  value: 'github',
+                  groupValue: selectedDestination,
+                  onChanged: (value) {
+                    setState(() => selectedDestination = value!);
+                  },
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Format: v2 (JSON)',
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, null),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context, selectedDestination),
+                child: const Text('Export'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
+    if (result == null) return;
+
+    if (result == 'github') {
+      await _handleGitHubExport(context);
+    } else {
+      // Local export
+      context.read<ExportBloc>().add(
+            const ExportDataEvent(useNewFormat: true),
+          );
+    }
+  }
+
+  Future<void> _handleGitHubExport(BuildContext context) async {
+    // Check if GitHub credentials are configured
+    final githubCubit = context.read<GitHubCubit>();
+    if (!githubCubit.isConfigured) {
+      final shouldNavigate = await _showGitHubNotConfiguredDialog(context);
+      if (shouldNavigate == true) {
+        context.push('/github_config');
+      }
+      return;
+    }
+
+    // Check if GitHub export is enabled in settings
+    final settingsBloc = context.read<SettingsBloc>();
+    if (!settingsBloc.state.enableGitHubExport) {
+      final shouldNavigate = await _showGitHubExportDisabledDialog(context);
+      if (shouldNavigate == true) {
+        context.push('/settings');
+      }
+      return;
+    }
+
+    // TODO: Trigger GitHub export (will be implemented in task 16)
+    // For now, just show a message
+    showSnackbar(
+      context,
+      'GitHub export will be implemented in the next task',
+    );
+  }
+
+  Future<bool?> _showGitHubNotConfiguredDialog(BuildContext context) {
+    return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Export Format'),
+        title: const Text('GitHub Not Configured'),
         content: const Text(
-          'Choose the export format:',
+          'GitHub credentials are not configured. Would you like to set them up now?',
         ),
         actions: [
           TextButton(
-            onPressed: () {
-              context.read<ExportBloc>().add(
-                    const ExportDataEvent(useNewFormat: true),
-                  );
-              Navigator.pop(context);
-            },
-            child: const Text('New Format (v2)'),
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Configure'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<bool?> _showGitHubExportDisabledDialog(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('GitHub Export Disabled'),
+        content: const Text(
+          'GitHub export is currently disabled in settings. Would you like to enable it?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Go to Settings'),
           ),
         ],
       ),

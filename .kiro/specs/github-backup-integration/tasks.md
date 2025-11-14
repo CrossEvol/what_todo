@@ -110,7 +110,7 @@
   - Wire to ToggleEnableGitHubExport event
   - _Requirements: 7.5_
 
-- [ ] 15. Enhance Export page with GitHub destination option
+- [x] 15. Enhance Export page with GitHub destination option
   - Update lib/pages/export/export_page.dart to show destination selection dialog
   - Add radio buttons for "Local Storage" and "GitHub Repository"
   - Default to "Local Storage"
