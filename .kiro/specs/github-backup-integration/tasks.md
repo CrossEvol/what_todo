@@ -94,7 +94,7 @@
   - Use English text only
   - _Requirements: 12.1, 12.2, 12.3, 12.4, 12.5_
 
-- [ ] 13. Add GitHub export toggle to Settings
+- [x] 13. Add GitHub export toggle to Settings
   - Add enableGitHubExport field to SettingsState in lib/bloc/settings/settings_bloc.dart
   - Create ToggleEnableGitHubExport event
   - Implement _toggleEnableGitHubExport event handler

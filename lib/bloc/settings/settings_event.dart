@@ -89,3 +89,8 @@ final class ToggleReminderInterval extends SettingsEvent {
   @override
   List<Object?> get props => [intervalMinutes];
 }
+
+final class ToggleEnableGitHubExport extends SettingsEvent {
+  @override
+  List<Object?> get props => [];
+}

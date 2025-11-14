@@ -23,6 +23,7 @@ class SettingsState extends Equatable {
   final bool confirmDeletion;
   final bool enableNotifications;
   final bool enableDailyReminder;
+  final bool enableGitHubExport;
   final ResultStatus status;
   final String updatedKey;
   final Environment environment;
@@ -45,6 +46,7 @@ class SettingsState extends Equatable {
     required this.projectLen, // Added
     required this.setLocale,
     required this.enableDailyReminder,
+    required this.enableGitHubExport,
     this.reminderInterval = 15,
   });
 
@@ -61,6 +63,7 @@ class SettingsState extends Equatable {
         labelLen, // Added
         projectLen, // Added
         reminderInterval,
+        enableGitHubExport,
       ];
 
   SettingsState copyWith({
@@ -71,6 +74,7 @@ class SettingsState extends Equatable {
     bool? confirmDeletion,
     bool? enableNotifications,
     bool? enableDailyReminder,
+    bool? enableGitHubExport,
     Environment? environment,
     Language? language,
     int? labelLen, // Added
@@ -94,6 +98,7 @@ class SettingsState extends Equatable {
       reminderInterval: reminderInterval ?? this.reminderInterval,
       setLocale: setLocale ?? this.setLocale,
       enableDailyReminder: enableDailyReminder ?? this.enableDailyReminder,
+      enableGitHubExport: enableGitHubExport ?? this.enableGitHubExport,
     );
   }
 
@@ -108,6 +113,7 @@ class SettingsState extends Equatable {
           confirmDeletion == other.confirmDeletion &&
           enableNotifications == other.enableNotifications &&
           enableDailyReminder == other.enableDailyReminder &&
+          enableGitHubExport == other.enableGitHubExport &&
           status == other.status &&
           updatedKey == other.updatedKey &&
           environment == other.environment &&
@@ -125,6 +131,7 @@ class SettingsState extends Equatable {
       confirmDeletion,
       enableNotifications,
       enableDailyReminder,
+      enableGitHubExport,
       status,
       updatedKey,
       environment,

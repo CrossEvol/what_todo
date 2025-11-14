@@ -36,6 +36,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           setLocale: (Locale) {},
           enableNotifications: false,
           enableDailyReminder: false,
+          enableGitHubExport: false,
           reminderInterval: 15,
         )) {
     on<LoadSettingsEvent>(_loadSettings);
@@ -50,6 +51,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     on<ToggleEnableNotificationsEvent>(_toggleEnableNotifications);
     on<ToggleEnableDailyReminderEvent>(_toggleEnableDailyReminder);
     on<ToggleReminderInterval>(_toggleReminderInterval);
+    on<ToggleEnableGitHubExport>(_toggleEnableGitHubExport);
   }
 
   FutureOr<void> _toggleUseCountBadges(
@@ -123,6 +125,24 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     ));
   }
 
+  FutureOr<void> _toggleEnableGitHubExport(
+      ToggleEnableGitHubExport event, Emitter<SettingsState> emit) async {
+    final setting =
+        await _settingsDB.findByName(SettingKeys.ENABLE_GITHUB_EXPORT);
+    if (setting == null) return;
+    _settingsDB.updateSetting(Setting.update(
+        id: setting.id,
+        key: setting.key,
+        value: '${!bool.parse(setting.value)}',
+        updatedAt: DateTime.now(),
+        type: setting.type));
+    emit(state.copyWith(
+      enableGitHubExport: !state.enableGitHubExport,
+      updatedKey: SettingKeys.ENABLE_GITHUB_EXPORT,
+      status: ResultStatus.success,
+    ));
+  }
+
   FutureOr<void> _loadSettings(
       LoadSettingsEvent event, Emitter<SettingsState> emit) async {
     final useCountBadges = await _getUseCountBadges(_settingsDB);
@@ -154,6 +174,9 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
     final reminderInterval = await _getReminderInterval(_settingsDB);
     emit(state.copyWith(reminderInterval: reminderInterval));
+
+    final enableGitHubExport = await _getEnableGitHubExport(_settingsDB);
+    emit(state.copyWith(enableGitHubExport: enableGitHubExport));
   }
 
   Future<bool> _getUseCountBadges(SettingsDB settingsDB) async {
@@ -253,6 +276,31 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
       enableDailyReminder = bool.parse(setting.value);
     }
     return enableDailyReminder;
+  }
+
+  Future<bool> _getEnableGitHubExport(SettingsDB settingsDB) async {
+    bool enableGitHubExport = false;
+    final setting =
+        await _settingsDB.findByName(SettingKeys.ENABLE_GITHUB_EXPORT);
+    if (setting == null) {
+      var created = await _settingsDB.createSetting(Setting.create(
+          key: SettingKeys.ENABLE_GITHUB_EXPORT,
+          value: 'false',
+          updatedAt: DateTime.now(),
+          type: SettingType.Bool));
+      if (created) {
+        final newSetting =
+            await _settingsDB.findByName(SettingKeys.ENABLE_GITHUB_EXPORT);
+        if (newSetting == null) {
+          _logger.warn('Insert ${SettingKeys.ENABLE_GITHUB_EXPORT} failed.');
+          return enableGitHubExport;
+        }
+        enableGitHubExport = bool.parse(newSetting.value);
+      }
+    } else {
+      enableGitHubExport = bool.parse(setting.value);
+    }
+    return enableGitHubExport;
   }
 
   Future<Environment> _getEnvironment(SettingsDB settingsDB) async {
