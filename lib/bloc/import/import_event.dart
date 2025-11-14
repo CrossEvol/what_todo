@@ -84,3 +84,14 @@ class ImportInProgressEvent extends ImportEvent {
   List<Object> get props =>
       [projects, labels, tasks, resources, importPath ?? ""];
 }
+
+class ImportFromGitHubEvent extends ImportEvent {
+  final GitHubConfig gitHubConfig;
+
+  const ImportFromGitHubEvent({
+    required this.gitHubConfig,
+  });
+
+  @override
+  List<Object> get props => [gitHubConfig];
+}

@@ -141,7 +141,7 @@
   - Use English text only
   - _Requirements: 9.1, 9.2, 9.3, 9.4_
 
-- [ ] 18. Implement GitHub import functionality in ImportBloc
+- [x] 18. Implement GitHub import functionality in ImportBloc
   - Update lib/bloc/import/import_bloc.dart to handle GitHub import
   - Add ImportFromGitHubEvent
   - Implement _importFromGitHub event handler

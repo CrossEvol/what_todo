@@ -16,6 +16,8 @@ import 'package:flutter_app/dao/resource_db.dart';
 import 'package:flutter_app/models/resource.dart';
 import 'package:flutter_app/utils/logger_util.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_app/models/github_config.dart';
+import 'package:flutter_app/services/github_service.dart';
 
 part 'import_event.dart';
 
@@ -27,6 +29,7 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
   final LabelDB _labelDB;
   final TaskDB _taskDB;
   final ResourceDB _resourceDB;
+  final GitHubService _gitHubService = GitHubService();
 
   ImportBloc(this._projectDB, this._labelDB, this._taskDB, this._resourceDB)
       : super(ImportInitial()) {
@@ -37,6 +40,7 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
     on<DeleteTaskEvent>(_onDeleteTask);
     on<ConfirmImportEvent>(_onConfirmImport);
     on<ImportInProgressEvent>(_onImportInProgress);
+    on<ImportFromGitHubEvent>(_importFromGitHub);
   }
 
   FutureOr<void> _onImportLoadData(
@@ -643,6 +647,44 @@ class ImportBloc extends Bloc<ImportEvent, ImportState> {
     } else {
       final dir = await getApplicationDocumentsDirectory();
       return Directory(p.join(dir.path, 'resources'));
+    }
+  }
+
+  /// Import tasks from GitHub repository
+  FutureOr<void> _importFromGitHub(
+      ImportFromGitHubEvent event, Emitter<ImportState> emit) async {
+    emit(ImportLoading());
+
+    try {
+      logger.info('Starting GitHub import');
+
+      // Download tasks.json from GitHub
+      final jsonContent = await _gitHubService.downloadTasksJson(
+        config: event.gitHubConfig,
+      );
+
+      logger.info('Successfully downloaded tasks.json from GitHub');
+
+      // Parse JSON content
+      final data = jsonDecode(jsonContent);
+
+      // Use existing ImportLoadDataEvent handler to process the data
+      // This maintains backward compatibility with legacy formats
+      add(ImportLoadDataEvent(data));
+
+      logger.info('GitHub import data loaded successfully');
+    } catch (e) {
+      logger.error('Failed to import from GitHub: $e');
+      
+      // Emit error state with error details
+      emit(ImportError(
+        message: 'Failed to import from GitHub: ${e.toString()}',
+        projects: [],
+        labels: [],
+        tasks: [],
+        resources: [],
+        currentTab: ImportTab.tasks,
+      ));
     }
   }
 }

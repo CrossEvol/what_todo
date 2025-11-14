@@ -67,38 +67,55 @@ class _ImportPageState extends State<ImportPage> {
           ),
         ],
       ),
-      body: BlocBuilder<ImportBloc, ImportState>(
-        builder: (context, state) {
-          if (state is ImportInitial) {
-            return _buildFileSelectionView();
+      body: BlocListener<ImportBloc, ImportState>(
+        listener: (context, state) {
+          // Handle GitHub import errors by navigating to error page
+          if (state is ImportError && state.message.contains('GitHub')) {
+            setState(() => isLoading = false);
+            context.push('/github_error', extra: {
+              'errorMessage': state.message,
+              'operation': 'download',
+              'timestamp': DateTime.now(),
+            });
           } else if (state is ImportLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is ImportLoaded) {
-            return _buildImportDataView(state);
-          } else if (state is ImportConfirmed) {
-            Future.delayed(const Duration(milliseconds: 100), () {
-              context.read<ImportBloc>().add(ImportInProgressEvent(
-                  projects: state.projects,
-                  labels: state.labels,
-                  tasks: state.tasks,
-                  resources: state.resources,
-                  importPath: filePathController.text));
-            });
-            return _buildImportInProgressView();
-          } else if (state is ImportInProgress) {
-            return _buildImportInProgressView();
-          } else if (state is ImportError) {
-            return _buildErrorView(state);
-          } else if (state is ImportSuccess) {
-            Future.delayed(const Duration(milliseconds: 100), () {
-              showSnackbar(
-                  context, AppLocalizations.of(context)!.importSuccess);
-            });
-            return _buildFileSelectionView();
-          } else {
-            return _buildFileSelectionView();
+            setState(() => isLoading = true);
+          } else if (state is ImportLoaded || state is ImportSuccess) {
+            setState(() => isLoading = false);
           }
         },
+        child: BlocBuilder<ImportBloc, ImportState>(
+          builder: (context, state) {
+            if (state is ImportInitial) {
+              return _buildFileSelectionView();
+            } else if (state is ImportLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is ImportLoaded) {
+              return _buildImportDataView(state);
+            } else if (state is ImportConfirmed) {
+              Future.delayed(const Duration(milliseconds: 100), () {
+                context.read<ImportBloc>().add(ImportInProgressEvent(
+                    projects: state.projects,
+                    labels: state.labels,
+                    tasks: state.tasks,
+                    resources: state.resources,
+                    importPath: filePathController.text));
+              });
+              return _buildImportInProgressView();
+            } else if (state is ImportInProgress) {
+              return _buildImportInProgressView();
+            } else if (state is ImportError) {
+              return _buildErrorView(state);
+            } else if (state is ImportSuccess) {
+              Future.delayed(const Duration(milliseconds: 100), () {
+                showSnackbar(
+                    context, AppLocalizations.of(context)!.importSuccess);
+              });
+              return _buildFileSelectionView();
+            } else {
+              return _buildFileSelectionView();
+            }
+          },
+        ),
       ),
     );
   }
@@ -423,12 +440,13 @@ class _ImportPageState extends State<ImportPage> {
       return;
     }
 
-    // TODO: Trigger GitHub import (will be implemented in task 18)
-    showSnackbar(
-      context,
-      'GitHub import will be implemented in the next task',
-      materialColor: Colors.orange,
-    );
+    // Trigger GitHub import
+    setState(() => isLoading = true);
+    
+    final importBloc = context.read<ImportBloc>();
+    importBloc.add(ImportFromGitHubEvent(
+      gitHubConfig: githubCubit.state,
+    ));
   }
 
   Future<bool?> _showGitHubNotConfiguredDialog() {
