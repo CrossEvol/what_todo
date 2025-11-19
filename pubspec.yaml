@@ -1,6 +1,6 @@
 name: flutter_app
 description: A new Flutter application.
-version: 1.7.3+clear-resource
+version: 1.7.4+auto-transform
 
 environment:
   sdk: '>=3.1.0 <4.0.0'
