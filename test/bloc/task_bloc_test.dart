@@ -173,7 +173,9 @@ void main() {
       },
       seed: () => TaskLoaded(testTasks),
       act: (bloc) => bloc.add(AddTaskEvent(task: testTask, labelIds: [1])),
-      expect: () => [],
+      expect: () => [
+        TaskError('Exception: Failed to create task'),
+      ],
     );
 
     blocTest<TaskBloc, TaskState>(

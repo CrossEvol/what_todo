@@ -1,6 +1,7 @@
 import 'dart:async' show FutureOr;
 
 import 'package:drift/drift.dart';
+import 'package:flutter_app/dao/resource_db.dart' show ResourceDB;
 import 'package:flutter_app/db/app_db.dart';
 import 'package:flutter_app/pages/labels/label.dart'
     as lb; // Use alias to avoid name clash if necessary
@@ -346,6 +347,14 @@ class TaskDB {
                   labelId: Value(labelId),
                 ),
               );
+        }
+      }
+
+      // Assign unassigned resources to the newly created task
+      if (id > 0) {
+        final unassignedResources = await ResourceDB.get().getUnassignedResources();
+        for (final resource in unassignedResources) {
+          await ResourceDB.get().updateResourceTaskId(resource.id, id);
         }
       }
 
