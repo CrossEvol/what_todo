@@ -5,12 +5,13 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i5;
 
-import 'package:flutter_app/bloc/search/search_bloc.dart' as _i16;
+import 'package:flutter_app/bloc/search/search_bloc.dart' as _i17;
 import 'package:flutter_app/dao/reminder_db.dart' as _i7;
-import 'package:flutter_app/dao/resource_db.dart' as _i17;
+import 'package:flutter_app/dao/resource_db.dart' as _i18;
 import 'package:flutter_app/dao/search_db.dart' as _i3;
 import 'package:flutter_app/models/reminder/reminder.dart' as _i8;
-import 'package:flutter_app/models/resource.dart' as _i18;
+import 'package:flutter_app/models/resource.dart' as _i19;
+import 'package:flutter_app/models/task_label_relation.dart' as _i16;
 import 'package:flutter_app/pages/labels/label.dart' as _i6;
 import 'package:flutter_app/pages/labels/label_db.dart' as _i4;
 import 'package:flutter_app/pages/profile/profile.dart' as _i11;
@@ -136,6 +137,28 @@ class MockLabelDB extends _i1.Mock implements _i4.LabelDB {
         returnValue: _i5.Future<bool>.value(false),
         returnValueForMissingStub: _i5.Future<bool>.value(false),
       ) as _i5.Future<bool>);
+
+  @override
+  _i5.Future<void> batchInsertLabels(List<_i6.Label>? labels) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #batchInsertLabels,
+          [labels],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<Set<String>> getExistingLabelNames(List<String>? names) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getExistingLabelNames,
+          [names],
+        ),
+        returnValue: _i5.Future<Set<String>>.value(<String>{}),
+        returnValueForMissingStub: _i5.Future<Set<String>>.value(<String>{}),
+      ) as _i5.Future<Set<String>>);
 }
 
 /// A class which mocks [ReminderDB].
@@ -348,6 +371,40 @@ class MockProjectDB extends _i1.Mock implements _i9.ProjectDB {
         returnValue: _i5.Future<void>.value(),
         returnValueForMissingStub: _i5.Future<void>.value(),
       ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<void> batchInsertProjects(List<_i2.Project>? projects) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #batchInsertProjects,
+          [projects],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
+  _i5.Future<Set<String>> getExistingProjectNames(List<String>? names) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getExistingProjectNames,
+          [names],
+        ),
+        returnValue: _i5.Future<Set<String>>.value(<String>{}),
+        returnValueForMissingStub: _i5.Future<Set<String>>.value(<String>{}),
+      ) as _i5.Future<Set<String>>);
+
+  @override
+  _i5.Future<List<_i2.Project>> getProjectsByNames(List<String>? names) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getProjectsByNames,
+          [names],
+        ),
+        returnValue: _i5.Future<List<_i2.Project>>.value(<_i2.Project>[]),
+        returnValueForMissingStub:
+            _i5.Future<List<_i2.Project>>.value(<_i2.Project>[]),
+      ) as _i5.Future<List<_i2.Project>>);
 }
 
 /// A class which mocks [ProfileDB].
@@ -633,6 +690,52 @@ class MockTaskDB extends _i1.Mock implements _i14.TaskDB {
       ) as _i5.Future<void>);
 
   @override
+  _i5.Future<List<int>> batchInsertTasks(List<_i15.Task>? tasks) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #batchInsertTasks,
+          [tasks],
+        ),
+        returnValue: _i5.Future<List<int>>.value(<int>[]),
+        returnValueForMissingStub: _i5.Future<List<int>>.value(<int>[]),
+      ) as _i5.Future<List<int>>);
+
+  @override
+  _i5.Future<Set<String>> getExistingTaskTitles(List<String>? titles) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getExistingTaskTitles,
+          [titles],
+        ),
+        returnValue: _i5.Future<Set<String>>.value(<String>{}),
+        returnValueForMissingStub: _i5.Future<Set<String>>.value(<String>{}),
+      ) as _i5.Future<Set<String>>);
+
+  @override
+  _i5.Future<List<_i15.Task>> getTasksByTitles(List<String>? titles) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getTasksByTitles,
+          [titles],
+        ),
+        returnValue: _i5.Future<List<_i15.Task>>.value(<_i15.Task>[]),
+        returnValueForMissingStub:
+            _i5.Future<List<_i15.Task>>.value(<_i15.Task>[]),
+      ) as _i5.Future<List<_i15.Task>>);
+
+  @override
+  _i5.Future<void> batchInsertTaskLabels(
+          List<_i16.TaskLabelRelation>? relations) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #batchInsertTaskLabels,
+          [relations],
+        ),
+        returnValue: _i5.Future<void>.value(),
+        returnValueForMissingStub: _i5.Future<void>.value(),
+      ) as _i5.Future<void>);
+
+  @override
   _i5.Future<_i15.Task?> getRandomTask() => (super.noSuchMethod(
         Invocation.method(
           #getRandomTask,
@@ -652,8 +755,8 @@ class MockSearchDB extends _i1.Mock implements _i3.SearchDB {
     required String? keyword,
     required bool? searchInTitle,
     required bool? searchInComment,
-    _i16.FilteredField? filteredField,
-    _i16.SearchResultsOrder? order,
+    _i17.FilteredField? filteredField,
+    _i17.SearchResultsOrder? order,
     required int? page,
     required int? itemsPerPage,
   }) =>
@@ -803,22 +906,22 @@ class MockSearchDB extends _i1.Mock implements _i3.SearchDB {
 /// A class which mocks [ResourceDB].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockResourceDB extends _i1.Mock implements _i17.ResourceDB {
+class MockResourceDB extends _i1.Mock implements _i18.ResourceDB {
   @override
-  _i5.Future<List<_i18.ResourceModel>> getResourcesByTaskId(int? taskId) =>
+  _i5.Future<List<_i19.ResourceModel>> getResourcesByTaskId(int? taskId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getResourcesByTaskId,
           [taskId],
         ),
         returnValue:
-            _i5.Future<List<_i18.ResourceModel>>.value(<_i18.ResourceModel>[]),
+            _i5.Future<List<_i19.ResourceModel>>.value(<_i19.ResourceModel>[]),
         returnValueForMissingStub:
-            _i5.Future<List<_i18.ResourceModel>>.value(<_i18.ResourceModel>[]),
-      ) as _i5.Future<List<_i18.ResourceModel>>);
+            _i5.Future<List<_i19.ResourceModel>>.value(<_i19.ResourceModel>[]),
+      ) as _i5.Future<List<_i19.ResourceModel>>);
 
   @override
-  _i5.Future<int> insertResource(_i18.ResourceModel? resource) =>
+  _i5.Future<int> insertResource(_i19.ResourceModel? resource) =>
       (super.noSuchMethod(
         Invocation.method(
           #insertResource,
@@ -849,15 +952,15 @@ class MockResourceDB extends _i1.Mock implements _i17.ResourceDB {
       ) as _i5.Future<int>);
 
   @override
-  _i5.Future<_i18.ResourceModel?> getResourceById(int? resourceId) =>
+  _i5.Future<_i19.ResourceModel?> getResourceById(int? resourceId) =>
       (super.noSuchMethod(
         Invocation.method(
           #getResourceById,
           [resourceId],
         ),
-        returnValue: _i5.Future<_i18.ResourceModel?>.value(),
-        returnValueForMissingStub: _i5.Future<_i18.ResourceModel?>.value(),
-      ) as _i5.Future<_i18.ResourceModel?>);
+        returnValue: _i5.Future<_i19.ResourceModel?>.value(),
+        returnValueForMissingStub: _i5.Future<_i19.ResourceModel?>.value(),
+      ) as _i5.Future<_i19.ResourceModel?>);
 
   @override
   _i5.Future<int> getNextResourceId() => (super.noSuchMethod(
@@ -870,17 +973,17 @@ class MockResourceDB extends _i1.Mock implements _i17.ResourceDB {
       ) as _i5.Future<int>);
 
   @override
-  _i5.Future<List<_i18.ResourceModel>> getUnassignedResources() =>
+  _i5.Future<List<_i19.ResourceModel>> getUnassignedResources() =>
       (super.noSuchMethod(
         Invocation.method(
           #getUnassignedResources,
           [],
         ),
         returnValue:
-            _i5.Future<List<_i18.ResourceModel>>.value(<_i18.ResourceModel>[]),
+            _i5.Future<List<_i19.ResourceModel>>.value(<_i19.ResourceModel>[]),
         returnValueForMissingStub:
-            _i5.Future<List<_i18.ResourceModel>>.value(<_i18.ResourceModel>[]),
-      ) as _i5.Future<List<_i18.ResourceModel>>);
+            _i5.Future<List<_i19.ResourceModel>>.value(<_i19.ResourceModel>[]),
+      ) as _i5.Future<List<_i19.ResourceModel>>);
 
   @override
   _i5.Future<bool> updateResourceTaskId(
@@ -893,6 +996,35 @@ class MockResourceDB extends _i1.Mock implements _i17.ResourceDB {
           [
             resourceId,
             taskId,
+          ],
+        ),
+        returnValue: _i5.Future<bool>.value(false),
+        returnValueForMissingStub: _i5.Future<bool>.value(false),
+      ) as _i5.Future<bool>);
+
+  @override
+  _i5.Future<List<int>> batchInsertResources(
+          List<_i19.ResourceModel>? resources) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #batchInsertResources,
+          [resources],
+        ),
+        returnValue: _i5.Future<List<int>>.value(<int>[]),
+        returnValueForMissingStub: _i5.Future<List<int>>.value(<int>[]),
+      ) as _i5.Future<List<int>>);
+
+  @override
+  _i5.Future<bool> updateResourcePath(
+    int? resourceId,
+    String? newPath,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #updateResourcePath,
+          [
+            resourceId,
+            newPath,
           ],
         ),
         returnValue: _i5.Future<bool>.value(false),

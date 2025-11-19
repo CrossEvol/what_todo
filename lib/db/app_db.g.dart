@@ -2288,10 +2288,10 @@ class $ResourceTable extends Resource
   static const VerificationMeta _taskIdMeta = const VerificationMeta('taskId');
   @override
   late final GeneratedColumn<int> taskId = GeneratedColumn<int>(
-      'task_id', aliasedName, false,
+      'task_id', aliasedName, true,
       type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      $customConstraints: 'NOT NULL REFERENCES task(id) ON DELETE CASCADE');
+      requiredDuringInsert: false,
+      $customConstraints: 'REFERENCES task(id) ON DELETE CASCADE');
   static const VerificationMeta _createTimeMeta =
       const VerificationMeta('createTime');
   @override
@@ -2325,8 +2325,6 @@ class $ResourceTable extends Resource
     if (data.containsKey('task_id')) {
       context.handle(_taskIdMeta,
           taskId.isAcceptableOrUnknown(data['task_id']!, _taskIdMeta));
-    } else if (isInserting) {
-      context.missing(_taskIdMeta);
     }
     if (data.containsKey('create_time')) {
       context.handle(
@@ -2348,7 +2346,7 @@ class $ResourceTable extends Resource
       path: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}path'])!,
       taskId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}task_id'])!,
+          .read(DriftSqlType.int, data['${effectivePrefix}task_id']),
       createTime: attachedDatabase.typeMapping
           .read(DriftSqlType.dateTime, data['${effectivePrefix}create_time'])!,
     );
@@ -2363,19 +2361,21 @@ class $ResourceTable extends Resource
 class ResourceData extends DataClass implements Insertable<ResourceData> {
   final int id;
   final String path;
-  final int taskId;
+  final int? taskId;
   final DateTime createTime;
   const ResourceData(
       {required this.id,
       required this.path,
-      required this.taskId,
+      this.taskId,
       required this.createTime});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
     map['id'] = Variable<int>(id);
     map['path'] = Variable<String>(path);
-    map['task_id'] = Variable<int>(taskId);
+    if (!nullToAbsent || taskId != null) {
+      map['task_id'] = Variable<int>(taskId);
+    }
     map['create_time'] = Variable<DateTime>(createTime);
     return map;
   }
@@ -2384,7 +2384,8 @@ class ResourceData extends DataClass implements Insertable<ResourceData> {
     return ResourceCompanion(
       id: Value(id),
       path: Value(path),
-      taskId: Value(taskId),
+      taskId:
+          taskId == null && nullToAbsent ? const Value.absent() : Value(taskId),
       createTime: Value(createTime),
     );
   }
@@ -2395,7 +2396,7 @@ class ResourceData extends DataClass implements Insertable<ResourceData> {
     return ResourceData(
       id: serializer.fromJson<int>(json['id']),
       path: serializer.fromJson<String>(json['path']),
-      taskId: serializer.fromJson<int>(json['taskId']),
+      taskId: serializer.fromJson<int?>(json['taskId']),
       createTime: serializer.fromJson<DateTime>(json['createTime']),
     );
   }
@@ -2405,17 +2406,20 @@ class ResourceData extends DataClass implements Insertable<ResourceData> {
     return <String, dynamic>{
       'id': serializer.toJson<int>(id),
       'path': serializer.toJson<String>(path),
-      'taskId': serializer.toJson<int>(taskId),
+      'taskId': serializer.toJson<int?>(taskId),
       'createTime': serializer.toJson<DateTime>(createTime),
     };
   }
 
   ResourceData copyWith(
-          {int? id, String? path, int? taskId, DateTime? createTime}) =>
+          {int? id,
+          String? path,
+          Value<int?> taskId = const Value.absent(),
+          DateTime? createTime}) =>
       ResourceData(
         id: id ?? this.id,
         path: path ?? this.path,
-        taskId: taskId ?? this.taskId,
+        taskId: taskId.present ? taskId.value : this.taskId,
         createTime: createTime ?? this.createTime,
       );
   ResourceData copyWithCompanion(ResourceCompanion data) {
@@ -2454,7 +2458,7 @@ class ResourceData extends DataClass implements Insertable<ResourceData> {
 class ResourceCompanion extends UpdateCompanion<ResourceData> {
   final Value<int> id;
   final Value<String> path;
-  final Value<int> taskId;
+  final Value<int?> taskId;
   final Value<DateTime> createTime;
   const ResourceCompanion({
     this.id = const Value.absent(),
@@ -2465,10 +2469,9 @@ class ResourceCompanion extends UpdateCompanion<ResourceData> {
   ResourceCompanion.insert({
     this.id = const Value.absent(),
     required String path,
-    required int taskId,
+    this.taskId = const Value.absent(),
     this.createTime = const Value.absent(),
-  })  : path = Value(path),
-        taskId = Value(taskId);
+  }) : path = Value(path);
   static Insertable<ResourceData> custom({
     Expression<int>? id,
     Expression<String>? path,
@@ -2486,7 +2489,7 @@ class ResourceCompanion extends UpdateCompanion<ResourceData> {
   ResourceCompanion copyWith(
       {Value<int>? id,
       Value<String>? path,
-      Value<int>? taskId,
+      Value<int?>? taskId,
       Value<DateTime>? createTime}) {
     return ResourceCompanion(
       id: id ?? this.id,
@@ -4616,13 +4619,13 @@ typedef $$ReminderTableProcessedTableManager = ProcessedTableManager<
 typedef $$ResourceTableCreateCompanionBuilder = ResourceCompanion Function({
   Value<int> id,
   required String path,
-  required int taskId,
+  Value<int?> taskId,
   Value<DateTime> createTime,
 });
 typedef $$ResourceTableUpdateCompanionBuilder = ResourceCompanion Function({
   Value<int> id,
   Value<String> path,
-  Value<int> taskId,
+  Value<int?> taskId,
   Value<DateTime> createTime,
 });
 
@@ -4633,9 +4636,9 @@ final class $$ResourceTableReferences
   static $TaskTable _taskIdTable(_$AppDatabase db) =>
       db.task.createAlias($_aliasNameGenerator(db.resource.taskId, db.task.id));
 
-  $$TaskTableProcessedTableManager get taskId {
-    final $_column = $_itemColumn<int>('task_id')!;
-
+  $$TaskTableProcessedTableManager? get taskId {
+    final $_column = $_itemColumn<int>('task_id');
+    if ($_column == null) return null;
     final manager = $$TaskTableTableManager($_db, $_db.task)
         .filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_taskIdTable($_db));
@@ -4787,7 +4790,7 @@ class $$ResourceTableTableManager extends RootTableManager<
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> path = const Value.absent(),
-            Value<int> taskId = const Value.absent(),
+            Value<int?> taskId = const Value.absent(),
             Value<DateTime> createTime = const Value.absent(),
           }) =>
               ResourceCompanion(
@@ -4799,7 +4802,7 @@ class $$ResourceTableTableManager extends RootTableManager<
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
             required String path,
-            required int taskId,
+            Value<int?> taskId = const Value.absent(),
             Value<DateTime> createTime = const Value.absent(),
           }) =>
               ResourceCompanion.insert(

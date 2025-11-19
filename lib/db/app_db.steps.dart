@@ -1444,6 +1444,173 @@ i1.GeneratedColumn<DateTime> _column_34(String aliasedName) =>
         type: i1.DriftSqlType.dateTime,
         $customConstraints: 'DEFAULT CURRENT_TIMESTAMP',
         defaultValue: const CustomExpression('CURRENT_TIMESTAMP'));
+
+final class Schema11 extends i0.VersionedSchema {
+  Schema11({required super.database}) : super(version: 11);
+  @override
+  late final List<i1.DatabaseSchemaEntity> entities = [
+    project,
+    task,
+    label,
+    taskLabel,
+    profile,
+    setting,
+    driftSchema,
+    reminder,
+    resource,
+  ];
+  late final Shape0 project = Shape0(
+      source: i0.VersionedTable(
+        entityName: 'project',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape9 task = Shape9(
+      source: i0.VersionedTable(
+        entityName: 'task',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_4,
+          _column_5,
+          _column_21,
+          _column_8,
+          _column_9,
+          _column_10,
+          _column_24,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape0 label = Shape0(
+      source: i0.VersionedTable(
+        entityName: 'label',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_1,
+          _column_2,
+          _column_3,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape2 taskLabel = Shape2(
+      source: i0.VersionedTable(
+        entityName: 'task_label',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_11,
+          _column_12,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape3 profile = Shape3(
+      source: i0.VersionedTable(
+        entityName: 'profile',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_25,
+          _column_14,
+          _column_26,
+          _column_16,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape4 setting = Shape4(
+      source: i0.VersionedTable(
+        entityName: 'setting',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_17,
+          _column_27,
+          _column_35,
+          _column_20,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape8 driftSchema = Shape8(
+      source: i0.VersionedTable(
+        entityName: 'drift_schema',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_28,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape11 reminder = Shape11(
+      source: i0.VersionedTable(
+        entityName: 'reminder',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_20,
+          _column_29,
+          _column_30,
+          _column_31,
+          _column_32,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+  late final Shape12 resource = Shape12(
+      source: i0.VersionedTable(
+        entityName: 'resource',
+        withoutRowId: false,
+        isStrict: false,
+        tableConstraints: [],
+        columns: [
+          _column_0,
+          _column_33,
+          _column_31,
+          _column_36,
+        ],
+        attachedDatabase: database,
+      ),
+      alias: null);
+}
+
+i1.GeneratedColumn<DateTime> _column_35(String aliasedName) =>
+    i1.GeneratedColumn<DateTime>('updated_at', aliasedName, false,
+        type: i1.DriftSqlType.dateTime,
+        $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
+        defaultValue: const CustomExpression('CURRENT_TIMESTAMP'));
+i1.GeneratedColumn<DateTime> _column_36(String aliasedName) =>
+    i1.GeneratedColumn<DateTime>('create_time', aliasedName, false,
+        type: i1.DriftSqlType.dateTime,
+        $customConstraints: 'NOT NULL DEFAULT CURRENT_TIMESTAMP',
+        defaultValue: const CustomExpression('CURRENT_TIMESTAMP'));
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,
@@ -1454,6 +1621,7 @@ i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema8 schema) from7To8,
   required Future<void> Function(i1.Migrator m, Schema9 schema) from8To9,
   required Future<void> Function(i1.Migrator m, Schema10 schema) from9To10,
+  required Future<void> Function(i1.Migrator m, Schema11 schema) from10To11,
 }) {
   return (currentVersion, database) async {
     switch (currentVersion) {
@@ -1502,6 +1670,11 @@ i0.MigrationStepWithVersion migrationSteps({
         final migrator = i1.Migrator(database, schema);
         await from9To10(migrator, schema);
         return 10;
+      case 10:
+        final schema = Schema11(database: database);
+        final migrator = i1.Migrator(database, schema);
+        await from10To11(migrator, schema);
+        return 11;
       default:
         throw ArgumentError.value('Unknown migration from $currentVersion');
     }
@@ -1518,6 +1691,7 @@ i1.OnUpgrade stepByStep({
   required Future<void> Function(i1.Migrator m, Schema8 schema) from7To8,
   required Future<void> Function(i1.Migrator m, Schema9 schema) from8To9,
   required Future<void> Function(i1.Migrator m, Schema10 schema) from9To10,
+  required Future<void> Function(i1.Migrator m, Schema11 schema) from10To11,
 }) =>
     i0.VersionedSchema.stepByStepHelper(
         step: migrationSteps(
@@ -1530,4 +1704,5 @@ i1.OnUpgrade stepByStep({
       from7To8: from7To8,
       from8To9: from8To9,
       from9To10: from9To10,
+      from10To11: from10To11,
     ));

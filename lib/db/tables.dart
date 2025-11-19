@@ -115,7 +115,9 @@ class Resource extends Table {
   // 外键，关联到 Task 表的 id
   // `customConstraint` 确保了当关联的 Task 被删除时，相关的 Resource 也会被级联删除
   IntColumn get taskId => integer()
-      .customConstraint('NOT NULL REFERENCES task(id) ON DELETE CASCADE')();
+      .nullable()
+      .customConstraint('REFERENCES task(id) ON DELETE CASCADE')();
 
-  DateTimeColumn get createTime => dateTime().customConstraint("NOT NULL DEFAULT CURRENT_TIMESTAMP")();
+  DateTimeColumn get createTime =>
+      dateTime().customConstraint("NOT NULL DEFAULT CURRENT_TIMESTAMP")();
 }
