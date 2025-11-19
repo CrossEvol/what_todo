@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -249,10 +250,6 @@ class _ResourceManagePageState extends State<ResourceManagePage> {
     );
   }
 
-  String _getResourceFileName(String path) {
-    return path.split('/').last;
-  }
-
   String _formatDateTime(DateTime dateTime) {
     return '${dateTime.day}/${dateTime.month}/${dateTime.year} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
   }
@@ -370,13 +367,81 @@ class _ResourceManagePageState extends State<ResourceManagePage> {
   }
 }
 
-class _FullScreenImageView extends StatelessWidget {
+class _FullScreenImageView extends StatefulWidget {
   final ResourceModel resource;
 
   const _FullScreenImageView({
     Key? key,
     required this.resource,
   }) : super(key: key);
+
+  @override
+  State<_FullScreenImageView> createState() => _FullScreenImageViewState();
+}
+
+class _FullScreenImageViewState extends State<_FullScreenImageView> {
+  // 1. 创建 TransformationController 用于控制变换
+  final TransformationController _transformationController =
+      TransformationController();
+
+  // 用于存储计算出的初始和最小缩放比例
+  double _initialScale = 1.0;
+
+  // 使用 ValueNotifier 可以在异步获取尺寸后通知 InteractiveViewer 更新 minScale
+  final ValueNotifier<double> _minScaleNotifier = ValueNotifier<double>(1.0);
+
+  @override
+  void initState() {
+    super.initState();
+    // 2. 异步计算并设置初始变换
+    _calculateAndSetInitialScale();
+  }
+
+  Future<void> _calculateAndSetInitialScale() async {
+    // 等待UI渲染完成，以确保能获取到正确的屏幕尺寸
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final Size screenSize = MediaQuery.of(context).size;
+      final image = Image.file(File(widget.resource.path));
+
+      // 3. 异步获取图片的原始尺寸
+      final imageStream = image.image.resolve(const ImageConfiguration());
+      final completer = Completer<Size>();
+
+      imageStream.addListener(
+        ImageStreamListener((ImageInfo info, bool _) {
+          completer.complete(
+            Size(
+              info.image.width.toDouble(),
+              info.image.height.toDouble(),
+            ),
+          );
+        }),
+      );
+
+      final imageSize = await completer.future;
+
+      if (!mounted) return; // 检查 widget 是否还在树中
+
+      // 4. 计算能够完整显示图片的缩放比例
+      final double scaleX = screenSize.width / imageSize.width;
+      final double scaleY = (screenSize.height -
+              kToolbarHeight -
+              MediaQuery.of(context).padding.top) /
+          imageSize.height;
+      _initialScale = scaleX < scaleY ? scaleX : scaleY; // 取较小值以保证图片完整
+
+      // 5. 更新 minScale 和 TransformationController
+      _minScaleNotifier.value = _initialScale;
+      _transformationController.value = Matrix4.identity()..scale(_initialScale);
+    });
+  }
+
+  @override
+  void dispose() {
+    _transformationController.dispose();
+    _minScaleNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -386,15 +451,28 @@ class _FullScreenImageView extends StatelessWidget {
         backgroundColor: Colors.black,
         iconTheme: const IconThemeData(color: Colors.white),
         title: Text(
-          _getResourceFileName(resource.path),
+          _getResourceFileName(widget.resource.path),
           style: const TextStyle(color: Colors.white),
         ),
       ),
       body: Center(
-        child: InteractiveViewer(
+        // 使用 Center 确保图片在缩小时居中
+        // 6. 使用 ValueListenableBuilder 来响应 minScale 的变化
+        child: ValueListenableBuilder<double>(
+          valueListenable: _minScaleNotifier,
+          builder: (context, minScale, child) {
+            return InteractiveViewer(
+              transformationController: _transformationController,
+              minScale: minScale, // 动态设置 minScale
+              maxScale: 5.0, // 可以设置一个较大的放大倍数
+              constrained: false, // 允许子组件超出屏幕
+              clipBehavior: Clip.none, // 允许在放大时绘制到 AppBar 下方
+              child: child!,
+            );
+          },
           child: Image.file(
-            File(resource.path),
-            fit: BoxFit.contain,
+            File(widget.resource.path),
+            fit: BoxFit.contain, // 恢复使用 contain, 因为缩放由我们手动控制
             errorBuilder: (context, error, stackTrace) {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -420,8 +498,8 @@ class _FullScreenImageView extends StatelessWidget {
       ),
     );
   }
+}
 
-  String _getResourceFileName(String path) {
-    return path.split('/').last;
-  }
+String _getResourceFileName(String path) {
+  return path.split('/').last;
 }
