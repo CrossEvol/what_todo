@@ -1,4 +1,3 @@
-import 'dart:async' show FutureOr;
 
 import 'package:drift/drift.dart';
 import 'package:flutter_app/dao/resource_db.dart' show ResourceDB;
@@ -22,10 +21,6 @@ class TaskDB {
 
   static TaskDB get() {
     return _taskDb;
-  }
-
-  FutureOr<T> transaction<T>(Future<T> Function() action) async{
-    return _db.transaction(action);
   }
 
   Future<int> countToday() async {
@@ -265,10 +260,15 @@ class TaskDB {
   }
 
   Future<bool> deleteTask(int taskID) async {
-    var result = await (_db.delete(_db.task)
-          ..where((tbl) => tbl.id.equals(taskID)))
-        .go();
-    return result > 0;
+    return await _db.transaction(() async {
+      var result = await (_db.delete(_db.task)
+            ..where((tbl) => tbl.id.equals(taskID)))
+          .go();
+      if (result > 0) {
+        await ResourceDB.get().deleteResourcesByTaskId(taskID);
+      }
+      return result > 0;
+    });
   }
 
   Future<bool> updateTaskStatus(int taskID, TaskStatus status) async {
@@ -352,7 +352,8 @@ class TaskDB {
 
       // Assign unassigned resources to the newly created task
       if (id > 0) {
-        final unassignedResources = await ResourceDB.get().getUnassignedResources();
+        final unassignedResources =
+            await ResourceDB.get().getUnassignedResources();
         for (final resource in unassignedResources) {
           await ResourceDB.get().updateResourceTaskId(resource.id, id);
         }
