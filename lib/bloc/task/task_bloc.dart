@@ -87,18 +87,30 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   void _onAddTask(AddTaskEvent event, Emitter<TaskState> emit) async {
     final currentState = state;
     if (currentState is TaskLoaded) {
-      try {
-        final taskID = await _taskDB.createTask(
-          event.task,
-          labelIDs: event.labelIds,
-        );
-        final unassignedResources = await _resourceDB.getUnassignedResources();
-        for (final resource in unassignedResources) {
-          await _resourceDB.updateResourceTaskId(resource.id, taskID);
+      await _taskDB.transaction(() async {
+        try {
+          final taskID = await _taskDB.createTask(
+            event.task,
+            labelIDs: event.labelIds,
+          );
+          final unassignedResources =
+              await _resourceDB.getUnassignedResources();
+          final resourceIds = unassignedResources.map((r) => r.id).toList();
+          _logger.info('unassigned resourceIds: $resourceIds');
+          for (final resourceID in resourceIds) {
+            final b =
+                await _resourceDB.updateResourceTaskId(resourceID, taskID);
+            if (b) {
+              _logger.info('assigned ${taskID} to ${resourceID} has succeed.');
+            } else {
+              _logger.info('assigned ${taskID} to ${resourceID} has failed.');
+            }
+          }
+        } catch (e) {
+          emit(TaskError(e.toString()));
+          rethrow;
         }
-      } catch (e) {
-        emit(TaskError(e.toString()));
-      }
+      });
     }
   }
 

@@ -1,3 +1,5 @@
+import 'dart:async' show FutureOr;
+
 import 'package:drift/drift.dart';
 import 'package:flutter_app/db/app_db.dart';
 import 'package:flutter_app/pages/labels/label.dart'
@@ -19,6 +21,10 @@ class TaskDB {
 
   static TaskDB get() {
     return _taskDb;
+  }
+
+  FutureOr<T> transaction<T>(Future<T> Function() action) async{
+    return _db.transaction(action);
   }
 
   Future<int> countToday() async {
